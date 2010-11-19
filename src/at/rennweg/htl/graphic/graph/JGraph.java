@@ -10,8 +10,8 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 
-import at.rennweg.htl.math.graph.Edge;
-import at.rennweg.htl.math.graph.Graph;
+import math.graph.Edge;
+import math.graph.Graph;
 
 
 public class JGraph extends JComponent implements Graph<JVertex, JEdge> {

@@ -1,6 +1,6 @@
 package at.rennweg.htl.graphic.graph;
 
-import at.rennweg.htl.math.graph.Edge;
+import math.graph.Edge;
 
 
 public abstract class JEdgeFactory<SE extends Edge<?>, DE extends JEdge> {

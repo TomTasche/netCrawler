@@ -2,7 +2,8 @@ package at.rennweg.htl.graphic.graph;
 
 import javax.swing.JComponent;
 
-import at.rennweg.htl.math.graph.Edge;
+import math.graph.Edge;
+
 
 
 public abstract class JEdge extends JComponent implements Edge<JVertex> {
