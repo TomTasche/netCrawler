@@ -6,16 +6,22 @@ import java.util.List;
 import java.util.Set;
 
 
-public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> implements Multigraph<V, DefaultEdge<V>> {
+public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> implements Multigraph<V, DefaultEdge<V>>, ListenableGraph<V, DefaultEdge<V>> {
 	
 	private Set<V> vertices;
 	private List<DefaultEdge<V>> edges;
+	
+	private ArrayList<GraphListener<V, DefaultEdge<V>>> listeners;
+	
 	
 	
 	public DefaultGraph() {
 		vertices = new HashSet<V>();
 		edges = new ArrayList<DefaultEdge<V>>();
+		
+		listeners = new ArrayList<GraphListener<V,DefaultEdge<V>>>();
 	}
+	
 	
 	
 	public int getEdgeCount(DefaultEdge<V> edge) {
@@ -35,19 +41,39 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return new ArrayList<DefaultEdge<V>>(edges);
 	}
 	
+	public Set<V> getConnectedVertices(DefaultEdge<V> edge) {
+		return edge.getConnectedVertices();
+	}
 	public List<DefaultEdge<V>> getConnectedEdges(V vertex) {
-		return new ArrayList<DefaultEdge<V>>(super.getConnectedEdges(vertex));
+		return (List<DefaultEdge<V>>) super.getConnectedEdges(vertex);
 	}
 	
 	
+	
 	public boolean addVertex(V vertex) {
-		return vertices.add(vertex);
+		boolean result = vertices.add(vertex);
+		
+		if (result) {
+			for (GraphListener<V, DefaultEdge<V>> listener : listeners) {
+				listener.vertexAdded(vertex);
+			}
+		}
+		
+		return result;
 	}
 	public boolean addEdge(DefaultEdge<V> edge) {
 		if (!vertices.contains(edge.getVertexA())) return false;
 		if (!vertices.contains(edge.getVertexB())) return false;
 		
-		return edges.add(edge);
+		boolean result = edges.add(edge);
+		
+		if (result) {
+			for (GraphListener<V, DefaultEdge<V>> listener : listeners) {
+				listener.edgeAdded(edge);
+			}
+		}
+		
+		return result;
 	}
 	public boolean addEdge(V vertexA, V vertexB) {
 		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
@@ -55,11 +81,31 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return addEdge(edge);
 	}
 	
+	@Override
+	public void addListener(GraphListener<V, DefaultEdge<V>> listener) {
+		listeners.add(listener);
+	}
+	
+	
 	public boolean removeVertex(V vertex) {
-		return vertices.remove(vertex);
+		boolean result = vertices.remove(vertex);
+		
+		for (GraphListener<V, DefaultEdge<V>> listener : listeners) {
+			listener.vertexRemoved(vertex);
+		}
+		
+		return result;
 	}
 	public boolean removeEdge(DefaultEdge<V> edge) {
-		return edges.remove(edge);
+		boolean result = edges.remove(edge);
+		
+		if (result) {
+			for (GraphListener<V, DefaultEdge<V>> listener : listeners) {
+				listener.edgeRemoved(edge);
+			}
+		}
+		
+		return result;
 	}
 	public boolean removeEdge(V vertexA, V vertexB) {
 		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
@@ -67,15 +113,24 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return removeEdge(edge);
 	}
 	public boolean removeAllEdges(DefaultEdge<V> edge) {
-		List<DefaultEdge<V>> remove = new ArrayList<DefaultEdge<V>>();
-		remove.add(edge);
+		boolean result = false;
 		
-		return edges.removeAll(remove);
+		List<DefaultEdge<V>> edgesCopy = getEdges();
+		for (DefaultEdge<V> edgeItem : edgesCopy) {
+			if (edgeItem.equals(edge)) result |= removeEdge(edgeItem);
+		}
+		
+		return result;
 	}
 	public boolean removeAllEdges(V vertexA, V vertexB) {
 		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
 		
 		return removeAllEdges(edge);
+	}
+	
+	@Override
+	public void removeListener(GraphListener<V, DefaultEdge<V>> listener) {
+		listeners.remove(listener);
 	}
 	
 }

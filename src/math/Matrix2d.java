@@ -207,4 +207,9 @@ public class Matrix2d {
 		return result;
 	}
 	
+	
+	public static Matrix2d rotation(double angle) {
+		return new Matrix2d(Math.cos(angle), Math.sin(angle), -Math.sin(angle), Math.cos(angle));
+	}
+	
 }

@@ -6,6 +6,13 @@ import java.util.Set;
 public abstract class AbstractEdge<V> implements Edge<V> {
 	
 	@Override
+	public String toString() {
+		Set<V> connectedVertices = getConnectedVertices();
+		
+		return connectedVertices.toString();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		if (obj == this) return true;
@@ -24,6 +31,14 @@ public abstract class AbstractEdge<V> implements Edge<V> {
 		Set<?> connectedVertices = getConnectedVertices();
 		
 		return connectedVertices.hashCode();
+	}
+	
+	
+	
+	
+	@Override
+	public int getVertexCount() {
+		return getConnectedVertices().size();
 	}
 	
 }

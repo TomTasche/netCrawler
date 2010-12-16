@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public abstract class AbstractGraph<V, E extends AbstractEdge<V>> implements Graph<V, E> {
+public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
 	
 	@Override
 	public boolean isConnected() {

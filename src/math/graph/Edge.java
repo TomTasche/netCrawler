@@ -5,12 +5,13 @@ import java.util.Set;
 
 public interface Edge<V> {
 	
-	public boolean equals(Object object);
+	public String toString();
+	public boolean equals(Object obj);
 	public int hashCode();
 	
 	
 	
-	public int getConnectionCount();
+	public int getVertexCount();
 	
 	public Set<V> getConnectedVertices();
 	

@@ -6,6 +6,12 @@ import java.util.Set;
 
 public interface Graph<V, E extends Edge<V>> {
 	
+	public String toString();
+	public boolean equals(Object obj);
+	public int hashCode();
+	
+	
+	
 	public boolean isConnected();
 	public boolean isSimple();
 	
@@ -16,9 +22,8 @@ public interface Graph<V, E extends Edge<V>> {
 	public Collection<E> getEdges();
 	
 	public Set<V> getConnectedVertices(V vertex);
+	public Set<V> getConnectedVertices(E edge);
 	public Collection<E> getConnectedEdges(V vertex);
-	
-	public Set<V> getNeighbours(V vertex);
 	
 	
 	

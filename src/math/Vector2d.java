@@ -94,7 +94,7 @@ public class Vector2d {
 		
 		return result;
 	}
-	public Vector2b lessThanEqual(Vector2d b) {
+	public Vector2b lessThanOrEqual(Vector2d b) {
 		Vector2b result = new Vector2b();
 		
 		result.x = x <= b.x;
@@ -110,7 +110,7 @@ public class Vector2d {
 		
 		return result;
 	}
-	public Vector2b greaterThanEqual(Vector2d b) {
+	public Vector2b greaterThanOrEqual(Vector2d b) {
 		Vector2b result = new Vector2b();
 		
 		result.x = x >= b.x;
@@ -140,6 +140,9 @@ public class Vector2d {
 	}
 	public Vector2d negate() {
 		return new Vector2d(-x, -y);
+	}
+	public Vector2d abs() {
+		return new Vector2d(Math.abs(x), Math.abs(y));
 	}
 	public Vector2d turnLeft() {
 		return new Vector2d(-y, x);

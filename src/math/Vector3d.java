@@ -183,7 +183,7 @@ public class Vector3d {
 		
 		return result;
 	}
-	public Vector3b lessThanEqual(Vector3d b) {
+	public Vector3b lessThanOrEqual(Vector3d b) {
 		Vector3b result = new Vector3b();
 		
 		result.x = x <= b.x;
@@ -201,7 +201,7 @@ public class Vector3d {
 		
 		return result;
 	}
-	public Vector3b greaterThanEqual(Vector3d b) {
+	public Vector3b greaterThanOrEqual(Vector3d b) {
 		Vector3b result = new Vector3b();
 		
 		result.x = x >= b.x;
