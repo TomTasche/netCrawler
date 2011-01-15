@@ -1,5 +1,7 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
+import graphics.GraphicsUtil;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -72,10 +74,7 @@ public class DrawableCiscoRouter extends DrawableNetworkDevice {
 		
 		Rectangle drawingRect = drawingRect();
 		
-		int x = (int) drawingRect.left();
-		int y = (int) drawingRect.top();
-		
-		g.drawImage(image, x, y, null);
+		GraphicsUtil.drawImage(g, image, drawingRect.leftTop());
 	}
 	
 }

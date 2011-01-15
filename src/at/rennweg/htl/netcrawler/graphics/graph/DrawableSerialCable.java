@@ -9,8 +9,9 @@ import math.Rectangle;
 import math.Vector2d;
 import math.graph.Edge;
 
-import at.rennweg.htl.netcrawler.math.graph.NetworkDevice;
-import at.rennweg.htl.netcrawler.math.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
+import at.rennweg.htl.netcrawler.network.graph.SerialCable;
+import graphics.GraphicsUtil;
 import graphics.graph.DrawableSingeEdge;
 import graphics.graph.DrawableVertex;
 
@@ -64,19 +65,17 @@ public class DrawableSerialCable extends DrawableSingeEdge {
 		Matrix2d rotation = Matrix2d.rotation(angle);
 		Vector2d flashSize = rotation.mul(this.flashSize);
 		
-		int x1 = (int) a.getX();
-		int y1 = (int) a.getY();
-		int x2 = (int) middle.sub(flashSize.div(2)).getX();
-		int y2 = (int) middle.sub(flashSize.div(2)).getY();
-		g.drawLine(x1, y1, x2, y2);
+		Vector2d from = a;
+		Vector2d to = middle.sub(flashSize.div(2));
+		GraphicsUtil.drawLine(g, from, to);
 		
-		x1 = (int) middle.add(flashSize.div(2)).getX();
-		y1 = (int) middle.add(flashSize.div(2)).getY();
-		g.drawLine(x1, y1, x2, y2);
+		from = to;
+		to = middle.add(flashSize.div(2));
+		GraphicsUtil.drawLine(g, from, to);
 		
-		x2 = (int) b.getX();
-		y2 = (int) b.getY();
-		g.drawLine(x1, y1, x2, y2);
+		from = to;
+		to = b;
+		GraphicsUtil.drawLine(g, from, to);
 	}
 	
 }

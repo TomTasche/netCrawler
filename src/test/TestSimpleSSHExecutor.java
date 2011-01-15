@@ -3,7 +3,7 @@ package test;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import network.ssh.SimpleSSHExecutor;
+import network.ssh.SimpleSSH2Executor;
 
 
 public class TestSimpleSSHExecutor {
@@ -26,9 +26,9 @@ public class TestSimpleSSHExecutor {
 		String login = requestLogin("Enter username@hostname");
 		String password = requestPassword("Your password");
 		
-		SimpleSSHExecutor sshExecutor = new SimpleSSHExecutor(login, password);
+		SimpleSSH2Executor sshExecutor = new SimpleSSH2Executor(login, password);
 		
-		System.out.println(sshExecutor.execute("show cdp neighbors detail"));
+		System.out.println(sshExecutor.execute("show cdp neighbors"));
 		System.out.println(sshExecutor.getLastExitStatus());
 	}
 	

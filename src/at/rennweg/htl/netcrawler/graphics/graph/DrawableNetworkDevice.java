@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import math.Rectangle;
 import math.Vector2d;
 
-import at.rennweg.htl.netcrawler.math.graph.NetworkDevice;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import graphics.graph.DrawableVertex;
 
 

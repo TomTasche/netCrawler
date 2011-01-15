@@ -15,7 +15,7 @@ import math.graph.DefaultGraph;
 public class TestJGraph {
 	
 	public static void main(String[] args) throws Throwable {
-		int n = 8;
+		int n = 100;
 		
 		DefaultGraph<Integer> graph = new DefaultGraph<Integer>();
 		

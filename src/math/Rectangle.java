@@ -101,6 +101,10 @@ public class Rectangle {
 		return position.y + size.y / 2;
 	}
 	
+	public Vector2d leftTop() {
+		return position.sub(size.div(2));
+	}
+	
 	
 	
 	public boolean intersection(Vector2d point) {

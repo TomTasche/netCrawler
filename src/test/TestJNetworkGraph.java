@@ -8,12 +8,12 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
-import at.rennweg.htl.netcrawler.math.graph.CiscoRouter;
-import at.rennweg.htl.netcrawler.math.graph.EthernetCable;
-import at.rennweg.htl.netcrawler.math.graph.NetworkCable;
-import at.rennweg.htl.netcrawler.math.graph.NetworkDevice;
-import at.rennweg.htl.netcrawler.math.graph.NetworkGraph;
-import at.rennweg.htl.netcrawler.math.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
+import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
+import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
+import at.rennweg.htl.netcrawler.network.graph.SerialCable;
 
 
 public class TestJNetworkGraph {

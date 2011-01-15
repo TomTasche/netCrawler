@@ -20,7 +20,7 @@ import math.graph.DefaultGraph;
 public class TestImageVertex {
 	
 	public static void main(String[] args) throws Throwable {
-		final int n = 10;
+		final int n = 108;
 		
 		final DefaultGraph<Integer> graph = new DefaultGraph<Integer>();
 		

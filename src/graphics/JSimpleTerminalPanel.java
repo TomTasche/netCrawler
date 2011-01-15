@@ -5,7 +5,7 @@ import java.awt.event.ComponentEvent;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import network.ssh.SimpleSSHClient;
+import network.ssh.SimpleSSH2Client;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.JCTermSwing;
@@ -17,10 +17,10 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	private static final long serialVersionUID = -3529309954826071748L;
 	
 	
-	private SimpleSSHClient sshClient;
+	private SimpleSSH2Client sshClient;
 	
 	
-	public JSimpleTerminalPanel(SimpleSSHClient sshClient) {
+	public JSimpleTerminalPanel(SimpleSSH2Client sshClient) {
 		this.sshClient = sshClient;
 		
 		new Thread() {

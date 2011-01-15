@@ -1,9 +1,9 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-import at.rennweg.htl.netcrawler.math.graph.CiscoRouter;
-import at.rennweg.htl.netcrawler.math.graph.EthernetCable;
-import at.rennweg.htl.netcrawler.math.graph.NetworkDevice;
-import at.rennweg.htl.netcrawler.math.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
+import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
+import at.rennweg.htl.netcrawler.network.graph.SerialCable;
 import graphics.graph.JGraph;
 
 

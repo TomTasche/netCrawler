@@ -1,5 +1,6 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
+import graphics.GraphicsUtil;
 import graphics.graph.DrawableEdge;
 import graphics.graph.DrawableVertex;
 
@@ -9,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import at.rennweg.htl.netcrawler.math.graph.EthernetCable;
-import at.rennweg.htl.netcrawler.math.graph.NetworkDevice;
+import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 
 import math.Rectangle;
 import math.Vector2d;
@@ -60,12 +61,14 @@ public class DrawableEthernetCable extends DrawableEdge {
 		if (vertexCount == 2) {
 			List<DrawableVertex> vertices = new ArrayList<DrawableVertex>(connectedVertices);
 			
-			int x1 = (int) vertices.get(0).getPosition().getX();
-			int y1 = (int) vertices.get(0).getPosition().getY();
-			int x2 = (int) vertices.get(1).getPosition().getX();
-			int y2 = (int) vertices.get(1).getPosition().getY();
+			Vector2d a = vertices.get(0).getPosition();
+			Vector2d b = vertices.get(1).getPosition();
 			
-			drawBrokenLine(g, seperationLength, x1, y1, x2, y2);
+			if (coveredEdge.isCrossover()) {
+				GraphicsUtil.drawBrokenLine(g, seperationLength, a, b);
+			} else {
+				GraphicsUtil.drawLine(g, a, b);
+			}
 		} else if (coveredEdge.getVertexCount() > 2) {
 			Vector2d middle = new Vector2d();
 			
@@ -76,50 +79,14 @@ public class DrawableEthernetCable extends DrawableEdge {
 			middle = middle.div(coveredEdge.getVertexCount());
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				int x1 = (int) middle.getX();
-				int y1 = (int) middle.getY();
-				int x2 = (int) vertex.getPosition().getX();
-				int y2 = (int) vertex.getPosition().getY();
+				Vector2d b = vertex.getPosition();
 				
 				if (coveredEdge.isCrossover()) {
-					drawBrokenLine(g, seperationLength, x1, y1, x2, y2);
+					GraphicsUtil.drawBrokenLine(g, seperationLength, middle, b);
 				} else {
-					g.drawLine(x1, y1, x2, y2);
+					GraphicsUtil.drawLine(g, middle, b);
 				}
 			}
-		}
-	}
-	
-	
-	private static void drawBrokenLine(Graphics g, double seperationLength, int x1, int y1, int x2, int y2) {
-		Vector2d a = new Vector2d(x1, y1);
-		Vector2d b = new Vector2d(x2, y2);
-		Vector2d line = b.sub(a);
-		
-		Vector2d seperationVector = line.normalize().mul(seperationLength);
-		
-		int devisions = (int) (line.length() / seperationLength);
-		int devision = 0;
-		Vector2d start = a;
-		
-		for (; devision < devisions; devision += 2) {
-			int lx1 = (int) start.getX();
-			int ly1 = (int) start.getY();
-			int lx2 = (int) start.add(seperationVector).getX();
-			int ly2 = (int) start.add(seperationVector).getY();
-			
-			g.drawLine(lx1, ly1, lx2, ly2);
-			
-			start = start.add(seperationVector.mul(2));
-		}
-		
-		if (devision == devisions) {
-			int lx1 = (int) start.getX();
-			int ly1 = (int) start.getY();
-			int lx2 = (int) b.getX();
-			int ly2 = (int) b.getY();
-			
-			g.drawLine(lx1, ly1, lx2, ly2);
 		}
 	}
 	

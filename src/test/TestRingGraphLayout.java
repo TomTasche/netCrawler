@@ -19,7 +19,7 @@ import math.graph.DefaultGraph;
 public class TestRingGraphLayout {
 	
 	public static void main(String[] args) throws Throwable {
-		final int n = 9;
+		final int n = 20;
 		
 		final DefaultGraph<Integer> graph = new DefaultGraph<Integer>();
 		
@@ -48,13 +48,9 @@ public class TestRingGraphLayout {
 		frame.setVisible(true);
 		
 		
-		Thread thread = new Thread() {
+		new Thread() {
 			public void run() {
 				for (int i = 0; i < n; i++) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {}
-					
 					graph.addVertex(i);
 					
 					for (int j = 0; j < i; j++) {
@@ -62,9 +58,7 @@ public class TestRingGraphLayout {
 					}
 				}
 			}
-		};
-		
-		thread.start();
+		}.start();
 	}
 	
 }
