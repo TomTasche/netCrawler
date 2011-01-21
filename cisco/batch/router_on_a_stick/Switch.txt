@@ -1,0 +1,43 @@
+ena
+conf t
+
+
+
+hostname Swtich
+ip domain-name local
+
+no ip domain-lookup
+service password-enc
+
+
+username cisco priv 15 pass cisco
+
+
+ip ssh version 2
+crypto key generate rsa
+768
+
+line con 0
+logging sync
+login local
+exit
+
+line vty 0 4
+logging sync
+login local
+exit
+
+
+ip default-gateway 192.168.0.254
+
+
+int range fa 0/1-24
+no shut
+exit
+
+
+
+exit
+
+write
+

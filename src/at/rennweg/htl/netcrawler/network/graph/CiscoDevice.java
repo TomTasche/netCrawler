@@ -3,7 +3,9 @@ package at.rennweg.htl.netcrawler.network.graph;
 import java.net.InetAddress;
 
 
-public abstract class CiscoDevice extends NetworkDevice {
+public class CiscoDevice extends NetworkDevice {
+	
+	protected String software;
 	
 	protected String processorBoardId;
 	
@@ -35,10 +37,16 @@ public abstract class CiscoDevice extends NetworkDevice {
 	}
 	
 	
+	public String getSoftware() {
+		return software;
+	}
 	public String getProcessorBoardId() {
 		return processorBoardId;
 	}
 	
+	public void setSoftware(String software) {
+		this.software = software;
+	}
 	public void setProcessorBoardId(String processorBoardId) {
 		this.processorBoardId = processorBoardId;
 	}

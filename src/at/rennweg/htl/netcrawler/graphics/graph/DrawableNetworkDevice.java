@@ -1,15 +1,21 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
+import graphics.JSimpleTerminal;
+import graphics.graph.DrawableVertex;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.InetAddress;
 
 import math.Rectangle;
 import math.Vector2d;
-
+import network.ssh.SimpleSSH2Client;
+import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
-import graphics.graph.DrawableVertex;
 
 
 public abstract class DrawableNetworkDevice extends DrawableVertex {
@@ -79,6 +85,29 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		int y = (int) (drawingRect.bottom() + fontMetrics.getHeight());
 		
 		g.drawString(coveredVertex.getName(), x, y);
+	}
+	
+	// TODO kill me!! :@
+	@Override
+	public MouseAdapter getMouseAdapter() {
+		return new MouseAdapter() {
+			public void mouseClicked(MouseEvent event) {
+				CiscoDevice device = (CiscoDevice) getCoveredVertex();
+				InetAddress address = device.getManagementAddress();
+				
+				if (address == null) return;
+				
+				String addressString = address.getHostAddress();
+				SimpleSSH2Client client = new SimpleSSH2Client(addressString, "cisco", "cisco");
+				
+				try {
+					client.connect();
+					JSimpleTerminal terminal = new JSimpleTerminal("ssh @" + address.getHostAddress(), client);
+					terminal.setVisible(true);
+					System.out.println("asdf");
+				} catch (Exception e) {}
+			}
+		};
 	}
 	
 }

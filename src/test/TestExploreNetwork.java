@@ -1,6 +1,7 @@
 package test;
 
 import java.awt.BorderLayout;
+import java.net.InetAddress;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import network.ssh.SimpleSSHExecutor;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
+import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
 import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
 import at.rennweg.htl.netcrawler.network.graph.NetworkCable;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
@@ -45,7 +47,7 @@ public class TestExploreNetwork {
 		frame.setVisible(true);
 		
 		
-		final String rootHost = "10.10.0.94";
+		final String rootHost = "192.168.0.254";
 		
 		new Thread() {
 			public void run() {
@@ -88,43 +90,57 @@ public class TestExploreNetwork {
 		}
 		
 		String version = executor.execute("show version");
+		String software = null;
 		String deviceId = null;
 		for (String line : version.split("\n")) {
 			line = line.trim();
 			
-			if (line.startsWith("Processor board ID ")) {
+			if (line.startsWith("Cisco IOS Software")) {
+				software = line.split(",")[1].trim().split(" ")[0];
+			} else if (line.startsWith("Processor board ID ")) {
 				deviceId = line.substring("Processor board ID ".length());
-				break;
 			}
 		}
 		
-		CiscoRouter router = new CiscoRouter();
-		router.setName(hostname);
-		router.setProcessorBoardId(deviceId);
+		CiscoDevice device = null;
+		
+		System.out.println(software);
+		
+		if (software.startsWith("28")) device = new CiscoRouter();
+		else if (software.startsWith("C3560")) device = new CiscoSwitch();
+		else device = new CiscoDevice();
+		
+		InetAddress managementAddress = InetAddress.getByName(host);
+		device.setManagementAddress(managementAddress);
+		device.setName(hostname);
+		device.setSoftware(software);
+		device.setProcessorBoardId(deviceId);
 		
 		System.out.println(hostname);
-		if (networkGraph.getVertices().contains(router)) return router;
-		networkGraph.addVertex(router);
+		if (networkGraph.getVertices().contains(device)) return device;
+		networkGraph.addVertex(device);
 		
 		String neighbors = executor.execute("show cdp neighbors detail");
 		for (String line : neighbors.split("\n")) {
 			line = line.trim();
 			
 			if (line.startsWith("IP address: ")) {
-				System.out.println(line);
-				
 				try {
 					String address = line.substring("IP address: ".length());
 					CiscoDevice otherDevice = recursiveLookup(networkGraph, address);
+					
 					EthernetCable<CiscoDevice> ethernetCable =
-						new EthernetCable<CiscoDevice>(router, otherDevice);
+						new EthernetCable<CiscoDevice>(device, otherDevice);
+					
+					ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
+					
 					if (!networkGraph.getEdges().contains(ethernetCable))
 						networkGraph.addEdge(ethernetCable);
 				} catch (JSchException e) {}
 			}
 		}
 		
-		return router;
+		return device;
 	}
 	
 }

@@ -47,7 +47,7 @@ public class DrawableCiscoSwitch extends DrawableNetworkDevice {
 	
 	@Override
 	public Rectangle drawingRect() {
-		if (image == null) {
+		if ((image == null) || (image.getWidth(null) < 0)) {
 			synchronized (syncImage) {
 				try {
 					syncImage.wait();
@@ -64,7 +64,7 @@ public class DrawableCiscoSwitch extends DrawableNetworkDevice {
 	
 	@Override
 	public void drawDevice(Graphics g) {
-		if (image == null) {
+		if ((image == null) || (image.getWidth(null) < 0)) {
 			synchronized (syncImage) {
 				try {
 					syncImage.wait();
