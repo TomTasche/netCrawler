@@ -1,5 +1,9 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
+import graphics.GraphicsUtil;
+import graphics.graph.DrawableSingeEdge;
+import graphics.graph.DrawableVertex;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
@@ -8,12 +12,7 @@ import math.Matrix2d;
 import math.Rectangle;
 import math.Vector2d;
 import math.graph.Edge;
-
-import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.SerialCable;
-import graphics.GraphicsUtil;
-import graphics.graph.DrawableSingeEdge;
-import graphics.graph.DrawableVertex;
 
 
 public class DrawableSerialCable extends DrawableSingeEdge {
@@ -23,17 +22,19 @@ public class DrawableSerialCable extends DrawableSingeEdge {
 	public static final Color DEFAULT_COLOR = Color.RED;
 	
 	
-	private SerialCable<NetworkDevice> coveredEdge;
+	private SerialCable coveredEdge;
 	
 	private Vector2d flashSize = DEFUALT_FLASH_SIZE;
 	private Color color = DEFAULT_COLOR;
 	
 	
-	@SuppressWarnings("unchecked")
 	public DrawableSerialCable(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		super(coveredEdge, connectedVertices);
 		
-		this.coveredEdge = (SerialCable<NetworkDevice>) (Edge<?>) coveredEdge;
+		if (!(((Edge<?>) coveredEdge) instanceof SerialCable))
+			throw new IllegalArgumentException("coveredEdge is no instance of SerialCable");
+		
+		this.coveredEdge = (SerialCable) (Edge<?>) coveredEdge;
 	}
 	
 	
@@ -42,7 +43,7 @@ public class DrawableSerialCable extends DrawableSingeEdge {
 		return null;
 	}
 	
-	public SerialCable<NetworkDevice> getSerialCable() {
+	public SerialCable getSerialCable() {
 		return coveredEdge;
 	}
 	

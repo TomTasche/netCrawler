@@ -3,16 +3,16 @@ package at.rennweg.htl.netcrawler.network.graph;
 import java.util.Set;
 
 
-public class EthernetCable<V extends NetworkDevice> extends NetworkSharedCable<V> {
+public class EthernetCable extends NetworkSharedCable {
 	
 	private boolean crossover;
 	
 	
-	public EthernetCable(V... networkDevices) {
-		super(networkDevices);
+	public EthernetCable(NetworkInterface... networkInterfaces) {
+		super(networkInterfaces);
 	}
-	public EthernetCable(Set<V> networkDevices) {
-		super(networkDevices);
+	public EthernetCable(Set<NetworkInterface> networkInterfaces) {
+		super(networkInterfaces);
 	}
 	
 	

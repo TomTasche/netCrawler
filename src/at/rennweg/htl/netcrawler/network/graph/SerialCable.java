@@ -6,42 +6,52 @@ import java.util.Set;
 import math.graph.UndirectedEdge;
 
 
-public class SerialCable<V extends NetworkDevice> extends NetworkCable<V> implements UndirectedEdge<V> {
+public class SerialCable extends NetworkCable implements UndirectedEdge<NetworkDevice> {
 	
-	private V networkDeviceA;
-	private V networkDeviceB;
+	private NetworkInterface networkInterfaceA;
+	private NetworkInterface networkInterfaceB;
 	
 	
 	
-	public SerialCable(V networkDeviceA, V networkDeviceB) {
-		this.networkDeviceA = networkDeviceA;
-		this.networkDeviceB = networkDeviceB;
+	public SerialCable(NetworkInterface networkInterfaceA, NetworkInterface networkInterfaceB) {
+		this.networkInterfaceA = networkInterfaceA;
+		this.networkInterfaceB = networkInterfaceB;
 	}
 	
 	
 	
 	@Override
 	public boolean isLoop() {
-		return networkDeviceA.equals(networkDeviceB);
+		return networkInterfaceA.equals(networkInterfaceB);
 	}
 	
 	@Override
-	public V getVertexA() {
-		return networkDeviceA;
+	public NetworkDevice getVertexA() {
+		return networkInterfaceA.parentDevice;
 	}
 	
 	@Override
-	public V getVertexB() {
-		return networkDeviceB;
+	public NetworkDevice getVertexB() {
+		return networkInterfaceB.parentDevice;
 	}
 	
 	
 	@Override
-	public Set<V> getConnectedVertices() {
-		Set<V> result = new HashSet<V>();
+	public Set<NetworkDevice> getConnectedVertices() {
+		Set<NetworkDevice> result = new HashSet<NetworkDevice>();
 		
-		result.add(networkDeviceA);
-		result.add(networkDeviceB);
+		result.add(networkInterfaceA.parentDevice);
+		result.add(networkInterfaceB.parentDevice);
+		
+		return result;
+	}
+	
+	@Override
+	public Set<NetworkInterface> getConnectedInterfaces() {
+		Set<NetworkInterface> result = new HashSet<NetworkInterface>();
+		
+		result.add(networkInterfaceA);
+		result.add(networkInterfaceB);
 		
 		return result;
 	}

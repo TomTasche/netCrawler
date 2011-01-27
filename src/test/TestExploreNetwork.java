@@ -2,6 +2,11 @@ package test;
 
 import java.awt.BorderLayout;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -17,7 +22,10 @@ import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
 import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
 import at.rennweg.htl.netcrawler.network.graph.NetworkCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
+import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
+import at.rennweg.htl.netcrawler.network.graph.SerialCable;
 
 import com.jcraft.jsch.JSchException;
 
@@ -25,8 +33,7 @@ import com.jcraft.jsch.JSchException;
 public class TestExploreNetwork {
 	
 	public static void main(String[] args) throws Throwable {
-		final NetworkGraph<CiscoDevice, NetworkCable<CiscoDevice>> networkGraph =
-			new NetworkGraph<CiscoDevice, NetworkCable<CiscoDevice>>();
+		final NetworkGraph networkGraph = new NetworkGraph();
 		
 		
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -64,7 +71,7 @@ public class TestExploreNetwork {
 	public static final String USER = "cisco";
 	public static final String PASSWORD = "cisco";
 	
-	public static CiscoDevice recursiveLookup(NetworkGraph<CiscoDevice, NetworkCable<CiscoDevice>> networkGraph, String host) throws Exception {
+	public static CiscoDevice recursiveLookup(NetworkGraph networkGraph, String host) throws Exception {
 		SimpleSSHExecutor executor = null;
 		try {
 			System.out.println("try ssh2");
@@ -90,13 +97,15 @@ public class TestExploreNetwork {
 		}
 		
 		String version = executor.execute("show version");
-		String software = null;
+		Pattern seriesNumberPattern = Pattern.compile("^.* (.*?) Software \\((.*?)\\).*$");
+		String seriesNumber = null;
 		String deviceId = null;
 		for (String line : version.split("\n")) {
 			line = line.trim();
 			
-			if (line.startsWith("Cisco IOS Software")) {
-				software = line.split(",")[1].trim().split(" ")[0];
+			Matcher seriesNumberMatcher = seriesNumberPattern.matcher(line);
+			if (seriesNumberMatcher.matches()) {
+				seriesNumber = seriesNumberMatcher.group(1);
 			} else if (line.startsWith("Processor board ID ")) {
 				deviceId = line.substring("Processor board ID ".length());
 			}
@@ -104,40 +113,104 @@ public class TestExploreNetwork {
 		
 		CiscoDevice device = null;
 		
-		System.out.println(software);
+		System.out.println(seriesNumber);
 		
-		if (software.startsWith("28")) device = new CiscoRouter();
-		else if (software.startsWith("C3560")) device = new CiscoSwitch();
+		if (seriesNumber.startsWith("28")) device = new CiscoRouter();
+		else if (seriesNumber.startsWith("C3560")) device = new CiscoSwitch();
 		else device = new CiscoDevice();
 		
 		InetAddress managementAddress = InetAddress.getByName(host);
 		device.setManagementAddress(managementAddress);
 		device.setName(hostname);
-		device.setSoftware(software);
+		device.setSeriesNumber(seriesNumber);
 		device.setProcessorBoardId(deviceId);
 		
 		System.out.println(hostname);
-		if (networkGraph.getVertices().contains(device)) return device;
+		if (networkGraph.getVertices().contains(device)) {
+			HashSet<NetworkDevice> dummy = new HashSet<NetworkDevice>();
+			dummy.add(device);
+			Collection<NetworkDevice> singeDevice = networkGraph.getVertices();
+			singeDevice.retainAll(dummy);
+			device = (CiscoDevice) new ArrayList<NetworkDevice>(singeDevice).get(0);
+			return device;
+		}
 		networkGraph.addVertex(device);
 		
+		String interfaces = executor.execute("show ip interface brief");
+		for (String line : interfaces.split("\n")) {
+			if (line.toLowerCase().startsWith("interface")) continue;
+			
+			String[] columns = line.split("\\s+");
+			
+			if (columns.length != 6) continue;
+			if (columns[4].toLowerCase().equals("down")) continue;
+			if (columns[5].toLowerCase().equals("down")) continue;
+			
+			NetworkInterface networkInterface = new NetworkInterface(columns[0]);
+			device.addInterface(networkInterface);
+		}
+		System.out.println(device.getInterfaces());
+		
 		String neighbors = executor.execute("show cdp neighbors detail");
+		String currentAddress = null;
+		String currentInterface = null;
+		String currentNeighbourInterface = null;
 		for (String line : neighbors.split("\n")) {
 			line = line.trim();
 			
-			if (line.startsWith("IP address: ")) {
-				try {
-					String address = line.substring("IP address: ".length());
-					CiscoDevice otherDevice = recursiveLookup(networkGraph, address);
-					
-					EthernetCable<CiscoDevice> ethernetCable =
-						new EthernetCable<CiscoDevice>(device, otherDevice);
-					
-					ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
-					
-					if (!networkGraph.getEdges().contains(ethernetCable))
-						networkGraph.addEdge(ethernetCable);
-				} catch (JSchException e) {}
+			try {
+				if (line.startsWith("Device ID: ")) {
+					if (currentAddress != null) {
+						CiscoDevice otherDevice = recursiveLookup(networkGraph, currentAddress);
+						
+						NetworkInterface deviceInterface = device.getInterface(currentInterface);
+						NetworkInterface neighbourInterface = otherDevice.getInterface(currentNeighbourInterface);
+						
+						NetworkCable cable = null;
+						
+						if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
+							EthernetCable ethernetCable = new EthernetCable(deviceInterface, neighbourInterface);
+							ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
+							
+							cable = ethernetCable;
+						} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
+							SerialCable serialCable = new SerialCable(deviceInterface, neighbourInterface);
+							
+							cable = serialCable;
+						}
+						
+						if (!networkGraph.getEdges().contains(cable))
+							networkGraph.addEdge(cable);
+					}
+				} else if (line.startsWith("IP address: ")) {
+					currentAddress = line.substring("IP address: ".length());
+				} else if (line.startsWith("Interface: ")) {
+					currentInterface = line.substring("Interface: ".length()).split(",")[0];
+					currentNeighbourInterface = line.split(",")[1].split(":")[1].trim();
+				}
+			} catch (JSchException e) {}
+		}
+		if (currentAddress != null) {
+			CiscoDevice otherDevice = recursiveLookup(networkGraph, currentAddress);
+			
+			NetworkInterface deviceInterface = device.getInterface(currentInterface);
+			NetworkInterface neighbourInterface = otherDevice.getInterface(currentNeighbourInterface);
+			
+			NetworkCable cable = null;
+			
+			if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
+				EthernetCable ethernetCable = new EthernetCable(deviceInterface, neighbourInterface);
+				ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
+				
+				cable = ethernetCable;
+			} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
+				SerialCable serialCable = new SerialCable(deviceInterface, neighbourInterface);
+				
+				cable = serialCable;
 			}
+			
+			if (!networkGraph.getEdges().contains(cable))
+				networkGraph.addEdge(cable);
 		}
 		
 		return device;

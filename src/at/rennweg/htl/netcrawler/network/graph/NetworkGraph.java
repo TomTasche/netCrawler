@@ -10,66 +10,65 @@ import math.graph.GraphListener;
 import math.graph.ListenableGraph;
 
 
-// TODO accelerate
-public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> extends AbstractGraph<V, E> implements ListenableGraph<V, E> {
+public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> implements ListenableGraph<NetworkDevice, NetworkCable> {
 	
-	private Set<V> vertices;
-	private List<E> cables;
+	private Set<NetworkDevice> vertices;
+	private List<NetworkCable> cables;
 	
-	private List<GraphListener<V, E>> listeners;
+	private List<GraphListener<NetworkDevice, NetworkCable>> listeners;
 	
 	
 	
 	
 	public NetworkGraph() {
-		vertices = new HashSet<V>();
-		cables = new ArrayList<E>();
+		vertices = new HashSet<NetworkDevice>();
+		cables = new ArrayList<NetworkCable>();
 		
-		listeners = new ArrayList<GraphListener<V,E>>();
+		listeners = new ArrayList<GraphListener<NetworkDevice, NetworkCable>>();
 	}
 	
 	
 	
 	
-	public int getEdgeCount(E edge) {
+	public int getEdgeCount(NetworkCable edge) {
 		int result = 0;
 		
-		for (E e : cables) {
+		for (NetworkCable e : cables) {
 			if (e.equals(edge)) result++;
 		}
 		
 		return result;
 	}
 	
-	public int getCableCount(E cable) {
+	public int getCableCount(NetworkCable cable) {
 		return getCableCount(cable);
 	}
 	
 	
 	@Override
-	public Set<V> getVertices() {
-		return new HashSet<V>(vertices);
+	public Set<NetworkDevice> getVertices() {
+		return new HashSet<NetworkDevice>(vertices);
 	}
 	
 	@Override
-	public List<E> getEdges() {
-		return new ArrayList<E>(cables);
+	public List<NetworkCable> getEdges() {
+		return new ArrayList<NetworkCable>(cables);
 	}
 	
-	public List<E> getCables() {
+	public List<NetworkCable> getCables() {
 		return getEdges();
 	}
 	
 	
 	@Override
-	public Set<V> getConnectedVertices(E cable) {
+	public Set<NetworkDevice> getConnectedVertices(NetworkCable cable) {
 		return cable.getConnectedVertices();
 	}
 	
-	public Set<E> getConnectedCables(V networkDevice) {
-		Set<E> result = new HashSet<E>();
+	public Set<NetworkCable> getConnectedCables(NetworkDevice networkDevice) {
+		Set<NetworkCable> result = new HashSet<NetworkCable>();
 		
-		for (E cable : cables) {
+		for (NetworkCable cable : cables) {
 			if (cable.getConnectedVertices().contains(networkDevice))
 				result.add(cable);
 		}
@@ -78,26 +77,35 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 	}
 	
 	
-	/*public Set<NetworkInterface> getAviableInterfaces(V networkDevice) {
-		Set<NetworkInterface> result = new HashSet<NetworkInterface>();
-		Set<E> cables = getConnectedCables(networkDevice);
+	public Set<NetworkInterface> getAviableInterfaces(NetworkDevice networkDevice) {
+		Set<NetworkInterface> result = networkDevice.getInterfaces();
+		Set<NetworkCable> cables = getConnectedCables(networkDevice);
 		
-		for (E cable : cables) {
-			result.add(cable.getConnectedInterface(networkDevice));
+		for (NetworkCable cable : cables) {
+			result.removeAll(cable.getConnectedInterfaces());
 		}
 		
 		return result;
-	}*/
+	}
+	
+	public boolean isInterfaceAviable(NetworkInterface networkInterface) {
+		for (NetworkCable cable : cables) {
+			if (cable.getConnectedInterfaces().contains(networkInterface))
+				return false;
+		}
+		
+		return true;
+	}
 	
 	
 	
 	
 	@Override
-	public boolean addVertex(V vertex) {
+	public boolean addVertex(NetworkDevice vertex) {
 		boolean result = vertices.add(vertex);
 		
 		if (result) {
-			for (GraphListener<V, E> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
 				listener.vertexAdded(vertex);
 			}
 		}
@@ -106,13 +114,17 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 	}
 	
 	@Override
-	public boolean addEdge(E edge) {
+	public boolean addEdge(NetworkCable edge) {
 		if (!vertices.containsAll(edge.getConnectedVertices())) return false;
+		
+		for (NetworkInterface networkInterface : edge.getConnectedInterfaces()) {
+			if (!isInterfaceAviable(networkInterface)) return false;
+		}
 		
 		boolean result = cables.add(edge);
 		
 		if (result) {
-			for (GraphListener<V, E> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
 				listener.edgeAdded(edge);
 			}
 		}
@@ -120,23 +132,27 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 		return result;
 	}
 	
-	public boolean addCable(E cable) {
+	public boolean addCable(NetworkCable cable) {
 		return addEdge(cable);
 	}
 	
 	
 	@Override
-	public void addListener(GraphListener<V, E> listener) {
+	public void addListener(GraphListener<NetworkDevice, NetworkCable> listener) {
 		listeners.add(listener);
 	}
 	
 	
 	
 	@Override
-	public boolean removeVertex(V vertex) {
+	public boolean removeVertex(NetworkDevice vertex) {
 		boolean result = vertices.remove(vertex);
 		
-		for (GraphListener<V, E> listener : listeners) {
+		for (NetworkCable cable : getConnectedCables(vertex)) {
+			removeEdge(cable);
+		}
+		
+		for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
 			listener.vertexRemoved(vertex);
 		}
 		
@@ -144,11 +160,11 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 	}
 	
 	@Override
-	public boolean removeEdge(E edge) {
+	public boolean removeEdge(NetworkCable edge) {
 		boolean result = cables.remove(edge);
 		
 		if (result) {
-			for (GraphListener<V, E> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
 				listener.edgeRemoved(edge);
 			}
 		}
@@ -157,11 +173,11 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 	}
 	
 	@Override
-	public boolean removeAllEdges(E edge) {
+	public boolean removeAllEdges(NetworkCable edge) {
 		boolean result = false;
 		
-		List<E> edgesCopy = getEdges();
-		for (E edgeItem : edgesCopy) {
+		List<NetworkCable> edgesCopy = getEdges();
+		for (NetworkCable edgeItem : edgesCopy) {
 			if (edgeItem.equals(edge)) result |= removeEdge(edgeItem);
 		}
 		
@@ -170,7 +186,7 @@ public class NetworkGraph<V extends NetworkDevice, E extends NetworkCable<V>> ex
 	
 	
 	@Override
-	public void removeListener(GraphListener<V, E> listener) {
+	public void removeListener(GraphListener<NetworkDevice, NetworkCable> listener) {
 		listeners.remove(listener);
 	}
 	

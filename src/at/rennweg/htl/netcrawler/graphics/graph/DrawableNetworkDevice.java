@@ -104,7 +104,6 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 					client.connect();
 					JSimpleTerminal terminal = new JSimpleTerminal("ssh @" + address.getHostAddress(), client);
 					terminal.setVisible(true);
-					System.out.println("asdf");
 				} catch (Exception e) {}
 			}
 		};

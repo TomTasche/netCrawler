@@ -5,7 +5,7 @@ import java.net.InetAddress;
 
 public class CiscoDevice extends NetworkDevice {
 	
-	protected String software;
+	protected String seriesNumber;
 	
 	protected String processorBoardId;
 	
@@ -37,15 +37,15 @@ public class CiscoDevice extends NetworkDevice {
 	}
 	
 	
-	public String getSoftware() {
-		return software;
+	public String getSeriesNumber() {
+		return seriesNumber;
 	}
 	public String getProcessorBoardId() {
 		return processorBoardId;
 	}
 	
-	public void setSoftware(String software) {
-		this.software = software;
+	public void setSeriesNumber(String seriesNumber) {
+		this.seriesNumber = seriesNumber;
 	}
 	public void setProcessorBoardId(String processorBoardId) {
 		this.processorBoardId = processorBoardId;

@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
-import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
-
 import math.Rectangle;
 import math.Vector2d;
 import math.graph.Edge;
+import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
 
 
 public class DrawableEthernetCable extends DrawableEdge {
@@ -24,20 +22,19 @@ public class DrawableEthernetCable extends DrawableEdge {
 	public static final double DEFAULT_SEPERATION_LENGTH = 10;
 	
 	
-	private EthernetCable<NetworkDevice> coveredEdge;
+	private EthernetCable coveredEdge;
 	
 	private Color color = DEFAULT_COLOR;
 	private double seperationLength = DEFAULT_SEPERATION_LENGTH;
 	
 	
-	@SuppressWarnings("unchecked")
 	public DrawableEthernetCable(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		super(coveredEdge, connectedVertices);
 		
-		if (!(coveredEdge instanceof EthernetCable<?>))
+		if (!(((Edge<?>) coveredEdge) instanceof EthernetCable))
 			throw new IllegalArgumentException("coveredEdge is no instance of EthernetCable");
 		
-		this.coveredEdge = (EthernetCable<NetworkDevice>) (Edge<?>) coveredEdge;
+		this.coveredEdge = (EthernetCable) (Edge<?>) coveredEdge;
 	}
 	
 	

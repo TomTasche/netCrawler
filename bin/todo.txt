@@ -1,3 +1,0 @@
-TODO:
-	*) GraphicsUtil (use of Vector2d)
-	*) abstract DrawableNetworkDevice with image

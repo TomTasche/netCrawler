@@ -7,28 +7,23 @@ import java.util.Set;
 import math.graph.Hyperedge;
 
 
-public abstract class NetworkSharedCable<V extends NetworkDevice> extends NetworkCable<V> implements Hyperedge<V> {
+public abstract class NetworkSharedCable extends NetworkCable implements Hyperedge<NetworkDevice> {
 	
-	private Set<V> networkDevices;
+	private Set<NetworkInterface> networkInterfaces;
 	
 	
-	public NetworkSharedCable(V... networkDevices) {
-		this.networkDevices = new HashSet<V>();
-		Collections.addAll(this.networkDevices, networkDevices);
+	public NetworkSharedCable(NetworkInterface... networkInterfaces) {
+		this.networkInterfaces = new HashSet<NetworkInterface>();
+		Collections.addAll(this.networkInterfaces, networkInterfaces);
 	}
-	public NetworkSharedCable(Set<V> networkDevices) {
-		this.networkDevices = new HashSet<V>(networkDevices);
+	public NetworkSharedCable(Set<NetworkInterface> networkInterfaces) {
+		this.networkInterfaces = new HashSet<NetworkInterface>(networkInterfaces);
 	}
 	
 	
 	@Override
-	public Set<V> getConnectedVertices() {
-		return new HashSet<V>(networkDevices);
-	}
-	
-	@Override
-	public int getVertexCount() {
-		return networkDevices.size();
+	public Set<NetworkInterface> getConnectedInterfaces() {
+		return new HashSet<NetworkInterface>(networkInterfaces);
 	}
 	
 }
