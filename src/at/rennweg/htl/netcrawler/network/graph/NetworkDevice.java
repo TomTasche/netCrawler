@@ -4,23 +4,34 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Set;
 
+import at.rennweg.htl.netcrawler.network.agent.NetworkDeviceAgent;
+
 
 public class NetworkDevice {
 	
 	protected Set<NetworkInterface> interfaces;
 	
-	protected String name;
-	protected InetAddress managementAddress;
+	protected String hostname;
+	protected Set<InetAddress> managementAddresses;
 	
 	
 	public NetworkDevice() {
-		this(null, null);
+		this(null, new HashSet<InetAddress>());
 	}
-	public NetworkDevice(String name, InetAddress managementAddress) {
-		interfaces = new HashSet<NetworkInterface>();
+	public NetworkDevice(String hostname, Set<InetAddress> managementAddresses) {
+		this(new HashSet<NetworkInterface>(), hostname, managementAddresses);
+	}
+	public NetworkDevice(Set<NetworkInterface> interfaces, String hostname, Set<InetAddress> managementAddresses) {
+		this.interfaces = new HashSet<NetworkInterface>(interfaces);
 		
-		this.name = name;
-		this.managementAddress = managementAddress;
+		this.hostname = hostname;
+		this.managementAddresses = new HashSet<InetAddress>(managementAddresses);
+	}
+	public NetworkDevice(NetworkDeviceAgent deviceAgent) {
+		interfaces = deviceAgent.fetchInterfaces();
+		
+		hostname = deviceAgent.fetchHostname();
+		managementAddresses = deviceAgent.fetchManagementAddresses();
 	}
 	
 	
@@ -32,15 +43,15 @@ public class NetworkDevice {
 		if (!(obj instanceof NetworkDevice)) return false;
 		NetworkDevice device = (NetworkDevice) obj;
 		
-		return name.equals(device.name);
+		return hostname.equals(device.hostname);
 	}
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return hostname.hashCode();
 	}
 	@Override
 	public String toString() {
-		return name;
+		return hostname;
 	}
 	
 	
@@ -54,11 +65,11 @@ public class NetworkDevice {
 		
 		return null;
 	}
-	public String getName() {
-		return name;
+	public String getHostname() {
+		return hostname;
 	}
-	public InetAddress getManagementAddress() {
-		return managementAddress;
+	public Set<InetAddress> getManagementAddresses() {
+		return managementAddresses;
 	}
 	
 	public void setInterfaces(Set<NetworkInterface> interfaces) {
@@ -68,11 +79,11 @@ public class NetworkDevice {
 			networkInterface.parentDevice = this;
 		}
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
-	public void setManagementAddress(InetAddress managementAddress) {
-		this.managementAddress = managementAddress;
+	public void setManagementAddresses(Set<InetAddress> managementAddresses) {
+		this.managementAddresses = new HashSet<InetAddress>(managementAddresses);
 	}
 	
 	

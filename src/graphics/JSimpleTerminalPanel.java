@@ -4,8 +4,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import network.ssh.SimpleSSH2Client;
+import util.cli.CommandLineInterface;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.JCTermSwing;
@@ -17,15 +19,23 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	private static final long serialVersionUID = -3529309954826071748L;
 	
 	
-	private SimpleSSH2Client sshClient;
+	private CommandLineInterface cli;
+	
+	private List<CloseListener> listeners;
 	
 	
-	public JSimpleTerminalPanel(SimpleSSH2Client sshClient) {
-		this.sshClient = sshClient;
+	public JSimpleTerminalPanel(CommandLineInterface cli) {
+		this.cli = cli;
+		
+		listeners = new ArrayList<CloseListener>();
 		
 		new Thread() {
 			public void run() {
 				JSimpleTerminalPanel.this.start(new SimpleConnection());
+				
+				for (CloseListener listener : listeners) {
+					listener.closed();
+				}
 			}
 		}.start();
 		
@@ -39,14 +49,23 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	}
 	
 	
+	public void addCloseListener(CloseListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeCloseListener(CloseListener listener) {
+		listeners.remove(listener);
+	}
+	
+	
 	private class SimpleConnection implements Connection {
 		@Override
 		public InputStream getInputStream() {
-			return sshClient.getInputStream();
+			return cli.getInputStream();
 		}
 		@Override
 		public OutputStream getOutputStream() {
-			return sshClient.getOutputStream();
+			return cli.getOutputStream();
 		}
 		
 		@Override
@@ -54,8 +73,13 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 		
 		@Override
 		public void close() {
-			sshClient.disconnect();
+			cli.close();
 		}
+	}
+	
+	
+	public static interface CloseListener {
+		public void closed();
 	}
 	
 }

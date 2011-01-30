@@ -3,7 +3,7 @@ conf t
 
 
 
-hostname Router1
+hostname Router4
 ip domain-name local
 
 no ip domain-lookup
@@ -28,27 +28,20 @@ login local
 exit
 
 
-ip dhcp excluded-address 192.168.0.253 192.168.0.254
-ip dhcp pool lan
-network 192.168.0.0 255.255.255.0
-default-router 192.168.0.254
-exit
-
-
 int fa 0/0
-ip add 192.168.0.254 255.255.255.0
+ip add 192.168.34.4 255.255.255.0
 no shut
 exit
 
 int fa 0/1
-ip add 192.168.12.1 255.255.255.0
+ip add 192.168.45.4 255.255.255.0
 no shut
 exit
 
 
 router eigrp 1
-network 192.168.0.0 0.0.0.255
-network 192.168.12.0 0.0.0.255
+network 192.168.34.0 0.0.0.255
+network 192.168.45.0 0.0.0.255
 exit
 
 

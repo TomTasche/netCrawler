@@ -10,10 +10,11 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 import math.Rectangle;
 import math.Vector2d;
-import network.ssh.SimpleSSH2Client;
+import network.ssh.SSH2Client;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 
@@ -72,7 +73,7 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		g.setFont(font);
 		g.setColor(fontColor);
 		
-		String name = coveredVertex.getName();
+		String name = coveredVertex.getHostname();
 		if (name.length() > maxNameLength) {
 			name = name.substring(0, maxNameLength - 3);
 			name += "...";
@@ -84,7 +85,7 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		int x = (int) (drawingRect.getPosition().getX() - fontMetrics.charsWidth(name.toCharArray(), 0, name.length()) / 2);
 		int y = (int) (drawingRect.bottom() + fontMetrics.getHeight());
 		
-		g.drawString(coveredVertex.getName(), x, y);
+		g.drawString(coveredVertex.getHostname(), x, y);
 	}
 	
 	// TODO kill me!! :@
@@ -93,15 +94,14 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		return new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
 				CiscoDevice device = (CiscoDevice) getCoveredVertex();
-				InetAddress address = device.getManagementAddress();
+				InetAddress address = new ArrayList<InetAddress>(device.getManagementAddresses()).get(0);
 				
 				if (address == null) return;
 				
-				String addressString = address.getHostAddress();
-				SimpleSSH2Client client = new SimpleSSH2Client(addressString, "cisco", "cisco");
-				
 				try {
-					client.connect();
+					String addressString = address.getHostAddress();
+					SSH2Client client = new SSH2Client(addressString, "cisco", "cisco");
+					
 					JSimpleTerminal terminal = new JSimpleTerminal("ssh @" + address.getHostAddress(), client);
 					terminal.setVisible(true);
 				} catch (Exception e) {}

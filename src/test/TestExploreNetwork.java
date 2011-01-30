@@ -5,17 +5,19 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
-import network.ssh.SimpleSSH1Executor;
-import network.ssh.SimpleSSH2Executor;
-import network.ssh.SimpleSSHExecutor;
+import network.ssh.SSH1Executor;
+import network.ssh.SSH2Executor;
+import network.ssh.SSHExecutor;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
@@ -33,6 +35,10 @@ import com.jcraft.jsch.JSchException;
 public class TestExploreNetwork {
 	
 	public static void main(String[] args) throws Throwable {
+		final String rootHost = JOptionPane.showInputDialog("type in the root device", "192.168.0.254");
+		if (rootHost == null) System.exit(0);
+		
+		
 		final NetworkGraph networkGraph = new NetworkGraph();
 		
 		
@@ -54,8 +60,6 @@ public class TestExploreNetwork {
 		frame.setVisible(true);
 		
 		
-		final String rootHost = "192.168.0.254";
-		
 		new Thread() {
 			public void run() {
 				try {
@@ -72,15 +76,15 @@ public class TestExploreNetwork {
 	public static final String PASSWORD = "cisco";
 	
 	public static CiscoDevice recursiveLookup(NetworkGraph networkGraph, String host) throws Exception {
-		SimpleSSHExecutor executor = null;
+		SSHExecutor executor = null;
 		try {
 			System.out.println("try ssh2");
-			executor = new SimpleSSH2Executor(host, USER, PASSWORD);
+			executor = new SSH2Executor(host, USER, PASSWORD);
 			executor.execute("show clock");
 			System.out.println("success ssh2");
 		} catch (Exception e) {
 			System.out.println("try ssh1");
-			executor = new SimpleSSH1Executor(host, USER, PASSWORD);
+			executor = new SSH1Executor(host, USER, PASSWORD);
 			executor.execute("show clock");
 			System.out.println("success ssh1");
 		}
@@ -120,8 +124,10 @@ public class TestExploreNetwork {
 		else device = new CiscoDevice();
 		
 		InetAddress managementAddress = InetAddress.getByName(host);
-		device.setManagementAddress(managementAddress);
-		device.setName(hostname);
+		Set<InetAddress> managementAddresses = new HashSet<InetAddress>();
+		managementAddresses.add(managementAddress);
+		device.setManagementAddresses(managementAddresses);
+		device.setHostname(hostname);
 		device.setSeriesNumber(seriesNumber);
 		device.setProcessorBoardId(deviceId);
 		

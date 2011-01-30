@@ -2,10 +2,11 @@ package test;
 
 import graphics.JSimpleTerminal;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import network.ssh.SimpleSSH2Client;
+import network.ssh.SSH2Client;
 
 
 public class TestJSimpleTerminal {
@@ -30,11 +31,11 @@ public class TestJSimpleTerminal {
 		String password = requestPassword("Your password");
 		if (password == null) System.exit(0);
 		
-		SimpleSSH2Client sshClient = new SimpleSSH2Client(login, password);
-		sshClient.connect();
+		SSH2Client sshClient = new SSH2Client(login, password);
 		
 		
 		JSimpleTerminal terminal = new JSimpleTerminal(sshClient);
+		terminal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		terminal.setVisible(true);
 	}
 	

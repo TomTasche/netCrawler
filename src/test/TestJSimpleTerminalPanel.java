@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
-import network.ssh.SimpleSSH2Client;
+import network.ssh.SSH2Client;
 
 
 public class TestJSimpleTerminalPanel {
@@ -34,8 +34,7 @@ public class TestJSimpleTerminalPanel {
 		String password = requestPassword("Your password");
 		if (password == null) System.exit(0);
 		
-		SimpleSSH2Client sshClient = new SimpleSSH2Client(login, password);
-		sshClient.connect();
+		SSH2Client sshClient = new SSH2Client(login, password);
 		
 		
 		JFrame frame = new JFrame();

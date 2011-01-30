@@ -28,6 +28,12 @@ login local
 exit
 
 
+int vlan 1
+ip add 192.168.0.253 255.255.255.0
+no shut
+exit
+
+
 ip default-gateway 192.168.0.254
 
 

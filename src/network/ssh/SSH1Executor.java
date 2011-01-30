@@ -3,6 +3,8 @@ package network.ssh;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import com.mindbright.jca.security.interfaces.RSAPublicKey;
 import com.mindbright.ssh.SSH;
@@ -13,24 +15,31 @@ import com.mindbright.ssh.SSHInteractorAdapter;
 import com.mindbright.ssh.SSHRSAKeyFile;
 
 
-public class SimpleSSH1Executor extends SimpleSSHExecutor {
+public class SSH1Executor extends SSHExecutor {
 	
-	private String host;
-	private int port;
-	private String username;
-	private String password;
+	private SSHConsoleClient client;
 	
 	private boolean lastSuccess;
 	
 	
-	public SimpleSSH1Executor(String host, String username, String password) {
-		this(host, DEFAULT_PORT, username, password);
+	public SSH1Executor() {}
+	public SSH1Executor(String login, String password) throws Exception {
+		super(login.split("@")[1], DEFAULT_PORT, login.split("@")[0], password);
 	}
-	public SimpleSSH1Executor(String host, int port, String username, String password) {
-		this.host = host;
-		this.port = port;
-		this.username = username;
-		this.password = password;
+	public SSH1Executor(InetAddress address, String username, String password) throws Exception {
+		super(address, username, password);
+	}
+	public SSH1Executor(String host, String username, String password) throws Exception {
+		super(host, username, password);
+	}
+	public SSH1Executor(InetSocketAddress socketAddress, String username, String password) throws Exception {
+		super(socketAddress, username, password);
+	}
+	public SSH1Executor(String host, int port, String username, String password) throws Exception {
+		super(host, port, username, password);
+	}
+	public SSH1Executor(InetAddress address, int port, String username, String password) throws Exception {
+		super(address, port, username, password);
 	}
 	
 	
@@ -39,8 +48,19 @@ public class SimpleSSH1Executor extends SimpleSSHExecutor {
 	}
 	
 	
+	@Override
+	public void connect(InetAddress address, int port, String username, String password) throws Exception {
+		client = new SSHConsoleClient(address.getHostAddress(), port,
+				new SimpleAuthenticator(username, password), new SSHInteractorAdapter());
+	}
+	
+	@Override
+	public void close() {
+		client.close();
+	}
+	
+	
 	public String execute(String command) throws IOException {
-		SSHConsoleClient client = new SSHConsoleClient(host, port, new SimpleAuthenticator(), new SSHInteractorAdapter());
 		lastSuccess = client.command(command);
 		
 		String result = "";
@@ -53,13 +73,20 @@ public class SimpleSSH1Executor extends SimpleSSHExecutor {
 		}
 		
 		reader.close();
-		client.close();
 		
 		return result;
 	}
 	
 	
 	private class SimpleAuthenticator implements SSHAuthenticator {
+		private String username;
+		private String password;
+		
+		public SimpleAuthenticator(String username, String password) {
+			this.username = username;
+			this.password = password;
+		}
+		
 		public String getUsername(SSHClientUser origin) throws IOException {
 			return username;
 		}

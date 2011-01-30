@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import network.ssh.SimpleSSH2Client;
+import network.ssh.SSH2Client;
 import util.JFrameUtil;
 
 
@@ -18,14 +18,19 @@ public class JSimpleTerminal extends JFrame {
 	public static final String DEFAULT_TITLE = "Terminal";
 	
 	
-	public JSimpleTerminal(SimpleSSH2Client sshClient) {
+	public JSimpleTerminal(SSH2Client sshClient) {
 		this(DEFAULT_TITLE, sshClient);
 	}
-	public JSimpleTerminal(String title, SimpleSSH2Client sshClient) {
+	public JSimpleTerminal(String title, final SSH2Client sshClient) {
 		super(title);
 		setLayout(new BorderLayout());
 		
 		JSimpleTerminalPanel terminalPanel = new JSimpleTerminalPanel(sshClient);
+		terminalPanel.addCloseListener(new JSimpleTerminalPanel.CloseListener() {
+			public void closed() {
+				JSimpleTerminal.this.dispose();
+			}
+		});
 		add(new JScrollPane(terminalPanel));
 		
 		addWindowListener(new WindowAdapter() {
