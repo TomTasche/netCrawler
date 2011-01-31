@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
-public interface CommandLineInterface {
+public interface CommandLine {
 	
 	public InputStream getInputStream();
 	public OutputStream getOutputStream();

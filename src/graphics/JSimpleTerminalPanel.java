@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.cli.CommandLineInterface;
+import util.cli.CommandLine;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.JCTermSwing;
@@ -19,12 +19,12 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	private static final long serialVersionUID = -3529309954826071748L;
 	
 	
-	private CommandLineInterface cli;
+	private CommandLine cli;
 	
 	private List<CloseListener> listeners;
 	
 	
-	public JSimpleTerminalPanel(CommandLineInterface cli) {
+	public JSimpleTerminalPanel(CommandLine cli) {
 		this.cli = cli;
 		
 		listeners = new ArrayList<CloseListener>();

@@ -3,10 +3,10 @@ package network.ssh;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import util.cli.CommandLineInterface;
+import util.cli.CommandLine;
 
 
-public abstract class SSHClient implements CommandLineInterface {
+public abstract class SSHClient implements CommandLine {
 	
 	public static final int DEFAULT_PORT = 22;
 	

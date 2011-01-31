@@ -46,4 +46,6 @@ public abstract class SSHExecutor {
 	
 	public abstract String execute(String command) throws Exception;
 	
+	public abstract int lastExitStatus();
+	
 }

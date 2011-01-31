@@ -3,10 +3,10 @@ package test;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import network.ssh.SSH2Executor;
+import network.ssh.SSH1Executor;
 
 
-public class TestSSH2Executor {
+public class TestSSH1Executor {
 	
 	public static String requestLogin(String message) {
 		return JOptionPane.showInputDialog(message, System.getProperty("user.name") + "@localhost");
@@ -26,7 +26,7 @@ public class TestSSH2Executor {
 		String login = requestLogin("Enter username@hostname");
 		String password = requestPassword("Your password");
 		
-		SSH2Executor sshExecutor = new SSH2Executor(login, password);
+		SSH1Executor sshExecutor = new SSH1Executor(login, password);
 		
 		System.out.println(sshExecutor.execute("ls /"));
 		System.out.println(sshExecutor.lastExitStatus());

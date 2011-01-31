@@ -1,7 +1,8 @@
 package network.ssh;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -42,11 +43,6 @@ public class SSH2Executor extends SSHExecutor {
 	}
 	
 	
-	public int getLastExitStatus() {
-		return channel.getExitStatus();
-	}
-	
-	
 	@Override
 	public void connect(InetAddress address, int port, String username, String password) throws Exception {
 		JSch jsch = new JSch();
@@ -70,23 +66,20 @@ public class SSH2Executor extends SSHExecutor {
 		channel.connect();
 		
 		StringBuilder builder = new StringBuilder();
-		InputStream errorInputStream = channel.getErrStream();
-		InputStream inputStream = channel.getInputStream();
+		Reader reader = new InputStreamReader(channel.getInputStream());
 		int read;
 		
-		while ((read = errorInputStream.read()) != -1) {
-			builder.append((char) read);
-		}
-		
-		if (builder.length() > 0) builder.append(LINE_SEPARATOR);
-		
-		while ((read = inputStream.read()) != -1) {
+		while ((read = reader.read()) != -1) {
 			builder.append((char) read);
 		}
 		
 		channel.disconnect();
 		
 		return builder.toString();
+	}
+	
+	public int lastExitStatus() {
+		return channel.getExitStatus();
 	}
 	
 	
