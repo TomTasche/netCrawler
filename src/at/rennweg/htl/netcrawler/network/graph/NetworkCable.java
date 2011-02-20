@@ -3,7 +3,8 @@ package at.rennweg.htl.netcrawler.network.graph;
 import java.util.HashSet;
 import java.util.Set;
 
-import math.graph.AbstractEdge;
+import at.andiwand.library.math.graph.AbstractEdge;
+
 
 
 public abstract class NetworkCable extends AbstractEdge<NetworkDevice> {

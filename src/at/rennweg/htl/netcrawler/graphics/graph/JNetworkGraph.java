@@ -2,12 +2,12 @@ package at.rennweg.htl.netcrawler.graphics.graph;
 
 import java.io.IOException;
 
+import at.andiwand.library.graphics.graph.JGraph;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
 import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.SerialCable;
-import graphics.graph.JGraph;
 
 
 public class JNetworkGraph extends JGraph {

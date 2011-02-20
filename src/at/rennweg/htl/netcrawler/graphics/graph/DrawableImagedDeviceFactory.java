@@ -1,13 +1,14 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-import graphics.graph.DrawableVertex;
-import graphics.graph.DrawableVertexFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+
+import at.andiwand.library.graphics.graph.DrawableVertex;
+import at.andiwand.library.graphics.graph.DrawableVertexFactory;
 
 
 public class DrawableImagedDeviceFactory extends DrawableVertexFactory {

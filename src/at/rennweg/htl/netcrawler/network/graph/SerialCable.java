@@ -3,7 +3,8 @@ package at.rennweg.htl.netcrawler.network.graph;
 import java.util.HashSet;
 import java.util.Set;
 
-import math.graph.UndirectedEdge;
+import at.andiwand.library.math.graph.UndirectedEdge;
+
 
 
 public class SerialCable extends NetworkCable implements UndirectedEdge<NetworkDevice> {

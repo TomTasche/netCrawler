@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import math.graph.AbstractGraph;
-import math.graph.GraphListener;
-import math.graph.ListenableGraph;
+import at.andiwand.library.math.graph.AbstractGraph;
+import at.andiwand.library.math.graph.GraphListener;
+import at.andiwand.library.math.graph.ListenableGraph;
+
 
 
 public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> implements ListenableGraph<NetworkDevice, NetworkCable> {

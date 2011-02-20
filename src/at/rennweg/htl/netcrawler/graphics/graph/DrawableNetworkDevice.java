@@ -1,7 +1,5 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-import graphics.JSimpleTerminal;
-import graphics.graph.DrawableVertex;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,9 +10,11 @@ import java.awt.event.MouseEvent;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
-import math.Rectangle;
-import math.Vector2d;
-import network.ssh.SSH2Client;
+import at.andiwand.library.graphics.JSimpleTerminal;
+import at.andiwand.library.graphics.graph.DrawableVertex;
+import at.andiwand.library.math.Rectangle;
+import at.andiwand.library.math.Vector2d;
+import at.andiwand.library.network.ssh.SSH2Client;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 

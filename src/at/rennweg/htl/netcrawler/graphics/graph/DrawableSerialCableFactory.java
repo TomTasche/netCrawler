@@ -2,10 +2,11 @@ package at.rennweg.htl.netcrawler.graphics.graph;
 
 import java.util.Set;
 
-import math.graph.Edge;
-import graphics.graph.DrawableEdge;
-import graphics.graph.DrawableEdgeFactory;
-import graphics.graph.DrawableVertex;
+import at.andiwand.library.graphics.graph.DrawableEdge;
+import at.andiwand.library.graphics.graph.DrawableEdgeFactory;
+import at.andiwand.library.graphics.graph.DrawableVertex;
+import at.andiwand.library.math.graph.Edge;
+
 
 
 public class DrawableSerialCableFactory extends DrawableEdgeFactory {

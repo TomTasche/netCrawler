@@ -35,6 +35,7 @@ public class CiscoDevice extends NetworkDevice {
 	}
 	
 	
+	// TODO maybe: fix both
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -44,13 +45,14 @@ public class CiscoDevice extends NetworkDevice {
 		CiscoDevice device = (CiscoDevice) obj;
 		
 		if (processorBoardId == null) return false;
-		return processorBoardId.equals(device.processorBoardId);
+		return processorBoardId.equals(device.processorBoardId)
+			&& hostname.equals(device.hostname);
 	}
 	@Override
 	public int hashCode() {
 		if (processorBoardId == null) return 0;
 		
-		return processorBoardId.hashCode();
+		return processorBoardId.hashCode() ^ hostname.hashCode();
 	}
 	
 	

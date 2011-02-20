@@ -1,12 +1,13 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-import graphics.GraphicsUtil;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import math.Rectangle;
-import math.Vector2d;
+import at.andiwand.library.graphics.GraphicsUtil;
+import at.andiwand.library.math.Rectangle;
+import at.andiwand.library.math.Vector2d;
+
 
 
 public class DrawableImagedDevice extends DrawableNetworkDevice {

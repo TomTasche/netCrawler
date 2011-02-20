@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import math.graph.Hyperedge;
+import at.andiwand.library.math.graph.Hyperedge;
+
 
 
 public abstract class NetworkSharedCable extends NetworkCable implements Hyperedge<NetworkDevice> {

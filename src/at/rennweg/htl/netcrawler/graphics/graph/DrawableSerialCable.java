@@ -1,17 +1,17 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-import graphics.GraphicsUtil;
-import graphics.graph.DrawableSingeEdge;
-import graphics.graph.DrawableVertex;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
 
-import math.Matrix2d;
-import math.Rectangle;
-import math.Vector2d;
-import math.graph.Edge;
+import at.andiwand.library.graphics.GraphicsUtil;
+import at.andiwand.library.graphics.graph.DrawableSingeEdge;
+import at.andiwand.library.graphics.graph.DrawableVertex;
+import at.andiwand.library.math.Matrix2d;
+import at.andiwand.library.math.Rectangle;
+import at.andiwand.library.math.Vector2d;
+import at.andiwand.library.math.graph.Edge;
 import at.rennweg.htl.netcrawler.network.graph.SerialCable;
 
 
