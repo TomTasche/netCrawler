@@ -1,9 +1,11 @@
 package at.andiwand.library.graphics;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 
+import at.andiwand.library.math.MathUtil;
 import at.andiwand.library.math.Vector2d;
 
 
@@ -40,6 +42,15 @@ public class GraphicsUtil {
 	}
 	public static void drawImage(Graphics g, Image img, Vector2d pos, ImageObserver imageObserver) {
 		g.drawImage(img, (int) pos.getX(), (int) pos.getY(), imageObserver);
+	}
+	
+	
+	public static void translate(Graphics g, Vector2d vector) {
+		g.translate((int) vector.getX(), (int) vector.getY());
+	}
+	public static void rotate(Graphics graphics, Vector2d vector) {
+		Graphics2D g = (Graphics2D) graphics;
+		g.rotate(MathUtil.atan2(vector));
 	}
 	
 }

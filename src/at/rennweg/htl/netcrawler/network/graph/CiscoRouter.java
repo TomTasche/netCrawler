@@ -9,6 +9,9 @@ public class CiscoRouter extends CiscoDevice {
 	public CiscoRouter() {
 		super();
 	}
+	public CiscoRouter(String name) {
+		super(name);
+	}
 	public CiscoRouter(String name, Set<InetAddress> managementAddresses) {
 		super(name, managementAddresses);
 	}

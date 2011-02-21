@@ -9,6 +9,9 @@ public class CiscoSwitch extends CiscoDevice {
 	public CiscoSwitch() {
 		super();
 	}
+	public CiscoSwitch(String name) {
+		super(name);
+	}
 	public CiscoSwitch(String name, Set<InetAddress> managementAddresses) {
 		super(name, managementAddresses);
 	}

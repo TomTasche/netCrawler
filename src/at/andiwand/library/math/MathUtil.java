@@ -38,4 +38,8 @@ public class MathUtil {
 		return COS_TABLE[(int) (r * RAD_TO_SIN_COS_TABLE_INDEX)];
 	}
 	
+	public static double atan2(Vector2d vector) {
+		return Math.atan2(vector.getY(), vector.getX());
+	}
+	
 }

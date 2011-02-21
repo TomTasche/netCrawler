@@ -16,7 +16,10 @@ public class NetworkDevice {
 	
 	
 	public NetworkDevice() {
-		this(null, new HashSet<InetAddress>());
+		this((String) null);
+	}
+	public NetworkDevice(String hostname) {
+		this(hostname, new HashSet<InetAddress>());
 	}
 	public NetworkDevice(String hostname, Set<InetAddress> managementAddresses) {
 		this(new HashSet<NetworkInterface>(), hostname, managementAddresses);

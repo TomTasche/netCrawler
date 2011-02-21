@@ -16,6 +16,9 @@ public class CiscoDevice extends NetworkDevice {
 	public CiscoDevice() {
 		super();
 	}
+	public CiscoDevice(String hostname) {
+		super(hostname);
+	}
 	public CiscoDevice(String hostname, Set<InetAddress> managementAddresses) {
 		super(hostname, managementAddresses);
 	}

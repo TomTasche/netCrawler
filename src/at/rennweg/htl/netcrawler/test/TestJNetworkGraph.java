@@ -18,13 +18,13 @@ import at.rennweg.htl.netcrawler.network.graph.SerialCable;
 public class TestJNetworkGraph {
 	
 	public static void main(String[] args) throws Throwable {
-		CiscoRouter routerA = new CiscoRouter("Router A", null);
+		CiscoRouter routerA = new CiscoRouter("Router A");
 		routerA.addInterface(new NetworkInterface("fa0/0"));
 		routerA.addInterface(new NetworkInterface("s0/0"));
-		CiscoRouter routerB = new CiscoRouter("Router B", null);
+		CiscoRouter routerB = new CiscoRouter("Router B");
 		routerB.addInterface(new NetworkInterface("fa0/0"));
 		routerB.addInterface(new NetworkInterface("s0/0"));
-		CiscoRouter routerC = new CiscoRouter("Router C", null);
+		CiscoRouter routerC = new CiscoRouter("Router C");
 		routerC.addInterface(new NetworkInterface("fa0/0"));
 		
 		NetworkGraph networkGraph = new NetworkGraph();
