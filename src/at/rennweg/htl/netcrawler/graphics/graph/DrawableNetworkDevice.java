@@ -82,7 +82,7 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		FontMetrics fontMetrics = g.getFontMetrics();
 		Rectangle drawingRect = drawingRect();
 		
-		int x = (int) (drawingRect.getPosition().getX() - fontMetrics.charsWidth(name.toCharArray(), 0, name.length()) / 2);
+		int x = (int) (drawingRect.getMiddle().getX() - fontMetrics.charsWidth(name.toCharArray(), 0, name.length()) / 2);
 		int y = (int) (drawingRect.bottom() + fontMetrics.getHeight());
 		
 		g.drawString(coveredVertex.getHostname(), x, y);

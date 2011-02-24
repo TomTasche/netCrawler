@@ -5,10 +5,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import at.andiwand.library.network.MACAddress;
-import at.andiwand.packettracer.ptmp.simple2.SimpleMultiuserClient;
-import at.andiwand.packettracer.ptmp.simple2.SimpleNetworkDevice;
-import at.andiwand.packettracer.ptmp.simple2.SimpleNetworkDeviceFactory;
-import at.andiwand.packettracer.ptmp.simple2.SimplePipedTelnetServer;
+import at.andiwand.packettracer.ptmp.simple.SimpleMultiuserClient;
+import at.andiwand.packettracer.ptmp.simple.SimpleNetworkDevice;
+import at.andiwand.packettracer.ptmp.simple.SimpleNetworkDeviceFactory;
+import at.andiwand.packettracer.ptmp.simple.SimplePipedTelnetServer;
 
 
 public class TestSimplePipedTelnetServer {

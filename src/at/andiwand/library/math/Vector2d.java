@@ -1,5 +1,7 @@
 package at.andiwand.library.math;
 
+import java.awt.Point;
+
 
 public class Vector2d {
 	
@@ -43,6 +45,10 @@ public class Vector2d {
 	public Vector2d(Vector3d xyz) {
 		x = xyz.x;
 		y = xyz.y;
+	}
+	public Vector2d(Point point) {
+		x = point.x;
+		y = point.y;
 	}
 	
 	
