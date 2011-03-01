@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
 
-import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
-
 
 
 public class DefaultDrawableEdge extends DrawableEdge {
@@ -22,11 +20,6 @@ public class DefaultDrawableEdge extends DrawableEdge {
 		super(coveredEdge, connectedVertices);
 	}
 	
-	
-	@Override
-	public Rectangle drawingRect() {
-		return null;
-	}
 	
 	@Override
 	public boolean intersection(Vector2d point) {

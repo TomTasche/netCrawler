@@ -3,6 +3,9 @@ package at.andiwand.library.math;
 
 public class Matrix2d {
 	
+	public static final Matrix2d IDENTITY = new Matrix2d(1);
+	
+	
 	double m00, m01;
 	double m10, m11;
 	

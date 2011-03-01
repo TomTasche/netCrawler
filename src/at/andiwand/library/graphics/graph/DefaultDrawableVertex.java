@@ -6,7 +6,6 @@ import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
 
 
-
 public class DefaultDrawableVertex extends DrawableVertex {
 	
 	private static final long serialVersionUID = 7160267969933238534L;

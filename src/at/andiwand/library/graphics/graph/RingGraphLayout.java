@@ -10,7 +10,6 @@ import java.util.Set;
 import at.andiwand.library.math.Vector2d;
 
 
-
 public class RingGraphLayout extends GraphLayout {
 	
 	public static final double DEFAULT_BORDER_SIZE = 100;

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import at.andiwand.library.math.Vector2d;
 
 
-
 public class CircleGraphLayout extends GraphLayout {
 	
 	public static final double DEFAULT_RADIUS_FACTOR = 40;

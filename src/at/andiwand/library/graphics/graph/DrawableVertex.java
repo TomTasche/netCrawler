@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 
 import at.andiwand.library.graphics.Drawable;
 import at.andiwand.library.graphics.Intersectable;
+import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
 
 
@@ -28,17 +29,17 @@ public abstract class DrawableVertex implements Drawable, Intersectable {
 	public String toString() {
 		return coveredVertex.toString();
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
-	
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 	
+	
+	public abstract Rectangle drawingRect();
 	
 	public Object getCoveredVertex() {
 		return coveredVertex;
@@ -47,7 +48,6 @@ public abstract class DrawableVertex implements Drawable, Intersectable {
 	public Vector2d getPosition() {
 		return position;
 	}
-	
 	public MouseAdapter getMouseAdapter() {
 		return null;
 	}

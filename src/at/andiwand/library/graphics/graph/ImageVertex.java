@@ -1,12 +1,10 @@
 package at.andiwand.library.graphics.graph;
 
-
 import java.awt.Graphics;
 import java.awt.Image;
 
 import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
-
 
 
 public class ImageVertex extends DrawableVertex {

@@ -1,6 +1,5 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
@@ -9,7 +8,6 @@ import at.andiwand.library.graphics.GraphicsUtil;
 import at.andiwand.library.graphics.graph.DrawableSingeEdge;
 import at.andiwand.library.graphics.graph.DrawableVertex;
 import at.andiwand.library.math.Matrix2d;
-import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
 import at.rennweg.htl.netcrawler.network.graph.SerialCable;
@@ -37,11 +35,6 @@ public class DrawableSerialCable extends DrawableSingeEdge {
 		this.coveredEdge = (SerialCable) (Edge<?>) coveredEdge;
 	}
 	
-	
-	@Override
-	public Rectangle drawingRect() {
-		return null;
-	}
 	
 	public SerialCable getSerialCable() {
 		return coveredEdge;

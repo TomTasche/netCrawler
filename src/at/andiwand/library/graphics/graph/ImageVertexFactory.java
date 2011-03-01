@@ -3,7 +3,6 @@ package at.andiwand.library.graphics.graph;
 import java.awt.Image;
 
 
-
 public class ImageVertexFactory extends DrawableVertexFactory {
 	
 	private Image image;

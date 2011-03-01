@@ -1,6 +1,5 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Set;
 import at.andiwand.library.graphics.GraphicsUtil;
 import at.andiwand.library.graphics.graph.DrawableEdge;
 import at.andiwand.library.graphics.graph.DrawableVertex;
-import at.andiwand.library.math.Rectangle;
 import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
 import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
@@ -37,11 +35,6 @@ public class DrawableEthernetCable extends DrawableEdge {
 		this.coveredEdge = (EthernetCable) (Edge<?>) coveredEdge;
 	}
 	
-	
-	@Override
-	public Rectangle drawingRect() {
-		return null;
-	}
 	
 	@Override
 	public boolean intersection(Vector2d point) {

@@ -16,18 +16,47 @@ import com.jcraft.jcterm.JCTermSwing;
 import com.jcraft.jcterm.Term;
 
 
+/**
+ * 
+ * A simple terminal panel that is connected with a command line.
+ * 
+ * @author Andreas Stefl
+ * 
+ */
 public class JSimpleTerminalPanel extends JCTermSwing {
 	
 	private static final long serialVersionUID = -3529309954826071748L;
 	
 	
-	private CommandLine cli;
+	/**
+	 * 
+	 * A simple close listener for the terminal frame.
+	 * 
+	 * @author Andreas Stefl
+	 * 
+	 */
+	public static interface CloseListener {
+		/**
+		 * Is called when the command line has been closed.
+		 */
+		public void closed();
+	}
+	
+	
+	
+	private CommandLine commandLine;
 	
 	private List<CloseListener> listeners;
 	
 	
-	public JSimpleTerminalPanel(CommandLine cli) {
-		this.cli = cli;
+	/**
+	 * Creates a new terminal panel with the given command line.
+	 * 
+	 * @param commandLine the command line which should connected to this
+	 * terminal.
+	 */
+	public JSimpleTerminalPanel(CommandLine commandLine) {
+		this.commandLine = commandLine;
 		
 		listeners = new ArrayList<CloseListener>();
 		
@@ -51,47 +80,49 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	}
 	
 	
+	
+	/**
+	 * Adds a <code>CloseListener</code> to the terminal panel.
+	 * 
+	 * @param listener the <code>CloseListener</code> instance.
+	 */
 	public void addCloseListener(CloseListener listener) {
 		listeners.add(listener);
 	}
 	
+	/**
+	 * Removes a <code>CloseListener</code> from the terminal panel.
+	 * 
+	 * @param listener the <code>CloseListener</code> instance.
+	 */
 	public void removeCloseListener(CloseListener listener) {
 		listeners.remove(listener);
 	}
 	
 	
 	private class SimpleConnection implements Connection {
-		@Override
 		public InputStream getInputStream() {
 			try {
-				return cli.getInputStream();
+				return commandLine.getInputStream();
 			} catch (IOException e) {}
 			
 			return null;
 		}
-		@Override
 		public OutputStream getOutputStream() {
 			try {
-				return cli.getOutputStream();
+				return commandLine.getOutputStream();
 			} catch (IOException e) {}
 			
 			return null;
 		}
 		
-		@Override
 		public void requestResize(Term term) {}
 		
-		@Override
 		public void close() {
 			try {
-				cli.close();
+				commandLine.close();
 			} catch (IOException e) {}
 		}
-	}
-	
-	
-	public static interface CloseListener {
-		public void closed();
 	}
 	
 }

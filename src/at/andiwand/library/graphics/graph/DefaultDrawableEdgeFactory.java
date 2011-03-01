@@ -5,7 +5,6 @@ import java.util.Set;
 import at.andiwand.library.math.graph.Edge;
 
 
-
 public class DefaultDrawableEdgeFactory extends DrawableEdgeFactory {
 	
 	@Override

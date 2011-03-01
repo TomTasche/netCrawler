@@ -3,7 +3,7 @@ package at.andiwand.library.math;
 
 public class Vector3d {
 	
-	public static final Vector3d ZERO = new Vector3d();
+	public static final Vector3d NULL = new Vector3d();
 	public static final Vector3d X = new Vector3d(1, 0, 0);
 	public static final Vector3d Y = new Vector3d(0, 1, 0);
 	public static final Vector3d Z = new Vector3d(0, 0, 1);

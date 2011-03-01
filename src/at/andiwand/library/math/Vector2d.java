@@ -5,7 +5,7 @@ import java.awt.Point;
 
 public class Vector2d {
 	
-	public static final Vector2d ZERO = new Vector2d();
+	public static final Vector2d NULL = new Vector2d();
 	public static final Vector2d X = new Vector2d(1, 0);
 	public static final Vector2d Y = new Vector2d(0, 1);
 	
