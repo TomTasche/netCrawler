@@ -369,7 +369,7 @@ public class JGraph extends JComponent {
 			
 			if (vertex == null) return;
 			
-			offset = vertex.getPosition().sub(startPoint);
+			offset = vertex.getCenterPosition().sub(startPoint);
 			
 			e.consume();
 			moved = false;
@@ -397,7 +397,7 @@ public class JGraph extends JComponent {
 				for (DrawableVertex otherVertex : vertices) {
 					if (otherVertex == vertex) continue;
 					
-					Vector2d distance = otherVertex.getPosition().sub(newPosition);
+					Vector2d distance = otherVertex.getCenterPosition().sub(newPosition);
 					Vector2d absDistance = distance.abs();
 					
 					if (absDistance.getX() <= minDistance.getX()) {
@@ -424,7 +424,7 @@ public class JGraph extends JComponent {
 				}
 			}
 			
-			vertex.setPosition(newPosition);
+			vertex.setCenterPosition(newPosition);
 			
 			e.consume();
 			moved = true;

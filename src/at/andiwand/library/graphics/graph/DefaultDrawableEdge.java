@@ -35,7 +35,7 @@ public class DefaultDrawableEdge extends DrawableEdge {
 			Vector2d middle = new Vector2d();
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				middle = middle.add(vertex.getPosition());
+				middle = middle.add(vertex.getCenterPosition());
 			}
 			
 			middle = middle.div(coveredEdge.getVertexCount());
@@ -43,8 +43,8 @@ public class DefaultDrawableEdge extends DrawableEdge {
 			for (DrawableVertex vertex : connectedVertices) {
 				int x1 = (int) middle.getX();
 				int y1 = (int) middle.getY();
-				int x2 = (int) vertex.getPosition().getX();
-				int y2 = (int) vertex.getPosition().getY();
+				int x2 = (int) vertex.getCenterPosition().getX();
+				int y2 = (int) vertex.getCenterPosition().getY();
 				
 				g.drawLine(x1, y1, x2, y2);
 			}

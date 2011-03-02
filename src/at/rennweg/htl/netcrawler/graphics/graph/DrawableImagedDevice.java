@@ -24,7 +24,7 @@ public class DrawableImagedDevice extends DrawableNetworkDevice {
 	
 	@Override
 	public Rectangle drawingRect() {
-		return new Rectangle(getPosition(), new Vector2d(
+		return new Rectangle(getCenterPosition(), new Vector2d(
 				image.getWidth(),
 				image.getHeight()
 		));

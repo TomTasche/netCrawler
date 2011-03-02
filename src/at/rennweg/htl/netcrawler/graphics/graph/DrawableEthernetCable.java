@@ -51,8 +51,8 @@ public class DrawableEthernetCable extends DrawableEdge {
 		if (vertexCount == 2) {
 			List<DrawableVertex> vertices = new ArrayList<DrawableVertex>(connectedVertices);
 			
-			Vector2d a = vertices.get(0).getPosition();
-			Vector2d b = vertices.get(1).getPosition();
+			Vector2d a = vertices.get(0).getCenterPosition();
+			Vector2d b = vertices.get(1).getCenterPosition();
 			
 			if (coveredEdge.isCrossover()) {
 				GraphicsUtil.drawBrokenLine(g, seperationLength, a, b);
@@ -63,13 +63,13 @@ public class DrawableEthernetCable extends DrawableEdge {
 			Vector2d middle = new Vector2d();
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				middle = middle.add(vertex.getPosition());
+				middle = middle.add(vertex.getCenterPosition());
 			}
 			
 			middle = middle.div(coveredEdge.getVertexCount());
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				Vector2d b = vertex.getPosition();
+				Vector2d b = vertex.getCenterPosition();
 				
 				if (coveredEdge.isCrossover()) {
 					GraphicsUtil.drawBrokenLine(g, seperationLength, middle, b);

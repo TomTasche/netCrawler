@@ -51,8 +51,8 @@ public class DrawableSerialCable extends DrawableSingeEdge {
 	public void draw(Graphics g) {
 		g.setColor(color);
 		
-		Vector2d a = vertexA.getPosition();
-		Vector2d b = vertexB.getPosition();
+		Vector2d a = vertexA.getCenterPosition();
+		Vector2d b = vertexB.getCenterPosition();
 		Vector2d middle = a.add(b).div(2);
 		Vector2d distance = a.sub(b);
 		double angle = Math.atan2(distance.getY(), distance.getX());

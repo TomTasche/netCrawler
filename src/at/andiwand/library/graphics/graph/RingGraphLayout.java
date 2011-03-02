@@ -87,7 +87,7 @@ public class RingGraphLayout extends GraphLayout {
 			lastRing = newRing;
 		}
 		
-		root.setPosition(new Vector2d());
+		root.setCenterPosition(new Vector2d());
 		
 		double lastMaxSize = root.drawingRect().getSize().length();
 		double lastRadius = 0;
@@ -105,7 +105,7 @@ public class RingGraphLayout extends GraphLayout {
 			double anglePosition = 0;
 			for (DrawableVertex vertex : ring) {
 				Vector2d position = new Vector2d(radius * Math.sin(anglePosition), -radius * Math.cos(anglePosition));
-				vertex.setPosition(position);
+				vertex.setCenterPosition(position);
 				
 				if (position.getX() < left) left = position.getX();
 				if (position.getX() > right) right = position.getX();
@@ -125,7 +125,7 @@ public class RingGraphLayout extends GraphLayout {
 		jGraph.setPreferredSize(new Dimension((int) size.getX(), (int) size.getY()));
 		
 		for (DrawableVertex vertex : positionedVertices) {
-			vertex.setPosition(vertex.getPosition().add(middle));
+			vertex.setCenterPosition(vertex.getCenterPosition().add(middle));
 		}
 	}
 	

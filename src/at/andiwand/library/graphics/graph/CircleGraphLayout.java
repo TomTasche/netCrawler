@@ -82,7 +82,7 @@ public class CircleGraphLayout extends GraphLayout {
 		for (DrawableVertex vertex : jGraph.getVertices()) {
 			Vector2d position = new Vector2d(radius * Math.sin(anglePosition), -radius * Math.cos(anglePosition));
 			
-			vertex.setPosition(position.add(middle));
+			vertex.setCenterPosition(position.add(middle));
 			
 			anglePosition += angleStep;
 		}

@@ -31,21 +31,21 @@ public class DefaultDrawableVertex extends DrawableVertex {
 	
 	@Override
 	public Rectangle drawingRect() {
-		return new Rectangle(getPosition(), new Vector2d(radius * 2));
+		return new Rectangle(getCenterPosition(), new Vector2d(radius * 2));
 	}
 	
 	
 	@Override
 	public boolean intersection(Vector2d point) {
-		return getPosition().sub(point).length() <= radius;
+		return getCenterPosition().sub(point).length() <= radius;
 	}
 	
 	
 	
 	@Override
 	public void draw(Graphics g) {
-		int x = (int) (getPosition().getX() - radius);
-		int y = (int) (getPosition().getY() - radius);
+		int x = (int) (getCenterPosition().getX() - radius);
+		int y = (int) (getCenterPosition().getY() - radius);
 		int size = (int) (radius * 2);
 		
 		g.fillOval(x, y, size, size);
