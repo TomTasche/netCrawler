@@ -10,8 +10,8 @@ import at.andiwand.library.math.Vector2d;
 
 /**
  * 
- * The root of all drawable edges. It covers and offers access an
- * <code>Edge</code> object.
+ * The root of all drawable edges. <br>
+ * It covers and offers access an <code>Edge</code> object.
  * 
  * @author Andreas Stefl
  * 

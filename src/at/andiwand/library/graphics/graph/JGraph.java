@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,12 +25,27 @@ import at.andiwand.library.math.graph.GraphListener;
 import at.andiwand.library.math.graph.ListenableGraph;
 
 
+/**
+ * 
+ * A graphical representation of an <code>Graph</code> object. <br>
+ * Uses <code>DrawableVertexFactory</code> and <code>DrawableEdgeFactory</code>
+ * instances to build the intern data structure.
+ * 
+ * @author Andreas Stefl
+ * 
+ */
+
 // TODO: thread safe
 public class JGraph extends JComponent {
 	
 	private static final long serialVersionUID = -3715174655187422717L;
 	
+	/**
+	 * The default distance of the magnetic lines.
+	 */
 	public static final double DEFAULT_MAGNETIC_DISTANCE = 10;
+	
+	
 	
 	
 	
@@ -50,7 +66,7 @@ public class JGraph extends JComponent {
 	
 	private boolean antialiasing;
 	
-	private boolean magneticRaster;
+	private boolean magneticLines;
 	private double magneticDistance = DEFAULT_MAGNETIC_DISTANCE;
 	private transient Vector2b magneticFix = new Vector2b();
 	private transient Vector2d magneticLine = new Vector2d();
@@ -62,6 +78,11 @@ public class JGraph extends JComponent {
 	
 	
 	
+	
+	/**
+	 * Creates a empty <code>JGraph</code> instance. <br>
+	 * The viewed graph is with the method <code>setGraph(Graph)</code> set.
+	 */
 	public JGraph() {
 		vertices = new HashSet<DrawableVertex>();
 		edges = new HashSet<DrawableEdge>();
@@ -85,43 +106,103 @@ public class JGraph extends JComponent {
 		addMouseWheelListener(graphMouseAdapter);
 	}
 	
-	public JGraph(Graph<?, ? extends Edge<?>> coveredGraph) {
+	/**
+	 * Creates a <code>JGraph</code> instance with the given <code>Graph</code>
+	 * instance. <br>
+	 * If a <code>ListenableGraph</code> object is given, listeners will be
+	 * installed.
+	 * 
+	 * @param graph the <code>Graph</code>instance.
+	 */
+	public JGraph(Graph<?, ? extends Edge<?>> graph) {
 		this();
 		
-		setGraph(coveredGraph);
+		setGraph(graph);
+	}
+	
+	/**
+	 * Creates a <code>JGraph</code> instance with the given
+	 * <code>ListenableGraph</code> instance. <br>
+	 * Listeners will be installed to observe the graph model.
+	 * 
+	 * @param graph the <code>ListenableGraph</code>instance.
+	 */
+	public JGraph(ListenableGraph<?, ? extends Edge<?>> graph) {
+		this();
+		
+		setGraph(graph);
 	}
 	
 	
 	
 	
+	
+	/**
+	 * Returns the count of the containing vertices.
+	 * 
+	 * @return the count of the containing vertices.
+	 */
 	public int getVertexCount() {
 		return vertices.size();
 	}
 	
+	/**
+	 * Returns the count of the containing edges.
+	 * 
+	 * @return the count of the containing edges.
+	 */
 	public int getEdgeCount() {
 		return edges.size();
 	}
 	
 	
+	/**
+	 * Returns an unmodifiable set of the containing vertices.
+	 * 
+	 * @return an unmodifiable set of the containing vertices.
+	 */
 	public Set<DrawableVertex> getVertices() {
-		return new HashSet<DrawableVertex>(vertices);
+		return Collections.unmodifiableSet(vertices);
 	}
 	
+	/**
+	 * Returns an unmodifiable set of the containing edges.
+	 * 
+	 * @return an unmodifiable set of the containing edges.
+	 */
 	public Collection<DrawableEdge> getEdges() {
-		return new HashSet<DrawableEdge>(edges);
+		return Collections.unmodifiableSet(edges);
 	}
 	
 	
+	/**
+	 * Returns the associated <code>DrawableVertex</code> object of the given
+	 * vertex object.
+	 * 
+	 * @param vertex the vertex object.
+	 * @return the associated <code>DrawableVertex</code> object.
+	 */
 	public DrawableVertex getDrawableVertex(Object vertex) {
 		return vertexMap.get(vertex);
 	}
 	
 	
+	/**
+	 * Returns the used <code>GraphLayout</code> instance.
+	 * 
+	 * @return the used <code>GraphLayout</code> instance.
+	 */
 	public GraphLayout getGraphLayout() {
 		return graphLayout;
 	}
 	
 	
+	/**
+	 * Returns the connected vertices of the given vertex.
+	 * 
+	 * @param vertex the <code>DrawableVertex</code> object.
+	 * @return the connected vertices of the given vertex.
+	 */
 	public Set<DrawableVertex> getConnectedVertices(DrawableVertex vertex) {
 		Set<DrawableVertex> result = new HashSet<DrawableVertex>();
 		
@@ -137,24 +218,45 @@ public class JGraph extends JComponent {
 	}
 	
 	
+	/**
+	 * Returns <code>true</code> if antialiasing is turned on.
+	 * 
+	 * @return <code>true</code> if antialiasing is turned on.
+	 */
 	public boolean isAntialiasing() {
 		return antialiasing;
 	}
 	
 	
-	public boolean isMagneticRaster() {
-		return magneticRaster;
+	/**
+	 * Returns <code>true</code> if magnetic raster is turned on.
+	 * 
+	 * @return <code>true</code> if magnetic raster is turned on.
+	 */
+	public boolean isMagneticLines() {
+		return magneticLines;
 	}
 	
+	/**
+	 * Returns the distance of the magnetic lines.
+	 * 
+	 * @return the distance of the magnetic lines.
+	 */
 	public double getMagneticDistance() {
 		return magneticDistance;
 	}
 	
 	
 	
+	/**
+	 * Forms the intern data structure with the given graph model. <br>
+	 * 
+	 * @param graph the graph model.
+	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void setGraph(Graph<?, ? extends Edge<?>> graph) {
-		Graph<Object, Edge<Object>> objectGraph = (Graph<Object, Edge<Object>>) graph;
+		Graph<Object, Edge<Object>> objectGraph =
+			(Graph<Object, Edge<Object>>) graph;
 		
 		vertices.clear();
 		edges.clear();
@@ -177,6 +279,12 @@ public class JGraph extends JComponent {
 		graphLayout.reposition();
 	}
 	
+	/**
+	 * Forms the intern data structure with the given graph model. <br>
+	 * Listeners will be installed to observe the graph model.
+	 * 
+	 * @param graph the listenable graph model.
+	 */
 	@SuppressWarnings("unchecked")
 	public void setGraph(ListenableGraph<?, ? extends Edge<?>> graph) {
 		ListenableGraph<Object, Edge<Object>> listenableGraph = (ListenableGraph<Object, Edge<Object>>) graph;
@@ -189,6 +297,12 @@ public class JGraph extends JComponent {
 	}
 	
 	
+	/**
+	 * Sets the <code>GraphLayout</code> instance. This layout controls the
+	 * positions of the vertices.
+	 * 
+	 * @param graphLayout the <code>GraphLayout</code> instance.
+	 */
 	public void setGraphLayout(GraphLayout graphLayout) {
 		this.graphLayout = graphLayout;
 		
@@ -196,15 +310,34 @@ public class JGraph extends JComponent {
 	}
 	
 	
+	/**
+	 * Sets the state of the antialiasing.
+	 * 
+	 * @param antialiasing <code>true</code> if the panel have to be drawn with
+	 * antialiasing.
+	 */
 	public void setAntialiasing(boolean antialiasing) {
 		this.antialiasing = antialiasing;
+		
+		repaint();
 	}
 	
 	
-	public void setMagneticRaster(boolean magneticRaster) {
-		this.magneticRaster = magneticRaster;
+	/**
+	 * Sets the state of the magnetic lines.
+	 * 
+	 * @param magneticLines <code>true</code> if the panel have to use magnetic
+	 * lines.
+	 */
+	public void setMagneticLines(boolean magneticLines) {
+		this.magneticLines = magneticLines;
 	}
 	
+	/**
+	 * Sets the magnetic distance.
+	 * 
+	 * @param magneticDistance the magnetic distance.
+	 */
 	public void setMagneticDistance(double magneticDistance) {
 		this.magneticDistance = magneticDistance;
 	}
@@ -229,7 +362,6 @@ public class JGraph extends JComponent {
 		DrawableVertex drawableVertex = vertexFactory.buildVertex(vertex);
 		addVertex(drawableVertex);
 	}
-	
 	private synchronized void addVertex(DrawableVertex vertex) {
 		vertices.add(vertex);
 		vertexMap.put(vertex.getCoveredVertex(), vertex);
@@ -260,7 +392,6 @@ public class JGraph extends JComponent {
 		DrawableEdge jEdge = edgeFactory.buildEdge(edge, connectedVertices);
 		addEdge(jEdge);
 	}
-	
 	private synchronized void addEdge(DrawableEdge edge) {
 		edges.add(edge);
 		
@@ -269,10 +400,28 @@ public class JGraph extends JComponent {
 	}
 	
 	
+	/**
+	 * Adds a <code>DrawableVertexFactory</code> instance which is bounded to
+	 * responsible for the given class. <br>
+	 * If there is a responsible factory for this class bounded, it will be
+	 * removed.
+	 * 
+	 * @param clazz the responsibility of the factory.
+	 * @param vertexFactory the factory instance.
+	 */
 	public synchronized void addVertexFactory(Class<?> clazz, DrawableVertexFactory vertexFactory) {
 		vertexFactories.put(clazz, vertexFactory);
 	}
 	
+	/**
+	 * Adds a <code>DrawableEdgeFactory</code> instance which is bounded to
+	 * responsible for the given class. <br>
+	 * If there is a responsible factory for this class bounded, it will be
+	 * removed.
+	 * 
+	 * @param clazz the responsibility of the factory.
+	 * @param edgeFactory the factory instance.
+	 */
 	public synchronized void addEdgeFactory(Class<?> clazz, DrawableEdgeFactory edgeFactory) {
 		edgeFactories.put(clazz, edgeFactory);
 	}
@@ -282,7 +431,6 @@ public class JGraph extends JComponent {
 	public synchronized void removeVertex(Object vertex) {
 		// TODO: implementation
 	}
-	
 	public synchronized void removeVertex(DrawableVertex vertex) {
 		// TODO: implementation
 	}
@@ -290,16 +438,25 @@ public class JGraph extends JComponent {
 	public synchronized void removeEdge(Edge<Object> edge) {
 		// TODO: implementation
 	}
-	
 	public synchronized void removeEdge(DrawableEdge edge) {
 		// TODO: implementation
 	}
 	
 	
+	/**
+	 * Removes the bounded factory of the given class.
+	 * 
+	 * @param clazz the responsibility of the factory.
+	 */
 	public synchronized void removeVertexFactory(Class<?> clazz) {
 		vertexFactories.remove(clazz);
 	}
 	
+	/**
+	 * Removes the bounded factory of the given class.
+	 * 
+	 * @param clazz the responsibility of the factory.
+	 */
 	public synchronized void removeEdgeFactory(Class<?> clazz) {
 		edgeFactories.remove(clazz);
 	}
@@ -315,7 +472,7 @@ public class JGraph extends JComponent {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		}
 		
-		if (magneticRaster) {
+		if (magneticLines) {
 			g.setColor(Color.LIGHT_GRAY);
 			
 			if (magneticFix.getX())
@@ -389,7 +546,7 @@ public class JGraph extends JComponent {
 			
 			Vector2d newPosition = point.add(offset);
 			
-			if (magneticRaster) {
+			if (magneticLines) {
 				magneticFix = new Vector2b();
 				
 				Vector2d magnaticTransformation = new Vector2d();
@@ -452,61 +609,6 @@ public class JGraph extends JComponent {
 	
 	
 	private class GraphMouseAdapter extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (e.isConsumed()) return;
-			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseClicked(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseClicked(e);
-			}
-		}
-		
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			if (e.isConsumed()) return;
-			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseDragged(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseDragged(e);
-			}
-		}
-		
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			if (e.isConsumed()) return;
-			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseMoved(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseMoved(e);
-			}
-		}
-		
-		@Override
 		public void mousePressed(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
@@ -524,8 +626,6 @@ public class JGraph extends JComponent {
 					edge.getMouseAdapter().mousePressed(e);
 			}
 		}
-		
-		@Override
 		public void mouseReleased(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
@@ -542,8 +642,56 @@ public class JGraph extends JComponent {
 					edge.getMouseAdapter().mouseReleased(e);
 			}
 		}
+		public void mouseClicked(MouseEvent e) {
+			if (e.isConsumed()) return;
+			
+			Vector2d point = new Vector2d(e.getX(), e.getY());
+			
+			DrawableVertex vertex = vertexIntersection(point);
+			
+			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
+				vertex.getMouseAdapter().mouseClicked(e);
+			} else {
+				DrawableEdge edge = edgeIntersection(point);
+				
+				if ((edge != null) && (edge.getMouseAdapter() != null))
+					edge.getMouseAdapter().mouseClicked(e);
+			}
+		}
 		
-		@Override
+		public void mouseMoved(MouseEvent e) {
+			if (e.isConsumed()) return;
+			
+			Vector2d point = new Vector2d(e.getX(), e.getY());
+			
+			DrawableVertex vertex = vertexIntersection(point);
+			
+			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
+				vertex.getMouseAdapter().mouseMoved(e);
+			} else {
+				DrawableEdge edge = edgeIntersection(point);
+				
+				if ((edge != null) && (edge.getMouseAdapter() != null))
+					edge.getMouseAdapter().mouseMoved(e);
+			}
+		}
+		public void mouseDragged(MouseEvent e) {
+			if (e.isConsumed()) return;
+			
+			Vector2d point = new Vector2d(e.getX(), e.getY());
+			
+			DrawableVertex vertex = vertexIntersection(point);
+			
+			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
+				vertex.getMouseAdapter().mouseDragged(e);
+			} else {
+				DrawableEdge edge = edgeIntersection(point);
+				
+				if ((edge != null) && (edge.getMouseAdapter() != null))
+					edge.getMouseAdapter().mouseDragged(e);
+			}
+		}
+		
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			Vector2d point = new Vector2d(e.getX(), e.getY());
 			
@@ -562,23 +710,16 @@ public class JGraph extends JComponent {
 	
 	
 	private class GraphUpdateAdapter extends GraphAdapter<Object, Edge<Object>> {
-		@Override
 		public void vertexAdded(Object vertex) {
 			addVertex(vertex);
 		}
-		
-		@Override
 		public void edgeAdded(Edge<Object> edge) {
 			addEdge(edge);
 		}
 		
-		
-		@Override
 		public void vertexRemoved(Object vertex) {
 			removeVertex(vertex);
 		}
-		
-		@Override
 		public void edgeRemoved(Edge<Object> edge) {
 			removeEdge(edge);
 		}

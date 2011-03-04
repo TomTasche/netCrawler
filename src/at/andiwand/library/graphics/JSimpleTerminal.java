@@ -31,7 +31,7 @@ public class JSimpleTerminal extends JFrame {
 	
 	
 	/**
-	 * Creates a new terminal frame with the given command line. <br/>
+	 * Creates a new terminal frame with the given command line. <br>
 	 * Note: the frame is invisible by default.
 	 * 
 	 * @param commandLine the command line which should connected to this
@@ -42,7 +42,7 @@ public class JSimpleTerminal extends JFrame {
 	}
 	
 	/**
-	 * Creates a new terminal frame with the given command line. <br/>
+	 * Creates a new terminal frame with the given command line. <br>
 	 * Note: the frame is invisible by default.
 	 * 
 	 * @param title the title of the terminal frame.

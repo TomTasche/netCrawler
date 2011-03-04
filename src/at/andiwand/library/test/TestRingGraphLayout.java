@@ -38,7 +38,7 @@ public class TestRingGraphLayout {
 		jGraph.addVertexFactory(Object.class, vertexFactory);
 		jGraph.setGraphLayout(new RingGraphLayout(jGraph, 0));
 		jGraph.setGraph(graph);
-		jGraph.setMagneticRaster(true);
+		jGraph.setMagneticLines(true);
 		jGraph.setAntialiasing(true);
 		JScrollPane scrollPane = new JScrollPane(jGraph);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

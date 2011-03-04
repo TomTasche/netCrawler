@@ -36,7 +36,7 @@ public class TestImageVertex {
 		
 		JGraph jGraph = new JGraph();
 		jGraph.setGraphLayout(new CircleGraphLayout(jGraph, 300));
-		jGraph.setMagneticRaster(true);
+		jGraph.setMagneticLines(true);
 		jGraph.setAntialiasing(true);
 		jGraph.addVertexFactory(Object.class, vertexFactory);
 		jGraph.setGraph(graph);

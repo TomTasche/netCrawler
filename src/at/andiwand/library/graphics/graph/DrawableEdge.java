@@ -11,8 +11,8 @@ import at.andiwand.library.math.graph.Edge;
 
 /**
  * 
- * The root of all drawable edges. It covers and offers access an
- * <code>Edge</code> object.
+ * The root of all drawable edges. <br>
+ * It covers and offers access an <code>Edge</code> object.
  * 
  * @author Andreas Stefl
  * 
@@ -69,9 +69,9 @@ public abstract class DrawableEdge implements Drawable, Intersectable {
 	}
 	
 	/**
-	 * Returns a unmodifiable set of the connected vertices.
+	 * Returns an unmodifiable set of the connected vertices.
 	 * 
-	 * @return a unmodifiable set of the connected vertices. 
+	 * @return an unmodifiable set of the connected vertices. 
 	 */
 	public Set<DrawableVertex> getConnectedVertices() {
 		return Collections.unmodifiableSet(connectedVertices);

@@ -3,7 +3,7 @@ package at.andiwand.library.graphics.graph;
 
 /**
  * 
- * The root of all graph layouts. <br/>
+ * The root of all graph layouts. <br>
  * A graph layout positions the drawable vertices of a <code>JGraph</code> on
  * the panel.
  * 

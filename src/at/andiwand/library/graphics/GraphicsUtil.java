@@ -21,15 +21,8 @@ import at.andiwand.library.math.Vector2d;
 public class GraphicsUtil {
 	
 	/**
-	 * Prevents creating an instance of this class.
-	 */
-	private GraphicsUtil() {}
-	
-	
-	
-	/**
 	 * Draws a line from <code>a</code> to <code>b</code> on the given
-	 * <code>Graphics</code> object. <br/>
+	 * <code>Graphics</code> object. <br>
 	 * Node: the <code>double</code> components are bounded back to an
 	 * <code>int</code>.
 	 * 
@@ -45,7 +38,7 @@ public class GraphicsUtil {
 	/**
 	 * Draws a broken line from <code>a</code> to <code>b</code> with a
 	 * <code>seperationLength</code> on the given <code>Graphics</code>
-	 * object. <br/>
+	 * object. <br>
 	 * Node: the <code>double</code> components are bounded back to an
 	 * <code>int</code>.
 	 * 
@@ -78,7 +71,7 @@ public class GraphicsUtil {
 	
 	/**
 	 * Draws the given <code>Image</code> to the position <code>pos</code> on
-	 * the <code>Graphics</code> object <code>g</code>. <br/>
+	 * the <code>Graphics</code> object <code>g</code>. <br>
 	 * Node: the <code>double</code> components are bounded back to an
 	 * <code>int</code>.
 	 * 
@@ -93,7 +86,7 @@ public class GraphicsUtil {
 	
 	/**
 	 * Draws the given <code>Image</code> to the position <code>pos</code> on
-	 * the <code>Graphics</code> object <code>g</code>. <br/>
+	 * the <code>Graphics</code> object <code>g</code>. <br>
 	 * Node: the <code>double</code> components are bounded back to an
 	 * <code>int</code>.
 	 * 
@@ -129,5 +122,12 @@ public class GraphicsUtil {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.rotate(MathUtil.atan2(vector));
 	}
+	
+	
+	
+	/**
+	 * Prevents creating an instance of this class.
+	 */
+	private GraphicsUtil() {}
 	
 }

@@ -48,7 +48,7 @@ public class TestThreadedSimpleThreadedNetworkCrawler {
 		JNetworkGraph jNetworkGraph = new JNetworkGraph();
 		jNetworkGraph.setGraph(networkGraph);
 		jNetworkGraph.setAntialiasing(true);
-		jNetworkGraph.setMagneticRaster(true);
+		jNetworkGraph.setMagneticLines(true);
 		JScrollPane scrollPane = new JScrollPane(jNetworkGraph);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		frame.add(scrollPane);
