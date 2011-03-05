@@ -10,33 +10,33 @@ import at.andiwand.library.graphics.graph.DrawableVertex;
 import at.andiwand.library.math.Matrix2d;
 import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
-import at.rennweg.htl.netcrawler.network.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
-public class DrawableSerialCable extends DrawableSingeEdge {
+public class DrawableSerialLink extends DrawableSingeEdge {
 	
 	public static final Vector2d DEFUALT_FLASH_SIZE = new Vector2d(5, 10);
 	
 	public static final Color DEFAULT_COLOR = Color.RED;
 	
 	
-	private SerialCable coveredEdge;
+	private SerialLink coveredEdge;
 	
 	private Vector2d flashSize = DEFUALT_FLASH_SIZE;
 	private Color color = DEFAULT_COLOR;
 	
 	
-	public DrawableSerialCable(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
+	public DrawableSerialLink(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		super(coveredEdge, connectedVertices);
 		
-		if (!(((Edge<?>) coveredEdge) instanceof SerialCable))
+		if (!(((Edge<?>) coveredEdge) instanceof SerialLink))
 			throw new IllegalArgumentException("coveredEdge is no instance of SerialCable");
 		
-		this.coveredEdge = (SerialCable) (Edge<?>) coveredEdge;
+		this.coveredEdge = (SerialLink) (Edge<?>) coveredEdge;
 	}
 	
 	
-	public SerialCable getSerialCable() {
+	public SerialLink getSerialCable() {
 		return coveredEdge;
 	}
 	

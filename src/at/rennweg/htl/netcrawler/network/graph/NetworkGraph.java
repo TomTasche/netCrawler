@@ -11,37 +11,37 @@ import at.andiwand.library.math.graph.ListenableGraph;
 
 
 
-public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> implements ListenableGraph<NetworkDevice, NetworkCable> {
+public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> implements ListenableGraph<NetworkDevice, NetworkLink> {
 	
 	private Set<NetworkDevice> vertices;
-	private List<NetworkCable> cables;
+	private List<NetworkLink> cables;
 	
-	private List<GraphListener<NetworkDevice, NetworkCable>> listeners;
+	private List<GraphListener<NetworkDevice, NetworkLink>> listeners;
 	
 	
 	
 	
 	public NetworkGraph() {
 		vertices = new HashSet<NetworkDevice>();
-		cables = new ArrayList<NetworkCable>();
+		cables = new ArrayList<NetworkLink>();
 		
-		listeners = new ArrayList<GraphListener<NetworkDevice, NetworkCable>>();
+		listeners = new ArrayList<GraphListener<NetworkDevice, NetworkLink>>();
 	}
 	
 	
 	
 	
-	public int getEdgeCount(NetworkCable edge) {
+	public int getEdgeCount(NetworkLink edge) {
 		int result = 0;
 		
-		for (NetworkCable e : cables) {
+		for (NetworkLink e : cables) {
 			if (e.equals(edge)) result++;
 		}
 		
 		return result;
 	}
 	
-	public int getCableCount(NetworkCable cable) {
+	public int getCableCount(NetworkLink cable) {
 		return getCableCount(cable);
 	}
 	
@@ -52,24 +52,24 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	}
 	
 	@Override
-	public List<NetworkCable> getEdges() {
-		return new ArrayList<NetworkCable>(cables);
+	public List<NetworkLink> getEdges() {
+		return new ArrayList<NetworkLink>(cables);
 	}
 	
-	public List<NetworkCable> getCables() {
+	public List<NetworkLink> getCables() {
 		return getEdges();
 	}
 	
 	
 	@Override
-	public Set<NetworkDevice> getConnectedVertices(NetworkCable cable) {
+	public Set<NetworkDevice> getConnectedVertices(NetworkLink cable) {
 		return cable.getConnectedVertices();
 	}
 	
-	public Set<NetworkCable> getConnectedCables(NetworkDevice networkDevice) {
-		Set<NetworkCable> result = new HashSet<NetworkCable>();
+	public Set<NetworkLink> getConnectedCables(NetworkDevice networkDevice) {
+		Set<NetworkLink> result = new HashSet<NetworkLink>();
 		
-		for (NetworkCable cable : cables) {
+		for (NetworkLink cable : cables) {
 			if (cable.getConnectedVertices().contains(networkDevice))
 				result.add(cable);
 		}
@@ -80,9 +80,9 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	
 	public Set<NetworkInterface> getAviableInterfaces(NetworkDevice networkDevice) {
 		Set<NetworkInterface> result = networkDevice.getInterfaces();
-		Set<NetworkCable> cables = getConnectedCables(networkDevice);
+		Set<NetworkLink> cables = getConnectedCables(networkDevice);
 		
-		for (NetworkCable cable : cables) {
+		for (NetworkLink cable : cables) {
 			result.removeAll(cable.getConnectedInterfaces());
 		}
 		
@@ -90,12 +90,18 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	}
 	
 	public boolean isInterfaceAviable(NetworkInterface networkInterface) {
-		for (NetworkCable cable : cables) {
+		for (NetworkLink cable : cables) {
 			if (cable.getConnectedInterfaces().contains(networkInterface))
 				return false;
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public boolean isSimple() {
+		// TODO implement
+		return false;
 	}
 	
 	
@@ -106,7 +112,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 		boolean result = vertices.add(vertex);
 		
 		if (result) {
-			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkLink> listener : listeners) {
 				listener.vertexAdded(vertex);
 			}
 		}
@@ -115,7 +121,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	}
 	
 	@Override
-	public boolean addEdge(NetworkCable edge) {
+	public boolean addEdge(NetworkLink edge) {
 		if (!vertices.containsAll(edge.getConnectedVertices())) return false;
 		
 		for (NetworkInterface networkInterface : edge.getConnectedInterfaces()) {
@@ -125,7 +131,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 		boolean result = cables.add(edge);
 		
 		if (result) {
-			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkLink> listener : listeners) {
 				listener.edgeAdded(edge);
 			}
 		}
@@ -133,13 +139,13 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 		return result;
 	}
 	
-	public boolean addCable(NetworkCable cable) {
+	public boolean addCable(NetworkLink cable) {
 		return addEdge(cable);
 	}
 	
 	
 	@Override
-	public void addListener(GraphListener<NetworkDevice, NetworkCable> listener) {
+	public void addListener(GraphListener<NetworkDevice, NetworkLink> listener) {
 		listeners.add(listener);
 	}
 	
@@ -149,11 +155,11 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	public boolean removeVertex(NetworkDevice vertex) {
 		boolean result = vertices.remove(vertex);
 		
-		for (NetworkCable cable : getConnectedCables(vertex)) {
+		for (NetworkLink cable : getConnectedCables(vertex)) {
 			removeEdge(cable);
 		}
 		
-		for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
+		for (GraphListener<NetworkDevice, NetworkLink> listener : listeners) {
 			listener.vertexRemoved(vertex);
 		}
 		
@@ -161,11 +167,11 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	}
 	
 	@Override
-	public boolean removeEdge(NetworkCable edge) {
+	public boolean removeEdge(NetworkLink edge) {
 		boolean result = cables.remove(edge);
 		
 		if (result) {
-			for (GraphListener<NetworkDevice, NetworkCable> listener : listeners) {
+			for (GraphListener<NetworkDevice, NetworkLink> listener : listeners) {
 				listener.edgeRemoved(edge);
 			}
 		}
@@ -174,11 +180,11 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	}
 	
 	@Override
-	public boolean removeAllEdges(NetworkCable edge) {
+	public boolean removeAllEdges(NetworkLink edge) {
 		boolean result = false;
 		
-		List<NetworkCable> edgesCopy = getEdges();
-		for (NetworkCable edgeItem : edgesCopy) {
+		List<NetworkLink> edgesCopy = getEdges();
+		for (NetworkLink edgeItem : edgesCopy) {
 			if (edgeItem.equals(edge)) result |= removeEdge(edgeItem);
 		}
 		
@@ -187,7 +193,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkCable> imp
 	
 	
 	@Override
-	public void removeListener(GraphListener<NetworkDevice, NetworkCable> listener) {
+	public void removeListener(GraphListener<NetworkDevice, NetworkLink> listener) {
 		listeners.remove(listener);
 	}
 	

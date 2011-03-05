@@ -9,10 +9,10 @@ import javax.swing.UIManager;
 
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
-import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
+import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
-import at.rennweg.htl.netcrawler.network.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
 public class TestJNetworkGraph {
@@ -32,14 +32,13 @@ public class TestJNetworkGraph {
 		networkGraph.addVertex(routerB);
 		networkGraph.addVertex(routerC);
 		
-		EthernetCable ethernetCable = new EthernetCable(
+		EthernetLink ethernetCable = new EthernetLink(
 				routerA.getInterface("fa0/0"),
-				routerB.getInterface("fa0/0"),
-				routerC.getInterface("fa0/0")
+				routerB.getInterface("fa0/0")
 		);
 		ethernetCable.setCrossover(true);
 		networkGraph.addEdge(ethernetCable);
-		networkGraph.addEdge(new SerialCable(
+		networkGraph.addEdge(new SerialLink(
 				routerA.getInterface("s0/0"),
 				routerB.getInterface("s0/0")
 		));

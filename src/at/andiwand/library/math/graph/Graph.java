@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Set;
 
 
+// TODO: isConnected()? isSimple()?
 public interface Graph<V, E extends Edge<V>> {
 	
 	public String toString();
 	public boolean equals(Object obj);
 	public int hashCode();
-	
 	
 	
 	public boolean isConnected();
@@ -24,7 +24,6 @@ public interface Graph<V, E extends Edge<V>> {
 	public Set<V> getConnectedVertices(V vertex);
 	public Set<V> getConnectedVertices(E edge);
 	public Collection<E> getConnectedEdges(V vertex);
-	
 	
 	
 	public boolean addVertex(V vertex);

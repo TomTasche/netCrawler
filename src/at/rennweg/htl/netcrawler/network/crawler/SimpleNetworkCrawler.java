@@ -16,12 +16,12 @@ import at.rennweg.htl.netcrawler.cli.CiscoUser;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
-import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
-import at.rennweg.htl.netcrawler.network.graph.NetworkCable;
+import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
-import at.rennweg.htl.netcrawler.network.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.NetworkLink;
+import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
 public class SimpleNetworkCrawler extends NetworkCrawler {
@@ -136,15 +136,15 @@ public class SimpleNetworkCrawler extends NetworkCrawler {
 					NetworkInterface deviceInterface = device.getInterface(currentInterface);
 					NetworkInterface neighbourInterface = otherDevice.getInterface(currentNeighbourInterface);
 					
-					NetworkCable cable = null;
+					NetworkLink cable = null;
 					
 					if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
-						EthernetCable ethernetCable = new EthernetCable(deviceInterface, neighbourInterface);
+						EthernetLink ethernetCable = new EthernetLink(deviceInterface, neighbourInterface);
 						ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
 						
 						cable = ethernetCable;
 					} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
-						SerialCable serialCable = new SerialCable(deviceInterface, neighbourInterface);
+						SerialLink serialCable = new SerialLink(deviceInterface, neighbourInterface);
 						
 						cable = serialCable;
 					}
@@ -161,15 +161,15 @@ public class SimpleNetworkCrawler extends NetworkCrawler {
 			NetworkInterface deviceInterface = device.getInterface(currentInterface);
 			NetworkInterface neighbourInterface = otherDevice.getInterface(currentNeighbourInterface);
 			
-			NetworkCable cable = null;
+			NetworkLink cable = null;
 			
 			if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
-				EthernetCable ethernetCable = new EthernetCable(deviceInterface, neighbourInterface);
+				EthernetLink ethernetCable = new EthernetLink(deviceInterface, neighbourInterface);
 				ethernetCable.setCrossover(device.getClass().equals(otherDevice.getClass()));
 				
 				cable = ethernetCable;
 			} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
-				SerialCable serialCable = new SerialCable(deviceInterface, neighbourInterface);
+				SerialLink serialCable = new SerialLink(deviceInterface, neighbourInterface);
 				
 				cable = serialCable;
 			}

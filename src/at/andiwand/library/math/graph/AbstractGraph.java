@@ -16,9 +16,11 @@ public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E>
 		if (vertices.isEmpty()) return false;
 		V startVertex = vertices.iterator().next();
 		
-		isConnectedImpl(startVertex, vertices);
+		System.out.println("start: " + startVertex);
+		Set<V> unreachedVertices = new HashSet<V>(vertices);
+		isConnectedImpl(startVertex, unreachedVertices);
 		
-		return vertices.size() == 0;
+		return unreachedVertices.size() == 0;
 	}
 	private void isConnectedImpl(V startVertex, Set<V> unreachedVertices) {
 		unreachedVertices.remove(startVertex);
@@ -26,18 +28,13 @@ public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E>
 		if (unreachedVertices.isEmpty()) return;
 		
 		Set<V> reachableVertices = getConnectedVertices(startVertex);
+		reachableVertices.retainAll(unreachedVertices);
 		
 		for (V vertex : reachableVertices) {
+			if (startVertex.equals(vertex)) continue;
+			
 			isConnectedImpl(vertex, unreachedVertices);
 		}
-	}
-	
-	@Override
-	public boolean isSimple() {
-		Collection<E> edges = getEdges();
-		Set<E> edgeSet = new HashSet<E>(edges);
-		
-		return edges.size() != edgeSet.size();
 	}
 	
 	
@@ -58,9 +55,8 @@ public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E>
 		Set<V> result = new HashSet<V>();
 		
 		for (E edge : edges) {
-			Collection<V> connectedVerices = edge.getConnectedVertices();
+			Set<V> connectedVerices = edge.getConnectedVertices();
 			
-			connectedVerices.remove(vertex);
 			result.addAll(connectedVerices);
 		}
 		
@@ -68,12 +64,12 @@ public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E>
 	}
 	
 	@Override
-	public Collection<E> getConnectedEdges(V vertex) {
+	public List<E> getConnectedEdges(V vertex) {
 		Collection<E> edges = getEdges();
 		List<E> result = new ArrayList<E>();
 		
 		for (E edge : edges) {
-			Collection<V> connectedVerices = edge.getConnectedVertices();
+			Set<V> connectedVerices = edge.getConnectedVertices();
 			
 			if (connectedVerices.contains(vertex)) result.add(edge);
 		}

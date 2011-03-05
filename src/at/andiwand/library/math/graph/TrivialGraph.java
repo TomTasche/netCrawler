@@ -3,7 +3,7 @@ package at.andiwand.library.math.graph;
 import java.util.Set;
 
 
-public interface SimpleGraph<V, E extends Edge<V>> extends Graph<V, E> {
+public interface TrivialGraph<V, E extends Edge<V>> extends Graph<V, E> {
 	
 	public Set<E> getEdges();
 	

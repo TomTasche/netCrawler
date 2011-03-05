@@ -8,16 +8,16 @@ import at.andiwand.library.math.graph.Hyperedge;
 
 
 
-public abstract class NetworkSharedCable extends NetworkCable implements Hyperedge<NetworkDevice> {
+public abstract class NetworkSharedLink extends NetworkLink implements Hyperedge<NetworkDevice> {
 	
 	private Set<NetworkInterface> networkInterfaces;
 	
 	
-	public NetworkSharedCable(NetworkInterface... networkInterfaces) {
+	public NetworkSharedLink(NetworkInterface... networkInterfaces) {
 		this.networkInterfaces = new HashSet<NetworkInterface>();
 		Collections.addAll(this.networkInterfaces, networkInterfaces);
 	}
-	public NetworkSharedCable(Set<NetworkInterface> networkInterfaces) {
+	public NetworkSharedLink(Set<NetworkInterface> networkInterfaces) {
 		this.networkInterfaces = new HashSet<NetworkInterface>(networkInterfaces);
 	}
 	

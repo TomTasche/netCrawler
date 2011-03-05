@@ -7,7 +7,7 @@ import at.andiwand.library.math.graph.AbstractEdge;
 
 
 
-public abstract class NetworkCable extends AbstractEdge<NetworkDevice> {
+public abstract class NetworkLink extends AbstractEdge<NetworkDevice> {
 	
 	public abstract Set<NetworkInterface> getConnectedInterfaces();
 	

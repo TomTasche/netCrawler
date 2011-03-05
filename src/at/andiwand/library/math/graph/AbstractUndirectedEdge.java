@@ -13,8 +13,13 @@ public abstract class AbstractUndirectedEdge<V> extends AbstractEdge<V> implemen
 	
 	
 	@Override
+	public int getVertexCount() {
+		return VERTEX_COUNT;
+	}
+	
+	@Override
 	public Set<V> getConnectedVertices() {
-		Set<V> result = new HashSet<V>();
+		Set<V> result = new HashSet<V>(VERTEX_COUNT);
 		
 		result.add(getVertexA());
 		result.add(getVertexB());

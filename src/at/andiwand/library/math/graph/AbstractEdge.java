@@ -34,8 +34,6 @@ public abstract class AbstractEdge<V> implements Edge<V> {
 	}
 	
 	
-	
-	
 	@Override
 	public int getVertexCount() {
 		return getConnectedVertices().size();

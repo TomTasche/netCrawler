@@ -1,6 +1,7 @@
 package at.andiwand.library.math.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,12 +16,14 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 	
 	
 	
+	
 	public DefaultGraph() {
 		vertices = new HashSet<V>();
 		edges = new ArrayList<DefaultEdge<V>>();
 		
 		listeners = new ArrayList<GraphListener<V,DefaultEdge<V>>>();
 	}
+	
 	
 	
 	
@@ -35,17 +38,14 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 	}
 	
 	public Set<V> getVertices() {
-		return new HashSet<V>(vertices);
+		return Collections.unmodifiableSet(vertices);
 	}
 	public List<DefaultEdge<V>> getEdges() {
-		return new ArrayList<DefaultEdge<V>>(edges);
+		return Collections.unmodifiableList(edges);
 	}
 	
 	public Set<V> getConnectedVertices(DefaultEdge<V> edge) {
 		return edge.getConnectedVertices();
-	}
-	public List<DefaultEdge<V>> getConnectedEdges(V vertex) {
-		return (List<DefaultEdge<V>>) super.getConnectedEdges(vertex);
 	}
 	
 	
@@ -81,7 +81,6 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return addEdge(edge);
 	}
 	
-	@Override
 	public void addListener(GraphListener<V, DefaultEdge<V>> listener) {
 		listeners.add(listener);
 	}
@@ -128,7 +127,6 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return removeAllEdges(edge);
 	}
 	
-	@Override
 	public void removeListener(GraphListener<V, DefaultEdge<V>> listener) {
 		listeners.remove(listener);
 	}

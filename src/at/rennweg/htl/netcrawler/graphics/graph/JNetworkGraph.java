@@ -5,9 +5,9 @@ import java.io.IOException;
 import at.andiwand.library.graphics.graph.JGraph;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
-import at.rennweg.htl.netcrawler.network.graph.EthernetCable;
+import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
-import at.rennweg.htl.netcrawler.network.graph.SerialCable;
+import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
 public class JNetworkGraph extends JGraph {
@@ -22,8 +22,8 @@ public class JNetworkGraph extends JGraph {
 		addVertexFactory(CiscoRouter.class, new DrawableImagedDeviceFactory("router.png"));
 		addVertexFactory(CiscoSwitch.class, new DrawableImagedDeviceFactory("switch.png"));
 		
-		addEdgeFactory(EthernetCable.class, new DrawableEthernetCableFactory());
-		addEdgeFactory(SerialCable.class, new DrawableSerialCableFactory());
+		addEdgeFactory(EthernetLink.class, new DrawableEthernetLinkFactory());
+		addEdgeFactory(SerialLink.class, new DrawableSerialLinkFactory());
 	}
 	
 }

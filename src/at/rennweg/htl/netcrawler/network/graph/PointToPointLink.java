@@ -6,15 +6,14 @@ import java.util.Set;
 import at.andiwand.library.math.graph.UndirectedEdge;
 
 
-
-public class SerialCable extends NetworkCable implements UndirectedEdge<NetworkDevice> {
+public abstract class PointToPointLink extends NetworkLink implements UndirectedEdge<NetworkDevice> {
 	
-	private NetworkInterface networkInterfaceA;
-	private NetworkInterface networkInterfaceB;
-	
+	protected NetworkInterface networkInterfaceA;
+	protected NetworkInterface networkInterfaceB;
 	
 	
-	public SerialCable(NetworkInterface networkInterfaceA, NetworkInterface networkInterfaceB) {
+	
+	public PointToPointLink(NetworkInterface networkInterfaceA, NetworkInterface networkInterfaceB) {
 		this.networkInterfaceA = networkInterfaceA;
 		this.networkInterfaceB = networkInterfaceB;
 	}
@@ -59,7 +58,7 @@ public class SerialCable extends NetworkCable implements UndirectedEdge<NetworkD
 	
 	@Override
 	public int getVertexCount() {
-		return 2;
+		return VERTEX_COUNT;
 	}
 	
 }

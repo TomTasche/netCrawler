@@ -16,7 +16,7 @@ import at.andiwand.library.math.graph.DefaultGraph;
 public class TestJGraph {
 	
 	public static void main(String[] args) throws Throwable {
-		int n = 100;
+		int n = 10;
 		
 		DefaultGraph<Integer> graph = new DefaultGraph<Integer>();
 		
@@ -29,6 +29,9 @@ public class TestJGraph {
 				graph.addEdge(i, j);
 			}
 		}
+		
+		System.out.println(graph.isConnected());
+		System.out.println(graph.isSimple());
 		
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		

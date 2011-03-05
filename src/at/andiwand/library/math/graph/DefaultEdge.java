@@ -17,7 +17,6 @@ public class DefaultEdge<V> extends AbstractUndirectedEdge<V> {
 		return "{" + vertexA.toString() + ", " + vertexB.toString() + "}";
 	}
 	
-	
 	public V getVertexA() {
 		return vertexA;
 	}
