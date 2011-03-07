@@ -1,5 +1,7 @@
 package at.andiwand.library.math;
 
+import at.andiwand.library.util.StringUtil;
+
 
 public class Matrix2d {
 	
@@ -73,7 +75,7 @@ public class Matrix2d {
 	
 	
 	public String toString() {
-		return "[" + m00 + ", " + m01 + "]" + MathUtil.LINE_SEPARATOR +
+		return "[" + m00 + ", " + m01 + "]" + StringUtil.NEW_LINE +
 			"[" + m10 + ", " + m11 + "]";
 	}
 	public boolean equals(Object obj) {

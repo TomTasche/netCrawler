@@ -1,5 +1,7 @@
 package at.andiwand.library.math;
 
+import at.andiwand.library.util.StringUtil;
+
 
 public class Matrix3d {
 	
@@ -158,8 +160,8 @@ public class Matrix3d {
 	
 	
 	public String toString() {
-		return "[" + m00 + ", " + m01 + ", " + m02 + "]" + MathUtil.LINE_SEPARATOR +
-			"[" + m10 + ", " + m11 + ", " + m12 + "]" + MathUtil.LINE_SEPARATOR +
+		return "[" + m00 + ", " + m01 + ", " + m02 + "]" + StringUtil.NEW_LINE +
+			"[" + m10 + ", " + m11 + ", " + m12 + "]" + StringUtil.NEW_LINE +
 			"[" + m20 + ", " + m21 + ", " + m22 + "]";
 	}
 	public boolean equals(Object obj) {

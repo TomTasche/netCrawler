@@ -24,14 +24,14 @@ import at.rennweg.htl.netcrawler.network.graph.NetworkLink;
 import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
-public class SimpleNetworkCrawler extends NetworkCrawler {
+public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 	
 	private SimpleCLIFactroy cliFactroy;
 	private CiscoUser masterUser;
 	private InetAddress root;
 	
 	
-	public SimpleNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root) {
+	public SimpleCiscoNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root) {
 		this.cliFactroy = cliFactroy;
 		this.masterUser = masterUser;
 		this.root = root;

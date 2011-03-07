@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -21,11 +22,11 @@ import at.andiwand.packettracer.ptmp.simple.SimpleNetworkDeviceFactory;
 import at.rennweg.htl.netcrawler.cli.CiscoUser;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.crawler.SimpleCLIFactroy;
-import at.rennweg.htl.netcrawler.network.crawler.SimpleNetworkCrawler;
+import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoThreadedNetworkCrawler;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 
 
-public class TestSimpleNetworkCrawler {
+public class TestSimpleThreadedCiscoNetworkCrawler {
 	
 	private static SimpleNetworkDevice networkDevice;
 	private static final Object networkDeviceSync = new Object();
@@ -91,7 +92,7 @@ public class TestSimpleNetworkCrawler {
 		
 		
 		CiscoUser masterUser = new CiscoUser("cisco", "cisco");
-		SimpleNetworkCrawler networkCrawler = new SimpleNetworkCrawler(new SimpleCLIFactroy() {
+		SimpleCiscoThreadedNetworkCrawler networkCrawler = new SimpleCiscoThreadedNetworkCrawler(new SimpleCLIFactroy() {
 			public CommandLine getCommandLine(InetAddress address) {
 				try {
 					return networkDevice.createTelnetConnection((Inet4Address) address);
@@ -101,7 +102,7 @@ public class TestSimpleNetworkCrawler {
 				
 				return null;
 			}
-		}, masterUser, rootAddress);
+		}, masterUser, rootAddress, Executors.newFixedThreadPool(10));
 		networkCrawler.crawl(networkGraph);
 	}
 	

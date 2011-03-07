@@ -22,7 +22,7 @@ import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
 
 
-public class SimpleThreadedNetworkCrawler extends NetworkCrawler {
+public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 	
 	private SimpleCLIFactroy cliFactroy;
 	private CiscoUser masterUser;
@@ -31,7 +31,7 @@ public class SimpleThreadedNetworkCrawler extends NetworkCrawler {
 	private Executor executor;
 	
 	
-	public SimpleThreadedNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root, Executor executor) {
+	public SimpleCiscoThreadedNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root, Executor executor) {
 		this.cliFactroy = cliFactroy;
 		this.masterUser = masterUser;
 		this.root = root;
