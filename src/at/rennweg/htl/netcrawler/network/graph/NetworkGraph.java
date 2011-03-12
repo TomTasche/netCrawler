@@ -61,11 +61,6 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> impl
 	}
 	
 	
-	@Override
-	public Set<NetworkDevice> getConnectedVertices(NetworkLink cable) {
-		return cable.getConnectedVertices();
-	}
-	
 	public Set<NetworkLink> getConnectedCables(NetworkDevice networkDevice) {
 		Set<NetworkLink> result = new HashSet<NetworkLink>();
 		
