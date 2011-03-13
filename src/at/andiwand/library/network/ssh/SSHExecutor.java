@@ -9,7 +9,11 @@ public abstract class SSHExecutor {
 	public static final int DEFAULT_PORT = 22;
 	
 	
+	
 	public SSHExecutor() {}
+	public SSHExecutor(String login, String password) throws Exception {
+		connect(login, password);
+	}
 	public SSHExecutor(String host, String username, String password) throws Exception {
 		connect(host, username, password);
 	}
@@ -27,6 +31,9 @@ public abstract class SSHExecutor {
 	}
 	
 	
+	public void connect(String login, String password) throws Exception {
+		connect(login.split("@")[1], DEFAULT_PORT, login.split("@")[0], password);
+	}
 	public void connect(String host, String username, String password) throws Exception {
 		connect(host, DEFAULT_PORT, username, password);
 	}

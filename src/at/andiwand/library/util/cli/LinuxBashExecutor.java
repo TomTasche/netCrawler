@@ -13,7 +13,7 @@ import at.andiwand.library.util.stream.ReadUntilMatchInputStream;
 
 
 
-// TODO: create pattern
+//TODO: create pattern
 public class LinuxBashExecutor extends CommandLineExecutor {
 	
 	public static final Pattern PROMT_PATTERN = Pattern.compile("andreas@andreas-desktop");

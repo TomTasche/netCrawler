@@ -1,5 +1,6 @@
 package at.andiwand.library.network;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -8,10 +9,12 @@ public class MACAddress {
 	
 	public static final int SIZE = 6;
 	
-	public static final String SEPARATOR = ":";
+	public static final SimpleMACAddressFormat DEFAULT_FORMAT =
+		new SimpleMACAddressFormat();
 	
 	public static final MACAddress BROADCAST_ADDRESS =
-		new MACAddress("ff:ff:ff:ff:ff:ff");
+		new MACAddress(0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
+	
 	
 	
 	
@@ -39,14 +42,12 @@ public class MACAddress {
 		}
 	}
 	public MACAddress(String address) {
-		this(address.split(SEPARATOR));
-	}
-	public MACAddress(String... address) {
-		if (address.length != SIZE)
-			throw new IllegalArgumentException("address has a illegal length!");
-		
-		for (int i = 0; i < SIZE; i++) {
-			this.address[i] = (byte) Integer.parseInt(address[i], 16);
+		try {
+			MACAddress thisAddress = DEFAULT_FORMAT.parseObject(address);
+			
+			System.arraycopy(thisAddress.address, 0, this.address, 0, SIZE);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("address has a illegal format!");
 		}
 	}
 	
@@ -67,16 +68,7 @@ public class MACAddress {
 		return Arrays.equals(this.address, address.address);
 	}
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		
-		for (int i = 0; i < SIZE; i++) {
-			String tmp = Integer.toHexString(address[i] & 0xff);
-			if (tmp.length() < 2) tmp = "0" + tmp;
-			builder.append(tmp);
-			builder.append(SEPARATOR);
-		}
-		
-		return builder.substring(0, builder.length() - SEPARATOR.length());
+		return DEFAULT_FORMAT.format(this);
 	}
 	
 	

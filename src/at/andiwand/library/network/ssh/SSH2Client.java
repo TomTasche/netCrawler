@@ -21,9 +21,10 @@ public class SSH2Client extends SSHClient {
 	private PipedOutputStream outputStream;
 	
 	
+	
 	public SSH2Client() {}
 	public SSH2Client(String login, String password) throws Exception {
-		super(login.split("@")[1], DEFAULT_PORT, login.split("@")[0], password);
+		super(login, password);
 	}
 	public SSH2Client(InetAddress address, String username, String password) throws Exception {
 		super(address, username, password);
@@ -40,6 +41,7 @@ public class SSH2Client extends SSHClient {
 	public SSH2Client(InetAddress address, int port, String username, String password) throws Exception {
 		super(address, port, username, password);
 	}
+	
 	
 	
 	public Channel getChannel() {
@@ -76,6 +78,7 @@ public class SSH2Client extends SSHClient {
 		channel.disconnect();
 		session.disconnect();
 	}
+	
 	
 	
 	public class SimpleUserInfo implements UserInfo {

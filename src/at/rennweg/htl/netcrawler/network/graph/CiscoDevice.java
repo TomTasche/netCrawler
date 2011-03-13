@@ -38,7 +38,7 @@ public class CiscoDevice extends NetworkDevice {
 	}
 	
 	
-	// TODO maybe: fix both
+	//TODO: maybe - fix both
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;

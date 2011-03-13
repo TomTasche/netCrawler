@@ -18,13 +18,16 @@ public class SSH2Executor extends SSHExecutor {
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
 	
+	
+	
 	private Session session;
 	private ChannelExec channel;
 	
 	
+	
 	public SSH2Executor() {}
 	public SSH2Executor(String login, String password) throws Exception {
-		super(login.split("@")[1], DEFAULT_PORT, login.split("@")[0], password);
+		super(login, password);
 	}
 	public SSH2Executor(InetAddress address, String username, String password) throws Exception {
 		super(address, username, password);
@@ -41,6 +44,7 @@ public class SSH2Executor extends SSHExecutor {
 	public SSH2Executor(InetAddress address, int port, String username, String password) throws Exception {
 		super(address, port, username, password);
 	}
+	
 	
 	
 	@Override
@@ -81,6 +85,7 @@ public class SSH2Executor extends SSHExecutor {
 	public int lastExitStatus() {
 		return channel.getExitStatus();
 	}
+	
 	
 	
 	public class SimpleUserInfo implements UserInfo {

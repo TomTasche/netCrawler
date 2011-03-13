@@ -88,7 +88,7 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 		g.drawString(coveredVertex.getHostname(), x, y);
 	}
 	
-	// TODO kill me!! :@
+	//TODO: kill me!! :@
 	@Override
 	public MouseAdapter getMouseAdapter() {
 		return new MouseAdapter() {

@@ -39,7 +39,7 @@ public class MathUtil {
 	
 	
 	static {
-		// TODO optimize;
+		//TODO: optimize;
 		for (int i = 0; i < SIN_COS_TABLE_ENTRIES; i++) {
 			SIN_TABLE[i] = Math.sin(i * SIN_COS_TABLE_INDEX_TO_RAD);
 			COS_TABLE[i] = Math.cos(i * SIN_COS_TABLE_INDEX_TO_RAD);

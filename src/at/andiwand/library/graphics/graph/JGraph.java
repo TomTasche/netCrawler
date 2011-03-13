@@ -35,7 +35,7 @@ import at.andiwand.library.math.graph.ListenableGraph;
  * 
  */
 
-// TODO: thread safe
+//TODO: thread safe
 public class JGraph extends JComponent {
 	
 	private static final long serialVersionUID = -3715174655187422717L;
@@ -429,17 +429,17 @@ public class JGraph extends JComponent {
 	
 	
 	public synchronized void removeVertex(Object vertex) {
-		// TODO: implementation
+		//TODO: implementation
 	}
 	public synchronized void removeVertex(DrawableVertex vertex) {
-		// TODO: implementation
+		//TODO: implementation
 	}
 	
 	public synchronized void removeEdge(Edge<Object> edge) {
-		// TODO: implementation
+		//TODO: implementation
 	}
 	public synchronized void removeEdge(DrawableEdge edge) {
-		// TODO: implementation
+		//TODO: implementation
 	}
 	
 	

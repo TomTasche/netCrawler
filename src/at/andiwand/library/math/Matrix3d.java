@@ -3,6 +3,13 @@ package at.andiwand.library.math;
 import at.andiwand.library.util.StringUtil;
 
 
+/**
+ * 
+ * A three dimensional double matrix that provides calculations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Matrix3d {
 	
 	public static final Matrix3d IDENTITY = new Matrix3d(1);

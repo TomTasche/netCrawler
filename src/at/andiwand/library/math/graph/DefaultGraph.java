@@ -7,6 +7,17 @@ import java.util.List;
 import java.util.Set;
 
 
+/**
+ * 
+ * A simple final implementation of an listenable undirected multigraph. <br>
+ * It stores vertices and edges in flat collections and implements the last
+ * methods.
+ * 
+ * @author Andreas Stefl
+ * 
+ * @param <V> the type of the vertices.
+ * 
+ */
 public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> implements Multigraph<V, DefaultEdge<V>>, ListenableGraph<V, DefaultEdge<V>> {
 	
 	private Set<V> vertices;
@@ -17,12 +28,17 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 	
 	
 	
+	
+	/**
+	 * Creates a new empty listenable undirected multigraph.
+	 */
 	public DefaultGraph() {
 		vertices = new HashSet<V>();
 		edges = new ArrayList<DefaultEdge<V>>();
 		
 		listeners = new ArrayList<GraphListener<V,DefaultEdge<V>>>();
 	}
+	
 	
 	
 	
@@ -37,16 +53,25 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		return result;
 	}
 	
+	
+	/**
+	 * Returns a unmodifiable set of the containing vertices.
+	 * 
+	 * @return a unmodifiable set of the containing vertices.
+	 */
 	public Set<V> getVertices() {
 		return Collections.unmodifiableSet(vertices);
 	}
+	
+	/**
+	 * Returns a unmodifiable list of the containing edges.
+	 * 
+	 * @return a unmodifiable list of the containing edges.
+	 */
 	public List<DefaultEdge<V>> getEdges() {
 		return Collections.unmodifiableList(edges);
 	}
 	
-	public Set<V> getConnectedVertices(DefaultEdge<V> edge) {
-		return edge.getConnectedVertices();
-	}
 	
 	
 	
@@ -61,6 +86,7 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		
 		return result;
 	}
+	
 	public boolean addEdge(DefaultEdge<V> edge) {
 		if (!vertices.contains(edge.getVertexA())) return false;
 		if (!vertices.contains(edge.getVertexB())) return false;
@@ -75,14 +101,34 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		
 		return result;
 	}
-	public boolean addEdge(V vertexA, V vertexB) {
-		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
+	
+	/**
+	 * Adds a new self-loop with the given vertex to the graph. <br>
+	 * If the edge is not allowed to be added, it won't be added and
+	 * <code>false</code> is returned.
+	 * 
+	 * @param vertex the vertex.
+	 * @return <code>true</code> if the edge was added.
+	 */
+	public boolean addEdge(V vertex) {
+		DefaultEdge<V> edge = new DefaultEdge<V>(vertex);
 		
 		return addEdge(edge);
 	}
 	
-	public void addListener(GraphListener<V, DefaultEdge<V>> listener) {
-		listeners.add(listener);
+	/**
+	 * Adds a new edge with the given vertices to the graph. <br>
+	 * If the edge is not allowed to be added, it won't be added and
+	 * <code>false</code> is returned.
+	 * 
+	 * @param vertexA one of the both vertices.
+	 * @param vertexB one of the both vertices.
+	 * @return <code>true</code> if the edge was added.
+	 */
+	public boolean addEdge(V vertexA, V vertexB) {
+		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
+		
+		return addEdge(edge);
 	}
 	
 	
@@ -95,6 +141,7 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		
 		return result;
 	}
+	
 	public boolean removeEdge(DefaultEdge<V> edge) {
 		boolean result = edges.remove(edge);
 		
@@ -106,11 +153,34 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		
 		return result;
 	}
+	
+	/**
+	 * Removes a self-loop with the given vertex from the graph. <br>
+	 * If the edge cannot be removed, <code>false</code> is returned.
+	 * 
+	 * @param vertex the vertex.
+	 * @return <code>true</code> if the edge was removed.
+	 */
+	public boolean removeEdge(V vertex) {
+		DefaultEdge<V> edge = new DefaultEdge<V>(vertex);
+		
+		return removeEdge(edge);
+	}
+	
+	/**
+	 * Removes an edge with the given vertices from the graph. <br>
+	 * If the edge cannot be removed, <code>false</code> is returned.
+	 * 
+	 * @param vertexA one of the both vertices.
+	 * @param vertexB one of the both vertices.
+	 * @return <code>true</code> if the edge was removed.
+	 */
 	public boolean removeEdge(V vertexA, V vertexB) {
 		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
 		
 		return removeEdge(edge);
 	}
+	
 	public boolean removeAllEdges(DefaultEdge<V> edge) {
 		boolean result = false;
 		
@@ -121,10 +191,38 @@ public class DefaultGraph<V> extends AbstractUndirectedGraph<V, DefaultEdge<V>> 
 		
 		return result;
 	}
+	
+	/**
+	 * Removes all self-loop with the given vertex from the graph. <br>
+	 * If no edge is removed, <code>false</code> is returned.
+	 * 
+	 * @param vertex the vertex.
+	 * @return <code>true</code> if one or more edges was removed.
+	 */
+	public boolean removeAllEdges(V vertex) {
+		DefaultEdge<V> edge = new DefaultEdge<V>(vertex);
+		
+		return removeAllEdges(edge);
+	}
+	
+	/**
+	 * Removes all edges with the given vertices from the graph. <br>
+	 * If no edge is removed, <code>false</code> is returned.
+	 * 
+	 * @param vertexA one of the both vertices.
+	 * @param vertexB one of the both vertices.
+	 * @return <code>true</code> if one or more edges was removed.
+	 */
 	public boolean removeAllEdges(V vertexA, V vertexB) {
 		DefaultEdge<V> edge = new DefaultEdge<V>(vertexA, vertexB);
 		
 		return removeAllEdges(edge);
+	}
+	
+	
+	
+	public void addListener(GraphListener<V, DefaultEdge<V>> listener) {
+		listeners.add(listener);
 	}
 	
 	public void removeListener(GraphListener<V, DefaultEdge<V>> listener) {

@@ -15,7 +15,7 @@ import at.andiwand.library.math.graph.Edge;
  *
  */
 
-// TODO new concept
+//TODO: new concept
 public abstract class DrawableEdgeFactory {
 	
 	/**

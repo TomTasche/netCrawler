@@ -107,8 +107,9 @@ public interface Graph<V, E extends Edge<V>> {
 	
 	
 	/**
-	 * Adds the given vertex to the graph. If the vertex is already in the
-	 * graph, it won't be added and <code>false</code> is returned.
+	 * Adds the given vertex to the graph. <br>
+	 * If the vertex is already in the graph, it won't be added and
+	 * <code>false</code> is returned.
 	 * 
 	 * @param vertex the vertex.
 	 * @return <code>true</code> if the vertex was added.
@@ -116,8 +117,9 @@ public interface Graph<V, E extends Edge<V>> {
 	public boolean addVertex(V vertex);
 	
 	/**
-	 * Adds the given edge to the graph. If the edge is not allowed to be added,
-	 * it won't be added and <code>false</code> is returned.
+	 * Adds the given edge to the graph. <br>
+	 * If the edge is not allowed to be added, it won't be added and
+	 * <code>false</code> is returned.
 	 * 
 	 * @param edge the v.
 	 * @return <code>true</code> if the edge was added.
@@ -126,8 +128,8 @@ public interface Graph<V, E extends Edge<V>> {
 	
 	
 	/**
-	 * Removes the given vertex from the graph. If the vertex cannot be removed,
-	 * <code>false</code> is returned.
+	 * Removes the given vertex from the graph. <br>
+	 * If the vertex cannot be removed, <code>false</code> is returned.
 	 * 
 	 * @param vertex the vertex.
 	 * @return <code>true</code> if the vertex was removed.
@@ -135,8 +137,8 @@ public interface Graph<V, E extends Edge<V>> {
 	public boolean removeVertex(V vertex);
 	
 	/**
-	 * Removes the given edge from the graph. If the edge cannot be removed,
-	 * <code>false</code> is returned.
+	 * Removes the given edge from the graph. <br>
+	 * If the edge cannot be removed, <code>false</code> is returned.
 	 * 
 	 * @param edge the edge.
 	 * @return <code>true</code> if the edge was removed.
@@ -144,8 +146,8 @@ public interface Graph<V, E extends Edge<V>> {
 	public boolean removeEdge(E edge);
 	
 	/**
-	 * Removes all equal edges from the graph. If no edge is removed,
-	 * <code>false</code> is returned.
+	 * Removes all equal edges from the graph. <br>
+	 * If no edge is removed, <code>false</code> is returned.
 	 * 
 	 * @param edge the vertex.
 	 * @return <code>true</code> if one or more edges was removed.

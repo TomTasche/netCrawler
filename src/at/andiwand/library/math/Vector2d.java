@@ -3,6 +3,13 @@ package at.andiwand.library.math;
 import java.awt.Point;
 
 
+/**
+ * 
+ * A two dimensional double vector class that provides calculations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Vector2d {
 	
 	public static final Vector2d NULL = new Vector2d();

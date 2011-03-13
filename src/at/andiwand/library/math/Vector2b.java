@@ -1,6 +1,13 @@
 package at.andiwand.library.math;
 
 
+/**
+ * 
+ * A two dimensional boolean vector class that provides logical operations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Vector2b {
 	
 	boolean x;

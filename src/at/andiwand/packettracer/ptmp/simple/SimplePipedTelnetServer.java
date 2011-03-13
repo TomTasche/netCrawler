@@ -54,8 +54,11 @@ public class SimplePipedTelnetServer extends Thread {
 					
 					while (true) {
 						int read = inputStream.read();
+						
+						if (read == 127) read = '\b';
+						
 						byte[] buffer = new byte[1 + inputStream.available()];
-						if (inputStream.read(buffer, 1, buffer.length -1 ) == -1) break;
+						if (inputStream.read(buffer, 1, buffer.length - 1) == -1) break;
 						buffer[0] = (byte) read;
 						telnetOutputStream.write(buffer);
 					}
@@ -64,7 +67,7 @@ public class SimplePipedTelnetServer extends Thread {
 					try {
 						inputStream.close();
 						telnetOutputStream.close();
-					} catch (Throwable t) {}
+					} catch (IOException e) {}
 				}
 			}
 		};
@@ -77,13 +80,10 @@ public class SimplePipedTelnetServer extends Thread {
 					outputStream = socket.getOutputStream();
 					telnetInputStream = telnetConnection.getInputStream();
 					
-					outputStream.write(new byte[] {(byte) 255, (byte) 251, 1});
-					outputStream.write(new byte[] {(byte) 255, (byte) 254, 1});
-					outputStream.write(new byte[] {(byte) 255, (byte) 253, 31});
-					outputStream.write(new byte[] {(byte) 255, (byte) 251, 3});
-					outputStream.write(new byte[] {(byte) 255, (byte) 253, 3});
-					outputStream.write(new byte[] {(byte) 255, (byte) 253, 24});
-					outputStream.write(new byte[] {(byte) 255, (byte) 253, 39});
+					outputStream.write(new byte[] {(byte) 0xff, (byte) 0xfb, 0x01});
+					outputStream.write(new byte[] {(byte) 0xff, (byte) 0xfb, 0x03});
+					outputStream.write(new byte[] {(byte) 0xff, (byte) 0xfd, 0x18});
+					outputStream.write(new byte[] {(byte) 0xff, (byte) 0xfd, 0x1f});
 					outputStream.flush();
 					
 					int read;
@@ -96,7 +96,7 @@ public class SimplePipedTelnetServer extends Thread {
 					try {
 						outputStream.close();
 						telnetInputStream.close();
-					} catch (Throwable t) {}
+					} catch (IOException e) {}
 				}
 			}
 		};

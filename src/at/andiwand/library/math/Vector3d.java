@@ -1,6 +1,13 @@
 package at.andiwand.library.math;
 
 
+/**
+ * 
+ * A three dimensional double vector class that provides calculations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Vector3d {
 	
 	public static final Vector3d NULL = new Vector3d();

@@ -13,6 +13,7 @@ public class SimpleMACAddressFormat extends MACAddressFormat {
 	
 	
 	
+	
 	private String pattern;
 	
 	

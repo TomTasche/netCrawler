@@ -3,6 +3,13 @@ package at.andiwand.library.math;
 import at.andiwand.library.util.StringUtil;
 
 
+/**
+ * 
+ * A two dimensional double matrix that provides calculations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Matrix2d {
 	
 	public static final Matrix2d IDENTITY = new Matrix2d(1);

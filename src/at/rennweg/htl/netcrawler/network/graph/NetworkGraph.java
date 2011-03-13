@@ -95,7 +95,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> impl
 	
 	@Override
 	public boolean isSimple() {
-		// TODO implement
+		//TODO: implement
 		return false;
 	}
 	

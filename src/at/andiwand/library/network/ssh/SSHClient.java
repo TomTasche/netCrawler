@@ -12,7 +12,11 @@ public abstract class SSHClient implements CommandLine {
 	public static final int DEFAULT_PORT = 22;
 	
 	
+	
 	public SSHClient() {}
+	public SSHClient(String login, String password) throws Exception {
+		connect(login, password);
+	}
 	public SSHClient(String host, String username, String password) throws Exception {
 		connect(host, username, password);
 	}
@@ -30,6 +34,9 @@ public abstract class SSHClient implements CommandLine {
 	}
 	
 	
+	public void connect(String login, String password) throws Exception {
+		connect(login.split("@")[1], DEFAULT_PORT, login.split("@")[0], password);
+	}
 	public void connect(String host, String username, String password) throws Exception {
 		connect(host, DEFAULT_PORT, username, password);
 	}

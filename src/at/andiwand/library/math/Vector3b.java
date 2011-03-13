@@ -1,6 +1,13 @@
 package at.andiwand.library.math;
 
 
+/**
+ * 
+ * A three dimensional boolean vector class that provides logical operations.
+ * 
+ * @author Andreas Stefl
+ *
+ */
 public class Vector3b {
 	
 	boolean x;
