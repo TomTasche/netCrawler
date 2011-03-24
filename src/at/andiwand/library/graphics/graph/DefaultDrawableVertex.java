@@ -2,53 +2,27 @@ package at.andiwand.library.graphics.graph;
 
 import java.awt.Graphics;
 
-import at.andiwand.library.math.Rectangle;
-import at.andiwand.library.math.Vector2d;
-
 
 public class DefaultDrawableVertex extends DrawableVertex {
 	
 	private static final long serialVersionUID = 7160267969933238534L;
 	
-	private static final double DEFAULT_RADIUS = 8;
-	
-	
-	
-	private double radius;
-	
+	private static final int DEFAULT_RADIUS = 8;
 	
 	
 	public DefaultDrawableVertex(Object coveredVertex) {
 		this(coveredVertex, DEFAULT_RADIUS);
 	}
-	public DefaultDrawableVertex(Object coveredVertex, double radius) {
+	public DefaultDrawableVertex(Object coveredVertex, int radius) {
 		super(coveredVertex);
 		
-		this.radius = radius;
+		int size = radius * 2;
+		setSize(size, size);
 	}
-	
-	
-	
-	@Override
-	public Rectangle drawingRect() {
-		return new Rectangle(getCenterPosition(), new Vector2d(radius * 2));
-	}
-	
-	
-	@Override
-	public boolean intersection(Vector2d point) {
-		return getCenterPosition().sub(point).length() <= radius;
-	}
-	
-	
 	
 	@Override
 	public void draw(Graphics g) {
-		int x = (int) (getCenterPosition().getX() - radius);
-		int y = (int) (getCenterPosition().getY() - radius);
-		int size = (int) (radius * 2);
-		
-		g.fillOval(x, y, size, size);
+		g.fillOval(getX(), getY(), getWidth(), getHeight());
 	}
 	
 	

@@ -1,5 +1,8 @@
 package at.andiwand.library.math;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+
 
 /**
  * 
@@ -38,6 +41,7 @@ public class MathUtil {
 	
 	
 	
+	
 	static {
 		//TODO: optimize;
 		for (int i = 0; i < SIN_COS_TABLE_ENTRIES; i++) {
@@ -45,6 +49,7 @@ public class MathUtil {
 			COS_TABLE[i] = Math.cos(i * SIN_COS_TABLE_INDEX_TO_RAD);
 		}
 	}
+	
 	
 	
 	
@@ -71,17 +76,16 @@ public class MathUtil {
 	}
 	
 	
-	/**
-	 * Returns the result of
-	 * <code>Math.atan2(vector.getY(), vector.getX())</code>.
-	 * 
-	 * @param vector the x and y value.
-	 * @return the result of
-	 * <code>Math.atan2(vector.getY(), vector.getX())</code>.
-	 */
-	public static double atan2(Vector2d vector) {
-		return Math.atan2(vector.getY(), vector.getX());
+	
+	public static Rectangle rectangleByDiagonalPoints(Point pointA, Point pointB) {
+		int x = Math.min(pointA.x, pointB.x);
+		int y = Math.min(pointA.y, pointB.y);
+		int width = Math.max(pointA.x, pointB.x) - x;
+		int height = Math.max(pointA.y, pointB.y) - y;
+		
+		return new Rectangle(x, y, width, height);
 	}
+	
 	
 	
 	

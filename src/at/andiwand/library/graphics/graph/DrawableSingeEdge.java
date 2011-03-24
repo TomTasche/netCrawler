@@ -20,9 +20,8 @@ public abstract class DrawableSingeEdge extends DrawableEdge {
 			throw new IllegalArgumentException("Cannot take more than 2 vertices!");
 		
 		List<DrawableVertex> list = new ArrayList<DrawableVertex>(connectedVertices);
-		vertexA = list.get(0);
+		vertexA = vertexB = list.get(0);
 		if (list.size() > 1) vertexB = list.get(1);
-		else vertexB = vertexA;
 	}
 	
 	

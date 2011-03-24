@@ -1,41 +1,25 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
-
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import at.andiwand.library.graphics.GraphicsUtil;
-import at.andiwand.library.math.Rectangle;
-import at.andiwand.library.math.Vector2d;
 
-
-
+//TODO: remove rectangle user
 public class DrawableImagedDevice extends DrawableNetworkDevice {
 	
 	private BufferedImage image;
-	
 	
 	public DrawableImagedDevice(Object coveredVertex, BufferedImage image) {
 		super(coveredVertex);
 		
 		this.image = image;
+		
+		setSize(image.getWidth(), image.getHeight());
 	}
-	
-	
-	@Override
-	public Rectangle drawingRect() {
-		return new Rectangle(getCenterPosition(), new Vector2d(
-				image.getWidth(),
-				image.getHeight()
-		));
-	}
-	
 	
 	@Override
 	public void drawDevice(Graphics g) {
-		Rectangle drawingRect = drawingRect();
-		
-		GraphicsUtil.drawImage(g, image, drawingRect.leftTop());
+		g.drawImage(image, getX(), getY(), null);
 	}
 	
 }

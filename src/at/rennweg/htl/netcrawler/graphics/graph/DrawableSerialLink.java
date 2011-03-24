@@ -1,28 +1,29 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Set;
 
-import at.andiwand.library.graphics.GraphicsUtil;
 import at.andiwand.library.graphics.graph.DrawableSingeEdge;
 import at.andiwand.library.graphics.graph.DrawableVertex;
-import at.andiwand.library.math.Matrix2d;
-import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
 import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
+//TODO: remove vector user
 public class DrawableSerialLink extends DrawableSingeEdge {
 	
-	public static final Vector2d DEFUALT_FLASH_SIZE = new Vector2d(5, 10);
+	public static final Dimension DEFUALT_FLASH_SIZE = new Dimension(6, 10);
 	
 	public static final Color DEFAULT_COLOR = Color.RED;
 	
 	
+	
 	private SerialLink coveredEdge;
 	
-	private Vector2d flashSize = DEFUALT_FLASH_SIZE;
+	private Dimension flashSize = DEFUALT_FLASH_SIZE;
 	private Color color = DEFAULT_COLOR;
 	
 	
@@ -40,36 +41,38 @@ public class DrawableSerialLink extends DrawableSingeEdge {
 		return coveredEdge;
 	}
 	
-	
-	@Override
-	public boolean intersection(Vector2d point) {
-		return false;
-	}
-	
-	
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(color);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(color);
 		
-		Vector2d a = vertexA.getCenterPosition();
-		Vector2d b = vertexB.getCenterPosition();
-		Vector2d middle = a.add(b).div(2);
-		Vector2d distance = a.sub(b);
-		double angle = Math.atan2(distance.getY(), distance.getX());
-		Matrix2d rotation = Matrix2d.rotation(angle);
-		Vector2d flashSize = rotation.mul(this.flashSize);
+		int dx = vertexA.getCenterX() - vertexB.getCenterX();
+		int dy = vertexA.getCenterY() - vertexB.getCenterY();
+		double theta = Math.atan2(-dy, -dx);
+		g2.translate(vertexA.getCenterX(), vertexA.getCenterY());
+		g2.rotate(theta);
 		
-		Vector2d from = a;
-		Vector2d to = middle.sub(flashSize.div(2));
-		GraphicsUtil.drawLine(g, from, to);
+		int length = (int) vertexA.getLocation().distance(
+				vertexB.getLocation());
+		int centerX = length / 2;
 		
-		from = to;
-		to = middle.add(flashSize.div(2));
-		GraphicsUtil.drawLine(g, from, to);
+		int x1 = 0;
+		int y1 = 0;
+		int x2 = centerX + flashSize.width / 2;
+		int y2 = -flashSize.height / 2;
+		g2.drawLine(x1, y1, x2, y2);
 		
-		from = to;
-		to = b;
-		GraphicsUtil.drawLine(g, from, to);
+		x1 = x2;
+		y1 = y2;
+		x2 = centerX - flashSize.width / 2;
+		y2 = flashSize.height / 2;
+		g2.drawLine(x1, y1, x2, y2);
+		
+		x1 = x2;
+		y1 = y2;
+		x2 = length;
+		y2 = 0;
+		g2.drawLine(x1, y1, x2, y2);
 	}
 	
 }

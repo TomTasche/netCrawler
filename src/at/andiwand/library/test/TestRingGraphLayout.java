@@ -1,6 +1,5 @@
 package at.andiwand.library.test;
 
-
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -14,7 +13,6 @@ import at.andiwand.library.graphics.graph.ImageVertexFactory;
 import at.andiwand.library.graphics.graph.JGraph;
 import at.andiwand.library.graphics.graph.RingGraphLayout;
 import at.andiwand.library.math.graph.DefaultGraph;
-
 
 
 public class TestRingGraphLayout {

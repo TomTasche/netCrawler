@@ -46,10 +46,4 @@ public abstract class GraphLayout {
 	 */
 	public abstract void reposition();
 	
-	/**
-	 * Positions the new vertices on the panel with the position cache and fills
-	 * it with new data.
-	 */
-	public abstract void positionUpdate();
-	
 }

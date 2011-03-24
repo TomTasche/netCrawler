@@ -1,6 +1,5 @@
 package at.andiwand.library.test;
 
-
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
@@ -10,7 +9,6 @@ import javax.swing.JScrollPane;
 
 import at.andiwand.library.graphics.JSimpleTerminalPanel;
 import at.andiwand.library.network.ssh.SSH2Client;
-
 
 
 public class TestJSimpleTerminalPanel {

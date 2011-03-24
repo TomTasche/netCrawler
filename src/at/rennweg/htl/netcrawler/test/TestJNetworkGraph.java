@@ -19,7 +19,6 @@ public class TestJNetworkGraph {
 	
 	public static void main(String[] args) throws Throwable {
 		CiscoRouter routerA = new CiscoRouter("Router A");
-		routerA.addInterface(new NetworkInterface("fa0/0"));
 		routerA.addInterface(new NetworkInterface("s0/0"));
 		CiscoRouter routerB = new CiscoRouter("Router B");
 		routerB.addInterface(new NetworkInterface("fa0/0"));
@@ -33,8 +32,8 @@ public class TestJNetworkGraph {
 		networkGraph.addVertex(routerC);
 		
 		EthernetLink ethernetCable = new EthernetLink(
-				routerA.getInterface("fa0/0"),
-				routerB.getInterface("fa0/0")
+				routerB.getInterface("fa0/0"),
+				routerC.getInterface("fa0/0")
 		);
 		ethernetCable.setCrossover(true);
 		networkGraph.addEdge(ethernetCable);

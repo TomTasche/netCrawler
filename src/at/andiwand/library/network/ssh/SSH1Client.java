@@ -63,6 +63,8 @@ public class SSH1Client extends SSHClient {
 	public void connect(InetAddress address, int port, String username, String password) throws Exception {
 		client = new SSHConsoleClient(address.getHostAddress(), port,
 				new SimpleAuthenticator(username, password), new SSHInteractorAdapter());
+		
+		if (!client.shell()) throw new IOException("Was not able to connect!");
 	}
 	
 	@Override

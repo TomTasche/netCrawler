@@ -3,10 +3,9 @@ package at.andiwand.library.graphics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.ImageObserver;
-
-import at.andiwand.library.math.MathUtil;
-import at.andiwand.library.math.Vector2d;
 
 
 /**
@@ -22,25 +21,21 @@ public class GraphicsUtil {
 	
 	/**
 	 * Draws a line from <code>a</code> to <code>b</code> on the given
-	 * <code>Graphics</code> object. <br>
-	 * Node: the <code>double</code> components are bounded back to an
-	 * <code>int</code>.
+	 * <code>Graphics</code> object.
 	 * 
 	 * @param g the <code>Graphics</code> object where it should be drawn.
 	 * @param a the start point of the line.
 	 * @param b the end point of the line.
 	 * @see java.awt.Graphics#drawLine(int, int, int, int)
 	 */
-	public static void drawLine(Graphics g, Vector2d a, Vector2d b) {
-		g.drawLine((int) a.getX(), (int) a.getY(), (int) b.getX(), (int) b.getY());
+	public static void drawLine(Graphics g, Point a, Point b) {
+		g.drawLine(a.x, a.y, b.x, b.y);
 	}
 	
 	/**
 	 * Draws a broken line from <code>a</code> to <code>b</code> with a
 	 * <code>seperationLength</code> on the given <code>Graphics</code>
-	 * object. <br>
-	 * Node: the <code>double</code> components are bounded back to an
-	 * <code>int</code>.
+	 * object.
 	 * 
 	 * @param g the <code>Graphics</code> object where it should be drawn.
 	 * @param seperationLength the length of a single line and the distance
@@ -49,23 +44,62 @@ public class GraphicsUtil {
 	 * @param b the end point of the line.
 	 * @see at.andiwand.library.graphics.GraphicsUtil#drawLine(Graphics, Vector2d, Vector2d)
 	 */
-	public static void drawBrokenLine(Graphics g, double seperationLength, Vector2d a, Vector2d b) {
-		Vector2d line = b.sub(a);
+	public static void drawBrokenLine(Graphics g, double seperationLength, Point a, Point b) {
+		Graphics2D g2 = (Graphics2D) g.create();
 		
-		Vector2d seperationVector = line.normalize().mul(seperationLength);
+		double length = a.distance(b);
+		double theta = Math.atan2(b.y - a.y, b.x - a.x);
 		
-		int devisions = (int) (line.length() / seperationLength);
+		g2.translate(a.x, a.y);
+		g2.rotate(theta);
+		
+		int devisions = (int) (length / seperationLength);
 		int devision = 0;
-		Vector2d start = a;
+		double x = 0;
 		
 		for (; devision < devisions; devision += 2) {
-			drawLine(g, start, start.add(seperationVector));
+			g2.drawLine((int) x, 0, (int) (x + seperationLength), 0);
 			
-			start = start.add(seperationVector.mul(2));
+			x += seperationLength * 2;
 		}
 		
 		if (devision == devisions)
-			drawLine(g, start, b);
+			g2.drawLine((int) x, 0, (int) length, 0);
+	}
+	
+	
+	/**
+	 * Draws a rectangle from the <code>Rectangle</code> object. <br>
+	 * Node: the <code>double</code> components are bounded back to an
+	 * <code>int</code>.
+	 * 
+	 * @param g the <code>Graphics</code> object where it should be drawn.
+	 * @param rectangle the <code>Rectangle</code> object.
+	 * @see java.awt.Graphics#drawRect(int, int, int, int)
+	 */
+	public static void drawRect(Graphics g, Rectangle rectangle) {
+		g.drawRect((int) rectangle.x, (int) rectangle.y,
+				(int) rectangle.width, (int) rectangle.height);
+	}
+	
+	/**
+	 * Draws a rectangle from the diagonal <code>vertexA</code> to
+	 * <code>vertexB</code> on the given <code>Graphics</code> object. <br>
+	 * Node: the <code>double</code> components are bounded back to an
+	 * <code>int</code>.
+	 * 
+	 * @param g the <code>Graphics</code> object where it should be drawn.
+	 * @param vertexA one of the diagonal vertices on the rectangle.
+	 * @param vertexB one of the diagonal vertices on the rectangle.
+	 * @see java.awt.Graphics#drawRect(int, int, int, int)
+	 */
+	public static void drawRect(Graphics g, Point pointA, Point pointB) {
+		int x = Math.min(pointA.x, pointB.x);
+		int y = Math.min(pointA.y, pointB.y);
+		int width = Math.max(pointA.x, pointB.x) - x;
+		int height = Math.max(pointA.y, pointB.y) - y;
+		
+		g.drawRect(x, y, width, height);
 	}
 	
 	
@@ -80,7 +114,7 @@ public class GraphicsUtil {
 	 * @param pos the left-top position of the image.
 	 * @see at.andiwand.library.graphics.GraphicsUtil#drawImage(Graphics, Image, Vector2d, ImageObserver)
 	 */
-	public static void drawImage(Graphics g, Image img, Vector2d pos) {
+	public static void drawImage(Graphics g, Image img, Point pos) {
 		drawImage(g, img, pos, null);
 	}
 	
@@ -96,9 +130,10 @@ public class GraphicsUtil {
 	 * @param imageObserver object to be notified as more of the image is
 	 * converted.
 	 */
-	public static void drawImage(Graphics g, Image img, Vector2d pos, ImageObserver imageObserver) {
-		g.drawImage(img, (int) pos.getX(), (int) pos.getY(), imageObserver);
+	public static void drawImage(Graphics g, Image img, Point pos, ImageObserver imageObserver) {
+		g.drawImage(img, pos.x, pos.y, imageObserver);
 	}
+	
 	
 	
 	/**
@@ -108,20 +143,10 @@ public class GraphicsUtil {
 	 * @param g the <code>Graphics</code> object where it should be drawn.
 	 * @param vector the relative translation vector.
 	 */
-	public static void translate(Graphics g, Vector2d vector) {
-		g.translate((int) vector.getX(), (int) vector.getY());
+	public static void translate(Graphics g, Point vector) {
+		g.translate(vector.x, vector.y);
 	}
 	
-	/**
-	 * Rotates the <code>Graphics</code> object to the given direction.
-	 * 
-	 * @param g the <code>Graphics</code> object where it should be drawn.
-	 * @param vector the absolute rotation vector.
-	 */
-	public static void rotate(Graphics g, Vector2d vector) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.rotate(MathUtil.atan2(vector));
-	}
 	
 	
 	

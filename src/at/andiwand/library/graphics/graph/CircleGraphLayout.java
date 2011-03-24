@@ -1,33 +1,32 @@
 package at.andiwand.library.graphics.graph;
 
 import java.awt.Dimension;
-
-import at.andiwand.library.math.Vector2d;
+import java.awt.Point;
 
 
 public class CircleGraphLayout extends GraphLayout {
 	
-	public static final double DEFAULT_RADIUS_FACTOR = 40;
-	public static final double DEFAULT_BORDER_SIZE = 100;
+	public static final int DEFAULT_RADIUS_FACTOR = 40;
+	public static final int DEFAULT_BORDER_SIZE = 100;
 	
 	
 	private double radiusFactor;
-	private double borderSize;
+	private int borderSize;
 	
 	private boolean fixedRadius;
-	private double radius;
+	private int radius;
 	
 	
 	public CircleGraphLayout(JGraph jGraph) {
 		this(jGraph, DEFAULT_RADIUS_FACTOR, DEFAULT_BORDER_SIZE);
 	}
-	public CircleGraphLayout(JGraph jGraph, double radius) {
+	public CircleGraphLayout(JGraph jGraph, int radius) {
 		this(jGraph, DEFAULT_RADIUS_FACTOR, DEFAULT_BORDER_SIZE);
 		
 		fixedRadius = true;
 		this.radius = radius;
 	}
-	public CircleGraphLayout(JGraph jGraph, double radiusFactor, double borderSize) {
+	public CircleGraphLayout(JGraph jGraph, int radiusFactor, int borderSize) {
 		super(jGraph);
 		
 		this.radiusFactor = radiusFactor;
@@ -40,7 +39,7 @@ public class CircleGraphLayout extends GraphLayout {
 		return fixedRadius;
 	}
 	
-	public double getRadius() {
+	public int getRadius() {
 		return radius;
 	}
 	
@@ -49,49 +48,46 @@ public class CircleGraphLayout extends GraphLayout {
 		this.fixedRadius = fixedRadius;
 	}
 	
-	public void setRadius(double radius) {
+	public void setRadius(int radius) {
 		this.radius = radius;
+		
+		reposition();
 	}
 	
 	
 	
 	@Override
 	public void reposition() {
-		double radius;
+		int radius;
 		
 		if (fixedRadius) radius = this.radius;
-		else radius = jGraph.getVertexCount() * radiusFactor;
+		else radius = (int) (jGraph.getVertexCount() * radiusFactor);
 		
-		double maxVertexSize = 0;
+		int maxVertexSize = 0;
 		for (DrawableVertex vertex : jGraph.getVertices()) {
-			if (maxVertexSize < vertex.drawingRect().getWidth())
-				maxVertexSize = vertex.drawingRect().getWidth();
-			if (maxVertexSize < vertex.drawingRect().getHeight())
-				maxVertexSize = vertex.drawingRect().getHeight();
+			if (maxVertexSize < vertex.getWidth())
+				maxVertexSize = vertex.getWidth();
+			if (maxVertexSize < vertex.getHeight())
+				maxVertexSize = vertex.getHeight();
 		}
 		
-		double size = borderSize + maxVertexSize + 2 * radius;
+		int size = borderSize + maxVertexSize + 2 * radius;
 		jGraph.setPreferredSize(new Dimension((int) size, (int) size));
 		jGraph.revalidate();
 		
-		Vector2d middle = new Vector2d(size / 2);
+		Point middle = new Point(size / 2, size / 2);
 		
 		double angleStep = (2 * Math.PI) / jGraph.getVertexCount();
 		double anglePosition = 0;
 		
 		for (DrawableVertex vertex : jGraph.getVertices()) {
-			Vector2d position = new Vector2d(radius * Math.sin(anglePosition), -radius * Math.cos(anglePosition));
+			Point position = new Point((int) (radius * Math.sin(anglePosition)),
+					(int) (-radius * Math.cos(anglePosition)));
 			
-			vertex.setCenterPosition(position.add(middle));
+			vertex.setCenter(middle.x + position.x, middle.y + position.y);
 			
 			anglePosition += angleStep;
 		}
-	}
-	
-	
-	@Override
-	public void positionUpdate() {
-		reposition();
 	}
 	
 }

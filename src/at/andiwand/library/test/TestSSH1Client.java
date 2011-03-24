@@ -1,21 +1,21 @@
 package at.andiwand.library.test;
 
-import javax.swing.JFrame;
+import java.io.InputStream;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.graphics.JSimpleTerminal;
-import at.andiwand.library.network.ssh.SSH2Client;
+import at.andiwand.library.network.ssh.SSH1Client;
 
 
-public class TestJSimpleTerminal {
+public class TestSSH1Client {
 	
 	public static String requestLogin(String message) {
-		return JOptionPane.showInputDialog(message, System.getProperty("user.name") + "@localhost");
+		return JOptionPane.showInputDialog(message, "cisco@192.168.0.254");
 	}
 	
 	public static String requestPassword(String message) {
-		JPasswordField passwordField = new JPasswordField();
+		JPasswordField passwordField = new JPasswordField("cisco");
 		int result = JOptionPane.showConfirmDialog(null, new Object[] {passwordField}, message, JOptionPane.OK_CANCEL_OPTION);
 		
 		if (result == JOptionPane.CANCEL_OPTION) return null;
@@ -26,16 +26,16 @@ public class TestJSimpleTerminal {
 	
 	public static void main(String[] args) throws Throwable {
 		String login = requestLogin("Enter username@hostname");
-		if (login == null) System.exit(0);
 		String password = requestPassword("Your password");
-		if (password == null) System.exit(0);
 		
-		SSH2Client sshClient = new SSH2Client(login, password);
+		SSH1Client client = new SSH1Client(login, password);
+		client.getOutputStream().write("\r\n".getBytes());
 		
-		
-		JSimpleTerminal terminal = new JSimpleTerminal(sshClient);
-		terminal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		terminal.setVisible(true);
+		InputStream inputStream = client.getInputStream();
+		int read;
+		while ((read = inputStream.read()) != -1) {
+			System.out.write(read);
+		}
 	}
 	
 }

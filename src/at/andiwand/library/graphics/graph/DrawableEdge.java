@@ -1,11 +1,9 @@
 package at.andiwand.library.graphics.graph;
 
-import java.awt.event.MouseAdapter;
 import java.util.Collections;
 import java.util.Set;
 
 import at.andiwand.library.graphics.Drawable;
-import at.andiwand.library.graphics.Intersectable;
 import at.andiwand.library.math.graph.Edge;
 
 
@@ -17,17 +15,17 @@ import at.andiwand.library.math.graph.Edge;
  * @author Andreas Stefl
  * 
  */
-public abstract class DrawableEdge implements Drawable, Intersectable {
+public abstract class DrawableEdge implements Drawable {
 	
 	/**
 	 * The covered <code>Edge</code> object.
 	 */
-	protected Edge<Object> coveredEdge;
+	protected final Edge<Object> coveredEdge;
 	
 	/**
 	 * The connected vertices.
 	 */
-	protected Set<DrawableVertex> connectedVertices;
+	protected final Set<DrawableVertex> connectedVertices;
 	
 	
 	
@@ -43,7 +41,7 @@ public abstract class DrawableEdge implements Drawable, Intersectable {
 		
 		this.coveredEdge = coveredEdge;
 		
-		this.connectedVertices = connectedVertices;
+		this.connectedVertices = Collections.unmodifiableSet(connectedVertices);
 	}
 	
 	
@@ -55,7 +53,7 @@ public abstract class DrawableEdge implements Drawable, Intersectable {
      */
 	@Override
 	public String toString() {
-		return coveredEdge.toString();
+		return "DrawableEdge [" + coveredEdge.toString() + "]";
 	}
 	
 	
@@ -74,16 +72,7 @@ public abstract class DrawableEdge implements Drawable, Intersectable {
 	 * @return an unmodifiable set of the connected vertices. 
 	 */
 	public Set<DrawableVertex> getConnectedVertices() {
-		return Collections.unmodifiableSet(connectedVertices);
-	}
-	
-	/**
-	 * Returns the <code>MouseAdapter</code> object.
-	 * 
-	 * @return the <code>MouseAdapter</code> object.
-	 */
-	public MouseAdapter getMouseAdapter() {
-		return null;
+		return connectedVertices;
 	}
 	
 }

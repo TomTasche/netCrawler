@@ -3,10 +3,10 @@ package at.andiwand.library.graphics.graph;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,8 +16,6 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 
-import at.andiwand.library.math.Vector2b;
-import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
 import at.andiwand.library.math.graph.Graph;
 import at.andiwand.library.math.graph.GraphAdapter;
@@ -34,7 +32,6 @@ import at.andiwand.library.math.graph.ListenableGraph;
  * @author Andreas Stefl
  * 
  */
-
 //TODO: thread safe
 public class JGraph extends JComponent {
 	
@@ -43,11 +40,14 @@ public class JGraph extends JComponent {
 	/**
 	 * The default distance of the magnetic lines.
 	 */
-	public static final double DEFAULT_MAGNETIC_DISTANCE = 10;
+	public static final int DEFAULT_MAGNETIC_DISTANCE = 10;
 	
 	
 	
 	
+	
+	
+	private Graph<Object, Edge<Object>> graphModel;
 	
 	
 	private Set<DrawableVertex> vertices;
@@ -58,7 +58,6 @@ public class JGraph extends JComponent {
 	
 	private Map<Object, DrawableVertex> vertexMap;
 	
-	private ListenableGraph<Object, Edge<Object>> listenableGraph;
 	private GraphListener<Object, Edge<Object>> graphListener;
 	
 	
@@ -67,9 +66,9 @@ public class JGraph extends JComponent {
 	private boolean antialiasing;
 	
 	private boolean magneticLines;
-	private double magneticDistance = DEFAULT_MAGNETIC_DISTANCE;
-	private transient Vector2b magneticFix = new Vector2b();
-	private transient Vector2d magneticLine = new Vector2d();
+	private int magneticDistance = DEFAULT_MAGNETIC_DISTANCE;
+	private transient DrawableVertex magneticVertexX;
+	private transient DrawableVertex magneticVertexY;
 	
 	
 	private DragAndDropHandler dragAndDropHandler;
@@ -114,20 +113,7 @@ public class JGraph extends JComponent {
 	 * 
 	 * @param graph the <code>Graph</code>instance.
 	 */
-	public JGraph(Graph<?, ? extends Edge<?>> graph) {
-		this();
-		
-		setGraph(graph);
-	}
-	
-	/**
-	 * Creates a <code>JGraph</code> instance with the given
-	 * <code>ListenableGraph</code> instance. <br>
-	 * Listeners will be installed to observe the graph model.
-	 * 
-	 * @param graph the <code>ListenableGraph</code>instance.
-	 */
-	public JGraph(ListenableGraph<?, ? extends Edge<?>> graph) {
+	public <V, E extends Edge<V>> JGraph(Graph<V, E> graph) {
 		this();
 		
 		setGraph(graph);
@@ -242,7 +228,7 @@ public class JGraph extends JComponent {
 	 * 
 	 * @return the distance of the magnetic lines.
 	 */
-	public double getMagneticDistance() {
+	public int getMagneticDistance() {
 		return magneticDistance;
 	}
 	
@@ -250,50 +236,45 @@ public class JGraph extends JComponent {
 	
 	/**
 	 * Forms the intern data structure with the given graph model. <br>
+	 * It the graph is listenable, listeners will be installed to observe the
+	 * graph model.
 	 * 
 	 * @param graph the graph model.
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void setGraph(Graph<?, ? extends Edge<?>> graph) {
-		Graph<Object, Edge<Object>> objectGraph =
-			(Graph<Object, Edge<Object>>) graph;
+	public synchronized <V, E extends Edge<V>> void setGraph(Graph<V, E> graph) {
+		graphModel = (Graph<Object, Edge<Object>>) graph;
 		
 		vertices.clear();
 		edges.clear();
 		vertexMap.clear();
 		
-		if (listenableGraph != null) {
+		if (graphModel instanceof ListenableGraph<?, ?>) {
+			ListenableGraph<Object, Edge<Object>> listenableGraph =
+				(ListenableGraph<Object, Edge<Object>>) graphModel;
+			
 			listenableGraph.removeListener(graphListener);
 			listenableGraph = null;
 			graphListener = null;
 		}
 		
-		for (Object vertex : objectGraph.getVertices()) {
+		for (Object vertex : graphModel.getVertices()) {
 			addVertex(vertex);
 		}
 		
-		for (Edge<Object> edge : objectGraph.getEdges()) {
+		for (Edge<Object> edge : graphModel.getEdges()) {
 			addEdge(edge);
 		}
 		
+		if (graph instanceof ListenableGraph<?, ?>) {
+			ListenableGraph<Object, Edge<Object>> listenableGraph =
+				(ListenableGraph<Object, Edge<Object>>) graph;
+			
+			graphListener = new GraphUpdateAdapter();
+			listenableGraph.addListener(graphListener);
+		}
+		
 		graphLayout.reposition();
-	}
-	
-	/**
-	 * Forms the intern data structure with the given graph model. <br>
-	 * Listeners will be installed to observe the graph model.
-	 * 
-	 * @param graph the listenable graph model.
-	 */
-	@SuppressWarnings("unchecked")
-	public void setGraph(ListenableGraph<?, ? extends Edge<?>> graph) {
-		ListenableGraph<Object, Edge<Object>> listenableGraph = (ListenableGraph<Object, Edge<Object>>) graph;
-		
-		setGraph((Graph<?, ? extends Edge<?>>) listenableGraph);
-		
-		this.listenableGraph = listenableGraph;
-		graphListener = new GraphUpdateAdapter();
-		listenableGraph.addListener(graphListener);
 	}
 	
 	
@@ -338,7 +319,7 @@ public class JGraph extends JComponent {
 	 * 
 	 * @param magneticDistance the magnetic distance.
 	 */
-	public void setMagneticDistance(double magneticDistance) {
+	public void setMagneticDistance(int magneticDistance) {
 		this.magneticDistance = magneticDistance;
 	}
 	
@@ -367,7 +348,7 @@ public class JGraph extends JComponent {
 		vertexMap.put(vertex.getCoveredVertex(), vertex);
 		
 		repaint();
-		graphLayout.positionUpdate();
+		graphLayout.reposition();
 	}
 	
 	private synchronized void addEdge(Edge<Object> edge) {
@@ -396,7 +377,7 @@ public class JGraph extends JComponent {
 		edges.add(edge);
 		
 		repaint();
-		graphLayout.positionUpdate();
+		graphLayout.reposition();
 	}
 	
 	
@@ -475,35 +456,31 @@ public class JGraph extends JComponent {
 		if (magneticLines) {
 			g.setColor(Color.LIGHT_GRAY);
 			
-			if (magneticFix.getX())
-				g.drawLine((int) magneticLine.getX(), 0, (int) magneticLine.getX(), getHeight());
-			if (magneticFix.getY())
-				g.drawLine(0, (int) magneticLine.getY(), getWidth(), (int) magneticLine.getY());
+			if (magneticVertexX != null) {
+				int x = magneticVertexX.getCenter().x;
+				g.drawLine(x, 0, x, getHeight());
+			}
+			if (magneticVertexY != null) {
+				int y = magneticVertexY.getCenter().y;
+				g.drawLine(0, y, getWidth(), y);
+			}
 		}
 		
 		for (DrawableEdge edge : getEdges()) {
-			edge.draw(g);
+			edge.draw(g.create());
 		}
 		
 		for (DrawableVertex vertex : getVertices()) {
-			vertex.draw(g);
+			vertex.draw(g.create());
 		}
 	}
 	
 	
 	
 	
-	private synchronized DrawableVertex vertexIntersection(Vector2d point) {
+	private synchronized DrawableVertex vertexIntersection(Point point) {
 		for (DrawableVertex vertex : vertices) {
-			if (vertex.intersection(point)) return vertex;
-		}
-		
-		return null;
-	}
-	
-	private synchronized DrawableEdge edgeIntersection(Vector2d point) {
-		for (DrawableEdge edge : edges) {
-			if (edge.intersection(point)) return edge;
+			if (vertex.intersects(point)) return vertex;
 		}
 		
 		return null;
@@ -511,9 +488,8 @@ public class JGraph extends JComponent {
 	
 	
 	private class DragAndDropHandler extends MouseAdapter {
-		private Vector2d startPoint;
 		private DrawableVertex vertex;
-		private Vector2d offset;
+		private Point centerOffset;
 		private boolean moved;
 		
 		@Override
@@ -521,12 +497,13 @@ public class JGraph extends JComponent {
 			if (!isEnabled()) return;
 			if (e.getButton() != MouseEvent.BUTTON1) return;
 			
-			startPoint = new Vector2d(e.getX(), e.getY());
-			vertex = vertexIntersection(startPoint);
+			Point point = e.getPoint();
+			vertex = vertexIntersection(point);
 			
 			if (vertex == null) return;
 			
-			offset = vertex.getCenterPosition().sub(startPoint);
+			centerOffset = new Point(vertex.getCenter().x - point.x,
+					vertex.getCenter().y - point.y);
 			
 			e.consume();
 			moved = false;
@@ -537,51 +514,46 @@ public class JGraph extends JComponent {
 			if (!isEnabled()) return;
 			if (vertex == null) return;
 			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
+			Point point = e.getPoint();
 			
-			if (point.getX() < 0) point = point.setX(0);
-			if (point.getY() < 0) point = point.setY(0);
-			if (point.getX() > getWidth()) point = point.setX(getWidth());
-			if (point.getY() > getHeight()) point = point.setY(getHeight());
+			if (point.getX() < 0) point.x = 0;
+			if (point.getY() < 0) point.y = 0;
+			if (point.getX() > getWidth()) point.x = getWidth();
+			if (point.getY() > getHeight()) point.y = getHeight();
 			
-			Vector2d newPosition = point.add(offset);
+			Point newCenter = new Point(centerOffset.x + point.x,
+					centerOffset.y + point.y);
 			
 			if (magneticLines) {
-				magneticFix = new Vector2b();
+				magneticVertexX = magneticVertexY = null;
 				
-				Vector2d magnaticTransformation = new Vector2d();
-				Vector2d minDistance = new Vector2d(magneticDistance);
+				int minX = magneticDistance;
+				int minY = magneticDistance;
 				for (DrawableVertex otherVertex : vertices) {
 					if (otherVertex == vertex) continue;
 					
-					Vector2d distance = otherVertex.getCenterPosition().sub(newPosition);
-					Vector2d absDistance = distance.abs();
+					int distanceX = Math.abs(otherVertex.getCenter().x -
+							newCenter.x);
+					int distanceY = Math.abs(otherVertex.getCenter().y -
+							newCenter.y);
 					
-					if (absDistance.getX() <= minDistance.getX()) {
-						magnaticTransformation = magnaticTransformation.setX(distance.getX());
-						minDistance = minDistance.setX(absDistance.getX());
-						
-						magneticFix = magneticFix.setX(true);
+					if (distanceX < minX) {
+						magneticVertexX = otherVertex;
+						minX = distanceX;
 					}
-					if (absDistance.getY() <= minDistance.getY()) {
-						magnaticTransformation = magnaticTransformation.setY(distance.getY());
-						minDistance = minDistance.setY(absDistance.getY());
-						
-						magneticFix = magneticFix.setY(true);
+					if (distanceY < minY) {
+						magneticVertexY = otherVertex;
+						minY = distanceY;
 					}
 				}
 				
-				newPosition = newPosition.add(magnaticTransformation);
-				
-				if (magneticFix.getX()) {
-					magneticLine = magneticLine.setX(newPosition.getX());
-				}
-				if (magneticFix.getY()) {
-					magneticLine = magneticLine.setY(newPosition.getY());
-				}
+				if (magneticVertexX != null)
+					newCenter.x = magneticVertexX.getCenter().x;
+				if (magneticVertexY != null)
+					newCenter.y = magneticVertexY.getCenter().y;
 			}
 			
-			vertex.setCenterPosition(newPosition);
+			vertex.setCenter(newCenter);
 			
 			e.consume();
 			moved = true;
@@ -595,7 +567,7 @@ public class JGraph extends JComponent {
 			
 			vertex = null;
 			
-			magneticFix = new Vector2b();
+			magneticVertexX = magneticVertexY = null;
 			
 			if (moved) {
 				e.consume();
@@ -608,103 +580,37 @@ public class JGraph extends JComponent {
 	}
 	
 	
+	//TODO: implement missing functions
 	private class GraphMouseAdapter extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
+			Point point = e.getPoint();
 			DrawableVertex vertex = vertexIntersection(point);
 			
+			if (vertex == null) return;
 			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mousePressed(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mousePressed(e);
-			}
+			vertex.fireMouseEvent(e);
 		}
 		public void mouseReleased(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
+			Point point = e.getPoint();
 			DrawableVertex vertex = vertexIntersection(point);
 			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseReleased(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseReleased(e);
-			}
+			if (vertex == null) return;
+			
+			vertex.fireMouseEvent(e);
 		}
 		public void mouseClicked(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
+			Point point = e.getPoint();
 			DrawableVertex vertex = vertexIntersection(point);
 			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseClicked(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseClicked(e);
-			}
-		}
-		
-		public void mouseMoved(MouseEvent e) {
-			if (e.isConsumed()) return;
+			if (vertex == null) return;
 			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseMoved(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseMoved(e);
-			}
-		}
-		public void mouseDragged(MouseEvent e) {
-			if (e.isConsumed()) return;
-			
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseDragged(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseDragged(e);
-			}
-		}
-		
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			Vector2d point = new Vector2d(e.getX(), e.getY());
-			
-			DrawableVertex vertex = vertexIntersection(point);
-			
-			if ((vertex != null) && (vertex.getMouseAdapter() != null)) {
-				vertex.getMouseAdapter().mouseWheelMoved(e);
-			} else {
-				DrawableEdge edge = edgeIntersection(point);
-				
-				if ((edge != null) && (edge.getMouseAdapter() != null))
-					edge.getMouseAdapter().mouseWheelMoved(e);
-			}
+			vertex.fireMouseEvent(e);
 		}
 	}
 	

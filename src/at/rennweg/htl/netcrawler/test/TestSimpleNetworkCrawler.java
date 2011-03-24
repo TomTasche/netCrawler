@@ -1,10 +1,8 @@
 package at.rennweg.htl.netcrawler.test;
 
 import java.awt.BorderLayout;
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -12,12 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
-import at.andiwand.library.network.MACAddress;
+import at.andiwand.library.network.ssh.SSH1Client;
 import at.andiwand.library.util.JFrameUtil;
 import at.andiwand.library.util.cli.CommandLine;
-import at.andiwand.packettracer.ptmp.simple.SimpleMultiuserClient;
-import at.andiwand.packettracer.ptmp.simple.SimpleNetworkDevice;
-import at.andiwand.packettracer.ptmp.simple.SimpleNetworkDeviceFactory;
 import at.rennweg.htl.netcrawler.cli.CiscoUser;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.crawler.SimpleCLIFactroy;
@@ -25,10 +20,7 @@ import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoNetworkCrawler;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 
 
-public class TestCiscoSimpleNetworkCrawler {
-	
-	private static SimpleNetworkDevice networkDevice;
-	private static final Object networkDeviceSync = new Object();
+public class TestSimpleNetworkCrawler {
 	
 	public static void main(String[] args) throws Throwable {
 		String rootHost = JOptionPane.showInputDialog("type in the root device", "192.168.0.254");
@@ -58,50 +50,18 @@ public class TestCiscoSimpleNetworkCrawler {
 		frame.setVisible(true);
 		
 		
-		SimpleMultiuserClient multiuserClient = new SimpleMultiuserClient();
-		multiuserClient.setInterfaceFactory(new SimpleNetworkDeviceFactory() {
-			public SimpleNetworkDevice createInterface(String[] linkRequest) {
-				if (networkDevice != null) return null;
-				
-				try {
-					String name = "Simple Bridge Interface";
-					MACAddress macAddress = new MACAddress("00:24:8c:fd:fe:96");
-					Inet4Address inet4Address = (Inet4Address) Inet4Address.getByName("192.168.0.1");
-					Inet4Address defaultRoute = (Inet4Address) Inet4Address.getByName("192.168.0.254");
-					
-					SimpleNetworkDevice device = new SimpleNetworkDevice(name, macAddress, inet4Address);
-					device.setDefaultRoute(defaultRoute);
-					
-					synchronized (networkDeviceSync) {
-						networkDevice = device;
-						networkDeviceSync.notify();
-					}
-					
-					return device;
-				} catch (UnknownHostException e) {}
-				
-				return null;
-			}
-		});
-		multiuserClient.connect(InetAddress.getLocalHost());
-		
-		synchronized (networkDeviceSync) {
-			if (networkDevice == null) networkDeviceSync.wait();
-		}
-		
-		
-		CiscoUser masterUser = new CiscoUser("cisco", "cisco");
+		final CiscoUser masterUser = new CiscoUser("cisco", "cisco");
 		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(new SimpleCLIFactroy() {
 			public CommandLine getCommandLine(InetAddress address) {
 				try {
-					return networkDevice.createTelnetConnection((Inet4Address) address);
-				} catch (IOException e) {
+					return new SSH1Client(address, masterUser.getUsername(), masterUser.getPassword());
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
 				return null;
 			}
-		}, masterUser, rootAddress);
+		}, null, rootAddress);
 		networkCrawler.crawl(networkGraph);
 	}
 	

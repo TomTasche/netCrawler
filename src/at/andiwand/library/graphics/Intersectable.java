@@ -1,6 +1,6 @@
 package at.andiwand.library.graphics;
 
-import at.andiwand.library.math.Vector2d;
+import java.awt.Point;
 
 
 /**
@@ -19,6 +19,6 @@ public interface Intersectable {
 	 * @param point the possible intersection point.
 	 * @return <code>true</code> if the point intersects the object.
 	 */
-	public boolean intersection(Vector2d point);
+	public boolean intersects(Point point);
 	
 }

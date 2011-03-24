@@ -6,7 +6,6 @@ import javax.swing.JPasswordField;
 import at.andiwand.library.network.ssh.SSH1Executor;
 
 
-
 public class TestSSH1Executor {
 	
 	public static String requestLogin(String message) {

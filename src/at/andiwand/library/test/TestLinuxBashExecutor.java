@@ -7,7 +7,6 @@ import at.andiwand.library.network.ssh.SSH2Client;
 import at.andiwand.library.util.cli.LinuxBashExecutor;
 
 
-
 public class TestLinuxBashExecutor {
 	
 	public static String requestLogin(String message) {

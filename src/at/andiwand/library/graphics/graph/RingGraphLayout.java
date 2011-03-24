@@ -1,20 +1,20 @@
 package at.andiwand.library.graphics.graph;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import at.andiwand.library.math.Vector2d;
-
 
 public class RingGraphLayout extends GraphLayout {
 	
-	public static final double DEFAULT_BORDER_SIZE = 100;
+	public static final int DEFAULT_BORDER_SIZE = 100;
 	
-	public static double DEFAULT_RING_DISTANCE = 20; 
+	public static int DEFAULT_RING_DISTANCE = 20; 
+	
 	
 	
 	private Set<DrawableVertex> positionedVertices;
@@ -23,8 +23,8 @@ public class RingGraphLayout extends GraphLayout {
 	private DrawableVertex root;
 	private List<List<DrawableVertex>> verticesRings;
 	
-	private double borderSize = DEFAULT_BORDER_SIZE;
-	private double ringDistance = DEFAULT_RING_DISTANCE;
+	private int borderSize = DEFAULT_BORDER_SIZE;
+	private int ringDistance = DEFAULT_RING_DISTANCE;
 	
 	
 	public RingGraphLayout(JGraph jGraph) {
@@ -87,30 +87,33 @@ public class RingGraphLayout extends GraphLayout {
 			lastRing = newRing;
 		}
 		
-		root.setCenterPosition(new Vector2d());
+		root.setCenter(new Point());
 		
-		double lastMaxSize = root.drawingRect().getSize().length();
-		double lastRadius = 0;
-		double left = 0;
-		double right = 0;
-		double bottom = 0;
-		double top = 0;
+		double lastMaxSize = root.getDiagonal();
+		int lastRadius = 0;
+		int left = 0;
+		int right = 0;
+		int bottom = 0;
+		int top = 0;
 		for (int i = 1; i < verticesRings.size(); i++) {
 			List<DrawableVertex> ring = verticesRings.get(i);
 			
 			double maxSize = maxSize(ring);
-			double radius = lastRadius + (lastMaxSize + maxSize) / 2 + ringDistance;
+			int radius = (int) (lastRadius + (lastMaxSize + maxSize(ring)) / 2
+					+ ringDistance);
 			
 			double angleStep = (2 * Math.PI) / ring.size();
 			double anglePosition = 0;
 			for (DrawableVertex vertex : ring) {
-				Vector2d position = new Vector2d(radius * Math.sin(anglePosition), -radius * Math.cos(anglePosition));
-				vertex.setCenterPosition(position);
+				Point position = new Point(
+						(int) (radius * Math.sin(anglePosition)),
+						(int) (-radius * Math.cos(anglePosition)));
+				vertex.setCenter(position);
 				
-				if (position.getX() < left) left = position.getX();
-				if (position.getX() > right) right = position.getX();
-				if (position.getY() < bottom) bottom = position.getY();
-				if (position.getY() > top) top = position.getY();
+				if (position.getX() < left) left = position.x;
+				if (position.getX() > right) right = position.x;
+				if (position.getY() < bottom) bottom = position.y;
+				if (position.getY() > top) top = position.y;
 				
 				anglePosition += angleStep;
 			}
@@ -119,19 +122,18 @@ public class RingGraphLayout extends GraphLayout {
 			lastRadius = radius;
 		}
 		
-		Vector2d size = new Vector2d(right - left, top - bottom).abs().add(borderSize * 2);
-		Vector2d middle = size.div(2);
+		int width = Math.abs(right - left) + borderSize * 2;
+		int height = Math.abs(top - bottom) + borderSize * 2;
 		
-		jGraph.setPreferredSize(new Dimension((int) size.getX(), (int) size.getY()));
+		Dimension size = new Dimension(width, height);
+		jGraph.setPreferredSize(size);
+		
+		Point middle = new Point(width / 2, height / 2);
 		
 		for (DrawableVertex vertex : positionedVertices) {
-			vertex.setCenterPosition(vertex.getCenterPosition().add(middle));
+			Point position = vertex.getCenter();
+			vertex.setCenter(middle.x + position.x, middle.y + position.y);
 		}
-	}
-	
-	@Override
-	public void positionUpdate() {
-		reposition();
 	}
 	
 	
@@ -146,7 +148,7 @@ public class RingGraphLayout extends GraphLayout {
 		double result = 0;
 		
 		for (DrawableVertex vertex : collection) {
-			double size = vertex.drawingRect().getSize().length();
+			double size = vertex.getDiagonal();
 			
 			if (size > result) result = size;
 		}

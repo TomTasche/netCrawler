@@ -1,6 +1,5 @@
 package at.andiwand.library.test;
 
-
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
@@ -10,7 +9,6 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.graphics.graph.JGraph;
 import at.andiwand.library.math.graph.DefaultGraph;
-
 
 
 public class TestJGraph {
@@ -40,6 +38,7 @@ public class TestJGraph {
 		
 		JGraph jGraph = new JGraph(graph);
 		jGraph.setAntialiasing(true);
+		jGraph.setMagneticLines(true);
 		JScrollPane scrollPane = new JScrollPane(jGraph);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		frame.add(scrollPane);

@@ -2,9 +2,9 @@ package at.andiwand.library.graphics.graph;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.Set;
 
-import at.andiwand.library.math.Vector2d;
 import at.andiwand.library.math.graph.Edge;
 
 
@@ -15,38 +15,29 @@ public class DefaultDrawableEdge extends DrawableEdge {
 	
 	private Color color = DEFAULT_COLOR;
 	
-	
 	public DefaultDrawableEdge(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		super(coveredEdge, connectedVertices);
 	}
-	
-	
-	@Override
-	public boolean intersection(Vector2d point) {
-		return false;
-	}
-	
 	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(color);
 		
 		if (coveredEdge.getVertexCount() > 1) {
-			Vector2d middle = new Vector2d();
+			Point middle = new Point();
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				middle = middle.add(vertex.getCenterPosition());
+				middle.x += vertex.getCenter().x;
+				middle.y += vertex.getCenter().y;
 			}
 			
-			middle = middle.div(coveredEdge.getVertexCount());
+			int vertexCount = coveredEdge.getVertexCount();
+			middle.x /= vertexCount;
+			middle.y /= vertexCount;
 			
 			for (DrawableVertex vertex : connectedVertices) {
-				int x1 = (int) middle.getX();
-				int y1 = (int) middle.getY();
-				int x2 = (int) vertex.getCenterPosition().getX();
-				int y2 = (int) vertex.getCenterPosition().getY();
-				
-				g.drawLine(x1, y1, x2, y2);
+				g.drawLine(middle.x, middle.y,
+						vertex.getCenter().x, vertex.getCenter().y);
 			}
 		}
 	}

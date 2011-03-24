@@ -31,6 +31,9 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 	private InetAddress root;
 	
 	
+	public SimpleCiscoNetworkCrawler(SimpleCLIFactroy cliFactroy, InetAddress root) {
+		this(cliFactroy, null, root);
+	}
 	public SimpleCiscoNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root) {
 		this.cliFactroy = cliFactroy;
 		this.masterUser = masterUser;
@@ -77,6 +80,7 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 		CiscoDevice device = null;
 		
 		if (seriesNumber.startsWith("28")) device = new CiscoRouter();
+		else if (seriesNumber.startsWith("C2960")) device = new CiscoSwitch();
 		else if (seriesNumber.startsWith("C3560")) device = new CiscoSwitch();
 		else device = new CiscoDevice();
 		
