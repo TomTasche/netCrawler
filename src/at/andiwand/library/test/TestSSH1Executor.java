@@ -3,7 +3,7 @@ package at.andiwand.library.test;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.network.ssh.SSH1Executor;
+import at.rennweg.htl.netcrawler.network.ssh.SSH1Executor;
 
 
 public class TestSSH1Executor {

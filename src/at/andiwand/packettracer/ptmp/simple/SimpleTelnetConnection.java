@@ -29,6 +29,11 @@ public class SimpleTelnetConnection implements CommandLine {
 	private boolean connected;
 	private boolean closed;
 	
+	//asdf
+	//private PipedOutputStream debugInputStreamWrite = new PipedOutputStream();
+	//private PipedInputStream debugInputStream = new PipedInputStream(debugInputStreamWrite);
+	//private JSimpleTerminal debugTerminal;
+	
 	
 	public SimpleTelnetConnection(SimpleNetworkDevice device, int sourcePort, Inet4Address destinationAddress, int destinationPort) throws IOException {
 		this.device = device;
@@ -39,6 +44,19 @@ public class SimpleTelnetConnection implements CommandLine {
 		if (device.telnetConnections.containsKey(sourcePort))
 			throw new RuntimeException("port already in use!");
 		device.telnetConnections.put(sourcePort, this);
+		
+		//asdf
+		//debugTerminal = new JSimpleTerminal(new CommandLine() {
+		//	public OutputStream getOutputStream() throws IOException {
+		//		return null;
+		//	}
+		//	public InputStream getInputStream() throws IOException {
+		//		return debugInputStream;
+		//	}
+		//	public void close() throws IOException {}
+		//});
+		//debugTerminal.setSize(400, 900);
+		//debugTerminal.setVisible(true);
 	}
 	
 	
@@ -98,25 +116,20 @@ public class SimpleTelnetConnection implements CommandLine {
 	
 	public void handleSegment(String[] segment) throws IOException {
 		int seq;
-		//int ack;
 		int flags;
 		
 		if (segment[1].equals("CTelnetPacket")) {
 			seq = Integer.parseInt(segment[8]);
-			//ack = Integer.parseInt(segment[9]);
 			flags = Integer.parseInt(segment[12]);
 		} else if (segment[1].equals("CPduGroup")) {
 			int count = Integer.parseInt(segment[2]);
 			seq = Integer.parseInt(segment[2 + count * 4 + 4]);
-			//ack = Integer.parseInt(segment[2 + count * 4 + 5]);
 			flags = Integer.parseInt(segment[2 + count * 4 + 8]);
 		} else {
 			seq = Integer.parseInt(segment[5]);
-			//ack = Integer.parseInt(segment[6]);
 			flags = Integer.parseInt(segment[9]);
 		}
 		
-		//sequence = ack;
 		acknowledgement = seq + 1;
 		
 		if (flags == 0x10) return;
@@ -135,9 +148,11 @@ public class SimpleTelnetConnection implements CommandLine {
 		
 		if ((flags & 0x01) != 0) {
 			close();
+			//kill();
 		}
 		if ((flags & 0x04) != 0) {
 			close();
+			//kill();
 		}
 		if ((flags & 0x08) != 0) {
 			String data;
@@ -165,6 +180,9 @@ public class SimpleTelnetConnection implements CommandLine {
 				data = data.replaceAll("\n", "\r\n");
 				inputStreamWriter.write(data.getBytes("us-ascii"));
 				inputStreamWriter.flush();
+				//asdf
+				//debugInputStreamWrite.write(data.getBytes("us-ascii"));
+				//debugInputStreamWrite.flush();
 			} else {
 				for (int i = 0; i < data.length(); i++) {
 					char c = data.charAt(i);
@@ -199,6 +217,11 @@ public class SimpleTelnetConnection implements CommandLine {
 			outputStream.close();
 		} catch (IOException e) {}
 		
+		//workaround... connection isn't finalized by Packet Tracer
+		kill();
+	}
+	
+	private void kill() {
 		device.telnetConnections.remove(sourcePort);
 		closed = true;
 	}
@@ -215,7 +238,7 @@ public class SimpleTelnetConnection implements CommandLine {
 			if (len == 0) return;
 			
 			String data = new String(b, off, len);
-			data = data.replaceAll("\0", "\n");
+			data = data.replaceAll("\0", "\r\n");
 			
 			if (data.contains("" + (char) 65533)) return;
 			
@@ -228,7 +251,14 @@ public class SimpleTelnetConnection implements CommandLine {
 			if (directWrite) {
 				inputStreamWriter.write(b, off, len);
 				inputStreamWriter.flush();
+				//asdf
+				//debugInputStreamWrite.write(data.getBytes("us-ascii"));
+				//debugInputStreamWrite.flush();
 			}
+			
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {}
 		}
 	}
 	

@@ -2,7 +2,6 @@ package at.rennweg.htl.netcrawler.test;
 
 import java.awt.BorderLayout;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -10,12 +9,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
-import at.andiwand.library.network.ssh.SSH1Client;
 import at.andiwand.library.util.JFrameUtil;
-import at.andiwand.library.util.cli.CommandLine;
-import at.rennweg.htl.netcrawler.cli.CiscoUser;
+import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
+import at.rennweg.htl.netcrawler.cli.factory.SimpleSSHFactory;
+import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
-import at.rennweg.htl.netcrawler.network.crawler.SimpleCLIFactroy;
 import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoNetworkCrawler;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 
@@ -50,18 +48,9 @@ public class TestSimpleNetworkCrawler {
 		frame.setVisible(true);
 		
 		
-		final CiscoUser masterUser = new CiscoUser("cisco", "cisco");
-		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(new SimpleCLIFactroy() {
-			public CommandLine getCommandLine(InetAddress address) {
-				try {
-					return new SSH1Client(address, masterUser.getUsername(), masterUser.getPassword());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				return null;
-			}
-		}, null, rootAddress);
+		SimpleCiscoUser masterUser = new SimpleCiscoUser("cisco", "cisco");
+		SimpleCLIFactroy cliFactroy = new SimpleSSHFactory();
+		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(cliFactroy, masterUser, rootAddress);
 		networkCrawler.crawl(networkGraph);
 	}
 	

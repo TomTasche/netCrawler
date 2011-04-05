@@ -1,6 +1,5 @@
 package at.rennweg.htl.netcrawler.network.crawler;
 
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -12,8 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.util.cli.CommandLine;
-import at.rennweg.htl.netcrawler.cli.CiscoCommandLineExecutor;
-import at.rennweg.htl.netcrawler.cli.CiscoUser;
+import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
+import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
+import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
@@ -25,13 +25,13 @@ import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
 public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 	
 	private SimpleCLIFactroy cliFactroy;
-	private CiscoUser masterUser;
+	private SimpleCiscoUser masterUser;
 	private InetAddress root;
 	
 	private Executor executor;
 	
 	
-	public SimpleCiscoThreadedNetworkCrawler(SimpleCLIFactroy cliFactroy, CiscoUser masterUser, InetAddress root, Executor executor) {
+	public SimpleCiscoThreadedNetworkCrawler(SimpleCLIFactroy cliFactroy, SimpleCiscoUser masterUser, InetAddress root, Executor executor) {
 		this.cliFactroy = cliFactroy;
 		this.masterUser = masterUser;
 		this.root = root;
@@ -58,10 +58,10 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 		
 		public void run() {
 			try {
-				CommandLine commandLine = cliFactroy.getCommandLine(address);
-				CiscoCommandLineExecutor lineExecutor = new CiscoCommandLineExecutor(commandLine, masterUser);
+				CommandLine commandLine = cliFactroy.getCommandLine(address, masterUser);
+				SimpleCiscoCommandLineExecutor lineExecutor = new SimpleCiscoCommandLineExecutor(commandLine);
 				
-				String runningConfig = lineExecutor.executeMore("show running-config").readWholeOutput();
+				String runningConfig = lineExecutor.execute("show running-config");
 				String hostname = null;
 				for (String line : runningConfig.split("\n")) {
 					line = line.trim();
@@ -72,7 +72,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 					}
 				}
 				
-				String version = lineExecutor.executeMore("show version").readWholeOutput();
+				String version = lineExecutor.execute("show version");
 				Pattern seriesNumberPattern = Pattern.compile("^.* (.*?) Software \\((.*?)\\).*$");
 				String seriesNumber = null;
 				String deviceId = null;
@@ -114,7 +114,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 				}
 				networkGraph.addVertex(device);
 				
-				String interfaces = lineExecutor.executeMore("show ip interface brief").readWholeOutput();
+				String interfaces = lineExecutor.execute("show ip interface brief");
 				for (String line : interfaces.split("\n")) {
 					if (line.toLowerCase().startsWith("interface")) continue;
 					
@@ -129,7 +129,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 				}
 				System.out.println(device.getInterfaces());
 				
-				String neighbors = lineExecutor.executeMore("show cdp neighbors detail").readWholeOutput();
+				String neighbors = lineExecutor.execute("show cdp neighbors detail");
 				Inet4Address currentAddress = null;
 				for (String line : neighbors.split("\n")) {
 					line = line.trim();
@@ -143,7 +143,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 				}
 				
 				commandLine.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

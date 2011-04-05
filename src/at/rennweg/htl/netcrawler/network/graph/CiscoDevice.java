@@ -3,8 +3,6 @@ package at.rennweg.htl.netcrawler.network.graph;
 import java.net.InetAddress;
 import java.util.Set;
 
-import at.rennweg.htl.netcrawler.network.agent.CiscoDeviceAgent;
-
 
 public class CiscoDevice extends NetworkDevice {
 	
@@ -28,13 +26,6 @@ public class CiscoDevice extends NetworkDevice {
 		this.seriesNumber = seriesNumber;
 		
 		this.processorBoardId = processorBoardId;
-	}
-	public CiscoDevice(CiscoDeviceAgent deviceAgent) {
-		super(deviceAgent);
-		
-		seriesNumber = deviceAgent.fetchSeriesNumber();
-		
-		processorBoardId = deviceAgent.fetchProcessorBoardId();
 	}
 	
 	

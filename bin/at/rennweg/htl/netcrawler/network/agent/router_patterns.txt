@@ -1,0 +1,8 @@
+#patterns for router series numbers
+
+
+#18xx
+18..
+
+#28xx
+28..

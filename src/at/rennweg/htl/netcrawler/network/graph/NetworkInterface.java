@@ -33,12 +33,7 @@ public class NetworkInterface {
 	}
 	@Override
 	public String toString() {
-		String result = "";
-		
-		if (parentDevice != null) result += parentDevice + ": ";
-		result += name;
-		
-		return result;
+		return name;
 	}
 	
 	

@@ -1,0 +1,8 @@
+#patterns for switch series numbers
+
+
+#C29...
+C29.*
+
+#C35...
+C35.*

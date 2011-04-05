@@ -3,8 +3,10 @@ package at.rennweg.htl.netcrawler.cli;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import at.andiwand.library.util.StringUtil;
 import at.andiwand.library.util.cli.CommandLine;
 import at.andiwand.library.util.cli.CommandLineExecutor;
 import at.andiwand.library.util.stream.IgnoreFirstLineInputStream;
@@ -12,41 +14,18 @@ import at.andiwand.library.util.stream.ReadAfterMatchInputStream;
 import at.andiwand.library.util.stream.ReadUntilMatchInputStream;
 
 
-
 public class CiscoCommandLineExecutor extends CommandLineExecutor {
 	
 	public static final Pattern PROMT_PATTERN = Pattern.compile("(.*?)(/.*?)?(\\((.*?)\\))?(>|#)");
-	
+	public static final Pattern MORE_PATTERN = Pattern.compile(" *-+ ?more ?-+ *", Pattern.CASE_INSENSITIVE);
 	
 	
 	private InputStream inputStream;
-	private OutputStream outputStream;
-	
-	
 	
 	public CiscoCommandLineExecutor(CommandLine commandLine) throws IOException {
-		this(commandLine, null);
-	}
-	public CiscoCommandLineExecutor(CommandLine commandLine, CiscoUser user) throws IOException {
 		super(commandLine);
 		
 		inputStream = commandLine.getInputStream();
-		outputStream = commandLine.getOutputStream();
-		
-		if (user != null) {
-			outputStream.write(user.getUsername().getBytes());
-			outputStream.flush();
-			outputStream.write("\r\n".getBytes());
-			outputStream.flush();
-			
-			for (int i = 0; i < user.getPassword().length(); i++) {
-				outputStream.write(user.getPassword().charAt(i));
-				outputStream.flush();
-			}
-			
-			outputStream.write("\r\n".getBytes());
-			outputStream.flush();
-		}
 		
 		InputStream killerStream = new ReadUntilMatchInputStream(inputStream, PROMT_PATTERN);
 		
@@ -55,10 +34,8 @@ public class CiscoCommandLineExecutor extends CommandLineExecutor {
 		} catch (IOException e) {}
 	}
 	
-	
-	
 	@Override
-	public CiscoCommand execute(String command) throws IOException {
+	public String execute(String command) throws IOException {
 		Pattern commandPattern = Pattern.compile(".*" + command);
 		
 		InputStream inputStream = commandLine.getInputStream();
@@ -72,15 +49,27 @@ public class CiscoCommandLineExecutor extends CommandLineExecutor {
 			outputStream.write(command.charAt(i));
 			outputStream.flush();
 		}
-		
-		outputStream.write("\r\n".getBytes());
+		outputStream.write(StringUtil.NEW_LINE.getBytes());
 		outputStream.flush();
 		
-		return new CiscoCommand(stream3, commandLine.getOutputStream());
-	}
-	
-	public CiscoMoreCommand executeMore(String command) throws IOException {
-		return new CiscoMoreCommand(execute(command));
+		StringBuilder builder = new StringBuilder();
+		
+		int read;
+		while ((read = stream3.read()) != -1) {
+			int lastLine = builder.lastIndexOf(StringUtil.NEW_LINE);
+			if (lastLine != -1) {
+				Matcher matcher = MORE_PATTERN.matcher(builder.substring(lastLine + 1));
+				
+				if (matcher.matches()) {
+					outputStream.write(" ".getBytes());
+					outputStream.flush();
+				}
+			}
+			
+			builder.append((char) read);
+		}
+		
+		return builder.toString();
 	}
 	
 }

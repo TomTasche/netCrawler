@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 
 import at.andiwand.library.network.MACAddress;
 import at.andiwand.library.network.SimpleMACAddressFormat;
@@ -32,6 +33,8 @@ public class SimpleNetworkDevice {
 	private Queue<String[]> frameQueue;
 	private FrameHandler frameHandler;
 	private Object frameMonitor = new Object();
+	
+	private Random sourceRandom = new Random();
 	
 	private Map<Inet4Address, MACAddress> arpTable =
 		new HashMap<Inet4Address, MACAddress>();
@@ -253,7 +256,7 @@ public class SimpleNetworkDevice {
 	
 	
 	public SimpleTelnetConnection createTelnetConnection(Inet4Address address) throws IOException {
-		int sourcePort = 1024 + (int) (Math.random() * (1000));
+		int sourcePort = 1024 + sourceRandom.nextInt(10000);
 		SimpleTelnetConnection telnetConnection = new SimpleTelnetConnection(this, sourcePort, address, 23);
 		telnetConnection.connect();
 		return telnetConnection;

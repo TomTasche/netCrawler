@@ -5,7 +5,7 @@ import java.io.InputStream;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.network.ssh.SSH1Client;
+import at.rennweg.htl.netcrawler.network.ssh.SSH1Client;
 
 
 public class TestSSH1Client {

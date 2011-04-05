@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.graphics.JSimpleTerminal;
-import at.andiwand.library.network.ssh.SSH2Client;
+import at.rennweg.htl.netcrawler.graphics.JSimpleTerminal;
+import at.rennweg.htl.netcrawler.network.ssh.SSH2Client;
 
 
 public class TestJSimpleTerminal {

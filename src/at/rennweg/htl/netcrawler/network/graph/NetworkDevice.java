@@ -1,10 +1,9 @@
 package at.rennweg.htl.netcrawler.network.graph;
 
 import java.net.InetAddress;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import at.rennweg.htl.netcrawler.network.agent.NetworkDeviceAgent;
 
 
 public class NetworkDevice {
@@ -29,12 +28,6 @@ public class NetworkDevice {
 		
 		this.hostname = hostname;
 		this.managementAddresses = new HashSet<InetAddress>(managementAddresses);
-	}
-	public NetworkDevice(NetworkDeviceAgent deviceAgent) {
-		interfaces = deviceAgent.fetchInterfaces();
-		
-		hostname = deviceAgent.fetchHostname();
-		managementAddresses = deviceAgent.fetchManagementAddresses();
 	}
 	
 	
@@ -72,7 +65,7 @@ public class NetworkDevice {
 		return hostname;
 	}
 	public Set<InetAddress> getManagementAddresses() {
-		return managementAddresses;
+		return Collections.unmodifiableSet(managementAddresses);
 	}
 	
 	public void setInterfaces(Set<NetworkInterface> interfaces) {

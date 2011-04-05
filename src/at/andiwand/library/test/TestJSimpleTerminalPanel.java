@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
-import at.andiwand.library.graphics.JSimpleTerminalPanel;
-import at.andiwand.library.network.ssh.SSH2Client;
+import at.rennweg.htl.netcrawler.graphics.JSimpleTerminalPanel;
+import at.rennweg.htl.netcrawler.network.ssh.SSH2Client;
 
 
 public class TestJSimpleTerminalPanel {
