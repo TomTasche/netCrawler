@@ -19,7 +19,6 @@ import java.util.Set;
  * @param <E> the type of the edges.
  * 
  */
-
 //TODO: isConnected()?
 public abstract class AbstractGraph<V, E extends Edge<V>> implements Graph<V, E> {
 	

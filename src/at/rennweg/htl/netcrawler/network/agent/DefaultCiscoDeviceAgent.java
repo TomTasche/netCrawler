@@ -6,13 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.util.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.SimpleCdpNeighbor;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
@@ -30,6 +33,14 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 	
 	public static final Pattern PROCESSOR_BOARD_ID_PATTERN = Pattern.compile("processor board id (.*)", Pattern.CASE_INSENSITIVE);
 	public static final int PROCESSOR_BOARD_ID_GROUP = 1;
+	
+	public static final Pattern NEIGHBOR_NAME_PATTERN = Pattern.compile("device id ?: ?(.*)", Pattern.CASE_INSENSITIVE);
+	public static final int NEIGHBOR_NAME_GROUP = 1;
+	public static final Pattern NEIGHBOR_MGMT_IP_PATTERN = Pattern.compile("ip address ?: ?(.*)", Pattern.CASE_INSENSITIVE);
+	public static final int NEIGHBOR_MGMT_IP_GROUP = 1;
+	public static final Pattern NEIGHBOR_INT_PATTERN = Pattern.compile("interface ?: ?(.*?), port id.*?: ?(.*)", Pattern.CASE_INSENSITIVE);
+	public static final int NEIGHBOR_INT_NAME_GROUP = 1;
+	public static final int NEIGHBOR_SOURCE_INT_NAME_GROUP = 2;
 	
 	
 	public static final String PATTERNS_FILE_COMMENT_PREFIX = "#";
@@ -214,6 +225,53 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 		}
 		
 		super.fetchAll(device);
+	}
+	
+	
+	public List<SimpleCdpNeighbor> fetchNeighbors() throws IOException {
+		List<SimpleCdpNeighbor> result = new ArrayList<SimpleCdpNeighbor>();
+		
+		String neighbors = executor.execute("show cdp neighbors detail");
+		
+		SimpleCdpNeighbor currentNeighbor = null;
+		List<InetAddress> currentMgmtAddresses = new ArrayList<InetAddress>();
+		
+		for (String line : neighbors.split("\n")) {
+			line = line.trim();
+			
+			Matcher nameMatcher = NEIGHBOR_NAME_PATTERN.matcher(line);
+			
+			if (nameMatcher.matches()) {
+				if (currentNeighbor != null) {
+					currentNeighbor.setManagementAddresses(currentMgmtAddresses);
+					result.add(currentNeighbor);
+				}
+				
+				currentNeighbor = new SimpleCdpNeighbor();
+				currentNeighbor.setName(nameMatcher.group(NEIGHBOR_NAME_GROUP));
+			} else if (currentNeighbor != null) {
+				Matcher mgmtIpMatcher = NEIGHBOR_MGMT_IP_PATTERN.matcher(line);
+				
+				if (mgmtIpMatcher.matches()) {
+					InetAddress address = InetAddress.getByName(mgmtIpMatcher.group(NEIGHBOR_MGMT_IP_GROUP));
+					currentMgmtAddresses.add(address);
+					
+					continue;
+				}
+				
+				Matcher intMatcher = NEIGHBOR_INT_PATTERN.matcher(line);
+				
+				if (intMatcher.matches()) {
+					currentNeighbor.setInterfaceName(intMatcher.group(NEIGHBOR_INT_NAME_GROUP));
+					currentNeighbor.setSourceInterfaceName(intMatcher.group(NEIGHBOR_SOURCE_INT_NAME_GROUP));
+				}
+			}
+		}
+		
+		currentNeighbor.setManagementAddresses(currentMgmtAddresses);
+		result.add(currentNeighbor);
+	
+		return result;
 	}
 	
 }
