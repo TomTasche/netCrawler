@@ -17,8 +17,6 @@ public abstract class SimpleCiscoDeviceAgent extends SimpleNetworkDeviceAgent {
 	
 	public abstract String fetchSeriesNumber() throws IOException;
 	
-	public abstract String fetchProcessorBoardId() throws IOException;
-	
 	
 	@Override
 	public CiscoDevice fetchAll() throws IOException {
@@ -37,7 +35,6 @@ public abstract class SimpleCiscoDeviceAgent extends SimpleNetworkDeviceAgent {
 		
 		super.fetchAll(device);
 		ciscoDevice.setSeriesNumber(fetchSeriesNumber());
-		ciscoDevice.setProcessorBoardId(fetchProcessorBoardId());
 	}
 	
 }

@@ -8,13 +8,12 @@ import java.util.regex.Pattern;
 
 import at.andiwand.library.util.StringUtil;
 import at.andiwand.library.util.cli.CommandLine;
-import at.andiwand.library.util.cli.CommandLineExecutor;
-import at.andiwand.library.util.stream.IgnoreFirstLineInputStream;
-import at.andiwand.library.util.stream.ReadAfterMatchInputStream;
-import at.andiwand.library.util.stream.ReadUntilMatchInputStream;
+import at.rennweg.htl.netcrawler.util.stream.IgnoreFirstLineInputStream;
+import at.rennweg.htl.netcrawler.util.stream.ReadAfterMatchInputStream;
+import at.rennweg.htl.netcrawler.util.stream.ReadUntilMatchInputStream;
 
 
-public class CiscoCommandLineExecutor extends CommandLineExecutor {
+public class CiscoCommandLineExecutor extends SimpleCommandLineExecutor {
 	
 	public static final Pattern PROMT_PATTERN = Pattern.compile("(.*?)(/.*?)?(\\((.*?)\\))?(>|#)");
 	public static final Pattern MORE_PATTERN = Pattern.compile(" *-+ ?more ?-+ *", Pattern.CASE_INSENSITIVE);

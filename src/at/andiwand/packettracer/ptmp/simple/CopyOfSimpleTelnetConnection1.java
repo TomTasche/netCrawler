@@ -10,7 +10,7 @@ import java.net.Inet4Address;
 import at.andiwand.library.util.cli.CommandLine;
 
 
-public class SimpleTelnetConnection implements CommandLine {
+public class CopyOfSimpleTelnetConnection1 implements CommandLine {
 	
 	private SimpleNetworkDevice device;
 	private int sourcePort;
@@ -23,7 +23,6 @@ public class SimpleTelnetConnection implements CommandLine {
 	private PipedOutputStream inputStreamWriter = new PipedOutputStream();
 	private PipedInputStream inputStream = new PipedInputStream(inputStreamWriter);
 	private SimpleTelnetOutputStream outputStream = new SimpleTelnetOutputStream();
-	private Object sendMonitor = new Object();
 	private boolean directWrite;
 	
 	private Object connectSync = new Object();
@@ -36,7 +35,7 @@ public class SimpleTelnetConnection implements CommandLine {
 //	private JSimpleTerminal debugTerminal;
 	
 	
-	public SimpleTelnetConnection(SimpleNetworkDevice device, int sourcePort, Inet4Address destinationAddress, int destinationPort) throws IOException {
+	public CopyOfSimpleTelnetConnection1(SimpleNetworkDevice device, int sourcePort, Inet4Address destinationAddress, int destinationPort) throws IOException {
 		this.device = device;
 		this.sourcePort = sourcePort;
 		this.destinationAddress = destinationAddress;
@@ -92,6 +91,7 @@ public class SimpleTelnetConnection implements CommandLine {
 				0, 15, 2, -1,0, 0, 0, 1, "CTcpOptionMSS", 2, 4, 1460};
 		
 		sendSegment(tcpSyn);
+		sequence++;
 		
 		synchronized (connectSync) {
 			if (connected) return;
@@ -116,32 +116,22 @@ public class SimpleTelnetConnection implements CommandLine {
 	
 	public void handleSegment(String[] segment) throws IOException {
 		int seq;
-		int ack;
 		int flags;
 		
 		if (segment[1].equals("CTelnetPacket")) {
 			seq = Integer.parseInt(segment[8]);
-			ack = Integer.parseInt(segment[9]);
 			flags = Integer.parseInt(segment[12]);
 		} else if (segment[1].equals("CPduGroup")) {
 			int count = Integer.parseInt(segment[2]);
 			seq = Integer.parseInt(segment[2 + count * 4 + 4]);
-			ack = Integer.parseInt(segment[2 + count * 4 + 5]);
 			flags = Integer.parseInt(segment[2 + count * 4 + 8]);
 		} else {
 			seq = Integer.parseInt(segment[5]);
-			ack = Integer.parseInt(segment[6]);
 			flags = Integer.parseInt(segment[9]);
 		}
 		
-		sequence = ack;
 		acknowledgement = seq + 1;
 		
-		if ((flags & 0x10) != 0) {
-			synchronized (sendMonitor) {
-				sendMonitor.notify();
-			}
-		}
 		if (flags == 0x10) return;
 		
 		Object[] tcpAck = {"CTcpHeader", "", sourcePort, destinationPort, 0, sequence, acknowledgement,
@@ -259,6 +249,7 @@ public class SimpleTelnetConnection implements CommandLine {
 					0, sequence, acknowledgement, 0, 15, 24, -1, 0, 0, 1, 0};
 			
 			sendSegment(tcpPsh);
+			sequence += 108;
 			
 			if (directWrite) {
 				inputStreamWriter.write(b, off, len);
@@ -268,11 +259,9 @@ public class SimpleTelnetConnection implements CommandLine {
 //				debugInputStreamWrite.flush();
 			}
 			
-			synchronized (sendMonitor) {
-				try {
-					sendMonitor.wait();
-				} catch (InterruptedException e) {}
-			}
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {}
 		}
 	}
 	

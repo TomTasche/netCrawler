@@ -13,7 +13,7 @@ public class RingGraphLayout extends GraphLayout {
 	
 	public static final int DEFAULT_BORDER_SIZE = 100;
 	
-	public static int DEFAULT_RING_DISTANCE = 20; 
+	public static int DEFAULT_RING_DISTANCE = 40; 
 	
 	
 	
@@ -108,6 +108,11 @@ public class RingGraphLayout extends GraphLayout {
 				Point position = new Point(
 						(int) (radius * Math.sin(anglePosition)),
 						(int) (-radius * Math.cos(anglePosition)));
+				if ((i & 1) != 0) {
+					int tmp = position.x;
+					position.x = position.y;
+					position.y = tmp;
+				}
 				vertex.setCenter(position);
 				
 				if (position.getX() < left) left = position.x;
@@ -127,6 +132,7 @@ public class RingGraphLayout extends GraphLayout {
 		
 		Dimension size = new Dimension(width, height);
 		jGraph.setPreferredSize(size);
+		jGraph.revalidate();
 		
 		Point middle = new Point(width / 2, height / 2);
 		

@@ -14,6 +14,7 @@ public class NetworkDevice {
 	protected Set<InetAddress> managementAddresses;
 	
 	
+	
 	public NetworkDevice() {
 		this((String) null);
 	}
@@ -29,6 +30,7 @@ public class NetworkDevice {
 		this.hostname = hostname;
 		this.managementAddresses = new HashSet<InetAddress>(managementAddresses);
 	}
+	
 	
 	
 	@Override
@@ -52,7 +54,7 @@ public class NetworkDevice {
 	
 	
 	public Set<NetworkInterface> getInterfaces() {
-		return new HashSet<NetworkInterface>(interfaces);
+		return Collections.unmodifiableSet(interfaces);
 	}
 	public NetworkInterface getInterface(String name) {
 		for (NetworkInterface networkInterface : interfaces) {
@@ -69,9 +71,15 @@ public class NetworkDevice {
 	}
 	
 	public void setInterfaces(Set<NetworkInterface> interfaces) {
+		if (this.interfaces != null) {
+			for (NetworkInterface networkInterface : this.interfaces) {
+				networkInterface.parentDevice = null;
+			}
+		}
+		
 		this.interfaces = new HashSet<NetworkInterface>(interfaces);
 		
-		for (NetworkInterface networkInterface : this.interfaces) {
+		for (NetworkInterface networkInterface : interfaces) {
 			networkInterface.parentDevice = this;
 		}
 	}

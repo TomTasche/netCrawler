@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+import at.andiwand.library.graphics.graph.RingGraphLayout;
 import at.andiwand.library.util.JFrameUtil;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
 import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
@@ -34,6 +35,7 @@ public class TestSimplePTNetworkCrawler {
 		frame.setLayout(new BorderLayout());
 		
 		JNetworkGraph jNetworkGraph = new JNetworkGraph();
+		jNetworkGraph.setGraphLayout(new RingGraphLayout(jNetworkGraph));
 		jNetworkGraph.setGraph(networkGraph);
 		jNetworkGraph.setAntialiasing(true);
 		jNetworkGraph.setMagneticLines(true);
@@ -48,7 +50,7 @@ public class TestSimplePTNetworkCrawler {
 		
 		
 		SimpleCiscoUser masterUser = new SimpleCiscoUser("cisco", "cisco");
-		Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.1");
+		Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.153");
 		Inet4Address deviceGateway = (Inet4Address) Inet4Address.getByName("192.168.0.254");
 		SimpleCLIFactroy cliFactroy = new SimplePTTelnetFactory(deviceAddress, deviceGateway);
 		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(cliFactroy, masterUser, rootAddress);

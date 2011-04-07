@@ -38,7 +38,6 @@ public class TestDefaultCiscoDeviceAgent {
 				System.out.println(device.getClass());
 				System.out.println(device.getHostname());
 				System.out.println(device.getSeriesNumber());
-				System.out.println(device.getProcessorBoardId());
 				System.out.println(device.getInterfaces());
 				System.out.println(device.getManagementAddresses());
 				System.out.println(deviceAgent.fetchNeighbors());

@@ -196,9 +196,10 @@ public class JGraph extends JComponent {
 			Set<DrawableVertex> connectedVertices = edge.getConnectedVertices();
 			if (!connectedVertices.contains(vertex)) continue;
 			
-			connectedVertices.remove(vertex);
 			result.addAll(connectedVertices);
 		}
+		
+		result.remove(vertex);
 		
 		return result;
 	}

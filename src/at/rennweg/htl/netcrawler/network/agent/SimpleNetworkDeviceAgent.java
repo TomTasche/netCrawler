@@ -35,8 +35,8 @@ public abstract class SimpleNetworkDeviceAgent {
 		return result;
 	}
 	public void fetchAll(NetworkDevice device) throws IOException {
-		device.setInterfaces(fetchInterfaces());
 		device.setHostname(fetchHostname());
+		device.setInterfaces(fetchInterfaces());
 		device.setManagementAddresses(fetchManagementAddresses());
 	}
 	

@@ -1,25 +1,26 @@
 package at.rennweg.htl.netcrawler.network.crawler;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import at.andiwand.library.util.cli.CommandLine;
+import at.rennweg.htl.netcrawler.cli.SimpleCachedCommandLineExecutor;
+import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
 import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
+import at.rennweg.htl.netcrawler.network.agent.DefaultCiscoDeviceAgent;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
-import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
-import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
+import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
+import at.rennweg.htl.netcrawler.network.graph.NetworkLink;
+import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 
 public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
@@ -42,107 +43,80 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 	
 	@Override
 	public void crawl(NetworkGraph networkGraph) {
-		DeviceCrawler rootCrawler = new DeviceCrawler(networkGraph, root);
+		DeviceCrawler rootCrawler = new DeviceCrawler(networkGraph, root, null);
 		executor.execute(rootCrawler);
 	}
 	
 	
 	private class DeviceCrawler implements Runnable {
 		private NetworkGraph networkGraph;
-		private InetAddress address;
+		private InetAddress host;
+		private SimpleNeighbor sourceNeighbor;
 		
-		public DeviceCrawler(NetworkGraph networkGraph, InetAddress address) {
+		public DeviceCrawler(NetworkGraph networkGraph, InetAddress host, SimpleNeighbor sourceNeighbor) {
 			this.networkGraph = networkGraph;
-			this.address = address;
+			this.host = host;
+			this.sourceNeighbor = sourceNeighbor;
 		}
 		
 		public void run() {
 			try {
-				CommandLine commandLine = cliFactroy.getCommandLine(address, masterUser);
-				SimpleCiscoCommandLineExecutor lineExecutor = new SimpleCiscoCommandLineExecutor(commandLine);
+				CommandLine ciscoCli = cliFactroy.getCommandLine(host, masterUser);
+				SimpleCiscoCommandLineExecutor executor = new SimpleCiscoCommandLineExecutor(ciscoCli);
+				SimpleCachedCommandLineExecutor cachedExecutor = new SimpleCachedCommandLineExecutor(executor);
+				DefaultCiscoDeviceAgent deviceAgent = new DefaultCiscoDeviceAgent(cachedExecutor);
 				
-				String runningConfig = lineExecutor.execute("show running-config");
-				String hostname = null;
-				for (String line : runningConfig.split("\n")) {
-					line = line.trim();
-					
-					if (line.startsWith("hostname ")) {
-						hostname = line.substring("hostname ".length());
-						break;
-					}
-				}
+				CiscoDevice device = deviceAgent.fetchComparable();
 				
-				String version = lineExecutor.execute("show version");
-				Pattern seriesNumberPattern = Pattern.compile("^.* (.*?) Software \\((.*?)\\).*$");
-				String seriesNumber = null;
-				String deviceId = null;
-				for (String line : version.split("\n")) {
-					line = line.trim();
-					
-					Matcher seriesNumberMatcher = seriesNumberPattern.matcher(line);
-					if (seriesNumberMatcher.matches()) {
-						seriesNumber = seriesNumberMatcher.group(1);
-					} else if (line.startsWith("Processor board ID ")) {
-						deviceId = line.substring("Processor board ID ".length());
-					}
-				}
-				
-				CiscoDevice device = null;
-				
-				if (seriesNumber.startsWith("28")) device = new CiscoRouter();
-				else if (seriesNumber.startsWith("C3560")) device = new CiscoSwitch();
-				else device = new CiscoDevice();
-				
-				InetAddress managementAddress = address;
-				Set<InetAddress> managementAddresses = new HashSet<InetAddress>();
-				managementAddresses.add(managementAddress);
-				device.setManagementAddresses(managementAddresses);
-				device.setHostname(hostname);
-				device.setSeriesNumber(seriesNumber);
-				device.setProcessorBoardId(deviceId);
-				
-				System.out.println(hostname);
 				if (networkGraph.getVertices().contains(device)) {
 					HashSet<NetworkDevice> dummy = new HashSet<NetworkDevice>();
 					dummy.add(device);
-					Collection<NetworkDevice> singeDevice = networkGraph.getVertices();
-					singeDevice.retainAll(dummy);
-					device = (CiscoDevice) new ArrayList<NetworkDevice>(singeDevice).get(0);
+					Set<NetworkDevice> singleDevice = new HashSet<NetworkDevice>(networkGraph.getVertices());
+					singleDevice.retainAll(dummy);
+					device = (CiscoDevice) new ArrayList<NetworkDevice>(singleDevice).get(0);
 					
-					commandLine.close();
+					ciscoCli.close();
 					return;
 				}
+				
+				deviceAgent.fetchAll(device);
 				networkGraph.addVertex(device);
 				
-				String interfaces = lineExecutor.execute("show ip interface brief");
-				for (String line : interfaces.split("\n")) {
-					if (line.toLowerCase().startsWith("interface")) continue;
+				if (sourceNeighbor != null) {
+					NetworkDevice otherDevice = sourceNeighbor.getSourceDevice();
 					
-					String[] columns = line.split("\\s+");
+					NetworkInterface deviceInterface = device.getInterface(sourceNeighbor.getInterfaceName());
+					NetworkInterface neighbourInterface = otherDevice.getInterface(sourceNeighbor.getSourceInterfaceName());
 					
-					if (columns.length != 6) continue;
-					if (columns[4].toLowerCase().equals("down")) continue;
-					if (columns[5].toLowerCase().equals("down")) continue;
+					NetworkLink link = null;
 					
-					NetworkInterface networkInterface = new NetworkInterface(columns[0]);
-					device.addInterface(networkInterface);
-				}
-				System.out.println(device.getInterfaces());
-				
-				String neighbors = lineExecutor.execute("show cdp neighbors detail");
-				Inet4Address currentAddress = null;
-				for (String line : neighbors.split("\n")) {
-					line = line.trim();
-					
-					if (line.startsWith("IP address : ")) {
-						currentAddress = (Inet4Address) Inet4Address.getByName(line.substring("IP address : ".length()));
-						System.out.println(hostname + " do lookup1 " + currentAddress.getHostAddress());
-						DeviceCrawler neighbourCrawler = new DeviceCrawler(networkGraph, currentAddress);
-						executor.execute(neighbourCrawler);
+					if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
+						EthernetLink ethernetLink = new EthernetLink(deviceInterface, neighbourInterface);
+						ethernetLink.setCrossover(device.getClass().equals(otherDevice.getClass()));
+						
+						link = ethernetLink;
+					} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
+						SerialLink serialLink = new SerialLink(deviceInterface, neighbourInterface);
+						
+						link = serialLink;
 					}
+					
+					if (link != null) networkGraph.addEdge(link);
 				}
 				
-				commandLine.close();
+				List<SimpleNeighbor> neighbors = deviceAgent.fetchNeighbors();
+				
+				for (SimpleNeighbor neighbor : neighbors) {
+					if (neighbor.getManagementAddresses().isEmpty()) continue;
+					
+					InetAddress managementAddress = neighbor.getManagementAddresses().get(0);
+					
+					neighbor.setSourceDevice(device);
+					DeviceCrawler crawler = new DeviceCrawler(networkGraph, managementAddress, neighbor);
+					SimpleCiscoThreadedNetworkCrawler.this.executor.execute(crawler);
+				}
+				
+				ciscoCli.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

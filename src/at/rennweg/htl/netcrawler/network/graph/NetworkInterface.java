@@ -21,15 +21,14 @@ public class NetworkInterface {
 		if (!(obj instanceof NetworkInterface)) return false;
 		NetworkInterface networkInterface = (NetworkInterface) obj;
 		
-		return parentDevice.equals(networkInterface.parentDevice) && name.equals(networkInterface.name);
+		if (parentDevice == null) return name.equals(networkInterface.name);
+		return parentDevice.equals(networkInterface.parentDevice) &&
+			name.equals(networkInterface.name);
 	}
 	@Override
 	public int hashCode() {
-		int result = name.hashCode();
-		
-		if (parentDevice != null) result ^= parentDevice.hashCode();
-		
-		return result;
+		if (parentDevice == null) return name.hashCode();
+		return parentDevice.hashCode() ^ name.hashCode();
 	}
 	@Override
 	public String toString() {

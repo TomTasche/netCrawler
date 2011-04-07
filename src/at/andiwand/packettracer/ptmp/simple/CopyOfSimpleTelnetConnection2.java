@@ -6,11 +6,14 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Inet4Address;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import at.andiwand.library.util.cli.CommandLine;
 
 
-public class SimpleTelnetConnection implements CommandLine {
+public class CopyOfSimpleTelnetConnection2 implements CommandLine {
 	
 	private SimpleNetworkDevice device;
 	private int sourcePort;
@@ -23,7 +26,7 @@ public class SimpleTelnetConnection implements CommandLine {
 	private PipedOutputStream inputStreamWriter = new PipedOutputStream();
 	private PipedInputStream inputStream = new PipedInputStream(inputStreamWriter);
 	private SimpleTelnetOutputStream outputStream = new SimpleTelnetOutputStream();
-	private Object sendMonitor = new Object();
+	private Sender sender = new Sender();
 	private boolean directWrite;
 	
 	private Object connectSync = new Object();
@@ -36,7 +39,7 @@ public class SimpleTelnetConnection implements CommandLine {
 //	private JSimpleTerminal debugTerminal;
 	
 	
-	public SimpleTelnetConnection(SimpleNetworkDevice device, int sourcePort, Inet4Address destinationAddress, int destinationPort) throws IOException {
+	public CopyOfSimpleTelnetConnection2(SimpleNetworkDevice device, int sourcePort, Inet4Address destinationAddress, int destinationPort) throws IOException {
 		this.device = device;
 		this.sourcePort = sourcePort;
 		this.destinationAddress = destinationAddress;
@@ -45,6 +48,8 @@ public class SimpleTelnetConnection implements CommandLine {
 		if (device.telnetConnections.containsKey(sourcePort))
 			throw new RuntimeException("port already in use!");
 		device.telnetConnections.put(sourcePort, this);
+		
+		sender.start();
 		
 		//asdf
 //		debugTerminal = new JSimpleTerminal(new CommandLine() {
@@ -91,7 +96,8 @@ public class SimpleTelnetConnection implements CommandLine {
 		Object[] tcpSyn = {"CTcpHeader", "", sourcePort, destinationPort, 0, sequence, acknowledgement,
 				0, 15, 2, -1,0, 0, 0, 1, "CTcpOptionMSS", 2, 4, 1460};
 		
-		sendSegment(tcpSyn);
+		sendSegment(sequence, tcpSyn);
+		sequence++;
 		
 		synchronized (connectSync) {
 			if (connected) return;
@@ -134,20 +140,15 @@ public class SimpleTelnetConnection implements CommandLine {
 			flags = Integer.parseInt(segment[9]);
 		}
 		
-		sequence = ack;
 		acknowledgement = seq + 1;
 		
-		if ((flags & 0x10) != 0) {
-			synchronized (sendMonitor) {
-				sendMonitor.notify();
-			}
-		}
+		if ((flags & 0x10) != 0) sender.ack(ack);
 		if (flags == 0x10) return;
 		
 		Object[] tcpAck = {"CTcpHeader", "", sourcePort, destinationPort, 0, sequence, acknowledgement,
 				0, 15, 16, -1, 0, 0, 0, 0};
 		
-		sendSegment(tcpAck);
+		sendSegmentImpl(tcpAck);
 		
 		if ((flags & 0x02) != 0) {
 			synchronized (connectSync) {
@@ -208,7 +209,10 @@ public class SimpleTelnetConnection implements CommandLine {
 		}
 	}
 	
-	public void sendSegment(Object[] segment) throws IOException {
+	public void sendSegment(int seq, Object[] segment) {
+		sender.addSegment(seq, segment);
+	}
+	public void sendSegmentImpl(Object[] segment) throws IOException {
 		device.sendPacket(6, destinationAddress, segment);
 	}
 	
@@ -223,7 +227,7 @@ public class SimpleTelnetConnection implements CommandLine {
 				0, 15, 4, -1, 0, 0, 0, 0};
 		
 		try {
-			sendSegment(tcpRst);
+			sendSegmentImpl(tcpRst);
 			
 			inputStreamWriter.close();
 			inputStream.close();
@@ -255,10 +259,11 @@ public class SimpleTelnetConnection implements CommandLine {
 			
 			if (data.contains("" + (char) 65533)) return;
 			
-			Object[] tcpPsh = {"CTcpHeader", "CTelnetPacket", data, true, 0, sourcePort, destinationPort,
+			final Object[] tcpPsh = {"CTcpHeader", "CTelnetPacket", data, true, 0, sourcePort, destinationPort,
 					0, sequence, acknowledgement, 0, 15, 24, -1, 0, 0, 1, 0};
 			
-			sendSegment(tcpPsh);
+			sendSegment(sequence, tcpPsh);
+			sequence += 108;
 			
 			if (directWrite) {
 				inputStreamWriter.write(b, off, len);
@@ -267,11 +272,67 @@ public class SimpleTelnetConnection implements CommandLine {
 //				debugInputStreamWrite.write(data.getBytes("us-ascii"));
 //				debugInputStreamWrite.flush();
 			}
+		}
+	}
+	
+	private class Sender extends Thread {
+		private LinkedHashMap<Integer, Object[]> queue = new LinkedHashMap<Integer, Object[]>();
+		private Object monitor = new Object();
+		private Object waitObject = new Object();
+		private int ack;
+		
+		public void run() {
+			try {
+				Object[] lastSegment = null;
+				int i = 0;
+				while (true) {
+					synchronized (waitObject) {
+						if (queue.isEmpty()) waitObject.wait();
+					}
+					
+					synchronized (queue) {
+						Object[] segment = queue.values().iterator().next();
+						if (segment == lastSegment) {
+							System.out.println("repeat " + (i++));
+							System.out.println("	" + Arrays.toString(segment));
+							System.out.println("	" + ack);
+						}
+						sendSegmentImpl(segment);
+						lastSegment = segment;
+					}
+					
+					synchronized (monitor) {
+						try {
+							monitor.wait(500);
+						} catch (InterruptedException e) {}
+					}
+				}
+			} catch (InterruptedException e) {
+			} catch (IOException e) {}
+		}
+		
+		public synchronized void addSegment(int seq, Object[] segment) {
+			queue.put(seq, segment);
 			
-			synchronized (sendMonitor) {
-				try {
-					sendMonitor.wait();
-				} catch (InterruptedException e) {}
+			synchronized (waitObject) {
+				waitObject.notify();
+			}
+		}
+		
+		public synchronized void ack(int ack) {
+			LinkedHashMap<Integer, Object[]> newQueue =
+				new LinkedHashMap<Integer, Object[]>();
+			
+			for (Map.Entry<Integer, Object[]> entry : queue.entrySet()) {
+				if (entry.getKey() >= ack)
+					newQueue.put(entry.getKey(), entry.getValue());
+			}
+			
+			queue = newQueue;
+			this.ack = ack;
+			
+			synchronized (monitor) {
+				monitor.notify();
 			}
 		}
 	}

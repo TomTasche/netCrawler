@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="at/andiwand/packettracer/ptmp/simple/CopyOfSimpleTelnetConnection.java|at/andiwand/packettracer/ptmp/simple/CopyOfSimpleTelnetConnection1.java|at/andiwand/packettracer/ptmp/simple/CopyOfSimpleTelnetConnection2.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.44.jar" sourcepath="lib/jsch-0.1.44.zip"/>
 	<classpathentry kind="lib" path="lib/jcterm-0.0.9.jar" sourcepath="lib/jcterm-0.0.9.zip"/>

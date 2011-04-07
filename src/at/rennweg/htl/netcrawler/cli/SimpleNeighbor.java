@@ -1,11 +1,16 @@
 package at.rennweg.htl.netcrawler.cli;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 
-public class SimpleCdpNeighbor {
+
+public class SimpleNeighbor {
+	
+	private NetworkDevice sourceDevice;
 	
 	private String name;
 	private List<InetAddress> managementAddresses;
@@ -19,11 +24,14 @@ public class SimpleCdpNeighbor {
 	}
 	
 	
+	public NetworkDevice getSourceDevice() {
+		return sourceDevice;
+	}
 	public String getName() {
 		return name;
 	}
 	public List<InetAddress> getManagementAddresses() {
-		return managementAddresses;
+		return Collections.unmodifiableList(managementAddresses);
 	}
 	public String getSourceInterfaceName() {
 		return sourceInterfaceName;
@@ -32,11 +40,14 @@ public class SimpleCdpNeighbor {
 		return interfaceName;
 	}
 	
+	public void setSourceDevice(NetworkDevice sourceDevice) {
+		this.sourceDevice = sourceDevice;
+	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public void setManagementAddresses(List<InetAddress> managementAddresses) {
-		this.managementAddresses = Collections.unmodifiableList(managementAddresses);
+		this.managementAddresses = new ArrayList<InetAddress>(managementAddresses);
 	}
 	public void setSourceInterfaceName(String sourceInterfaceName) {
 		this.sourceInterfaceName = sourceInterfaceName;

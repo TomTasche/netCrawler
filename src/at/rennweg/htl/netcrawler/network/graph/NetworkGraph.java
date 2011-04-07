@@ -1,6 +1,7 @@
 package at.rennweg.htl.netcrawler.network.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,12 +49,12 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> impl
 	
 	@Override
 	public Set<NetworkDevice> getVertices() {
-		return new HashSet<NetworkDevice>(vertices);
+		return Collections.unmodifiableSet(vertices);
 	}
 	
 	@Override
 	public List<NetworkLink> getEdges() {
-		return new ArrayList<NetworkLink>(cables);
+		return Collections.unmodifiableList(cables);
 	}
 	
 	public List<NetworkLink> getCables() {

@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.util.SimpleRemoteExecutor;
-import at.rennweg.htl.netcrawler.cli.SimpleCdpNeighbor;
+import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
@@ -34,13 +34,16 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 	public static final Pattern PROCESSOR_BOARD_ID_PATTERN = Pattern.compile("processor board id (.*)", Pattern.CASE_INSENSITIVE);
 	public static final int PROCESSOR_BOARD_ID_GROUP = 1;
 	
+	public static final Pattern MOTHERBOARD_SERIAL_NUMBER_PATTERN = Pattern.compile("motherboard serial number *?: ?(.*)", Pattern.CASE_INSENSITIVE);
+	public static final int MOTHERBOARD_SERIAL_NUMBER_GROUP = 1;
+	
 	public static final Pattern NEIGHBOR_NAME_PATTERN = Pattern.compile("device id ?: ?(.*)", Pattern.CASE_INSENSITIVE);
 	public static final int NEIGHBOR_NAME_GROUP = 1;
 	public static final Pattern NEIGHBOR_MGMT_IP_PATTERN = Pattern.compile("ip address ?: ?(.*)", Pattern.CASE_INSENSITIVE);
 	public static final int NEIGHBOR_MGMT_IP_GROUP = 1;
 	public static final Pattern NEIGHBOR_INT_PATTERN = Pattern.compile("interface ?: ?(.*?), port id.*?: ?(.*)", Pattern.CASE_INSENSITIVE);
-	public static final int NEIGHBOR_INT_NAME_GROUP = 1;
-	public static final int NEIGHBOR_SOURCE_INT_NAME_GROUP = 2;
+	public static final int NEIGHBOR_SOURCE_INT_NAME_GROUP = 1;
+	public static final int NEIGHBOR_INT_NAME_GROUP = 2;
 	
 	
 	public static final String PATTERNS_FILE_COMMENT_PREFIX = "#";
@@ -112,8 +115,11 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 			if (line.trim().isEmpty()) continue;
 			
 			String[] columns = line.split("\\s+");
+			String interfaceName = columns[0];
 			
-			NetworkInterface networkInterface = new NetworkInterface(columns[0]);
+			if (interfaceName.isEmpty()) continue;
+			
+			NetworkInterface networkInterface = new NetworkInterface(interfaceName);
 			result.add(networkInterface);
 		}
 		
@@ -176,6 +182,18 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 		return matcher.group(PROCESSOR_BOARD_ID_GROUP);
 	}
 	
+	public String fetchMotherboardSerialNumber() throws IOException {
+		String version = executor.execute("show version");
+		Matcher matcher = matchLines(MOTHERBOARD_SERIAL_NUMBER_PATTERN, version);
+		
+		if (matcher == null) {
+			//TODO: exception class
+			throw new RuntimeException("Cannot fetch processor board ID!");
+		}
+		
+		return matcher.group(MOTHERBOARD_SERIAL_NUMBER_GROUP);
+	}
+	
 	
 	private Matcher matchLines(Pattern pattern, String string) {
 		for (String line : string.split("\r\n")) {
@@ -190,20 +208,7 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 	
 	@Override
 	public CiscoDevice fetchAll() throws IOException {
-		CiscoDevice result = null;
-		
-		String seriesNumber = fetchSeriesNumber();
-		
-		if (matchPattenSet(ROUTER_PATTERNS, seriesNumber)) {
-			result = new CiscoRouter();
-		} else {
-			if (matchPattenSet(SWITCH_PATTERNS, seriesNumber)) {
-				result = new CiscoSwitch();
-			} else {
-				//TODO: exception class
-				throw new RuntimeException("Unkown series number!");
-			}
-		}
+		CiscoDevice result = fetchComparable();
 		
 		super.fetchAll(result);
 		
@@ -224,16 +229,49 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 			throw new RuntimeException("Illegal series number for switches!");
 		}
 		
+		if (device instanceof CiscoRouter) {
+			CiscoRouter router = (CiscoRouter) device;
+			router.setProcessorBoardId(fetchHostname());
+		} else {
+			CiscoSwitch ciscoSwitch = (CiscoSwitch) device;
+			ciscoSwitch.setMotherboardSerialNumber(fetchMotherboardSerialNumber());
+		}
+		
 		super.fetchAll(device);
 	}
 	
+	public CiscoDevice fetchComparable() throws IOException {
+		CiscoDevice result = null;
+		
+		String seriesNumber = fetchSeriesNumber();
+		
+		if (matchPattenSet(ROUTER_PATTERNS, seriesNumber)) {
+			CiscoRouter router = new CiscoRouter();
+			router.setProcessorBoardId(fetchHostname());
+			result = router;
+		} else {
+			if (matchPattenSet(SWITCH_PATTERNS, seriesNumber)) {
+				CiscoSwitch ciscoSwitch = new CiscoSwitch();
+				ciscoSwitch.setMotherboardSerialNumber(fetchMotherboardSerialNumber());
+				result = ciscoSwitch;
+			} else {
+				//TODO: exception class
+				throw new RuntimeException("Unkown series number!");
+			}
+		}
+		
+		result.setHostname(fetchHostname());
+		
+		return result;
+	}
 	
-	public List<SimpleCdpNeighbor> fetchNeighbors() throws IOException {
-		List<SimpleCdpNeighbor> result = new ArrayList<SimpleCdpNeighbor>();
+	
+	public List<SimpleNeighbor> fetchNeighbors() throws IOException {
+		List<SimpleNeighbor> result = new ArrayList<SimpleNeighbor>();
 		
 		String neighbors = executor.execute("show cdp neighbors detail");
 		
-		SimpleCdpNeighbor currentNeighbor = null;
+		SimpleNeighbor currentNeighbor = null;
 		List<InetAddress> currentMgmtAddresses = new ArrayList<InetAddress>();
 		
 		for (String line : neighbors.split("\n")) {
@@ -244,10 +282,11 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 			if (nameMatcher.matches()) {
 				if (currentNeighbor != null) {
 					currentNeighbor.setManagementAddresses(currentMgmtAddresses);
+					currentMgmtAddresses.clear();
 					result.add(currentNeighbor);
 				}
 				
-				currentNeighbor = new SimpleCdpNeighbor();
+				currentNeighbor = new SimpleNeighbor();
 				currentNeighbor.setName(nameMatcher.group(NEIGHBOR_NAME_GROUP));
 			} else if (currentNeighbor != null) {
 				Matcher mgmtIpMatcher = NEIGHBOR_MGMT_IP_PATTERN.matcher(line);
@@ -262,15 +301,17 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 				Matcher intMatcher = NEIGHBOR_INT_PATTERN.matcher(line);
 				
 				if (intMatcher.matches()) {
-					currentNeighbor.setInterfaceName(intMatcher.group(NEIGHBOR_INT_NAME_GROUP));
 					currentNeighbor.setSourceInterfaceName(intMatcher.group(NEIGHBOR_SOURCE_INT_NAME_GROUP));
+					currentNeighbor.setInterfaceName(intMatcher.group(NEIGHBOR_INT_NAME_GROUP));
 				}
 			}
 		}
 		
-		currentNeighbor.setManagementAddresses(currentMgmtAddresses);
-		result.add(currentNeighbor);
-	
+		if (currentNeighbor != null) {
+			currentNeighbor.setManagementAddresses(currentMgmtAddresses);
+			result.add(currentNeighbor);
+		}
+		
 		return result;
 	}
 	
