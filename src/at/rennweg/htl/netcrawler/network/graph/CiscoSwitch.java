@@ -6,6 +6,11 @@ import java.util.Set;
 
 public class CiscoSwitch extends CiscoDevice {
 	
+	private static final long serialVersionUID = -7661027031835956926L;
+	
+	
+	
+	
 	private String motherboardSerialNumber;
 	
 	

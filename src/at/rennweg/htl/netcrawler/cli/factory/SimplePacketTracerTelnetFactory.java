@@ -14,25 +14,28 @@ import at.rennweg.htl.netcrawler.cli.SimpleCiscoLoginManager;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
 
 
-public class SimplePTTelnetFactory implements SimpleCLIFactroy {
+public class SimplePacketTracerTelnetFactory implements SimpleCiscoCLIFactroy {
 	
-	public static final String DEFAULT_NAME = "Simple Bridge Interface";
+	public static final String DEVICE_NAME = "Simple Bridge Interface";
+	
+	public static final int DEFAULT_PORT = SimpleMultiuserClient.DEFAULT_PORT;
+	public static final String DEFAULT_NETWORK_NAME = SimpleMultiuserClient.DEFAULT_USER;
 	public static final MACAddress DEFAULT_MAC_ADDRESS = new MACAddress("00:24:8c:fd:fe:96");
 	
 	
 	private SimpleNetworkDevice networkDevice;
 	private final Object networkDeviceSync = new Object();
 	
-	public SimplePTTelnetFactory(Inet4Address deviceAddress, Inet4Address deviceGateway) throws UnknownHostException, IOException, InterruptedException {
-		this(InetAddress.getLocalHost(), DEFAULT_NAME, DEFAULT_MAC_ADDRESS, deviceAddress, deviceGateway);
+	public SimplePacketTracerTelnetFactory(Inet4Address deviceAddress, Inet4Address deviceGateway) throws UnknownHostException, IOException, InterruptedException {
+		this(InetAddress.getLocalHost(), DEFAULT_PORT, DEFAULT_NETWORK_NAME, DEFAULT_MAC_ADDRESS, deviceAddress, deviceGateway);
 	}
-	public SimplePTTelnetFactory(InetAddress ptAddress, final String name, final MACAddress macAddress, final Inet4Address deviceAddress, final Inet4Address deviceGateway) throws IOException, InterruptedException {
+	public SimplePacketTracerTelnetFactory(InetAddress ptAddress, int ptPort, final String networkName, final MACAddress macAddress, final Inet4Address deviceAddress, final Inet4Address deviceGateway) throws IOException, InterruptedException {
 		SimpleMultiuserClient multiuserClient = new SimpleMultiuserClient();
 		multiuserClient.setInterfaceFactory(new SimpleNetworkDeviceFactory() {
 			public SimpleNetworkDevice createInterface(String[] linkRequest) {
 				if (networkDevice != null) return null;
 				
-				SimpleNetworkDevice device = new SimpleNetworkDevice(name, macAddress, deviceAddress);
+				SimpleNetworkDevice device = new SimpleNetworkDevice(DEVICE_NAME, macAddress, deviceAddress);
 				device.setDefaultRoute(deviceGateway);
 				
 				synchronized (networkDeviceSync) {
@@ -43,7 +46,7 @@ public class SimplePTTelnetFactory implements SimpleCLIFactroy {
 				return device;
 			}
 		});
-		multiuserClient.connect(ptAddress);
+		multiuserClient.connect(ptAddress, ptPort, networkName);
 		
 		synchronized (networkDeviceSync) {
 			if (networkDevice == null) networkDeviceSync.wait();

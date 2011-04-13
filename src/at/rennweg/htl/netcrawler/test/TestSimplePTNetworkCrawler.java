@@ -7,12 +7,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 
 import at.andiwand.library.graphics.graph.RingGraphLayout;
 import at.andiwand.library.util.JFrameUtil;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
-import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
-import at.rennweg.htl.netcrawler.cli.factory.SimplePTTelnetFactory;
+import at.rennweg.htl.netcrawler.cli.executor.factory.SimpleCiscoRemoteExecutorFactory;
+import at.rennweg.htl.netcrawler.cli.executor.factory.SimplePacketTracerTelnetExecutorFactory;
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoNetworkCrawler;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
@@ -21,22 +22,19 @@ import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 public class TestSimplePTNetworkCrawler {
 	
 	public static void main(String[] args) throws Throwable {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		
+		
 		String rootHost = JOptionPane.showInputDialog("type in the root device", "192.168.0.254");
 		if (rootHost == null) System.exit(0);
 		Inet4Address rootAddress = (Inet4Address) Inet4Address.getByName(rootHost);
 		
-		
-		NetworkGraph networkGraph = new NetworkGraph();
-		
-		
-		//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
 		JFrame frame = new JFrame();
 		frame.setLayout(new BorderLayout());
 		
 		JNetworkGraph jNetworkGraph = new JNetworkGraph();
 		jNetworkGraph.setGraphLayout(new RingGraphLayout(jNetworkGraph));
-		jNetworkGraph.setGraph(networkGraph);
 		jNetworkGraph.setAntialiasing(true);
 		jNetworkGraph.setMagneticLines(true);
 		JScrollPane scrollPane = new JScrollPane(jNetworkGraph);
@@ -52,8 +50,11 @@ public class TestSimplePTNetworkCrawler {
 		SimpleCiscoUser masterUser = new SimpleCiscoUser("cisco", "cisco");
 		Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.153");
 		Inet4Address deviceGateway = (Inet4Address) Inet4Address.getByName("192.168.0.254");
-		SimpleCLIFactroy cliFactroy = new SimplePTTelnetFactory(deviceAddress, deviceGateway);
-		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(cliFactroy, masterUser, rootAddress);
+		SimpleCiscoRemoteExecutorFactory executorFactory = new SimplePacketTracerTelnetExecutorFactory(deviceAddress, deviceGateway);
+		SimpleCiscoNetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(executorFactory, masterUser, rootAddress);
+		
+		NetworkGraph networkGraph = new NetworkGraph();
+		jNetworkGraph.setGraph(networkGraph);
 		networkCrawler.crawl(networkGraph);
 	}
 	

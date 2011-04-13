@@ -4,8 +4,8 @@ import java.net.Inet4Address;
 
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
-import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
-import at.rennweg.htl.netcrawler.cli.factory.SimplePTTelnetFactory;
+import at.rennweg.htl.netcrawler.cli.factory.SimpleCiscoCLIFactroy;
+import at.rennweg.htl.netcrawler.cli.factory.SimplePacketTracerTelnetFactory;
 
 
 public class TestSimpleCiscoCommandLineExecutor {
@@ -16,7 +16,7 @@ public class TestSimpleCiscoCommandLineExecutor {
 		SimpleCiscoUser user = new SimpleCiscoUser("cisco", "cisco");
 		Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.1");
 		Inet4Address deviceGateway = (Inet4Address) Inet4Address.getByName("192.168.0.254");
-		SimpleCLIFactroy cliFactroy = new SimplePTTelnetFactory(deviceAddress, deviceGateway);
+		SimpleCiscoCLIFactroy cliFactroy = new SimplePacketTracerTelnetFactory(deviceAddress, deviceGateway);
 		SimpleCiscoCommandLineExecutor executor = new SimpleCiscoCommandLineExecutor(cliFactroy.getCommandLine(destinationAddress, user));
 		
 		String[] commands = {"show running-config", "show ip interface brief", "show running-config", "show ip interface brief", "show version"};

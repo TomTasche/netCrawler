@@ -17,6 +17,8 @@ import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 //TODO: remove vector user
 public class DrawableEthernetLink extends DrawableEdge {
 	
+	private static final long serialVersionUID = -2023084402600392774L;
+	
 	public static final Color DEFAULT_COLOR = Color.BLACK;
 	public static final double DEFAULT_SEPERATION_LENGTH = 10;
 	
@@ -42,6 +44,7 @@ public class DrawableEthernetLink extends DrawableEdge {
 	public void draw(Graphics g) {
 		g.setColor(color);
 		
+		Set<DrawableVertex> connectedVertices = getConnectedVertices();
 		List<DrawableVertex> vertices = new ArrayList<DrawableVertex>(connectedVertices);
 		
 		Point a = vertices.get(0).getCenter();

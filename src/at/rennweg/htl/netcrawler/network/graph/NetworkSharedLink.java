@@ -7,11 +7,12 @@ import java.util.Set;
 import at.andiwand.library.math.graph.Hyperedge;
 
 
-
 public abstract class NetworkSharedLink extends NetworkLink implements Hyperedge<NetworkDevice> {
 	
-	private Set<NetworkInterface> networkInterfaces;
+	private static final long serialVersionUID = 7132924733359489405L;
 	
+	
+	private Set<NetworkInterface> networkInterfaces;
 	
 	public NetworkSharedLink(NetworkInterface... networkInterfaces) {
 		this.networkInterfaces = new HashSet<NetworkInterface>();
@@ -20,7 +21,6 @@ public abstract class NetworkSharedLink extends NetworkLink implements Hyperedge
 	public NetworkSharedLink(Set<NetworkInterface> networkInterfaces) {
 		this.networkInterfaces = new HashSet<NetworkInterface>(networkInterfaces);
 	}
-	
 	
 	@Override
 	public Set<NetworkInterface> getConnectedInterfaces() {

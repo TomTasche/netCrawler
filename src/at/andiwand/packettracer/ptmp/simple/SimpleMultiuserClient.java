@@ -48,6 +48,9 @@ public class SimpleMultiuserClient {
 	public void connect(InetAddress address) throws IOException {
 		connect(address, DEFAULT_PORT, DEFAULT_USER, "", DEFAULT_USER);
 	}
+	public void connect(InetAddress address, int port, String remoteNetworkName) throws IOException {
+		connect(address, port, DEFAULT_USER, "", remoteNetworkName);
+	}
 	public void connect(InetAddress address, int port, String username, String password, String remoteNetworkName) throws IOException {
 		socket = new Socket(address, port);
 		inputStream = socket.getInputStream();

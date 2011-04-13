@@ -6,8 +6,11 @@ import java.awt.Point;
 
 public class CircleGraphLayout extends GraphLayout {
 	
+	private static final long serialVersionUID = -4126128106469171870L;
+	
 	public static final int DEFAULT_RADIUS_FACTOR = 40;
 	public static final int DEFAULT_BORDER_SIZE = 100;
+	
 	
 	
 	private double radiusFactor;
@@ -34,26 +37,21 @@ public class CircleGraphLayout extends GraphLayout {
 	}
 	
 	
-	
 	public boolean isFixedRadius() {
 		return fixedRadius;
 	}
-	
 	public int getRadius() {
 		return radius;
 	}
 	
-	
 	public void setFixedRadius(boolean fixedRadius) {
 		this.fixedRadius = fixedRadius;
 	}
-	
 	public void setRadius(int radius) {
 		this.radius = radius;
 		
 		reposition();
 	}
-	
 	
 	
 	@Override

@@ -1,13 +1,19 @@
 package at.rennweg.htl.netcrawler.network.graph;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class NetworkDevice {
+public class NetworkDevice implements Serializable {
 	
+	private static final long serialVersionUID = -8470079973980737109L;
+	
+	
+	
+
 	protected Set<NetworkInterface> interfaces;
 	
 	protected String hostname;

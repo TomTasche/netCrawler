@@ -9,6 +9,8 @@ import at.andiwand.library.math.graph.Edge;
 
 public abstract class DrawableLink extends DrawableEdge {
 	
+	private static final long serialVersionUID = 4558873709534849331L;
+	
 	public DrawableLink(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		super(coveredEdge, connectedVertices);
 	}

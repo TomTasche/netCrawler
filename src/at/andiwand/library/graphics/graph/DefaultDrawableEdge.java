@@ -10,6 +10,8 @@ import at.andiwand.library.math.graph.Edge;
 
 public class DefaultDrawableEdge extends DrawableEdge {
 	
+	private static final long serialVersionUID = 9037196530583554298L;
+	
 	public static final Color DEFAULT_COLOR = Color.BLACK;
 	
 	
@@ -23,7 +25,11 @@ public class DefaultDrawableEdge extends DrawableEdge {
 	public void draw(Graphics g) {
 		g.setColor(color);
 		
+		Edge<Object> coveredEdge = getCoveredEdge();
+		
 		if (coveredEdge.getVertexCount() > 1) {
+			Set<DrawableVertex> connectedVertices = getConnectedVertices();
+			
 			Point middle = new Point();
 			
 			for (DrawableVertex vertex : connectedVertices) {

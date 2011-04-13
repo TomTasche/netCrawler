@@ -34,21 +34,11 @@ public class SimpleCiscoCommandLineExecutor extends SimpleCommandLineExecutor {
 	
 	@Override
 	public String execute(String command) throws IOException {
-		//workaround...
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {}
-		
 		for (int i = 0; i < command.length(); i++) {
 			char c = command.charAt(i);
 			
 			outputStream.write(c);
 			outputStream.flush();
-			
-			//workaround...
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {}
 			
 			if (Character.isWhitespace(c)) continue;
 			

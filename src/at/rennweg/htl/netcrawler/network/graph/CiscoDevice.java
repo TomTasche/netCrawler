@@ -6,7 +6,18 @@ import java.util.Set;
 
 public class CiscoDevice extends NetworkDevice {
 	
+	private static final long serialVersionUID = 4557760818556976835L;
+	
+	
+	
+	
 	protected String seriesNumber;
+	
+	protected String showVersion;
+	protected String dirFlash;
+	protected String showRunningConfiguration;
+	protected String showIpInterfaceBrief;
+	
 	
 	
 	public CiscoDevice() {
@@ -25,12 +36,40 @@ public class CiscoDevice extends NetworkDevice {
 	}
 	
 	
+	
 	public String getSeriesNumber() {
 		return seriesNumber;
 	}
 	
+	public String getShowVersion() {
+		return showVersion;
+	}
+	public String getDirFlash() {
+		return dirFlash;
+	}
+	public String getShowRunningConfiguration() {
+		return showRunningConfiguration;
+	}
+	public String getShowIpInterfaceBrief() {
+		return showIpInterfaceBrief;
+	}
+	
+	
 	public void setSeriesNumber(String seriesNumber) {
 		this.seriesNumber = seriesNumber;
+	}
+	
+	public void setShowVersion(String showVersion) {
+		this.showVersion = showVersion;
+	}
+	public void setDirFlash(String dirFlash) {
+		this.dirFlash = dirFlash;
+	}
+	public void setShowRunningConfiguration(String showRunningConfiguration) {
+		this.showRunningConfiguration = showRunningConfiguration;
+	}
+	public void setShowIpInterfaceBrief(String showIpInterfaceBrief) {
+		this.showIpInterfaceBrief = showIpInterfaceBrief;
 	}
 	
 }

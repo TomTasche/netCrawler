@@ -3,6 +3,10 @@ package at.rennweg.htl.netcrawler.network.graph;
 
 public class EthernetLink extends PointToPointLink {
 	
+	private static final long serialVersionUID = 92055104735400224L;
+	
+	
+	
 	private boolean crossover;
 	
 	

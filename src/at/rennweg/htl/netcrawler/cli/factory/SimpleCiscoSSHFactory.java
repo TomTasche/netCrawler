@@ -8,7 +8,7 @@ import at.rennweg.htl.netcrawler.network.ssh.SSH1Client;
 import at.rennweg.htl.netcrawler.network.ssh.SSH2Client;
 
 
-public class SimpleSSHFactory implements SimpleCLIFactroy {
+public class SimpleCiscoSSHFactory implements SimpleCiscoCLIFactroy {
 	
 	@Override
 	public CommandLine getCommandLine(InetAddress address, SimpleCiscoUser user) throws Exception {

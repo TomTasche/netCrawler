@@ -1,5 +1,6 @@
 package at.andiwand.library.graphics.graph;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
@@ -15,17 +16,22 @@ import at.andiwand.library.math.graph.Edge;
  * @author Andreas Stefl
  * 
  */
-public abstract class DrawableEdge implements Drawable {
+public abstract class DrawableEdge implements Drawable, Serializable {
+	
+	private static final long serialVersionUID = 8315957929885794161L;
+	
+	
+	
+	
+	private final Edge<Object> coveredEdge;
+	
 	
 	/**
-	 * The covered <code>Edge</code> object.
+	 * The parent graph.
 	 */
-	protected final Edge<Object> coveredEdge;
+	protected JGraph graph;
 	
-	/**
-	 * The connected vertices.
-	 */
-	protected final Set<DrawableVertex> connectedVertices;
+	private final Set<DrawableVertex> connectedVertices;
 	
 	
 	
@@ -53,7 +59,7 @@ public abstract class DrawableEdge implements Drawable {
      */
 	@Override
 	public String toString() {
-		return "DrawableEdge [" + coveredEdge.toString() + "]";
+		return "DrawableEdge[" + coveredEdge.toString() + "]";
 	}
 	
 	
@@ -64,6 +70,15 @@ public abstract class DrawableEdge implements Drawable {
 	 */
 	public Edge<Object> getCoveredEdge() {
 		return coveredEdge;
+	}
+	
+	/**
+	 * Returns the associated <code>JGraph</code> object.
+	 * 
+	 * @return the associated <code>JGraph</code> object.
+	 */
+	public JGraph getGraph() {
+		return graph;
 	}
 	
 	/**

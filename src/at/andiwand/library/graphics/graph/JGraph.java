@@ -7,10 +7,15 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +63,7 @@ public class JGraph extends JComponent {
 	
 	private Map<Object, DrawableVertex> vertexMap;
 	
-	private GraphListener<Object, Edge<Object>> graphListener;
+	private transient GraphListener<Object, Edge<Object>> graphListener;
 	
 	
 	private GraphLayout graphLayout;
@@ -69,6 +74,10 @@ public class JGraph extends JComponent {
 	private int magneticDistance = DEFAULT_MAGNETIC_DISTANCE;
 	private transient DrawableVertex magneticVertexX;
 	private transient DrawableVertex magneticVertexY;
+	
+	
+	private transient List<VertexMouseListener> vertexMouseListeners =
+		new ArrayList<VertexMouseListener>();
 	
 	
 	private DragAndDropHandler dragAndDropHandler;
@@ -121,6 +130,24 @@ public class JGraph extends JComponent {
 	
 	
 	
+	
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		vertexMouseListeners = new ArrayList<VertexMouseListener>();
+	}
+	
+	
+	
+	
+	/**
+	 * Returns the stored graph model.
+	 * 
+	 * @return the stored graph model.
+	 */
+	public Graph<Object, Edge<Object>> getGraphModel() {
+		return graphModel;
+	}
 	
 	
 	/**
@@ -345,8 +372,12 @@ public class JGraph extends JComponent {
 		addVertex(drawableVertex);
 	}
 	private synchronized void addVertex(DrawableVertex vertex) {
+		if (vertex.graph != null) vertex.graph.removeVertex(vertex);
+		
 		vertices.add(vertex);
 		vertexMap.put(vertex.getCoveredVertex(), vertex);
+		
+		vertex.graph = this;
 		
 		repaint();
 		graphLayout.reposition();
@@ -375,7 +406,11 @@ public class JGraph extends JComponent {
 		addEdge(jEdge);
 	}
 	private synchronized void addEdge(DrawableEdge edge) {
+		if (edge.graph != null) edge.graph.removeVertex(edge);
+		
 		edges.add(edge);
+		
+		edge.graph = this;
 		
 		repaint();
 		graphLayout.reposition();
@@ -406,6 +441,11 @@ public class JGraph extends JComponent {
 	 */
 	public synchronized void addEdgeFactory(Class<?> clazz, DrawableEdgeFactory edgeFactory) {
 		edgeFactories.put(clazz, edgeFactory);
+	}
+	
+	
+	public void addVertexMouseListener(VertexMouseListener vertexMouseListener) {
+		vertexMouseListeners.add(vertexMouseListener);
 	}
 	
 	
@@ -441,6 +481,11 @@ public class JGraph extends JComponent {
 	 */
 	public synchronized void removeEdgeFactory(Class<?> clazz) {
 		edgeFactories.remove(clazz);
+	}
+	
+	
+	public void removeVertexMouseListener(VertexMouseListener vertexMouseListener) {
+		vertexMouseListeners.remove(vertexMouseListener);
 	}
 	
 	
@@ -488,7 +533,10 @@ public class JGraph extends JComponent {
 	}
 	
 	
-	private class DragAndDropHandler extends MouseAdapter {
+	private class DragAndDropHandler extends MouseAdapter implements Serializable {
+		private static final long serialVersionUID = 3631744604775465339L;
+		
+		
 		private DrawableVertex vertex;
 		private Point centerOffset;
 		private boolean moved;
@@ -582,7 +630,9 @@ public class JGraph extends JComponent {
 	
 	
 	//TODO: implement missing functions
-	private class GraphMouseAdapter extends MouseAdapter {
+	private class GraphMouseAdapter extends MouseAdapter implements Serializable {
+		private static final long serialVersionUID = 5853663240802898333L;
+		
 		public void mousePressed(MouseEvent e) {
 			if (e.isConsumed()) return;
 			
@@ -591,7 +641,11 @@ public class JGraph extends JComponent {
 			
 			if (vertex == null) return;
 			
-			vertex.fireMouseEvent(e);
+			MouseEvent mouseEvent = copyVertexEvent(e, vertex);
+			
+			for (VertexMouseListener listener : vertexMouseListeners) {
+				listener.mousePressed(mouseEvent);
+			}
 		}
 		public void mouseReleased(MouseEvent e) {
 			if (e.isConsumed()) return;
@@ -601,7 +655,11 @@ public class JGraph extends JComponent {
 			
 			if (vertex == null) return;
 			
-			vertex.fireMouseEvent(e);
+			MouseEvent mouseEvent = copyVertexEvent(e, vertex);
+			
+			for (VertexMouseListener listener : vertexMouseListeners) {
+				listener.mouseReleased(mouseEvent);
+			}
 		}
 		public void mouseClicked(MouseEvent e) {
 			if (e.isConsumed()) return;
@@ -611,7 +669,21 @@ public class JGraph extends JComponent {
 			
 			if (vertex == null) return;
 			
-			vertex.fireMouseEvent(e);
+			MouseEvent mouseEvent = copyVertexEvent(e, vertex);
+			
+			for (VertexMouseListener listener : vertexMouseListeners) {
+				listener.mouseClicked(mouseEvent);
+			}
+		}
+		
+		private MouseEvent copyVertexEvent(MouseEvent event, DrawableVertex source) {
+			MouseEvent result = new MouseEvent(event.getComponent(),
+					event.getID(), event.getWhen(), event.getModifiers(),
+					event.getX(), event.getY(), event.getClickCount(),
+					event.isPopupTrigger(), event.getButton());
+			result.setSource(source);
+			
+			return result;
 		}
 	}
 	

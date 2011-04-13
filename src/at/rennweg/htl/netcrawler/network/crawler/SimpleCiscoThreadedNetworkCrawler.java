@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import at.andiwand.library.util.cli.CommandLine;
-import at.rennweg.htl.netcrawler.cli.SimpleCachedCommandLineExecutor;
-import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
-import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
-import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
+import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.executor.factory.SimpleCiscoRemoteExecutorFactory;
 import at.rennweg.htl.netcrawler.network.agent.DefaultCiscoDeviceAgent;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
@@ -25,15 +23,15 @@ import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 	
-	private SimpleCLIFactroy cliFactroy;
+	private SimpleCiscoRemoteExecutorFactory executorFactory;
 	private SimpleCiscoUser masterUser;
 	private InetAddress root;
 	
 	private Executor executor;
 	
 	
-	public SimpleCiscoThreadedNetworkCrawler(SimpleCLIFactroy cliFactroy, SimpleCiscoUser masterUser, InetAddress root, Executor executor) {
-		this.cliFactroy = cliFactroy;
+	public SimpleCiscoThreadedNetworkCrawler(SimpleCiscoRemoteExecutorFactory executorFactory, SimpleCiscoUser masterUser, InetAddress root, Executor executor) {
+		this.executorFactory = executorFactory;
 		this.masterUser = masterUser;
 		this.root = root;
 		
@@ -61,10 +59,8 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 		
 		public void run() {
 			try {
-				CommandLine ciscoCli = cliFactroy.getCommandLine(host, masterUser);
-				SimpleCiscoCommandLineExecutor executor = new SimpleCiscoCommandLineExecutor(ciscoCli);
-				SimpleCachedCommandLineExecutor cachedExecutor = new SimpleCachedCommandLineExecutor(executor);
-				DefaultCiscoDeviceAgent deviceAgent = new DefaultCiscoDeviceAgent(cachedExecutor);
+				SimpleRemoteExecutor executor = executorFactory.getRemoteExecutor(host, masterUser);
+				DefaultCiscoDeviceAgent deviceAgent = new DefaultCiscoDeviceAgent(executor);
 				
 				CiscoDevice device = deviceAgent.fetchComparable();
 				
@@ -75,7 +71,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 					singleDevice.retainAll(dummy);
 					device = (CiscoDevice) new ArrayList<NetworkDevice>(singleDevice).get(0);
 					
-					ciscoCli.close();
+					executor.close();
 					return;
 				}
 				
@@ -116,7 +112,7 @@ public class SimpleCiscoThreadedNetworkCrawler extends NetworkCrawler {
 					SimpleCiscoThreadedNetworkCrawler.this.executor.execute(crawler);
 				}
 				
-				ciscoCli.close();
+				executor.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

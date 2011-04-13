@@ -1,17 +1,18 @@
 package at.andiwand.library.graphics.graph;
 
-import java.awt.Image;
+import javax.swing.ImageIcon;
 
 
 public class ImageVertexFactory extends DrawableVertexFactory {
 	
-	private Image image;
+	private static final long serialVersionUID = -4191056523872250030L;
 	
 	
-	public ImageVertexFactory(Image image) {
+	private ImageIcon image;
+	
+	public ImageVertexFactory(ImageIcon image) {
 		this.image = image;
 	}
-	
 	
 	@Override
 	public DrawableVertex buildVertex(Object coveredVertex) {

@@ -1,5 +1,6 @@
 package at.andiwand.library.graphics.graph;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import at.andiwand.library.math.graph.Edge;
@@ -14,10 +15,10 @@ import at.andiwand.library.math.graph.Edge;
  * @author Andreas Stefl
  *
  */
-
 //TODO: new concept
-public abstract class DrawableEdgeFactory {
-	
+public abstract class DrawableEdgeFactory implements Serializable {
+	private static final long serialVersionUID = 6291162130624318939L;
+
 	/**
 	 * Builds a new <code>DrawableEdge</code> object from the given
 	 * <code>Edge</code> object.

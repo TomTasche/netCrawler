@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import at.andiwand.library.util.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
 
 
 public abstract class SSHExecutor implements SimpleRemoteExecutor {

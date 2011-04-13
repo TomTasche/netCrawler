@@ -8,6 +8,11 @@ import at.andiwand.library.math.graph.UndirectedEdge;
 
 public abstract class PointToPointLink extends NetworkLink implements UndirectedEdge<NetworkDevice> {
 	
+	private static final long serialVersionUID = -8379664545062216400L;
+	
+	
+	
+	
 	protected NetworkInterface networkInterfaceA;
 	protected NetworkInterface networkInterfaceB;
 	

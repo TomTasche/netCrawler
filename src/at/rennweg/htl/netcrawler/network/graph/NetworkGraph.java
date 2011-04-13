@@ -1,5 +1,6 @@
 package at.rennweg.htl.netcrawler.network.graph;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,12 +13,20 @@ import at.andiwand.library.math.graph.ListenableGraph;
 
 
 
-public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> implements ListenableGraph<NetworkDevice, NetworkLink> {
+public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> implements Serializable, ListenableGraph<NetworkDevice, NetworkLink> {
+	
+	private static final long serialVersionUID = 2317830001760515975L;
+	
+	
+	
+	
+	
 	
 	private Set<NetworkDevice> vertices;
 	private List<NetworkLink> cables;
 	
-	private List<GraphListener<NetworkDevice, NetworkLink>> listeners;
+	private transient List<GraphListener<NetworkDevice, NetworkLink>> listeners;
+	
 	
 	
 	
@@ -28,6 +37,7 @@ public class NetworkGraph extends AbstractGraph<NetworkDevice, NetworkLink> impl
 		
 		listeners = new ArrayList<GraphListener<NetworkDevice, NetworkLink>>();
 	}
+	
 	
 	
 	

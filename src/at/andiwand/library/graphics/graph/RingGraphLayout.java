@@ -11,9 +11,13 @@ import java.util.Set;
 
 public class RingGraphLayout extends GraphLayout {
 	
-	public static final int DEFAULT_BORDER_SIZE = 100;
+	private static final long serialVersionUID = 4526340981529810842L;
+	
+	
+	public static final int DEFAULT_BORDER_SIZE = 50;
 	
 	public static int DEFAULT_RING_DISTANCE = 40; 
+	
 	
 	
 	
@@ -25,6 +29,7 @@ public class RingGraphLayout extends GraphLayout {
 	
 	private int borderSize = DEFAULT_BORDER_SIZE;
 	private int ringDistance = DEFAULT_RING_DISTANCE;
+	
 	
 	
 	public RingGraphLayout(JGraph jGraph) {
@@ -43,6 +48,7 @@ public class RingGraphLayout extends GraphLayout {
 		this.root = root;
 		verticesRings = new ArrayList<List<DrawableVertex>>();
 	}
+	
 	
 	
 	public void setRoot(DrawableVertex vertex) {
@@ -115,10 +121,10 @@ public class RingGraphLayout extends GraphLayout {
 				}
 				vertex.setCenter(position);
 				
-				if (position.getX() < left) left = position.x;
-				if (position.getX() > right) right = position.x;
-				if (position.getY() < bottom) bottom = position.y;
-				if (position.getY() > top) top = position.y;
+				if (vertex.getX() < left) left = vertex.getX();
+				if (vertex.getX() + vertex.getWidth() > right) right = vertex.getX() + vertex.getWidth();
+				if (vertex.getY() < top) top = vertex.getY();
+				if (vertex.getY() + vertex.getHeight() > bottom) bottom = vertex.getY() + vertex.getHeight();
 				
 				anglePosition += angleStep;
 			}
@@ -127,21 +133,25 @@ public class RingGraphLayout extends GraphLayout {
 			lastRadius = radius;
 		}
 		
-		int width = Math.abs(right - left) + borderSize * 2;
-		int height = Math.abs(top - bottom) + borderSize * 2;
+		left -= borderSize;
+		right += borderSize;
+		top -= borderSize;
+		bottom += borderSize;
+		
+		int width = Math.abs(right - left);
+		int height = Math.abs(bottom - top);
 		
 		Dimension size = new Dimension(width, height);
 		jGraph.setPreferredSize(size);
 		jGraph.revalidate();
 		
-		Point middle = new Point(width / 2, height / 2);
+		Point middle = new Point(-left, -top);
 		
 		for (DrawableVertex vertex : positionedVertices) {
 			Point position = vertex.getCenter();
 			vertex.setCenter(middle.x + position.x, middle.y + position.y);
 		}
 	}
-	
 	
 	private static <E> E chooseRandom(Collection<E> collection) {
 		ArrayList<E> list = new ArrayList<E>(collection);

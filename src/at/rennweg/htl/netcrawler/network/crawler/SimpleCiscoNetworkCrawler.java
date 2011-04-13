@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import at.andiwand.library.util.cli.CommandLine;
-import at.rennweg.htl.netcrawler.cli.SimpleCachedCommandLineExecutor;
-import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
-import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
-import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
+import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.executor.factory.SimpleCiscoRemoteExecutorFactory;
 import at.rennweg.htl.netcrawler.network.agent.DefaultCiscoDeviceAgent;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
+import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
 import at.rennweg.htl.netcrawler.network.graph.EthernetLink;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
@@ -27,18 +26,20 @@ import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 
 public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 	
-	private SimpleCLIFactroy cliFactroy;
+	private SimpleCiscoRemoteExecutorFactory executorFactory;
 	private SimpleCiscoUser masterUser;
 	private InetAddress root;
 	
-	public SimpleCiscoNetworkCrawler(SimpleCLIFactroy cliFactroy, InetAddress root) {
-		this(cliFactroy, null, root);
+	
+	public SimpleCiscoNetworkCrawler(SimpleCiscoRemoteExecutorFactory executorFactory, InetAddress root) {
+		this(executorFactory, null, root);
 	}
-	public SimpleCiscoNetworkCrawler(SimpleCLIFactroy cliFactroy, SimpleCiscoUser masterUser, InetAddress root) {
-		this.cliFactroy = cliFactroy;
+	public SimpleCiscoNetworkCrawler(SimpleCiscoRemoteExecutorFactory executorFactory, SimpleCiscoUser masterUser, InetAddress root) {
+		this.executorFactory = executorFactory;
 		this.masterUser = masterUser;
 		this.root = root;
 	}
+	
 	
 	@Override
 	public void crawl(NetworkGraph networkGraph) throws Exception {
@@ -46,10 +47,8 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 	}
 	
 	private void recursiveLookup(NetworkGraph networkGraph, InetAddress host, SimpleNeighbor sourceNeighbor) throws Exception {
-		CommandLine ciscoCli = cliFactroy.getCommandLine(host, masterUser);
-		SimpleCiscoCommandLineExecutor executor = new SimpleCiscoCommandLineExecutor(ciscoCli);
-		SimpleCachedCommandLineExecutor cachedExecutor = new SimpleCachedCommandLineExecutor(executor);
-		DefaultCiscoDeviceAgent deviceAgent = new DefaultCiscoDeviceAgent(cachedExecutor);
+		SimpleRemoteExecutor executor = executorFactory.getRemoteExecutor(host, masterUser);
+		DefaultCiscoDeviceAgent deviceAgent = new DefaultCiscoDeviceAgent(executor);
 		
 		CiscoDevice device = deviceAgent.fetchComparable();
 		
@@ -60,7 +59,7 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 			singleDevice.retainAll(dummy);
 			device = (CiscoDevice) new ArrayList<NetworkDevice>(singleDevice).get(0);
 			
-			ciscoCli.close();
+			executor.close();
 			return;
 		}
 		
@@ -77,7 +76,12 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 			
 			if (deviceInterface.getName().toLowerCase().contains("ethernet")) {
 				EthernetLink ethernetLink = new EthernetLink(deviceInterface, neighbourInterface);
-				ethernetLink.setCrossover(device.getClass().equals(otherDevice.getClass()));
+				
+				if (otherDevice instanceof NetworkHub) {
+					ethernetLink.setCrossover(CiscoSwitch.class.isInstance(device));
+				} else {
+					ethernetLink.setCrossover(device.getClass().equals(otherDevice.getClass()));
+				}
 				
 				link = ethernetLink;
 			} else if (deviceInterface.getName().toLowerCase().contains("serial")) {
@@ -133,6 +137,7 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 				NetworkInterface b = hub.getInterface("Port0");
 				
 				EthernetLink ethernetLink = new EthernetLink(a, b);
+				ethernetLink.setCrossover(CiscoSwitch.class.isInstance(device));
 				
 				networkGraph.addEdge(ethernetLink);
 			}
@@ -158,7 +163,7 @@ public class SimpleCiscoNetworkCrawler extends NetworkCrawler {
 			recursiveLookup(networkGraph, managementAddress, neighbor);
 		}
 		
-		ciscoCli.close();
+		executor.close();
 	}
 	
 }

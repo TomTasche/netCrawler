@@ -3,10 +3,7 @@ package at.andiwand.library.graphics.graph;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import at.andiwand.library.graphics.Drawable;
 import at.andiwand.library.graphics.Intersectable;
@@ -20,15 +17,23 @@ import at.andiwand.library.graphics.Intersectable;
  * @author Andreas Stefl
  * 
  */
-public abstract class DrawableVertex implements Drawable, Intersectable {
+public abstract class DrawableVertex implements Drawable, Intersectable, Serializable {
+	
+	private static final long serialVersionUID = 9177408732393196980L;
+	
+	
+	
+	
 	
 	private Object coveredVertex;
 	
+	
+	/**
+	 * The parent graph.
+	 */
+	protected JGraph graph;
+	
 	private Rectangle bounds;
-	
-	
-	private final List<MouseListener> mouseListeners =
-		new ArrayList<MouseListener>();
 	
 	
 	
@@ -55,7 +60,7 @@ public abstract class DrawableVertex implements Drawable, Intersectable {
      */
 	@Override
 	public String toString() {
-		return "DrawableVertex [" + coveredVertex.toString() + "]";
+		return "DrawableVertex[" + coveredVertex.toString() + "]";
 	}
 	
 	
@@ -67,6 +72,15 @@ public abstract class DrawableVertex implements Drawable, Intersectable {
 	 */
 	public Object getCoveredVertex() {
 		return coveredVertex;
+	}
+	
+	/**
+	 * Returns the associated <code>JGraph</code> object.
+	 * 
+	 * @return the associated <code>JGraph</code> object.
+	 */
+	public JGraph getGraph() {
+		return graph;
 	}
 	
 	/**
@@ -230,50 +244,6 @@ public abstract class DrawableVertex implements Drawable, Intersectable {
 	 */
 	public void setCenter(Point center) {
 		setCenter(center.x, center.y);
-	}
-	
-	
-	
-	/**
-	 * Adds the given mouse listener to the vertex.
-	 * 
-	 * @param listener the mouse listener to add.
-	 */
-	public void addMouseListener(MouseListener listener) {
-		mouseListeners.add(listener);
-	}
-	
-	/**
-	 * Removes the given mouse listener from the vertex.
-	 * 
-	 * @param listener the mouse listener to remove.
-	 */
-	public void removeMouseListener(MouseListener listener) {
-		mouseListeners.remove(listener);
-	}
-	
-	
-	
-	/**
-	 * Fires the given mouse event to all registered listeners.
-	 * 
-	 * @param event the mouse event.
-	 */
-	//TODO: implement missing functions
-	public void fireMouseEvent(MouseEvent event) {
-		for (MouseListener listener : mouseListeners) {
-			switch (event.getID()) {
-			case MouseEvent.MOUSE_PRESSED:
-				listener.mousePressed(event);
-				break;
-			case MouseEvent.MOUSE_RELEASED:
-				listener.mouseReleased(event);
-				break;
-			case MouseEvent.MOUSE_CLICKED:
-				listener.mouseClicked(event);
-				break;
-			}
-		}
 	}
 	
 	

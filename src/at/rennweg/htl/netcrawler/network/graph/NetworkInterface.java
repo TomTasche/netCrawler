@@ -1,16 +1,23 @@
 package at.rennweg.htl.netcrawler.network.graph;
 
+import java.io.Serializable;
 
-public class NetworkInterface {
+
+public class NetworkInterface implements Serializable {
+	
+	private static final long serialVersionUID = 6480214695817280672L;
+	
 	
 	protected NetworkDevice parentDevice;
 	
 	protected String name;
 	
 	
+	
 	public NetworkInterface(String name) {
 		this.name = name;
 	}
+	
 	
 	
 	@Override

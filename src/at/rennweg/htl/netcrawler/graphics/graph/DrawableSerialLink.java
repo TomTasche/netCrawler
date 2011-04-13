@@ -15,6 +15,9 @@ import at.rennweg.htl.netcrawler.network.graph.SerialLink;
 //TODO: remove vector user
 public class DrawableSerialLink extends DrawableSingeEdge {
 	
+	private static final long serialVersionUID = -7791496866958623906L;
+	
+	
 	public static final Dimension DEFUALT_FLASH_SIZE = new Dimension(6, 10);
 	
 	public static final Color DEFAULT_COLOR = Color.RED;

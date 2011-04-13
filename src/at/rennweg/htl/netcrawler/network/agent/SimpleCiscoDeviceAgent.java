@@ -2,7 +2,7 @@ package at.rennweg.htl.netcrawler.network.agent;
 
 import java.io.IOException;
 
-import at.andiwand.library.util.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 

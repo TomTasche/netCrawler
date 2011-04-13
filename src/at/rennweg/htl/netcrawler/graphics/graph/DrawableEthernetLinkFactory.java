@@ -12,6 +12,8 @@ import at.andiwand.library.math.graph.Edge;
 
 public class DrawableEthernetLinkFactory extends DrawableEdgeFactory {
 	
+	private static final long serialVersionUID = 8119081100175300647L;
+	
 	@Override
 	public DrawableEdge buildEdge(Edge<Object> coveredEdge, Set<DrawableVertex> connectedVertices) {
 		return new DrawableEthernetLink(coveredEdge, connectedVertices);

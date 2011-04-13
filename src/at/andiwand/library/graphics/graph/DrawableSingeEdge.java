@@ -9,6 +9,10 @@ import at.andiwand.library.math.graph.Edge;
 
 public abstract class DrawableSingeEdge extends DrawableEdge {
 	
+	private static final long serialVersionUID = 2489974229273305247L;
+	
+	
+	
 	protected DrawableVertex vertexA;
 	protected DrawableVertex vertexB;
 	

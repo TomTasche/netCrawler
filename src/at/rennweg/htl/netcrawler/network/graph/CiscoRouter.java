@@ -6,6 +6,11 @@ import java.util.Set;
 
 public class CiscoRouter extends CiscoDevice {
 	
+	private static final long serialVersionUID = -2145885907995458790L;
+	
+	
+	
+	
 	protected String processorBoardId;
 	
 	

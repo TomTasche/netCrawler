@@ -1,11 +1,9 @@
 package at.andiwand.library.test;
 
-
 import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
@@ -14,8 +12,6 @@ import at.andiwand.library.graphics.graph.CircleGraphLayout;
 import at.andiwand.library.graphics.graph.ImageVertexFactory;
 import at.andiwand.library.graphics.graph.JGraph;
 import at.andiwand.library.math.graph.DefaultGraph;
-
-
 
 
 public class TestImageVertex {
@@ -30,8 +26,7 @@ public class TestImageVertex {
 		JFrame frame = new JFrame();
 		frame.setLayout(new BorderLayout());
 		
-		Image image = Toolkit.getDefaultToolkit().createImage(TestImageVertex.class.getResource("router.png"));
-		while (image.getWidth(null) < 0) Thread.sleep(100);
+		ImageIcon image = new ImageIcon(TestImageVertex.class.getResource("router.png"));
 		ImageVertexFactory vertexFactory = new ImageVertexFactory(image);
 		
 		JGraph jGraph = new JGraph();

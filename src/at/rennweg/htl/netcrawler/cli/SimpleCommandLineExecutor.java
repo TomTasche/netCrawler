@@ -2,8 +2,8 @@ package at.rennweg.htl.netcrawler.cli;
 
 import java.io.IOException;
 
-import at.andiwand.library.util.SimpleRemoteExecutor;
 import at.andiwand.library.util.cli.CommandLine;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
 
 
 

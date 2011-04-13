@@ -6,8 +6,8 @@ import java.net.InetAddress;
 import at.andiwand.library.util.cli.CommandLine;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoCommandLineExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleCiscoUser;
-import at.rennweg.htl.netcrawler.cli.factory.SimpleCLIFactroy;
-import at.rennweg.htl.netcrawler.cli.factory.SimplePTTelnetFactory;
+import at.rennweg.htl.netcrawler.cli.factory.SimpleCiscoCLIFactroy;
+import at.rennweg.htl.netcrawler.cli.factory.SimplePacketTracerTelnetFactory;
 import at.rennweg.htl.netcrawler.network.agent.DefaultCiscoDeviceAgent;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 
@@ -18,7 +18,7 @@ public class TestDefaultCiscoDeviceAgent {
 		SimpleCiscoUser user = new SimpleCiscoUser("cisco", "cisco");
 		Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.1");
 		Inet4Address deviceGateway = (Inet4Address) Inet4Address.getByName("192.168.0.254");
-		SimpleCLIFactroy cliFactroy = new SimplePTTelnetFactory(deviceAddress, deviceGateway);
+		SimpleCiscoCLIFactroy cliFactroy = new SimplePacketTracerTelnetFactory(deviceAddress, deviceGateway);
 		
 		InetAddress destinationAddress = InetAddress.getByName("192.168.0.254");
 		

@@ -14,8 +14,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import at.andiwand.library.util.SimpleRemoteExecutor;
 import at.rennweg.htl.netcrawler.cli.SimpleNeighbor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.CiscoRouter;
 import at.rennweg.htl.netcrawler.network.graph.CiscoSwitch;
@@ -228,6 +228,12 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 			//TODO: exception class
 			throw new RuntimeException("Illegal series number for switches!");
 		}
+		
+		CiscoDevice ciscoDevice = (CiscoDevice) device;
+		ciscoDevice.setShowVersion(executor.execute("show version"));
+		ciscoDevice.setDirFlash(executor.execute("dir flash:"));
+		ciscoDevice.setShowRunningConfiguration(executor.execute("show running-config"));
+		ciscoDevice.setShowIpInterfaceBrief(executor.execute("show ip interface brief"));
 		
 		if (device instanceof CiscoRouter) {
 			CiscoRouter router = (CiscoRouter) device;

@@ -16,13 +16,18 @@ public class JNetworkGraph extends JGraph {
 	private static final long serialVersionUID = -4449144543132148622L;
 	
 	
-	public JNetworkGraph() throws IOException {
+	public JNetworkGraph() {
 		super();
 		
-		addVertexFactory(NetworkDevice.class, new DrawableImagedDeviceFactory("unknown.png"));
-		addVertexFactory(NetworkHub.class, new DrawableImagedDeviceFactory("hub.png"));
-		addVertexFactory(CiscoRouter.class, new DrawableImagedDeviceFactory("router.png"));
-		addVertexFactory(CiscoSwitch.class, new DrawableImagedDeviceFactory("switch.png"));
+		try {
+			addVertexFactory(NetworkDevice.class, new DrawableImagedDeviceFactory("unknown.png"));
+			addVertexFactory(NetworkHub.class, new DrawableImagedDeviceFactory("hub.png"));
+			addVertexFactory(CiscoRouter.class, new DrawableImagedDeviceFactory("router.png"));
+			addVertexFactory(CiscoSwitch.class, new DrawableImagedDeviceFactory("switch.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		addEdgeFactory(EthernetLink.class, new DrawableEthernetLinkFactory());
 		addEdgeFactory(SerialLink.class, new DrawableSerialLinkFactory());

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Set;
 
-import at.andiwand.library.util.SimpleRemoteExecutor;
+import at.rennweg.htl.netcrawler.cli.executor.SimpleRemoteExecutor;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkInterface;
 

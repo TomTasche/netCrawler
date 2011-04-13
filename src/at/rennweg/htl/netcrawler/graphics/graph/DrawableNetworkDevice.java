@@ -9,8 +9,9 @@ import at.andiwand.library.graphics.graph.DrawableVertex;
 import at.rennweg.htl.netcrawler.network.graph.NetworkDevice;
 
 
-//TODO: remove vector user
 public abstract class DrawableNetworkDevice extends DrawableVertex {
+	
+	private static final long serialVersionUID = 4395291222310277003L;
 	
 	public static final int DEFAULT_MAX_NAME_LENGTH = 10;
 	
@@ -18,7 +19,7 @@ public abstract class DrawableNetworkDevice extends DrawableVertex {
 	public static final Color DEFUALT_FONT_COLOR = Color.BLACK;
 	
 	
-	private NetworkDevice coveredVertex;
+	protected final NetworkDevice coveredVertex;
 	
 	private int maxNameLength = DEFAULT_MAX_NAME_LENGTH;
 	

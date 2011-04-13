@@ -1,25 +1,29 @@
 package at.rennweg.htl.netcrawler.graphics.graph;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
 
 
 //TODO: remove rectangle user
 public class DrawableImagedDevice extends DrawableNetworkDevice {
 	
-	private BufferedImage image;
+	private static final long serialVersionUID = -5738064527761224525L;
 	
-	public DrawableImagedDevice(Object coveredVertex, BufferedImage image) {
+	
+	private ImageIcon image;
+	
+	public DrawableImagedDevice(Object coveredVertex, ImageIcon image) {
 		super(coveredVertex);
 		
 		this.image = image;
 		
-		setSize(image.getWidth(), image.getHeight());
+		setSize(image.getIconWidth(), image.getIconHeight());
 	}
 	
 	@Override
 	public void drawDevice(Graphics g) {
-		g.drawImage(image, getX(), getY(), null);
+		g.drawImage(image.getImage(), getX(), getY(), image.getImageObserver());
 	}
 	
 }

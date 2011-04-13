@@ -1,5 +1,7 @@
 package at.andiwand.library.graphics.graph;
 
+import java.io.Serializable;
+
 
 /**
  * 
@@ -10,7 +12,9 @@ package at.andiwand.library.graphics.graph;
  * @author Andreas Stefl
  *
  */
-public abstract class DrawableVertexFactory {
+public abstract class DrawableVertexFactory implements Serializable {
+	
+	private static final long serialVersionUID = -2700302051703457L;
 	
 	/**
 	 * Builds a new <code>DrawableVertex</code> object from the given vertex

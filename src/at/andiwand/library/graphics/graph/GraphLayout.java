@@ -1,5 +1,7 @@
 package at.andiwand.library.graphics.graph;
 
+import java.io.Serializable;
+
 
 /**
  * 
@@ -10,7 +12,12 @@ package at.andiwand.library.graphics.graph;
  * @author Andreas Stefl
  *
  */
-public abstract class GraphLayout {
+public abstract class GraphLayout implements Serializable {
+	
+	private static final long serialVersionUID = 1385694165715939938L;
+	
+	
+	
 	
 	/**
 	 * The <code>JGraph</code> object.
