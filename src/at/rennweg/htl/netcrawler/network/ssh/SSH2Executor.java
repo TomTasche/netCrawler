@@ -20,6 +20,12 @@ public class SSH2Executor extends SSHExecutor {
 	
 	
 	
+	private InetAddress address;
+	private int port;
+	private String username;
+	private String password;
+	
+	
 	private Session session;
 	private ChannelExec channel;
 	
@@ -49,23 +55,28 @@ public class SSH2Executor extends SSHExecutor {
 	
 	@Override
 	public void connect(InetAddress address, int port, String username, String password) throws Exception {
-		JSch jsch = new JSch();
-		
-		session = jsch.getSession(username, address.getHostAddress(), port);
-		session.setUserInfo(new SimpleUserInfo(password));
-		session.setDaemonThread(true);
-		session.connect();
+		this.address = address;
+		this.port = port;
+		this.username = username;
+		this.password = password;
 	}
 	
 	@Override
 	public void close() {
-		channel.disconnect();
-		session.disconnect();
+		if (channel != null) channel.disconnect();
+		if (session != null) session.disconnect();
 	}
 	
 	
 	public String execute(String command) throws IOException {
 		try {
+			JSch jsch = new JSch();
+			
+			session = jsch.getSession(username, address.getHostAddress(), port);
+			session.setUserInfo(new SimpleUserInfo(password));
+			session.setDaemonThread(true);
+			session.connect();
+			
 			channel = (ChannelExec) session.openChannel("exec");
 			channel.setCommand(command);
 			channel.connect();
@@ -84,6 +95,7 @@ public class SSH2Executor extends SSHExecutor {
 		}
 		
 		channel.disconnect();
+		session.disconnect();
 		
 		return builder.toString();
 	}

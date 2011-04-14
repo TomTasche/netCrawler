@@ -43,6 +43,8 @@ public class CrawlerOptionPane extends JDialog {
 	private final JTextField rootAddress = new JTextField();
 	private final JTextField masterUser = new JTextField();
 	private final JPasswordField masterPassword = new JPasswordField();
+	private final JCheckBox multithreading = new JCheckBox("Multithreading");
+	private final JTextField threadCount = new JTextField("10");
 	private final JCheckBox ptTroggle = new JCheckBox("Use Packet Tracer");
 	private final JTextField ptAddress = new JTextField("localhost");
 	private final JTextField ptPort = new JTextField("38000");
@@ -76,17 +78,24 @@ public class CrawlerOptionPane extends JDialog {
 		JLabel rootAddressLabel = new JLabel("Root address:");
 		JLabel masterUserLabel = new JLabel("Master user:");
 		JLabel masterPasswordLabel = new JLabel("Master password:");
+		JLabel threadCountLabel = new JLabel("Thread count:");
 		
 		ParallelGroup horizontalGroup = groupLayout.createParallelGroup()
 				.addGroup(groupLayout.createSequentialGroup()
 						.addGroup(groupLayout.createParallelGroup()
 								.addComponent(rootAddressLabel)
 								.addComponent(masterUserLabel)
-								.addComponent(masterPasswordLabel))
+								.addComponent(masterPasswordLabel)
+								.addComponent(threadCountLabel))
 						.addGroup(groupLayout.createParallelGroup()
 								.addComponent(rootAddress)
 								.addComponent(masterUser)
-								.addComponent(masterPassword)));
+								.addComponent(masterPassword)
+								.addComponent(threadCount)))
+				.addComponent(multithreading)
+				.addGroup(groupLayout.createSequentialGroup()
+						.addComponent(threadCountLabel)
+						.addComponent(threadCount));
 		
 		SequentialGroup verticalGroup = groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -98,7 +107,19 @@ public class CrawlerOptionPane extends JDialog {
 						.addComponent(masterUser))
 				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(masterPasswordLabel)
-						.addComponent(masterPassword));
+						.addComponent(masterPassword))
+				.addGap(20)
+				.addComponent(multithreading)
+				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(threadCountLabel)
+						.addComponent(threadCount));
+		
+		multithreading.setSelected(true);
+		multithreading.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				threadCount.setEnabled(multithreading.isSelected());
+			}
+		});
 		
 		if (packetTracerOptions) {
 			final JPanel ptPanel = new JPanel();
@@ -203,11 +224,13 @@ public class CrawlerOptionPane extends JDialog {
 			}
 		});
 		
+		horizontalGroup.addGap(0, 0, Short.MAX_VALUE);
 		horizontalGroup.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 				.addComponent(cancel)
 				.addComponent(ok));
 		
-		verticalGroup.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+		verticalGroup.addGap(10, 10, Short.MAX_VALUE);
+		verticalGroup.addGroup(groupLayout.createParallelGroup()
 				.addComponent(cancel)
 				.addComponent(ok));
 		
@@ -233,6 +256,12 @@ public class CrawlerOptionPane extends JDialog {
 	public void setMasterUser(SimpleCiscoUser user) {
 		masterUser.setText(user.getUsername());
 		masterPassword.setText(user.getPassword());
+	}
+	public void setMultithreading(boolean multithreading) {
+		if (this.multithreading.isSelected() != multithreading) this.multithreading.doClick();
+	}
+	public void setThreadCount(int threadCount) {
+		this.threadCount.setText("" + threadCount);
 	}
 	public void setPTUsed(boolean usePT) {
 		if (ptTroggle.isSelected() != usePT) ptTroggle.doClick();
@@ -262,6 +291,12 @@ public class CrawlerOptionPane extends JDialog {
 	}
 	public SimpleCiscoUser getMasterUser() {
 		return new SimpleCiscoUser(masterUser.getText(), new String(masterPassword.getPassword()));
+	}
+	public boolean isMultithreading() {
+		return multithreading.isSelected();
+	}
+	public int getThreadCount() {
+		return Integer.parseInt(threadCount.getText());
 	}
 	public boolean isPTUsed() {
 		return ptTroggle.isSelected();
@@ -311,6 +346,10 @@ public class CrawlerOptionPane extends JDialog {
 		try {
 			if (rootAddress.getText().isEmpty()) throw new IllegalArgumentException("Root address is empty!");
 			InetAddress.getByName(rootAddress.getText());
+			
+			if (threadCount.getText().isEmpty()) throw new IllegalArgumentException("Thread count is empty!");
+			int threadCount = Integer.parseInt(this.threadCount.getText());
+			if (threadCount < 0) throw new IllegalArgumentException("Thread count is illegal!");
 			
 			if (ptTroggle.isSelected()) {
 				if (ptAddress.getText().isEmpty()) throw new IllegalArgumentException("Packet Tracer address is empty!");

@@ -1,4 +1,4 @@
-package at.andiwand.library.test;
+package at.rennweg.htl.netcrawler.test;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -9,7 +9,7 @@ import at.rennweg.htl.netcrawler.network.ssh.SSH2Executor;
 public class TestSSH2Executor {
 	
 	public static String requestLogin(String message) {
-		return JOptionPane.showInputDialog(message, System.getProperty("user.name") + "@localhost");
+		return JOptionPane.showInputDialog(message, "cisco@192.168.0.254");
 	}
 	
 	public static String requestPassword(String message) {
@@ -28,8 +28,8 @@ public class TestSSH2Executor {
 		
 		SSH2Executor sshExecutor = new SSH2Executor(login, password);
 		
-		System.out.println(sshExecutor.execute("ssh andreas@localhost"));
-		System.out.println(sshExecutor.lastExitStatus());
+		System.out.println(sshExecutor.execute("show version"));
+		System.out.println(sshExecutor.execute("show running-config"));
 	}
 	
 }

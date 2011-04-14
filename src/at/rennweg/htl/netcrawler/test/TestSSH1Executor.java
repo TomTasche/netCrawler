@@ -1,21 +1,19 @@
-package at.andiwand.library.test;
-
-import java.io.InputStream;
+package at.rennweg.htl.netcrawler.test;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.rennweg.htl.netcrawler.network.ssh.SSH1Client;
+import at.rennweg.htl.netcrawler.network.ssh.SSH1Executor;
 
 
-public class TestSSH1Client {
+public class TestSSH1Executor {
 	
 	public static String requestLogin(String message) {
-		return JOptionPane.showInputDialog(message, "cisco@192.168.0.254");
+		return JOptionPane.showInputDialog(message, System.getProperty("user.name") + "@localhost");
 	}
 	
 	public static String requestPassword(String message) {
-		JPasswordField passwordField = new JPasswordField("cisco");
+		JPasswordField passwordField = new JPasswordField();
 		int result = JOptionPane.showConfirmDialog(null, new Object[] {passwordField}, message, JOptionPane.OK_CANCEL_OPTION);
 		
 		if (result == JOptionPane.CANCEL_OPTION) return null;
@@ -28,14 +26,12 @@ public class TestSSH1Client {
 		String login = requestLogin("Enter username@hostname");
 		String password = requestPassword("Your password");
 		
-		SSH1Client client = new SSH1Client(login, password);
-		client.getOutputStream().write("\r\n".getBytes());
+		SSH1Executor sshExecutor = new SSH1Executor(login, password);
 		
-		InputStream inputStream = client.getInputStream();
-		int read;
-		while ((read = inputStream.read()) != -1) {
-			System.out.write(read);
-		}
+		System.out.println(sshExecutor.execute("ls /"));
+		System.out.println(sshExecutor.lastExitStatus());
+		System.out.println(sshExecutor.execute("ls /home"));
+		System.out.println(sshExecutor.lastExitStatus());
 	}
 	
 }

@@ -12,6 +12,8 @@ public class TestCrawlerOptionPane {
 		
 		CrawlerOptionPane crawlerOptionPane = new CrawlerOptionPane(true);
 		crawlerOptionPane.showOptionPane(null);
+		
+		System.exit(0);
 	}
 	
 }

@@ -41,7 +41,7 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 	public static final int NEIGHBOR_NAME_GROUP = 1;
 	public static final Pattern NEIGHBOR_MGMT_IP_PATTERN = Pattern.compile("ip address ?: ?(.*)", Pattern.CASE_INSENSITIVE);
 	public static final int NEIGHBOR_MGMT_IP_GROUP = 1;
-	public static final Pattern NEIGHBOR_INT_PATTERN = Pattern.compile("interface ?: ?(.*?), port id.*?: ?(.*)", Pattern.CASE_INSENSITIVE);
+	public static final Pattern NEIGHBOR_INT_PATTERN = Pattern.compile("interface ?: ?(.*?), +port id.*?: ?(.*)", Pattern.CASE_INSENSITIVE);
 	public static final int NEIGHBOR_SOURCE_INT_NAME_GROUP = 1;
 	public static final int NEIGHBOR_INT_NAME_GROUP = 2;
 	
@@ -232,7 +232,7 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 		CiscoDevice ciscoDevice = (CiscoDevice) device;
 		ciscoDevice.setShowVersion(executor.execute("show version"));
 		ciscoDevice.setDirFlash(executor.execute("dir flash:"));
-		ciscoDevice.setShowRunningConfiguration(executor.execute("show running-config"));
+		ciscoDevice.setShowRunningConfig(executor.execute("show running-config"));
 		ciscoDevice.setShowIpInterfaceBrief(executor.execute("show ip interface brief"));
 		
 		if (device instanceof CiscoRouter) {
@@ -262,7 +262,7 @@ public class DefaultCiscoDeviceAgent extends SimpleCiscoDeviceAgent {
 				result = ciscoSwitch;
 			} else {
 				//TODO: exception class
-				throw new RuntimeException("Unkown series number!");
+				throw new RuntimeException("Unkown series number: " + seriesNumber);
 			}
 		}
 		

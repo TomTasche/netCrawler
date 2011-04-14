@@ -49,7 +49,7 @@ public class CiscoDeviceViewer extends JDialog {
 		flash.setEditable(false);
 		tabbedPane.addTab("dir flash", new JScrollPane(flash));
 		
-		JTextArea runningConfiguration = new JTextArea(device.getShowRunningConfiguration());
+		JTextArea runningConfiguration = new JTextArea(device.getShowRunningConfig());
 		runningConfiguration.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		runningConfiguration.setFont(COMMAND_FONT);
 		runningConfiguration.setEditable(false);
@@ -76,7 +76,12 @@ public class CiscoDeviceViewer extends JDialog {
 	
 	
 	public void showDialog(JFrame parent) {
-		JFrameUtil.centerFrame(this, parent);
+		if (parent == null) {
+			JFrameUtil.centerFrame(this);
+		} else {
+			JFrameUtil.centerFrame(this, parent);
+		}
+		
 		setVisible(true);
 	}
 	

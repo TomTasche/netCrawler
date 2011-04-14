@@ -13,6 +13,7 @@ public abstract class SSHExecutor implements SimpleRemoteExecutor {
 	
 	
 	
+	
 	public SSHExecutor() {}
 	public SSHExecutor(String login, String password) throws Exception {
 		connect(login, password);
@@ -32,6 +33,7 @@ public abstract class SSHExecutor implements SimpleRemoteExecutor {
 	public SSHExecutor(InetAddress address, int port, String username, String password) throws Exception {
 		connect(address, port, username, password);
 	}
+	
 	
 	
 	public void connect(String login, String password) throws Exception {

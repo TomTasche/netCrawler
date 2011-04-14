@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.concurrent.Executors;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
@@ -34,6 +35,7 @@ import at.rennweg.htl.netcrawler.cli.executor.factory.SimplePacketTracerTelnetEx
 import at.rennweg.htl.netcrawler.graphics.graph.JNetworkGraph;
 import at.rennweg.htl.netcrawler.network.crawler.NetworkCrawler;
 import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoNetworkCrawler;
+import at.rennweg.htl.netcrawler.network.crawler.SimpleCiscoThreadedNetworkCrawler;
 import at.rennweg.htl.netcrawler.network.graph.CiscoDevice;
 import at.rennweg.htl.netcrawler.network.graph.NetworkGraph;
 
@@ -83,7 +85,7 @@ public class MainFrame extends JFrame {
 		file.addSeparator();
 		file.add(save);
 		file.add(saveAs);
-		file.add(saveDocumentation);
+//		file.add(saveDocumentation);
 		file.addSeparator();
 		file.add(new JMenuItem(new ExitAction()));
 		menuBar.add(file);
@@ -94,8 +96,8 @@ public class MainFrame extends JFrame {
 		view.add(magnetic);
 		menuBar.add(view);
 		
-		JMenu help = new JMenu("Help");
-		menuBar.add(help);
+//		JMenu help = new JMenu("Help");
+//		menuBar.add(help);
 		
 		setJMenuBar(menuBar);
 		
@@ -124,6 +126,7 @@ public class MainFrame extends JFrame {
 			Inet4Address deviceAddress = (Inet4Address) Inet4Address.getByName("192.168.0.153");
 			Inet4Address deviceGateway = (Inet4Address) Inet4Address.getByName("192.168.0.254");
 			crawlerOptionPane.setMasterUser(masterUser);
+			crawlerOptionPane.setMultithreading(false);
 			crawlerOptionPane.setPTDeviceAddress(deviceAddress);
 			crawlerOptionPane.setPTDeviceGateway(deviceGateway);
 			crawlerOptionPane.setPTNetworkName("Simple Bridge");
@@ -140,6 +143,8 @@ public class MainFrame extends JFrame {
 			putValue(SMALL_ICON, null);
 		}
 		
+		// TODO: check interrupt
+		@SuppressWarnings("deprecation")
 		public void actionPerformed(ActionEvent event) {
 			int result = crawlerOptionPane.showOptionPane(MainFrame.this);
 			
@@ -158,22 +163,41 @@ public class MainFrame extends JFrame {
 					executorFactory = new SimpleCiscoSSHExecutorFactory();
 				}
 				
-				final NetworkCrawler networkCrawler = new SimpleCiscoNetworkCrawler(executorFactory, crawlerOptionPane.getMasterUser(), crawlerOptionPane.getRootAddress());
+				final NetworkCrawler networkCrawler;
+				
+				if (crawlerOptionPane.isMultithreading()) {
+					networkCrawler = new SimpleCiscoThreadedNetworkCrawler(executorFactory, crawlerOptionPane.getMasterUser(), crawlerOptionPane.getRootAddress(), Executors.newFixedThreadPool(crawlerOptionPane.getThreadCount()));
+				} else {
+					networkCrawler = new SimpleCiscoNetworkCrawler(executorFactory, crawlerOptionPane.getMasterUser(), crawlerOptionPane.getRootAddress());
+				}
+				
 				networkGraph = new NetworkGraph();
 				jNetworkGraph.setGraph(networkGraph);
 				
-				//TODO: fix me!
-				new Thread() {
+				final CrawlerProgressPane progressPane = new CrawlerProgressPane();
+				
+				Thread crawlerThread = new Thread() {
 					public void run() {
 						try {
 							networkCrawler.crawl(networkGraph);
+							
+							progressPane.setVisible(false);
 							
 							save.setEnabled(true);
 							saveAs.setEnabled(true);
 							saveDocumentation.setEnabled(true);
 						} catch (Exception e) {}
 					}
-				}.start();
+				};
+				crawlerThread.start();
+				
+				progressPane.showProgress(MainFrame.this);
+				
+				//crawlerThread.interrupt();
+				crawlerThread.stop();
+				try {
+					crawlerThread.join();
+				} catch (InterruptedException e) {}
 			} catch (Throwable t) {
 				JOptionPane.showMessageDialog(MainFrame.this, t, "Error", JOptionPane.ERROR_MESSAGE);
 			}
@@ -292,7 +316,7 @@ public class MainFrame extends JFrame {
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			dispose();
+			System.exit(0);
 		}
 	}
 	private class MagneticAction extends AbstractAction {

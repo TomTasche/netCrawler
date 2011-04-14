@@ -15,7 +15,7 @@ public class CiscoDevice extends NetworkDevice {
 	
 	protected String showVersion;
 	protected String dirFlash;
-	protected String showRunningConfiguration;
+	protected String showRunningConfig;
 	protected String showIpInterfaceBrief;
 	
 	
@@ -47,8 +47,8 @@ public class CiscoDevice extends NetworkDevice {
 	public String getDirFlash() {
 		return dirFlash;
 	}
-	public String getShowRunningConfiguration() {
-		return showRunningConfiguration;
+	public String getShowRunningConfig() {
+		return showRunningConfig;
 	}
 	public String getShowIpInterfaceBrief() {
 		return showIpInterfaceBrief;
@@ -65,8 +65,8 @@ public class CiscoDevice extends NetworkDevice {
 	public void setDirFlash(String dirFlash) {
 		this.dirFlash = dirFlash;
 	}
-	public void setShowRunningConfiguration(String showRunningConfiguration) {
-		this.showRunningConfiguration = showRunningConfiguration;
+	public void setShowRunningConfig(String showRunningConfiguration) {
+		this.showRunningConfig = showRunningConfiguration;
 	}
 	public void setShowIpInterfaceBrief(String showIpInterfaceBrief) {
 		this.showIpInterfaceBrief = showIpInterfaceBrief;
