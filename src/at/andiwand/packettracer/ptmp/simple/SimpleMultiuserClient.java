@@ -207,7 +207,7 @@ public class SimpleMultiuserClient {
 		return fields;
 	}
 	
-	public void sendPtmpPacket(int type, Object... packet) throws IOException {
+	public synchronized void sendPtmpPacket(int type, Object... packet) throws IOException {
 		byte[] tmp = arrayToPtmpPacket(new Object[] {type, packet});
 		outputStream.write((tmp.length + "\0").getBytes(STRING_CHARSET));
 		outputStream.write(tmp);
