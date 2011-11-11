@@ -256,7 +256,7 @@ public class Prototyp2 extends JFrame {
 		
 		String end = "!asdf1234asdf";
 		Pattern endPattern = Pattern.compile(".*" + end);
-		
+
 		outputStream.write(("\n" + batch + "\n" + end + "\n").getBytes());
 		
 		inputStream = new IgnoreFirstLineInputStream(inputStream);
