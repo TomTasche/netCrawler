@@ -1,6 +1,6 @@
 package at.netcrawler.network;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class RoutingTable implements Iterable<RoutingTable.Route> {
 	
 	
 	public List<Route> getRoutingTable() {
-		return Collections.unmodifiableList(table);
+		return new ArrayList<Route>(table);
 	}
 	
 	
