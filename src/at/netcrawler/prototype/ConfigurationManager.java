@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,37 +31,23 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.component.CloseableTabbedPane;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.andiwand.library.util.JFrameUtil;
 
 
 public class ConfigurationManager extends JFrame {
 	
 	private static final long serialVersionUID = 4174046294656269705L;
 	
-	private static class EncryptionBag {
-		public Encryption encryption;
-		public String password;
-		
-		public EncryptionBag() {}
-		public EncryptionBag(Encryption encryption, String password) {
-			this.encryption = encryption;
-			this.password = password;
-		}
-	}
-	
 	private static final String TITLE = "Configuration Manager";
 	
 	
-	private JPanel panel = new JPanel();
-	
-	private JTextField ipField = new JTextField();
-	private JComboBox connectionBox = new JComboBox(Connection.values());
-	private JTextField portField = new JTextField();
-	private JTextField usernameField = new JTextField();
-	private JPasswordField passwordField = new JPasswordField();
-	private JTextField batchNewField = new JTextField();
-	private JButton batchAddButton = new JButton("Add");
+	private JTextField address = new JTextField();
+	private JComboBox connections = new JComboBox(Connection.values());
+	private JTextField port = new JTextField();
+	private JTextField username = new JTextField();
+	private JPasswordField password = new JPasswordField();
+	private JTextField batchNewName = new JTextField();
 	private CloseableTabbedPane batchTabbedPane = new CloseableTabbedPane();
-	private JButton fileButton = new JButton("Choose batch");
 	
 	private JFileChooser batchFileChooser = new JFileChooser();
 	private JFileChooser fileChooser = new JFileChooser();
@@ -72,16 +58,20 @@ public class ConfigurationManager extends JFrame {
 	public ConfigurationManager() {
 		setTitle(TITLE);
 		
-		batchNewField.setPreferredSize(new Dimension(150, batchNewField
+		batchNewName.setPreferredSize(new Dimension(150, batchNewName
 				.getPreferredSize().height));
 		batchTabbedPane.setPreferredSize(new Dimension(300, 300));
+		
+		JPanel panel = new JPanel();
+		JButton batchAdd = new JButton("Add");
+		JButton choose = new JButton("Choose batch");
 		
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		JLabel ipLabel = new JLabel("IP:");
+		JLabel ipLabel = new JLabel("Adress:");
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel usernameLabel = new JLabel("Username:");
@@ -99,53 +89,53 @@ public class ConfigurationManager extends JFrame {
 							.addComponent(batchLabel)
 					)
 					.addGroup(layout.createParallelGroup()
-							.addComponent(ipField)
-							.addComponent(connectionBox)
-							.addComponent(portField)
-							.addComponent(usernameField)
-							.addComponent(passwordField)
+							.addComponent(address)
+							.addComponent(connections)
+							.addComponent(port)
+							.addComponent(username)
+							.addComponent(password)
 							.addGroup(layout.createSequentialGroup()
-									.addComponent(batchNewField)
-									.addComponent(batchAddButton)
+									.addComponent(batchNewName)
+									.addComponent(batchAdd)
 							)
 					)
 				)
 				.addComponent(batchTabbedPane)
-				.addComponent(fileButton, Alignment.TRAILING)
+				.addComponent(choose, Alignment.TRAILING)
 		);
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ipLabel)
-						.addComponent(ipField)
+						.addComponent(address)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(connectionLabel)
-						.addComponent(connectionBox)
+						.addComponent(connections)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(portLabel)
-						.addComponent(portField)
+						.addComponent(port)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(usernameLabel)
-						.addComponent(usernameField)
+						.addComponent(username)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(passwordLabel)
-						.addComponent(passwordField)
+						.addComponent(password)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(batchLabel)
-						.addComponent(batchNewField)
-						.addComponent(batchAddButton)
+						.addComponent(batchNewName)
+						.addComponent(batchAdd)
 				)
 				.addComponent(batchTabbedPane)
-				.addComponent(fileButton)
+				.addComponent(choose)
 		);
 		
 		add(panel);
 
-		fileButton.addActionListener(new ActionListener() {
+		choose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				batchFileChooser.showOpenDialog(ConfigurationManager.this);
 
@@ -171,34 +161,39 @@ public class ConfigurationManager extends JFrame {
 							.setText(builder.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
-					showErrorDialog(e);
+					ConfigurationDialog.showErrorDialog(
+							ConfigurationManager.this, e);
 				}
 			}
 		});
 		
-		connectionBox.addActionListener(new ActionListener() {
+		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Connection connection = (Connection) connectionBox
+				Connection connection = (Connection) connections
 						.getSelectedItem();
 				
-				portField.setText("" + connection.getDefaultPort());
+				port.setText("" + connection.getDefaultPort());
 			}
 		});
 		
-		batchAddButton.addActionListener(new ActionListener() {
+		batchAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String batchName = batchNewField.getText();
+				String batchName = batchNewName.getText();
 				batchName = batchName.trim();
 				
 				if (batchName.isEmpty()) {
-					showErrorDialog("Batch name is empty!");
+					ConfigurationDialog.showErrorDialog(
+							ConfigurationManager.this,
+							"Batch name already exists!");
 					
 					return;
 				}
 				
 				for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 					if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-						showErrorDialog("Batch name already exists!");
+						ConfigurationDialog.showErrorDialog(
+								ConfigurationManager.this,
+								"Batch name already exists!");
 						
 						return;
 					}
@@ -206,7 +201,7 @@ public class ConfigurationManager extends JFrame {
 				
 				addBatch(batchName, "");
 				batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
-				batchNewField.setText("");
+				batchNewName.setText("");
 			}
 		});
 		
@@ -252,8 +247,6 @@ public class ConfigurationManager extends JFrame {
 		
 		pack();
 		centerFrame();
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 	
 	private void centerFrame() {
@@ -270,20 +263,20 @@ public class ConfigurationManager extends JFrame {
 	
 	private void validateIP() {
 		try {
-			IPv4Address.getByAddress(ipField.getText());
+			IPv4Address.getByAddress(address.getText());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Illegal ip Address!");
 		}
 	}
 	private void validateConnection() {
-		if (((Connection) connectionBox.getSelectedItem()).legalConnection())
+		if (((Connection) connections.getSelectedItem()).legalConnection())
 			return;
 		
 		throw new IllegalArgumentException("Choose connection!");
 	}
 	private void validatePort() {
 		try {
-			Integer.parseInt(portField.getText());
+			Integer.parseInt(port.getText());
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Illegal port!");
 		}
@@ -302,7 +295,7 @@ public class ConfigurationManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			showErrorDialog(e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -318,7 +311,8 @@ public class ConfigurationManager extends JFrame {
 			configuration.readFromJsonFile(fileChooser.getSelectedFile(),
 					new EncryptionCallback() {
 						public String getPassword(Encryption encryption) {
-							String password = showDecryptionDialog();
+							String password = ConfigurationDialog
+									.showDecryptionDialog(ConfigurationManager.this);
 							encryptionBag.encryption = encryption;
 							encryptionBag.password = password;
 							return password;
@@ -328,9 +322,9 @@ public class ConfigurationManager extends JFrame {
 			actualEncryptionBag = encryptionBag;
 			
 			setConfiguration(configuration);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			showErrorDialog(e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	private void doSave() {
@@ -343,7 +337,7 @@ public class ConfigurationManager extends JFrame {
 		
 		try {
 			if (actualEncryptionBag == null) {
-				actualEncryptionBag = showEncryptionDialog();
+				actualEncryptionBag = ConfigurationDialog.showEncryptionDialog(this);
 				
 				if (actualEncryptionBag == null)
 					return;
@@ -353,9 +347,9 @@ public class ConfigurationManager extends JFrame {
 			configuration.writeToJsonFile(fileChooser.getSelectedFile(),
 					actualEncryptionBag.encryption,
 					actualEncryptionBag.password);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			showErrorDialog(e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	private void doSaveAs() {
@@ -370,14 +364,14 @@ public class ConfigurationManager extends JFrame {
 	private Configuration getConfiguration() {
 		Configuration configuration = new Configuration();
 		
-		configuration.address = IPv4Address.getByAddress(ipField.getText());
-		configuration.connection = (Connection) connectionBox.getSelectedItem();
-		configuration.port = Integer.parseInt(portField.getText());
-		configuration.username = usernameField.getText();
-		configuration.password = new String(passwordField.getPassword());
+		configuration.setAddress(IPv4Address.getByAddress(address.getText()));
+		configuration.setConnection((Connection) connections.getSelectedItem());
+		configuration.setPort(Integer.parseInt(port.getText()));
+		configuration.setUsername(username.getText());
+		configuration.setPassword(new String(password.getPassword()));
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
-			configuration.batchMap.put(batchTabbedPane.getTitleAt(i),
+			configuration.putBatch(batchTabbedPane.getTitleAt(i),
 					((JTextArea) ((JScrollPane) batchTabbedPane
 							.getComponentAt(i)).getViewport().getView())
 							.getText());
@@ -387,150 +381,17 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void setConfiguration(Configuration configuration) {
-		ipField.setText(configuration.address.toString());
-		connectionBox.setSelectedItem(configuration.connection);
-		portField.setText("" + configuration.port);
-		usernameField.setText(configuration.username);
-		passwordField.setText(configuration.password);
+		address.setText(configuration.getAddress().toString());
+		connections.setSelectedItem(configuration.getConnection());
+		port.setText("" + configuration.getPort());
+		username.setText(configuration.getUsername());
+		password.setText(configuration.getPassword());
 		
 		batchTabbedPane.removeAll();
-		for (Map.Entry<String, String> entry : configuration.batchMap
+		for (Map.Entry<String, String> entry : configuration.getBatches()
 				.entrySet()) {
 			addBatch(entry.getKey(), entry.getValue());
 		}
-	}
-	
-	private void showErrorDialog(Throwable t) {
-		showErrorDialog(t.getMessage());
-	}
-	private void showErrorDialog(String message) {
-		showErrorDialog("Error", message);
-	}
-	private void showErrorDialog(String title, String message) {
-		JOptionPane.showMessageDialog(this, message, title,
-				JOptionPane.ERROR_MESSAGE);
-	}
-	
-	private EncryptionBag showEncryptionDialog() {
-		JPanel panel = new JPanel();
-		GroupLayout layout = new GroupLayout(panel);
-		panel.setLayout(layout);
-		layout.setAutoCreateContainerGaps(true);
-		layout.setAutoCreateGaps(true);
-		
-		JLabel label = new JLabel("Choose your encrytion settings:");
-		JLabel encryptionLabel = new JLabel("Method:");
-		JLabel passwordLabel = new JLabel("Password:");
-		JLabel passwordRepeatLabel = new JLabel("Repeat Password:");
-		final JComboBox encryptionComboBox = new JComboBox(Encryption.values());
-		final JPasswordField passwordField = new JPasswordField();
-		final JPasswordField passwordRepeatField = new JPasswordField();
-		
-		encryptionComboBox.setSelectedItem(Encryption.DES);
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
-		
-		layout.setHorizontalGroup(layout.createParallelGroup()
-				.addComponent(label)
-				.addGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup()
-								.addComponent(encryptionLabel)
-								.addComponent(passwordLabel)
-								.addComponent(passwordRepeatLabel)
-						)
-						.addGroup(layout.createParallelGroup()
-								.addComponent(encryptionComboBox)
-								.addComponent(passwordField)
-								.addComponent(passwordRepeatField)
-						)
-				)
-		);
-		
-		layout.setVerticalGroup(layout.createSequentialGroup()
-				.addComponent(label)
-				.addGap(20)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(encryptionLabel)
-						.addComponent(encryptionComboBox)
-				)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(passwordLabel)
-						.addComponent(passwordField)
-				)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(passwordRepeatLabel)
-						.addComponent(passwordRepeatField)
-				)
-		);
-		
-		encryptionComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (encryptionComboBox.getSelectedItem() == Encryption.PLAIN) {
-					passwordField.setEnabled(false);
-					passwordRepeatField.setEnabled(false);
-				} else {
-					passwordField.setEnabled(true);
-					passwordRepeatField.setEnabled(true);
-				}
-			}
-		});
-		
-		while (true) {
-			if (JOptionPane.showConfirmDialog(this, panel, "Encryption Settings",
-					JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)
-				return null;
-			
-			if (Arrays.equals(passwordField.getPassword(),
-					passwordRepeatField.getPassword()))
-				break;
-			
-			showErrorDialog("The passwords don't match!");
-			passwordField.setText("");
-			passwordRepeatField.setText("");
-		}
-		
-		return new EncryptionBag(
-				(Encryption) encryptionComboBox.getSelectedItem(), new String(
-						passwordField.getPassword()));
-	}
-	
-	private String showDecryptionDialog() {
-		JPanel panel = new JPanel();
-		GroupLayout layout = new GroupLayout(panel);
-		panel.setLayout(layout);
-		layout.setAutoCreateContainerGaps(true);
-		layout.setAutoCreateGaps(true);
-		
-		JLabel label = new JLabel("Choose your decrytion settings:");
-		JLabel passwordLabel = new JLabel("Password:");
-		JPasswordField passwordField = new JPasswordField();
-		
-		passwordField.requestFocus();
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
-		
-		layout.setHorizontalGroup(layout.createParallelGroup()
-				.addComponent(label)
-				.addGroup(layout.createSequentialGroup()
-						.addComponent(passwordLabel)
-						.addComponent(passwordField)
-				)
-		);
-		
-		layout.setVerticalGroup(layout.createSequentialGroup()
-				.addComponent(label)
-				.addGap(20)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(passwordLabel)
-						.addComponent(passwordField)
-				)
-		);
-		
-		if (JOptionPane.showConfirmDialog(this, panel, "Decryption Settings",
-				JOptionPane.OK_OPTION) != JOptionPane.OK_OPTION)
-			return "";
-		
-		return new String(passwordField.getPassword());
 	}
 	
 	
@@ -538,7 +399,10 @@ public class ConfigurationManager extends JFrame {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		JOptionPane.setDefaultLocale(Locale.US);
 		
-		new ConfigurationManager();
+		ConfigurationManager configurationManager = new ConfigurationManager();
+		JFrameUtil.centerFrame(configurationManager);
+		configurationManager.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		configurationManager.setVisible(true);
 	}
 	
 }

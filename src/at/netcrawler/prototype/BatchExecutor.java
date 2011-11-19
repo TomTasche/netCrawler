@@ -258,6 +258,7 @@ public class BatchExecutor extends JFrame {
 		Pattern endPattern = Pattern.compile(".*" + end);
 		
 		outputStream.write(("\n" + batch + "\n" + end + "\n").getBytes());
+		outputStream.flush();
 		
 		inputStream = new IgnoreFirstLineInputStream(inputStream);
 		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);

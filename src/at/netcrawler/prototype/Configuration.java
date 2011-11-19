@@ -33,12 +33,62 @@ public class Configuration {
 	}
 	
 	
-	public IPv4Address address;
-	public Connection connection;
-	public int port;
-	public String username;
-	public String password;
-	public LinkedHashMap<String, String> batchMap = new LinkedHashMap<String, String>();
+	private IPv4Address address;
+	private Connection connection;
+	private int port;
+	private String username;
+	private String password;
+	private LinkedHashMap<String, String> batches = new LinkedHashMap<String, String>();
+	
+	
+	public IPv4Address getAddress() {
+		return address;
+	}
+	public Connection getConnection() {
+		return connection;
+	}
+	public int getPort() {
+		return port;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public LinkedHashMap<String, String> getBatches() {
+		return new LinkedHashMap<String, String>(batches);
+	}
+	public String getBatch(String name) {
+		return batches.get(name);
+	}
+	
+	public void setAddress(IPv4Address address) {
+		this.address = address;
+	}
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+	public void setPort(int port) {
+		this.port = port;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public void setBatches(LinkedHashMap<String, String> batches) {
+		this.batches = new LinkedHashMap<String, String>(batches);
+	}
+	
+	public void putBatch(String name, String batch) {
+		batches.put(name, batch);
+	}
+	
+	public void removeBatch(String name) {
+		batches.remove(name);
+	}
 	
 	
 	public void readFromJsonFile(File file) throws IOException {
@@ -80,7 +130,7 @@ public class Configuration {
 				dataCipherInputStream.close();
 				dataArrayInputStream.close();
 			} catch (MalformedJsonException e) {
-				throw new RuntimeException("Wrong password!");
+				throw new IOException("Wrong password!");
 			} catch (Exception e) {
 				throw new IOException(e);
 			}
@@ -106,7 +156,7 @@ public class Configuration {
 		password = reader.nextString();
 		validateJsonName(reader, "batches");
 		reader.beginArray();
-		batchMap.clear();
+		batches.clear();
 		while (reader.hasNext()) {
 			reader.beginObject();
 			validateJsonName(reader, "name");
@@ -114,7 +164,7 @@ public class Configuration {
 			validateJsonName(reader, "batch");
 			String batch = reader.nextString();
 			reader.endObject();
-			batchMap.put(name, batch);
+			batches.put(name, batch);
 		}
 		reader.endArray();
 		reader.endObject();
@@ -175,7 +225,7 @@ public class Configuration {
 		writer.name("password").value(password);
 		writer.name("batches");
 		writer.beginArray();
-		for (Map.Entry<String, String> batch : batchMap.entrySet()) {
+		for (Map.Entry<String, String> batch : batches.entrySet()) {
 			writer.beginObject();
 			writer.name("name").value(batch.getKey());
 			writer.name("batch").value(batch.getValue());
