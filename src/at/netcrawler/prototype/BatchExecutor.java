@@ -1,4 +1,4 @@
-package at.netcrawler.prototyp;
+package at.netcrawler.prototype;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -39,7 +39,7 @@ import at.netcrawler.stream.ReadUntilMatchInputStream;
 import at.netcrawler.util.StreamUtil;
 
 
-public class Prototyp2 extends JFrame {
+public class BatchExecutor extends JFrame {
 
 	private static final long serialVersionUID = 890687415300742520L;
 
@@ -74,7 +74,7 @@ public class Prototyp2 extends JFrame {
 	JScrollPane responseScrollPane = new JScrollPane(responseArea);
 
 
-	public Prototyp2() {
+	public BatchExecutor() {
 		setTitle("Batcheria");
 		
 		batchScrollPane.setPreferredSize(new Dimension(200, 400));
@@ -145,7 +145,7 @@ public class Prototyp2 extends JFrame {
 
 		fileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				fileChooser.showOpenDialog(Prototyp2.this);
+				fileChooser.showOpenDialog(BatchExecutor.this);
 
 				File batchFile = fileChooser.getSelectedFile();
 				
@@ -274,6 +274,6 @@ public class Prototyp2 extends JFrame {
 	public static void main(String[] args) throws Throwable {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
-		new Prototyp2();
+		new BatchExecutor();
 	}
 }
