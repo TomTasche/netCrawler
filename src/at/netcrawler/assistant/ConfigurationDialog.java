@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -80,9 +81,20 @@ public class ConfigurationDialog {
 			}
 		});
 		
+		JOptionPane optionPane = new JOptionPane(panel,
+				JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION) {
+			private static final long serialVersionUID = 646321718244222228L;
+			
+			public void selectInitialValue() {
+				passwordField.requestFocusInWindow();
+			}
+		};
+		
 		while (true) {
-			if (JOptionPane.showConfirmDialog(parent, panel, "Encryption Settings",
-					JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)
+			JDialog dialog = optionPane.createDialog(parent, "Encryption settings");
+			dialog.setVisible(true);
+			
+			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION)
 				return null;
 			
 			if (Arrays.equals(passwordField.getPassword(),
@@ -106,11 +118,10 @@ public class ConfigurationDialog {
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		JLabel label = new JLabel("Choose your decrytion settings:");
+		JLabel label = new JLabel("Choose your decrytion password:");
 		JLabel passwordLabel = new JLabel("Password:");
-		JPasswordField passwordField = new JPasswordField();
+		final JPasswordField passwordField = new JPasswordField();
 		
-		passwordField.requestFocus();
 		passwordField.setPreferredSize(new Dimension(150, passwordField
 				.getPreferredSize().height));
 		
@@ -131,8 +142,17 @@ public class ConfigurationDialog {
 				)
 		);
 		
-		JOptionPane.showMessageDialog(parent, panel, "Decryption Settings",
-				JOptionPane.QUESTION_MESSAGE);
+		JOptionPane optionPane = new JOptionPane(panel,
+				JOptionPane.QUESTION_MESSAGE) {
+			private static final long serialVersionUID = 646321718244222228L;
+			
+			public void selectInitialValue() {
+				passwordField.requestFocusInWindow();
+			}
+		};
+		
+		JDialog dialog = optionPane.createDialog(parent, "Decryption password");
+		dialog.setVisible(true);
 		
 		return new String(passwordField.getPassword());
 	}

@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 
@@ -65,6 +66,7 @@ public class ConfigurationExecutor extends JFrame {
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel batchLabel = new JLabel("Batch:");
+		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		
 		batches.setPreferredSize(new Dimension(150,
 				batches.getPreferredSize().height));
@@ -101,6 +103,7 @@ public class ConfigurationExecutor extends JFrame {
 								.addComponent(batches)
 						)
 				)
+				.addComponent(separator)
 				.addComponent(execute, Alignment.TRAILING)
 		);
 		
@@ -122,7 +125,10 @@ public class ConfigurationExecutor extends JFrame {
 						.addComponent(batches)
 				)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						20, Short.MAX_VALUE)
+				.addComponent(separator, GroupLayout.PREFERRED_SIZE,
+						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGap(10)
 				.addComponent(execute)
 		);
 		
@@ -137,9 +143,12 @@ public class ConfigurationExecutor extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		JMenuItem open = new JMenuItem("Open...");
+		JMenuItem exit = new JMenuItem("Exit");
 		
 		menuBar.add(file);
 		file.add(open);
+		file.addSeparator();
+		file.add(exit);
 		
 		open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -147,9 +156,16 @@ public class ConfigurationExecutor extends JFrame {
 			}
 		});
 		
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ConfigurationExecutor.this.dispose();
+			}
+		});
+		
 		setJMenuBar(menuBar);
 		
 		pack();
+		setMinimumSize(getSize());
 	}
 	
 	private void setEnabledAll(boolean enabled) {

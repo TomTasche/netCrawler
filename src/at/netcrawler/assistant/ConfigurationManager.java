@@ -1,7 +1,6 @@
 package at.netcrawler.assistant;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -13,7 +12,6 @@ import java.util.Map;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -29,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.CloseableTabbedPane;
 import at.andiwand.library.network.ip.IPv4Address;
@@ -59,9 +58,7 @@ public class ConfigurationManager extends JFrame {
 	public ConfigurationManager() {
 		setTitle(TITLE);
 		
-		batchNewName.setPreferredSize(new Dimension(150, batchNewName
-				.getPreferredSize().height));
-		batchTabbedPane.setPreferredSize(new Dimension(300, 300));
+		batchTabbedPane.setPreferredSize(new Dimension(300, 200));
 		
 		fileChooser.setFileFilter(new FileFilter() {
 			public String getDescription() {
@@ -144,40 +141,6 @@ public class ConfigurationManager extends JFrame {
 				.addComponent(choose)
 		);
 		
-		add(panel);
-
-		choose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				batchFileChooser.showOpenDialog(ConfigurationManager.this);
-
-				File batchFile = batchFileChooser.getSelectedFile();
-				
-				if (batchFile == null) {
-					return;
-				}
-				
-				try {
-					FileReader fileReader = new FileReader(batchFile);
-					BufferedReader reader = new BufferedReader(fileReader);
-					
-					StringBuilder builder = new StringBuilder();
-					
-					int tmp;
-					while ((tmp = reader.read()) != -1) {
-						builder.append((char) tmp);
-					}
-					
-					((JTextArea) ((JScrollPane) batchTabbedPane
-							.getSelectedComponent()).getViewport().getView())
-							.setText(builder.toString());
-				} catch (Exception e) {
-					e.printStackTrace();
-					ConfigurationDialog.showErrorDialog(
-							ConfigurationManager.this, e);
-				}
-			}
-		});
-		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Connection connection = (Connection) connections
@@ -189,32 +152,17 @@ public class ConfigurationManager extends JFrame {
 		
 		batchAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String batchName = batchNewName.getText();
-				batchName = batchName.trim();
-				
-				if (batchName.isEmpty()) {
-					ConfigurationDialog.showErrorDialog(
-							ConfigurationManager.this,
-							"Batch name already exists!");
-					
-					return;
-				}
-				
-				for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
-					if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-						ConfigurationDialog.showErrorDialog(
-								ConfigurationManager.this,
-								"Batch name already exists!");
-						
-						return;
-					}
-				}
-				
-				addBatch(batchName, "");
-				batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
-				batchNewName.setText("");
+				doAddBatch();
 			}
 		});
+		
+		choose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				doChoose();
+			}
+		});
+		
+		add(panel);
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
@@ -224,6 +172,7 @@ public class ConfigurationManager extends JFrame {
 		JMenuItem exit = new JMenuItem("Exit");
 		
 		file.add(open);
+		file.addSeparator();
 		file.add(save);
 		file.add(saveAs);
 		file.addSeparator();
@@ -257,13 +206,7 @@ public class ConfigurationManager extends JFrame {
 		setJMenuBar(menuBar);
 		
 		pack();
-		centerFrame();
-	}
-	
-	private void centerFrame() {
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((dimension.width - getWidth()) >> 1,
-				(dimension.height - getHeight()) >> 1);
+		setMinimumSize(getSize());
 	}
 	
 	private void addBatch(String name, String batch) {
@@ -302,11 +245,60 @@ public class ConfigurationManager extends JFrame {
 		validatePort();
 		validateBatch();
 	}
-	private void validateAllAndShowError() {
+	
+	private void doAddBatch() {
+		String batchName = batchNewName.getText();
+		batchName = batchName.trim();
+		
+		if (batchName.isEmpty()) {
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+					"Batch name is empty!");
+			
+			return;
+		}
+		
+		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
+			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
+				ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+						"Batch name already exists!");
+				
+				return;
+			}
+		}
+		
+		addBatch(batchName, "");
+		batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
+		batchNewName.setText("");
+	}
+	
+	private void doChoose() {
+		if (batchTabbedPane.getTabCount() <= 0) {
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+					"Add batch name first!");
+			return;
+		}
+		
+		if (batchFileChooser.showOpenDialog(ConfigurationManager.this) == JFileChooser.CANCEL_OPTION)
+			return;
+		
+		File file = batchFileChooser.getSelectedFile();
+		
 		try {
-			validateAll();
+			FileReader fileReader = new FileReader(file);
+			BufferedReader reader = new BufferedReader(fileReader);
+			
+			StringBuilder builder = new StringBuilder();
+			
+			int tmp;
+			while ((tmp = reader.read()) != -1) {
+				builder.append((char) tmp);
+			}
+			
+			((JTextArea) ((JScrollPane) batchTabbedPane.getSelectedComponent())
+					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(this, e);
+			e.printStackTrace();
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
 		}
 	}
 	
@@ -339,7 +331,12 @@ public class ConfigurationManager extends JFrame {
 		}
 	}
 	private void doSave() {
-		validateAllAndShowError();
+		try {
+			validateAll();
+		} catch (Exception e) {
+			ConfigurationDialog.showErrorDialog(this, e);
+			return;
+		}
 		
 		if (fileChooser.getSelectedFile() == null) {
 			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION)
