@@ -6,10 +6,10 @@ import java.io.OutputStream;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.util.StreamUtil;
 import at.netcrawler.stream.IgnoreFirstLineInputStream;
 import at.netcrawler.stream.ReadAfterMatchInputStream;
 import at.netcrawler.stream.ReadUntilMatchInputStream;
-import at.netcrawler.util.StreamUtil;
 
 
 public class PromptPatternAgent extends CommandLineAgent {

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import at.netcrawler.util.StreamUtil;
+import at.andiwand.library.util.StreamUtil;
 
 
 public class CommandLineProcess {
