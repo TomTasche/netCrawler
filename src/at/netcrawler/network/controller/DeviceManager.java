@@ -42,8 +42,10 @@ public abstract class DeviceManager {
 	public abstract String getSystem() throws IOException;
 	public abstract Set<Capability> getCapabilities() throws IOException;
 	public abstract Set<NetworkInterface> getInterfaces() throws IOException;
+	// TODO: add generic methods
 	
 	public abstract void setHostname(String hostname) throws IOException;
+	// TODO: add generic methods
 	
 	
 	public void addExtensionSetManager(NetworkDeviceExtensionSet extensionSet,
@@ -64,6 +66,7 @@ public abstract class DeviceManager {
 		device.setValue(NetworkDevice.SYSTEM, getSystem());
 		device.setValue(NetworkDevice.CAPABILITIES, getCapabilities());
 		device.setValue(NetworkDevice.INTERFACES, getInterfaces());
+		// TODO: use generic information
 		
 		Set<Capability> capabilities = GenericsUtil.castObject(device
 				.getValue(NetworkDevice.CAPABILITIES));

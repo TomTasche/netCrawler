@@ -12,6 +12,13 @@ public enum NetworkDeviceExtensionSet implements NetworkModelExtensionSet {
 		{
 			addExtension(NetworkDeviceExtension.ROUTER_ROUTING_TABLE);
 		}
+		
+		
+	},
+	CISCO {
+		{
+			
+		}
 	};
 	
 	

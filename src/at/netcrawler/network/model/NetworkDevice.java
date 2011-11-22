@@ -29,7 +29,7 @@ public class NetworkDevice extends NetworkModel {
 	public static final String INTERFACES = "device.interfaces";
 	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil.castClass(Set.class);
 	
-	
+	// TODO: add generic information
 	
 	static {
 		Map<String, Class<?>> typeMap = new HashMap<String, Class<?>>();
@@ -39,6 +39,7 @@ public class NetworkDevice extends NetworkModel {
 		typeMap.put(SYSTEM, SYSTEM_TYPE);
 		typeMap.put(CAPABILITIES, CAPABILITIES_TYPE);
 		typeMap.put(INTERFACES, INTERFACES_TYPE);
+		// TODO: put generic information
 		
 		TYPE_MAP = Collections.unmodifiableMap(typeMap);
 	}

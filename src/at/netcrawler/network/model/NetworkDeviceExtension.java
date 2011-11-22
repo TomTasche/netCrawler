@@ -12,7 +12,7 @@ public enum NetworkDeviceExtension implements NetworkModelExtension {
 		}
 		
 		@Override
-		public Class<?> getType() {
+		public Class<RoutingTable> getType() {
 			return RoutingTable.class;
 		}
 	};
