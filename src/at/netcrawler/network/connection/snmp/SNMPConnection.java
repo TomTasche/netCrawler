@@ -42,12 +42,16 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	@Override
 	public SNMPObject get(String oid) throws IOException {
-		return get(new String[] {oid}).get(0);
+		List<SNMPObject> result = get(new String[] {oid});
+		if (result == null) return null;
+		return result.get(0);
 	}
 	
 	@Override
-	public SNMPObject getNext(String oid) throws IOException {
-		return getNext(new String[] {oid}).get(0);
+	public SNMPObject getNext(String oid) throws IOException { 
+		List<SNMPObject> result = getNext(new String[] {oid});
+		if (result == null) return null;
+		return result.get(0);
 	}
 	
 	@Override
@@ -78,7 +82,9 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	@Override
 	public SNMPObject set(SNMPObject object) throws IOException {
-		return set(new SNMPObject[] {object}).get(0);
+		List<SNMPObject> result = set(new SNMPObject[] {object});
+		if (result == null) return null;
+		return result.get(0);
 	}
 	
 	@Override
