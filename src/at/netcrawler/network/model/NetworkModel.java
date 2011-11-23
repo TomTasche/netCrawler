@@ -40,23 +40,33 @@ public abstract class NetworkModel {
 	}
 	
 	
-	public Object getValue(String key) {
+	public final Object getValue(String key) {
 		return valueMap.get(key);
 	}
-	public Map<String, Class<?>> getTypeMap() {
+	public final Map<String, Class<?>> getTypeMap() {
 		return new HashMap<String, Class<?>>(typeMap);
 	}
-	public Map<String, Object> getValueMap() {
+	public final Map<String, Object> getValueMap() {
 		return new HashMap<String, Object>(valueMap);
 	}
-	public Set<NetworkModelExtension> getExtensions() {
+	public final Set<NetworkModelExtension> getExtensions() {
 		return new HashSet<NetworkModelExtension>(extensions);
 	}
-	public boolean hasExtension(NetworkModelExtension extension) {
+	public final boolean hasExtension(NetworkModelExtension extension) {
 		return extensions.contains(extension);
 	}
+	public final boolean hasExtension(
+			Class<? extends NetworkModelExtension> extensionClass) {
+		try {
+			NetworkModelExtension extension = extensionClass.newInstance();
+			
+			return hasExtension(extension);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
-	public void setValue(String key, Object value) {
+	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key))
 			throw new IllegalArgumentException("Unknown key!");
 		
@@ -64,70 +74,85 @@ public abstract class NetworkModel {
 	}
 	
 	
-	public void clear() {
+	public final void clear() {
 		valueMap.clear();
 		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
 		extensions.clear();
 	}
 	
-	
-	public void addModelListener(NetworkModelListener listener) {
-		listeners.add(listener);
-	}
-	public void addExtension(
+	public final void clearExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		try {
 			NetworkModelExtension extension = extensionClass.newInstance();
 			
-			addExtension(extension);
+			clearExtension(extension);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public void addExtension(NetworkModelExtension extension) {
-		if (!getClass().equals(extension.getExtendedModelClass()))
-			throw new IllegalArgumentException("Illegal class extension!");
-		if (extensions.contains(extension))
-			return;
-		
-		for (NetworkModelExtension superExtension : extension
-				.getRequiredExtensions()) {
-			addExtension(superExtension);
+	public final void clearExtension(NetworkModelExtension extension) {
+		for (String extensionKey : extension.getExtensionTypeMap().keySet()) {
+			valueMap.remove(extensionKey);
 		}
+	}
+	
+	
+	public final boolean addModelListener(NetworkModelListener listener) {
+		return listeners.add(listener);
+	}
+	public final boolean addExtension(
+			Class<? extends NetworkModelExtension> extensionClass) {
+		try {
+			NetworkModelExtension extension = extensionClass.newInstance();
+			
+			return addExtension(extension);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public final boolean addExtension(NetworkModelExtension extension) {
+		if (!getClass().equals(extension.getExtendedModelClass()))
+			throw new IllegalArgumentException("Illegal model class extension!");
+		if (extensions.contains(extension))
+			return false;
+		if (extension.isExtensionSupported(this))
+			return false;
 		
 		extensions.add(extension);
 		typeMap.putAll(extension.getExtensionTypeMap());
+		
+		return true;
 	}
 	
-	public void removeModelListener(NetworkModelListener listener) {
-		listeners.remove(listener);
+	public final boolean removeModelListener(NetworkModelListener listener) {
+		return listeners.remove(listener);
 	}
-	public void removeExtension(NetworkModelExtension extension) {
+	public final boolean removeExtension(NetworkModelExtension extension) {
 		if (!extensions.contains(extension))
-			return;
+			return false;
 		
 		for (String key : extension.getExtensionTypeMap().keySet()) {
 			valueMap.remove(key);
 			typeMap.remove(key);
 		}
 		
-		extensions.remove(extension);
+		return extensions.remove(extension);
 	}
 	
 	
-	public void fireValueChanged(String key, String value) {
+	public final void fireValueChanged(String key, String value) {
 		for (NetworkModelListener listener : listeners) {
 			listener.valueChanged(key, value);
 		}
 	}
 	
-	public void fireExtensionAdded(NetworkModelExtension extension) {
+	public final void fireExtensionAdded(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionAdded(extension);
 		}
 	}
 	
-	public void fireExtensionRemoved(NetworkModelExtension extension) {
+	public final void fireExtensionRemoved(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionRemoved(extension);
 		}

@@ -1,4 +1,4 @@
-package at.netcrawler.network.controller;
+package at.netcrawler.network.controller.snmp;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -10,22 +10,17 @@ import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.snmp.SNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPObject;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
+import at.netcrawler.network.controller.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
 import at.netcrawler.network.model.extension.EthernetInterfaceExtension;
 
 
-public class SNMPDeviceManager extends DeviceManager {
-	
-	private SNMPConnection connection;
-	
-	
+public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 	
 	public SNMPDeviceManager(NetworkDevice device, SNMPConnection connection)
 			throws IOException {
-		super(device);
-		
-		this.connection = connection;
+		super(device, connection);
 	}
 	
 	
@@ -92,8 +87,8 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	
 	@Override
-	public void setHostname(String hostname) throws IOException {
-		connection.set("1.3.6.1.2.1.1.5.0", Type.STRING, hostname);
+	public boolean setHostname(String hostname) throws IOException {
+		return connection.setAndVerify("1.3.6.1.2.1.1.5.0", Type.STRING, hostname);
 	}
 	
 }

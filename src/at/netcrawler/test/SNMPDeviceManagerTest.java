@@ -5,7 +5,7 @@ import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
 import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;
-import at.netcrawler.network.controller.SNMPDeviceManager;
+import at.netcrawler.network.controller.snmp.SNMPDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 
 
