@@ -12,8 +12,7 @@ import at.netcrawler.network.connection.snmp.SNMPObject;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
-import at.netcrawler.network.model.NetworkInterfaceExtension;
-import at.netcrawler.network.model.NetworkInterfaceExtensionSet;
+import at.netcrawler.network.model.extension.EthernetInterfaceExtension;
 
 
 public class SNMPDeviceManager extends DeviceManager {
@@ -77,12 +76,9 @@ public class SNMPDeviceManager extends DeviceManager {
 				try {
 					MACAddress address = MACAddress.getByAddress(addressString);
 					
-					newInterface
-							.addExtensionSet(NetworkInterfaceExtensionSet.ETHERNET);
-					newInterface
-							.setValue(
-									NetworkInterfaceExtension.ETHERNET_ADDRESS,
-									address);
+					newInterface.addExtension(EthernetInterfaceExtension.class);
+					newInterface.setValue(EthernetInterfaceExtension.ADDRESS,
+							address);
 				} catch (Exception e) {
 					
 				}

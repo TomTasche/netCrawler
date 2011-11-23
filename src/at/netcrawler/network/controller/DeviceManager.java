@@ -8,15 +8,16 @@ import java.util.Set;
 import at.andiwand.library.util.GenericsUtil;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.NetworkDeviceExtensionSet;
+import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.model.extension.RouterExtension;
 
 
 public abstract class DeviceManager {
 	
 	private final NetworkDevice device;
 	
-	private final Map<NetworkDeviceExtensionSet, DeviceExtensionSetManager> extensionSetManagerMap = new HashMap<NetworkDeviceExtensionSet, DeviceExtensionSetManager>();
+	private final Map<NetworkDeviceExtension, DeviceExtensionSetManager> extensionManagerMap = new HashMap<NetworkDeviceExtension, DeviceExtensionSetManager>();
 	
 	
 	
@@ -29,13 +30,33 @@ public abstract class DeviceManager {
 	public NetworkDevice getDevice() {
 		return device;
 	}
-	public boolean hasExtensionSetManager(NetworkDeviceExtensionSet extensionSet) {
-		return extensionSetManagerMap.containsKey(extensionSet);
+	public boolean hasExtensionManager(
+			Class<? extends NetworkDeviceExtension> extensionClass) {
+		try {
+			NetworkDeviceExtension extension = extensionClass.newInstance();
+			
+			return hasExtensionManager(extension);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-	public DeviceExtensionSetManager getExtensionSetManager(
-			NetworkDeviceExtensionSet extensionSet) {
-		return extensionSetManagerMap.get(extensionSet);
+	public boolean hasExtensionManager(NetworkDeviceExtension extension) {
+		return extensionManagerMap.containsKey(extension);
+	}
+	
+	public DeviceExtensionSetManager getExtensionManager(
+			Class<? extends NetworkDeviceExtension> extensionClass) {
+		try {
+			NetworkDeviceExtension extension = extensionClass.newInstance();
+			
+			return getExtensionManager(extension);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public DeviceExtensionSetManager getExtensionManager(
+			NetworkDeviceExtension extension) {
+		return extensionManagerMap.get(extension);
 	}
 	public abstract String getIdentication() throws IOException;
 	public abstract String getHostname() throws IOException;
@@ -48,13 +69,13 @@ public abstract class DeviceManager {
 	// TODO: add generic methods
 	
 	
-	public void addExtensionSetManager(NetworkDeviceExtensionSet extensionSet,
+	public void addExtensionManager(NetworkDeviceExtension extension,
 			DeviceExtensionSetManager extensionManager) {
-		extensionSetManagerMap.put(extensionSet, extensionManager);
+		extensionManagerMap.put(extension, extensionManager);
 	}
 	
-	public void removeExtensionSetManager(NetworkDeviceExtensionSet extensionSet) {
-		extensionSetManagerMap.remove(extensionSet);
+	public void removeExtensionManager(NetworkDeviceExtension extension) {
+		extensionManagerMap.remove(extension);
 	}
 	
 	
@@ -72,8 +93,8 @@ public abstract class DeviceManager {
 				.getValue(NetworkDevice.CAPABILITIES));
 		
 		if (capabilities.contains(Capability.ROUTER)
-				&& hasExtensionSetManager(NetworkDeviceExtensionSet.ROUTER)) {
-			getExtensionSetManager(NetworkDeviceExtensionSet.ROUTER)
+				&& hasExtensionManager(RouterExtension.class)) {
+			getExtensionManager(RouterExtension.class)
 					.fetchDeviceExtensionSet();
 		}
 	}

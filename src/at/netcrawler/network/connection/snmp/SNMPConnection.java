@@ -239,8 +239,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 					SNMPObject object = nextBulk.get(k);
 					String oid = object.getOid();
 					
-					if (!oid.startsWith(oids[j]))
-						break mainLoop;
+					if (!oid.startsWith(oids[j])) break mainLoop;
 					
 					row[j] = nextBulk.get(k);
 				}
@@ -248,8 +247,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 				result.add(row);
 			}
 			
-			if (newRows < maxRepetitions)
-				break;
+			if (newRows < maxRepetitions) break;
 			
 			lastOids = nextOids;
 		}

@@ -1,45 +1,24 @@
 package at.netcrawler.network.model;
 
-import at.andiwand.library.network.ip.IPv4Address;
-import at.andiwand.library.network.ip.SubnetMask;
-import at.andiwand.library.network.mac.MACAddress;
+import java.util.Map;
+import java.util.Set;
 
 
-public enum NetworkInterfaceExtension implements NetworkModelExtension {
+public abstract class NetworkInterfaceExtension extends
+		AbstractNetworkModelExtension<NetworkInterfaceExtension> {
 	
-	ETHERNET_ADDRESS {
-		@Override
-		public String getKey() {
-			return "interface.ethernet.address";
-		}
-		
-		@Override
-		public Class<?> getType() {
-			return MACAddress.class;
-		}
-	},
+	public static final Class<NetworkInterface> EXTENDED_MODEL_CLASS = NetworkInterface.class;
 	
-	IPV4_ADDRESS {
-		@Override
-		public String getKey() {
-			return "interface.ipv4.address";
-		}
-		
-		@Override
-		public Class<?> getType() {
-			return IPv4Address.class;
-		}
-	},
-	IPV4_SUBNET_MASK {
-		@Override
-		public String getKey() {
-			return "interface.ipv4.subnetMask";
-		}
-		
-		@Override
-		public Class<?> getType() {
-			return SubnetMask.class;
-		}
-	};
+	protected NetworkInterfaceExtension() {
+		super(EXTENDED_MODEL_CLASS);
+	}
+	protected NetworkInterfaceExtension(Map<String, Class<?>> extendedTypeMap) {
+		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
+	}
+	protected NetworkInterfaceExtension(
+			Set<NetworkInterfaceExtension> requiredExtensions,
+			Map<String, Class<?>> extendedTypeMap) {
+		super(EXTENDED_MODEL_CLASS, requiredExtensions, extendedTypeMap);
+	}
 	
 }

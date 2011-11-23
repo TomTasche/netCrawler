@@ -3,7 +3,7 @@ package at.netcrawler.network.controller;
 import java.io.IOException;
 
 import at.netcrawler.network.RoutingTable;
-import at.netcrawler.network.model.NetworkDeviceExtension;
+import at.netcrawler.network.model.extension.RouterExtension;
 
 
 public abstract class RouterExtensionSetManager extends DeviceExtensionSetManager {
@@ -17,8 +17,7 @@ public abstract class RouterExtensionSetManager extends DeviceExtensionSetManage
 	
 	@Override
 	public void fetchDeviceExtensionSet() throws IOException {
-		device.setValue(NetworkDeviceExtension.ROUTER_ROUTING_TABLE,
-				getRoutingTable());
+		device.setValue(RouterExtension.ROUTING_TABLE, getRoutingTable());
 	}
 	
 }
