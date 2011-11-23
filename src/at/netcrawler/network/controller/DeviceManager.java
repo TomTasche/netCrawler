@@ -5,11 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import at.andiwand.library.network.ip.IPAddress;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.DeviceConnection;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.model.NetworkModelExtension;
 
 
 public abstract class DeviceManager<C extends DeviceConnection> {
@@ -63,34 +65,52 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 	public abstract String getIdentication() throws IOException;
 	public abstract String getHostname() throws IOException;
 	public abstract String getSystem() throws IOException;
+	public abstract long getUptime() throws IOException;
 	public abstract Set<Capability> getCapabilities() throws IOException;
 	public abstract Set<NetworkInterface> getInterfaces() throws IOException;
+	public abstract Set<IPAddress> getManagementAddresses() throws IOException;
 	// TODO: add generic methods
 	
 	public abstract boolean setHostname(String hostname) throws IOException;
 	// TODO: add generic methods
 	
 	
-	public final void addExtensionManager(NetworkDeviceExtension extension,
+	public final boolean addExtensionManager(NetworkDeviceExtension extension,
 			DeviceExtensionManager<C> extensionManager) {
 		DeviceManager<C> deviceManager = extensionManager.getDeviceManager();
 		
-		if (deviceManager == this) return;
-		else deviceManager.removeExtensionManager(extension);
+		if (deviceManager == this) {
+			return false;
+		} else if (deviceManager != null) {
+			throw new IllegalArgumentException(
+					"The extension manager is already in use!");
+		}
+		
+		for (NetworkModelExtension requiredExtension : extension
+				.getRequiredExtensions()) {
+			if (!extensionManagerMap.containsKey(requiredExtension)) {
+				throw new IllegalArgumentException(
+						"Does not contain required extension managers!");
+			}
+		}
 		
 		extensionManager.setDeviceManager(this);
 		extensionManagerMap.put(extension, extensionManager);
+		
+		return true;
 	}
 	
-	public final void removeExtensionManager(NetworkDeviceExtension extension) {
+	public final boolean removeExtensionManager(NetworkDeviceExtension extension) {
 		DeviceExtensionManager<C> extensionManager = extensionManagerMap
 				.get(extension);
 		DeviceManager<C> deviceManager = extensionManager.getDeviceManager();
 		
-		if (deviceManager != this) return;
+		if (deviceManager != this) return false;
 		
 		extensionManagerMap.remove(extension);
 		extensionManager.setDeviceManager(null);
+		
+		return true;
 	}
 	
 	
@@ -98,8 +118,11 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 		device.setValue(NetworkDevice.IDENTICATION, getIdentication());
 		device.setValue(NetworkDevice.HOSTNAME, getHostname());
 		device.setValue(NetworkDevice.SYSTEM, getSystem());
+		device.setValue(NetworkDevice.UPTIME, getUptime());
 		device.setValue(NetworkDevice.CAPABILITIES, getCapabilities());
 		device.setValue(NetworkDevice.INTERFACES, getInterfaces());
+		device.setValue(NetworkDevice.MANAGEMENT_ADDRESSES,
+				getManagementAddresses());
 		// TODO: use generic information
 		
 		for (Map.Entry<NetworkDeviceExtension, DeviceExtensionManager<C>> entry : extensionManagerMap

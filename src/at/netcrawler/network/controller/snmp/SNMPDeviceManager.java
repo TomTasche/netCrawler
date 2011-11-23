@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.mac.MACAddress;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.snmp.SNMPConnection;
@@ -51,6 +52,12 @@ public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 	}
 	
 	@Override
+	public long getUptime() throws IOException {
+		// TODO implement
+		return 0;
+	}
+	
+	@Override
 	public Set<NetworkInterface> getInterfaces() throws IOException {
 		List<SNMPObject[]> table = connection.walkBulkTable(
 				"1.3.6.1.2.1.31.1.1.1.1",	// name
@@ -83,6 +90,12 @@ public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 		}
 		
 		return interfaces;
+	}
+	
+	@Override
+	public Set<IPAddress> getManagementAddresses() throws IOException {
+		// TODO implement
+		return null;
 	}
 	
 	
