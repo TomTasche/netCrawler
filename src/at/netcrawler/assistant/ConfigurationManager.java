@@ -79,7 +79,7 @@ public class ConfigurationManager extends JFrame {
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		JLabel ipLabel = new JLabel("Adress:");
+		JLabel ipLabel = new JLabel("Address:");
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel usernameLabel = new JLabel("Username:");

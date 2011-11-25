@@ -29,15 +29,15 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.util.JFrameUtil;
+import at.netcrawler.io.IgnoreFirstLineInputStream;
+import at.netcrawler.io.IgnoreLastLineInputStream;
+import at.netcrawler.io.ReadUntilMatchInputStream;
 import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
-import at.netcrawler.stream.IgnoreFirstLineInputStream;
-import at.netcrawler.stream.IgnoreLastLineInputStream;
-import at.netcrawler.stream.ReadUntilMatchInputStream;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -62,7 +62,7 @@ public class ConfigurationExecutor extends JFrame {
 		setTitle(TITLE);
 		
 		JPanel panel = new JPanel();
-		JLabel addressLabel = new JLabel("Address");
+		JLabel addressLabel = new JLabel("Address:");
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel batchLabel = new JLabel("Batch:");

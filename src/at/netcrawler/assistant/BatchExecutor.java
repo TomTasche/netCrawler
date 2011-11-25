@@ -1,7 +1,6 @@
 package at.netcrawler.assistant;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,16 +26,17 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.andiwand.library.util.JFrameUtil;
+import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StreamUtil;
+import at.netcrawler.io.IgnoreLastLineInputStream;
+import at.netcrawler.io.ReadUntilMatchInputStream;
 import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
-import at.netcrawler.stream.IgnoreFirstLineInputStream;
-import at.netcrawler.stream.IgnoreLastLineInputStream;
-import at.netcrawler.stream.ReadUntilMatchInputStream;
 
 
 public class BatchExecutor extends JFrame {
@@ -77,69 +77,69 @@ public class BatchExecutor extends JFrame {
 	public BatchExecutor() {
 		setTitle("Batcheria");
 		
-		batchScrollPane.setPreferredSize(new Dimension(200, 400));
+		batchScrollPane.setPreferredSize(new Dimension(200, 300));
 		responseArea.setEditable(false);
-		responseScrollPane.setPreferredSize(new Dimension(200, 400));
+		responseScrollPane.setPreferredSize(new Dimension(200, 300));
 		
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 
-		layout.setHorizontalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup()
-						.addComponent(ipLabel)
-						.addComponent(connectionLabel)
-						.addComponent(portLabel)
-						.addComponent(usernameLabel)
-						.addComponent(passwordLabel)
-				)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(ipField)
-						.addComponent(connectionBox)
-						.addComponent(portField)
-						.addComponent(usernameField)
-						.addComponent(passwordField)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(fileButton)
-								.addComponent(execute)
+		layout.setHorizontalGroup(layout.createParallelGroup()
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup()
+								.addComponent(ipLabel)
+								.addComponent(connectionLabel)
+								.addComponent(portLabel)
+								.addComponent(usernameLabel)
+								.addComponent(passwordLabel)
 						)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(batchScrollPane)
-								.addComponent(responseScrollPane)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(ipField)
+								.addComponent(connectionBox)
+								.addComponent(portField)
+								.addComponent(usernameField)
+								.addComponent(passwordField)
 						)
 				)
-		);
-		layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(ipLabel)
-						.addComponent(ipField)							
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(batchScrollPane)
+						.addComponent(responseScrollPane)
 				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(connectionLabel)
-						.addComponent(connectionBox)							
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(portLabel)
-						.addComponent(portField)	
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(usernameLabel)
-						.addComponent(usernameField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(passwordLabel)
-						.addComponent(passwordField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
 						.addComponent(fileButton)
 						.addComponent(execute)
 				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+		);
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(ipLabel)
+						.addComponent(ipField)							
+				)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(connectionLabel)
+						.addComponent(connectionBox)							
+				)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(portLabel)
+						.addComponent(portField)	
+				)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(usernameLabel)
+						.addComponent(usernameField)
+				)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(passwordLabel)
+						.addComponent(passwordField)
+				)
+				.addGroup(layout.createParallelGroup()
 						.addComponent(batchScrollPane)
 						.addComponent(responseScrollPane)
+				)
+				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(fileButton)
+						.addComponent(execute)
 				)
 		);
 
@@ -199,11 +199,6 @@ public class BatchExecutor extends JFrame {
 		add(panel);
 		
 		pack();
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((dimension.width - getWidth()) >> 1,
-				(dimension.height - getHeight()) >> 1);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 
 
@@ -255,12 +250,12 @@ public class BatchExecutor extends JFrame {
 		OutputStream outputStream = commandLine.getOutputStream();
 		
 		String end = "!asdf1234asdf";
-		Pattern endPattern = Pattern.compile(".*" + end);
+		Pattern endPattern = Pattern.compile(".+"
+				+ PatternUtil.escapeString(end));
 		
-		outputStream.write(("\n" + batch + "\n" + end + "\n").getBytes());
+		outputStream.write((batch + "\n" + end + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new IgnoreFirstLineInputStream(inputStream);
 		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
 		inputStream = new IgnoreLastLineInputStream(inputStream);
 		
@@ -275,6 +270,9 @@ public class BatchExecutor extends JFrame {
 	public static void main(String[] args) throws Throwable {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
-		new BatchExecutor();
+		BatchExecutor batchExecutor = new BatchExecutor();
+		JFrameUtil.centerFrame(batchExecutor);
+		batchExecutor.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		batchExecutor.setVisible(true);
 	}
 }

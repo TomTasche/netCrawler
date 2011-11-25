@@ -1,4 +1,4 @@
-package at.netcrawler.stream;
+package at.netcrawler.io;
 
 
 public interface ActionOnMatchListener {

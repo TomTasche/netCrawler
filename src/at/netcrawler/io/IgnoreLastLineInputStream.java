@@ -1,9 +1,11 @@
-package at.netcrawler.stream;
+package at.netcrawler.io;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
+
+import at.andiwand.library.util.StreamUtil;
 
 
 public class IgnoreLastLineInputStream extends FilterInputStream {
@@ -35,6 +37,11 @@ public class IgnoreLastLineInputStream extends FilterInputStream {
 		lastLine = true;
 		buffer.clear();
 		return -1;
+	}
+	
+	@Override
+	public int read(byte[] b, int off, int len) throws IOException {
+		return StreamUtil.read(this, b, off, len);
 	}
 	
 }

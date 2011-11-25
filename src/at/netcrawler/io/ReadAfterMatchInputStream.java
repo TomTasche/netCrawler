@@ -1,10 +1,12 @@
-package at.netcrawler.stream;
+package at.netcrawler.io;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import at.andiwand.library.util.StreamUtil;
 
 
 public class ReadAfterMatchInputStream extends FilterInputStream {
@@ -49,6 +51,11 @@ public class ReadAfterMatchInputStream extends FilterInputStream {
 		}
 		
 		return in.read();
+	}
+	
+	@Override
+	public int read(byte[] b, int off, int len) throws IOException {
+		return StreamUtil.read(this, b, off, len);
 	}
 	
 }
