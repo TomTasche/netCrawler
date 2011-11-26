@@ -1,8 +1,10 @@
-package at.netcrawler.stream;
+package at.netcrawler.io;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import at.andiwand.library.util.StreamUtil;
 
 
 public class IgnoreFirstLineInputStream extends FilterInputStream {
@@ -37,6 +39,11 @@ public class IgnoreFirstLineInputStream extends FilterInputStream {
 		}
 		
 		return read;
+	}
+	
+	@Override
+	public int read(byte[] b, int off, int len) throws IOException {
+		return StreamUtil.read(this, b, off, len);
 	}
 	
 }

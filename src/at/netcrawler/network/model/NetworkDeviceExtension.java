@@ -1,20 +1,24 @@
 package at.netcrawler.network.model;
 
-import at.netcrawler.network.RoutingTable;
+import java.util.Map;
+import java.util.Set;
 
 
-public enum NetworkDeviceExtension implements NetworkModelExtension {
+public abstract class NetworkDeviceExtension extends
+		AbstractNetworkModelExtension {
 	
-	ROUTER_ROUTING_TABLE {
-		@Override
-		public String getKey() {
-			return "device.router.routingTable";
-		}
-		
-		@Override
-		public Class<RoutingTable> getType() {
-			return RoutingTable.class;
-		}
-	};
+	public static final Class<NetworkDevice> EXTENDED_MODEL_CLASS = NetworkDevice.class;
+	
+	protected NetworkDeviceExtension() {
+		super(EXTENDED_MODEL_CLASS);
+	}
+	protected NetworkDeviceExtension(Map<String, Class<?>> extendedTypeMap) {
+		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
+	}
+	protected NetworkDeviceExtension(
+			Set<NetworkDeviceExtension> requiredExtensions,
+			Map<String, Class<?>> extendedTypeMap) {
+		super(EXTENDED_MODEL_CLASS, requiredExtensions, extendedTypeMap);
+	}
 	
 }

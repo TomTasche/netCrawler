@@ -2,45 +2,49 @@ package at.netcrawler.cli.agent;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
-import at.netcrawler.stream.ActionOnMatchInputStream;
-import at.netcrawler.stream.ActionOnMatchListener;
-import at.netcrawler.stream.IgnoreLineOnMatchInputStream;
+import at.netcrawler.io.ActionOnMatchInputStream;
+import at.netcrawler.io.ActionOnMatchListener;
+import at.netcrawler.io.IgnoreLineOnMatchInputStream;
 
 
 public class CiscoPromptPatternAgent extends PromptPatternAgent {
 	
-	public static final Pattern PROMT_PATTERN = Pattern
-			.compile("(.*?)(/.*?)?(\\((.*?)\\))?(>|#)");
+	private static final String SPACE = " ";
+	
+	public static final String PROMT_PATTERN = "(.*?)(/.*?)?(\\((.*?)\\))?(>|#)";
 	public static final String COMMENT_PREFIX = "!";
 	public static final Pattern MORE_PATTERN = Pattern.compile(
-			" *-+ ?more ?-+ *", Pattern.CASE_INSENSITIVE);
+			".*?(.+)more\\1.*?", Pattern.CASE_INSENSITIVE);
+	
+	
+	private final byte[] space;
 	
 	public CiscoPromptPatternAgent(CommandLine commandLine) {
 		super(commandLine, PROMT_PATTERN, COMMENT_PREFIX);
+		
+		space = SPACE.getBytes(charset);
 	}
 	
 	@Override
 	protected InputStream commandChainHook(InputStream inputStream) {
-		ActionOnMatchInputStream moreAction = new ActionOnMatchInputStream(
+		ActionOnMatchInputStream moreActionInputStream = new ActionOnMatchInputStream(
 				inputStream, MORE_PATTERN);
-		IgnoreLineOnMatchInputStream killMore = new IgnoreLineOnMatchInputStream(
-				moreAction, MORE_PATTERN);
+		IgnoreLineOnMatchInputStream ignoreMoreInputStream = new IgnoreLineOnMatchInputStream(
+				moreActionInputStream, MORE_PATTERN);
 		
-		moreAction.addListener(new ActionOnMatchListener() {
+		moreActionInputStream.addListener(new ActionOnMatchListener() {
 			public void matchOccurred(String match) {
 				try {
-					OutputStream outputStream = commandLine.getOutputStream();
-					outputStream.write(" ".getBytes());
+					outputStream.write(space);
 					outputStream.flush();
 				} catch (IOException e) {}
 			}
 		});
 		
-		return killMore;
+		return ignoreMoreInputStream;
 	}
 	
 }

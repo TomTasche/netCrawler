@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.util.GenericsUtil;
 import at.netcrawler.network.Capability;
 
@@ -23,25 +24,33 @@ public class NetworkDevice extends NetworkModel {
 	public static final String SYSTEM = "device.system";
 	public static final Class<String> SYSTEM_TYPE = String.class;
 	
+	public static final String UPTIME = "device.uptime";
+	public static final Class<Long> UPTIME_TYPE = Long.class;
+	
 	public static final String CAPABILITIES = "device.capability";
 	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil.castClass(Set.class);
 	
 	public static final String INTERFACES = "device.interfaces";
 	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil.castClass(Set.class);
 	
+	public static final String MANAGEMENT_ADDRESSES = "device.managementIpSet";
+	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil.castClass(Set.class);
+	
 	// TODO: add generic information
 	
 	static {
-		Map<String, Class<?>> typeMap = new HashMap<String, Class<?>>();
+		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
 		
-		typeMap.put(IDENTICATION, IDENTICATION_TYPE);
-		typeMap.put(HOSTNAME, HOSTNAME_TYPE);
-		typeMap.put(SYSTEM, SYSTEM_TYPE);
-		typeMap.put(CAPABILITIES, CAPABILITIES_TYPE);
-		typeMap.put(INTERFACES, INTERFACES_TYPE);
+		map.put(IDENTICATION, IDENTICATION_TYPE);
+		map.put(HOSTNAME, HOSTNAME_TYPE);
+		map.put(SYSTEM, SYSTEM_TYPE);
+		map.put(UPTIME, UPTIME_TYPE);
+		map.put(CAPABILITIES, CAPABILITIES_TYPE);
+		map.put(INTERFACES, INTERFACES_TYPE);
+		map.put(MANAGEMENT_ADDRESSES, MANAGEMENT_ADDRESSES_TYPE);
 		// TODO: put generic information
 		
-		TYPE_MAP = Collections.unmodifiableMap(typeMap);
+		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
 	
@@ -49,6 +58,23 @@ public class NetworkDevice extends NetworkModel {
 	
 	public NetworkDevice() {
 		super(TYPE_MAP);
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		
+		if (!(obj instanceof NetworkDevice)) return false;
+		NetworkDevice device = (NetworkDevice) obj;
+		
+		return getValue(IDENTICATION).equals(device.getValue(IDENTICATION));
+	}
+	
+	@Override
+	public int hashCode() {
+		return getValue(IDENTICATION).hashCode();
 	}
 	
 }

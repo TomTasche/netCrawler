@@ -16,11 +16,11 @@ public class NetworkCable extends NetworkModel {
 	
 	
 	static {
-		Map<String, Class<?>> typeMap = new HashMap<String, Class<?>>();
+		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
 		
-		typeMap.put(TYPE, TYPE_TYPE);
+		map.put(TYPE, TYPE_TYPE);
 		
-		TYPE_MAP = Collections.unmodifiableMap(typeMap);
+		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
 	
@@ -28,6 +28,11 @@ public class NetworkCable extends NetworkModel {
 	
 	public NetworkCable() {
 		super(TYPE_MAP);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return false;
 	}
 	
 }

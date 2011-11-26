@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -26,18 +25,18 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.util.JFrameUtil;
+import at.netcrawler.io.IgnoreLastLineInputStream;
+import at.netcrawler.io.ReadUntilMatchInputStream;
 import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
-import at.netcrawler.stream.IgnoreFirstLineInputStream;
-import at.netcrawler.stream.IgnoreLastLineInputStream;
-import at.netcrawler.stream.ReadUntilMatchInputStream;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -52,7 +51,7 @@ public class ConfigurationExecutor extends JFrame {
 	private JLabel connection = new JLabel();
 	private JLabel port = new JLabel();
 	private JComboBox batches = new JComboBox();
-	JButton execute = new JButton("Execute");
+	private JButton execute = new JButton("Execute");
 	
 	private JFileChooser fileChooser = new JFileChooser();
 	
@@ -62,7 +61,7 @@ public class ConfigurationExecutor extends JFrame {
 		setTitle(TITLE);
 		
 		JPanel panel = new JPanel();
-		JLabel addressLabel = new JLabel("Address");
+		JLabel addressLabel = new JLabel("Address:");
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel batchLabel = new JLabel("Batch:");
@@ -216,7 +215,8 @@ public class ConfigurationExecutor extends JFrame {
 		IPDeviceAccessor accessor = new IPDeviceAccessor(
 				configuration.getAddress());
 		
-		switch (configuration.getConnection()) {
+		Connection connection = configuration.getConnection();
+		switch (connection) {
 		case TELNET:
 			TelnetConnectionSettings telnetSettings = new TelnetConnectionSettings();
 			telnetSettings.setPort(configuration.getPort());
@@ -226,7 +226,9 @@ public class ConfigurationExecutor extends JFrame {
 		case SSH1:
 		case SSH2:
 			SSHConnectionSettings sshSettings = new SSHConnectionSettings();
-			sshSettings.setVersion(SSHVersion.VERSION2);
+			sshSettings
+					.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
+							: SSHVersion.VERSION2);
 			sshSettings.setPort(configuration.getPort());
 			sshSettings.setUsername(configuration.getUsername());
 			sshSettings.setPassword(configuration.getPassword());
@@ -260,11 +262,10 @@ public class ConfigurationExecutor extends JFrame {
 		String batch = configuration.getBatch((String) batches
 				.getSelectedItem());
 		
-		outputStream.write(("\n" + batch + "\n" + BATCH_SUFFIX + "\n")
+		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n")
 				.getBytes());
 		outputStream.flush();
 		
-		inputStream = new IgnoreFirstLineInputStream(inputStream);
 		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
 		inputStream = new IgnoreLastLineInputStream(inputStream);
 		

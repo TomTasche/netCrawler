@@ -16,15 +16,31 @@ public class NetworkInterface extends NetworkModel {
 	public static final String FULL_NAME = "interface.fullName";
 	public static final Class<String> FULL_NAME_TYPE = String.class;
 	
+	public static final String ADMIN_STATE = "interface.adminState";
+	public static final Class<Boolean> ADMIN_STATE_TYPE = Boolean.class;
+	
+	public static final String UPTIME = "interface.uptime";
+	public static final Class<Long> UPTIME_TYPE = Long.class;
+	
+	public static final String SPEED = "interface.speed";
+	public static final Class<Integer> SPEED_TYPE = Integer.class;
+	
+	public static final String MTU = "interface.ethernet.mtu";
+	public static final Class<Integer> MTU_TYPE = Integer.class;
+	
 	
 	
 	static {
-		Map<String, Class<?>> typeMap = new HashMap<String, Class<?>>();
+		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
 		
-		typeMap.put(NAME, NAME_TYPE);
-		typeMap.put(FULL_NAME, FULL_NAME_TYPE);
+		map.put(NAME, NAME_TYPE);
+		map.put(FULL_NAME, FULL_NAME_TYPE);
+		map.put(ADMIN_STATE, ADMIN_STATE_TYPE);
+		map.put(UPTIME, UPTIME_TYPE);
+		map.put(SPEED, SPEED_TYPE);
+		map.put(MTU, MTU_TYPE);
 		
-		TYPE_MAP = Collections.unmodifiableMap(typeMap);
+		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
 	
@@ -32,6 +48,23 @@ public class NetworkInterface extends NetworkModel {
 	
 	public NetworkInterface() {
 		super(TYPE_MAP);
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		
+		if (!(obj instanceof NetworkInterface)) return false;
+		NetworkInterface networkInterface = (NetworkInterface) obj;
+		
+		return getValue(NAME).equals(networkInterface.getValue(NAME));
+	}
+	
+	@Override
+	public int hashCode() {
+		return getValue(NAME).hashCode();
 	}
 	
 }

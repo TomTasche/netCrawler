@@ -3,36 +3,77 @@ package at.netcrawler.cli.agent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.io.TeeInputStream;
+import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StreamUtil;
-import at.netcrawler.stream.IgnoreFirstLineInputStream;
-import at.netcrawler.stream.ReadAfterMatchInputStream;
-import at.netcrawler.stream.ReadUntilMatchInputStream;
+import at.netcrawler.io.IgnoreFirstLineInputStream;
+import at.netcrawler.io.ReadAfterMatchInputStream;
+import at.netcrawler.io.ReadUntilMatchInputStream;
 
 
 public class PromptPatternAgent extends CommandLineAgent {
 	
-	public static final String DEFAULT_KILLER_PREFIX = "-netCrawler-";
+	private static final String ENTER = "\n";
+	private static final String ANYTHING = ".*";
 	
-	private Pattern promtPattern;
+	public static final String DEFAULT_CHARSET = "US-ASCII";
+	public static final String DEFAULT_KILLER_PREFIX = "_netcrawler_";
+	public static final String DEFAULT_RANDOM_SEPARATOR = "_";
 	
-	private String commentPrefix;
-	private String killerPrefix;
+	
+	protected final InputStream inputStream;
+	protected final OutputStream outputStream;
+	
+	protected final Charset charset;
+	protected final byte[] enter;
+	
+	private final String promptPattern;
+	private final String commentPrefix;
+	private final String killerPrefix;
 	private int killerNumber;
 	
-	public PromptPatternAgent(CommandLine commandLine, Pattern promtPattern,
+	private final Random random = new Random();
+	private final String randomSeparator;
+	
+	public PromptPatternAgent(CommandLine commandLine, String promptPattern,
 			String commentPrefix) {
-		this(commandLine, promtPattern, commentPrefix, DEFAULT_KILLER_PREFIX);
+		this(commandLine, promptPattern, commentPrefix, DEFAULT_KILLER_PREFIX);
 	}
-	public PromptPatternAgent(CommandLine commandLine, Pattern promtPattern,
+	public PromptPatternAgent(CommandLine commandLine, String promptPattern,
 			String commentPrefix, String killerPrefix) {
+		this(commandLine, DEFAULT_CHARSET, promptPattern, commentPrefix,
+				killerPrefix, DEFAULT_RANDOM_SEPARATOR);
+	}
+	public PromptPatternAgent(CommandLine commandLine, Charset charset,
+			String promptPattern, String commentPrefix, String killerPrefix,
+			String randomSeparator) {
 		super(commandLine);
 		
-		this.promtPattern = promtPattern;
+		try {
+			inputStream = commandLine.getInputStream();
+//			inputStream = new TeeInputStream(commandLine.getInputStream(), System.out);
+			outputStream = commandLine.getOutputStream();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		this.charset = charset;
+		this.enter = ENTER.getBytes(charset);
+		this.promptPattern = promptPattern;
 		this.commentPrefix = commentPrefix;
 		this.killerPrefix = killerPrefix;
+		this.randomSeparator = randomSeparator;
+	}
+	public PromptPatternAgent(CommandLine commandLine, String charset,
+			String promptPattern, String commentPrefix, String killerPrefix,
+			String randomSeperator) {
+		this(commandLine, Charset.forName(charset), promptPattern,
+				commentPrefix, killerPrefix, randomSeperator);
 	}
 	
 	@Override
@@ -40,21 +81,22 @@ public class PromptPatternAgent extends CommandLineAgent {
 			throws IOException {
 		synchronizeStreams();
 		
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
+		Pattern commandPattern = Pattern.compile(ANYTHING
+				+ PatternUtil.escapeString(command));
+		Pattern promptPattern = Pattern.compile(ANYTHING + this.promptPattern);
 		
-		Pattern commandPattern = Pattern.compile(".*" + command);
-		
-		outputStream.write(command.getBytes());
-		outputStream.write("\n".getBytes());
+		outputStream.write(command.getBytes(charset));
+		outputStream.write(enter);
 		outputStream.flush();
 		
-		inputStream = new ReadAfterMatchInputStream(inputStream, commandPattern);
+		InputStream inputStream = new ReadAfterMatchInputStream(
+				this.inputStream, commandPattern);
 		inputStream = new IgnoreFirstLineInputStream(inputStream);
 		inputStream = commandChainHook(inputStream);
-		inputStream = new ReadUntilMatchInputStream(inputStream, promtPattern);
+		inputStream = new TeeInputStream(inputStream, System.out);
+		inputStream = new ReadUntilMatchInputStream(inputStream, promptPattern);
 		
-		return new CommandLineProcess(inputStream, outputStream);
+		return new CommandLineProcess(inputStream, outputStream, charset);
 	}
 	
 	protected InputStream commandChainHook(InputStream inputStream) {
@@ -62,18 +104,30 @@ public class PromptPatternAgent extends CommandLineAgent {
 	}
 	
 	public synchronized void synchronizeStreams() throws IOException {
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
+		String killerString = commentPrefix + killerPrefix + (killerNumber++)
+				+ randomSeparator + random.nextInt();
+		Pattern killerPattern = Pattern.compile(ANYTHING
+				+ PatternUtil.escapeString(killerString));
+		Pattern promptPattern = Pattern.compile(ANYTHING + this.promptPattern);
 		
-		String killerString = commentPrefix + killerPrefix + (killerNumber++);
-		Pattern killerPattern = Pattern.compile(killerString, Pattern.LITERAL);
-		
-		outputStream.write(killerString.getBytes());
-		outputStream.write("\n".getBytes());
+		outputStream.write(killerString.getBytes(charset));
+		outputStream.write(enter);
 		outputStream.flush();
 		
 		InputStream killerInputStream = new ReadUntilMatchInputStream(
 				inputStream, killerPattern);
+		StreamUtil.killStream(killerInputStream);
+		
+		killerInputStream = new ReadUntilMatchInputStream(inputStream,
+				promptPattern);
+		StreamUtil.killStream(killerInputStream);
+	}
+	
+	public synchronized void awaitPrompt() throws IOException {
+		Pattern promptPattern = Pattern.compile(ANYTHING + this.promptPattern);
+		
+		InputStream killerInputStream = new ReadUntilMatchInputStream(
+				inputStream, promptPattern);
 		StreamUtil.killStream(killerInputStream);
 	}
 	
