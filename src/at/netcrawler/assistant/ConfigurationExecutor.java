@@ -237,7 +237,7 @@ public class ConfigurationExecutor extends JFrame {
 			break;
 		
 		default:
-			throw new IllegalStateException("Unreachable section");
+			throw new IllegalStateException("Unreachable section!");
 		}
 		
 		InputStream inputStream = commandLine.getInputStream();

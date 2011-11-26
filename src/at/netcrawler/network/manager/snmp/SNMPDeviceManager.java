@@ -1,4 +1,4 @@
-package at.netcrawler.network.controller.snmp;
+package at.netcrawler.network.manager.snmp;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.snmp.SNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPObject;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
-import at.netcrawler.network.controller.DeviceManager;
+import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
 import at.netcrawler.network.model.extension.EthernetInterfaceExtension;

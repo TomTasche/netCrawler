@@ -1,4 +1,4 @@
-package at.netcrawler.network.controller;
+package at.netcrawler.network.manager;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
