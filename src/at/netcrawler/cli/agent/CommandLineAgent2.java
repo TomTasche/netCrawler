@@ -23,12 +23,15 @@ public abstract class CommandLineAgent2 {
 	public CommandLineAgent2(CommandLine commandLine) {
 		this(commandLine, DEFAULT_CHARSET);
 	}
+	
 	public CommandLineAgent2(CommandLine commandLine, Charset charset) {
 		this.commandLine = commandLine;
 		
 		try {
-			in = initReader(commandLine.getInputStream(), charset);
-			out = initWriter(commandLine.getOutputStream(), charset);
+			in = initReader(
+					commandLine.getInputStream(), charset);
+			out = initWriter(
+					commandLine.getOutputStream(), charset);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

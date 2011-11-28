@@ -17,14 +17,10 @@ public abstract class NetworkModel {
 	private final Map<String, Object> valueMap = new HashMap<String, Object>();
 	private final Set<NetworkModelExtension> extensions = new HashSet<NetworkModelExtension>();
 	
-	
-	
 	public NetworkModel(Map<String, Class<?>> initialTypeMap) {
 		this.initialTypeMap = initialTypeMap;
 		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
 	}
-	
-	
 	
 	@Override
 	public String toString() {
@@ -39,22 +35,26 @@ public abstract class NetworkModel {
 		return valueMap.hashCode();
 	}
 	
-	
 	public final Object getValue(String key) {
 		return valueMap.get(key);
 	}
+	
 	public final Map<String, Class<?>> getTypeMap() {
 		return new HashMap<String, Class<?>>(typeMap);
 	}
+	
 	public final Map<String, Object> getValueMap() {
 		return new HashMap<String, Object>(valueMap);
 	}
+	
 	public final Set<NetworkModelExtension> getExtensions() {
 		return new HashSet<NetworkModelExtension>(extensions);
 	}
+	
 	public final boolean hasExtension(NetworkModelExtension extension) {
 		return extensions.contains(extension);
 	}
+	
 	public final boolean hasExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		try {
@@ -67,12 +67,12 @@ public abstract class NetworkModel {
 	}
 	
 	public final void setValue(String key, Object value) {
-		if (!typeMap.containsKey(key))
-			throw new IllegalArgumentException("Unknown key!");
+		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
+				"Unknown key!");
 		
-		valueMap.put(key, value);
+		valueMap.put(
+				key, value);
 	}
-	
 	
 	public final void clear() {
 		valueMap.clear();
@@ -90,16 +90,17 @@ public abstract class NetworkModel {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public final void clearExtension(NetworkModelExtension extension) {
 		for (String extensionKey : extension.getExtensionTypeMap().keySet()) {
 			valueMap.remove(extensionKey);
 		}
 	}
 	
-	
 	public final boolean addModelListener(NetworkModelListener listener) {
 		return listeners.add(listener);
 	}
+	
 	public final boolean addExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		try {
@@ -110,13 +111,13 @@ public abstract class NetworkModel {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public final boolean addExtension(NetworkModelExtension extension) {
-		if (!getClass().equals(extension.getExtendedModelClass()))
-			throw new IllegalArgumentException("Illegal model class extension!");
-		if (extensions.contains(extension))
-			return false;
-		if (extension.isExtensionSupported(this))
-			return false;
+		if (!getClass().equals(
+				extension.getExtendedModelClass())) throw new IllegalArgumentException(
+				"Illegal model class extension!");
+		if (extensions.contains(extension)) return false;
+		if (extension.isExtensionSupported(this)) return false;
 		
 		extensions.add(extension);
 		typeMap.putAll(extension.getExtensionTypeMap());
@@ -127,9 +128,9 @@ public abstract class NetworkModel {
 	public final boolean removeModelListener(NetworkModelListener listener) {
 		return listeners.remove(listener);
 	}
+	
 	public final boolean removeExtension(NetworkModelExtension extension) {
-		if (!extensions.contains(extension))
-			return false;
+		if (!extensions.contains(extension)) return false;
 		
 		for (String key : extension.getExtensionTypeMap().keySet()) {
 			valueMap.remove(key);
@@ -139,10 +140,10 @@ public abstract class NetworkModel {
 		return extensions.remove(extension);
 	}
 	
-	
 	public final void fireValueChanged(String key, String value) {
 		for (NetworkModelListener listener : listeners) {
-			listener.valueChanged(key, value);
+			listener.valueChanged(
+					key, value);
 		}
 	}
 	

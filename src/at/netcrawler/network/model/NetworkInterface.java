@@ -9,7 +9,6 @@ public class NetworkInterface extends NetworkModel {
 	
 	public static final Map<String, Class<?>> TYPE_MAP;
 	
-	
 	public static final String NAME = "interface.name";
 	public static final Class<String> NAME_TYPE = String.class;
 	
@@ -28,8 +27,6 @@ public class NetworkInterface extends NetworkModel {
 	public static final String MTU = "interface.ethernet.mtu";
 	public static final Class<Integer> MTU_TYPE = Integer.class;
 	
-	
-	
 	static {
 		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
 		
@@ -43,13 +40,9 @@ public class NetworkInterface extends NetworkModel {
 		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
-	
-	
-	
 	public NetworkInterface() {
 		super(TYPE_MAP);
 	}
-	
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -59,12 +52,15 @@ public class NetworkInterface extends NetworkModel {
 		if (!(obj instanceof NetworkInterface)) return false;
 		NetworkInterface networkInterface = (NetworkInterface) obj;
 		
-		return getValue(NAME).equals(networkInterface.getValue(NAME));
+		return getValue(
+				NAME).equals(
+				networkInterface.getValue(NAME));
 	}
 	
 	@Override
 	public int hashCode() {
-		return getValue(NAME).hashCode();
+		return getValue(
+				NAME).hashCode();
 	}
 	
 }

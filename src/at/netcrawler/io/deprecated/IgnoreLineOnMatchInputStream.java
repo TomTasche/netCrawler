@@ -18,13 +18,11 @@ public class IgnoreLineOnMatchInputStream extends FilterInputStream {
 	private StringBuilder line = new StringBuilder();
 	private Pattern pattern;
 	
-	
 	public IgnoreLineOnMatchInputStream(InputStream in, Pattern pattern) {
 		super(in);
 		
 		this.pattern = pattern;
 	}
-	
 	
 	@Override
 	public int read() throws IOException {
@@ -63,7 +61,8 @@ public class IgnoreLineOnMatchInputStream extends FilterInputStream {
 	
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return StreamUtil.read(this, b, off, len);
+		return StreamUtil.read(
+				this, b, off, len);
 	}
 	
 }

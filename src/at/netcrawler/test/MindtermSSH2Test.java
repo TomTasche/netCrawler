@@ -22,14 +22,20 @@ public class MindtermSSH2Test {
 		SSH2Preferences prefs = new SSH2Preferences();
 		
 		RandomSeed seed = new RandomSeed();
-		SecureRandomAndPad secureRandom = new SecureRandomAndPad(new SecureRandom(seed.getBytesBlocking(20, false)));
+		SecureRandomAndPad secureRandom = new SecureRandomAndPad(
+				new SecureRandom(seed.getBytesBlocking(
+						20, false)));
 		
-		SSH2Transport transport = new SSH2Transport(new Socket(address, port), prefs, secureRandom);
-		SSH2SimpleClient client = new SSH2SimpleClient(transport, username, password);
-		SSH2ConsoleRemote console = new SSH2ConsoleRemote(client.getConnection());
+		SSH2Transport transport = new SSH2Transport(new Socket(address, port),
+				prefs, secureRandom);
+		SSH2SimpleClient client = new SSH2SimpleClient(transport, username,
+				password);
+		SSH2ConsoleRemote console = new SSH2ConsoleRemote(
+				client.getConnection());
 		client.getConnection().newSession();
 		
-		console.command("pwd", System.out);
+		console.command(
+				"pwd", System.out);
 		
 		console.close();
 		transport.normalDisconnect("quit");

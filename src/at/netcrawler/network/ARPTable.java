@@ -1,4 +1,5 @@
 package at.netcrawler.network;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ public class ARPTable implements Iterable<ARPTable.Entry> {
 		public MACAddress getMacAddress() {
 			return macAddress;
 		}
+		
 		public InetAddress getInetAddress() {
 			return inetAddress;
 		}
@@ -27,27 +29,21 @@ public class ARPTable implements Iterable<ARPTable.Entry> {
 		public void setMacAddress(MACAddress macAddress) {
 			this.macAddress = macAddress;
 		}
+		
 		public void setInetAddress(InetAddress inetAddress) {
 			this.inetAddress = inetAddress;
 		}
 	}
 	
-	
-	
-	
 	private List<Entry> table = new ArrayList<Entry>();
-	
-	
 	
 	public String toString() {
 		return table.toString();
 	}
 	
-	
 	public List<Entry> getTable() {
 		return new ArrayList<Entry>(table);
 	}
-	
 	
 	public void addEntry(Entry entry) {
 		table.add(entry);
@@ -56,7 +52,6 @@ public class ARPTable implements Iterable<ARPTable.Entry> {
 	public void removeEntry(Entry entry) {
 		table.remove(entry);
 	}
-	
 	
 	@Override
 	public Iterator<Entry> iterator() {

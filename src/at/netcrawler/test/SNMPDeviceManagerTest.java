@@ -16,7 +16,6 @@ public class SNMPDeviceManagerTest {
 		IPv4Address ipAddress = IPv4Address.getByAddress(address);
 		int port = 161;
 		
-		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
 		SNMPConnectionSettings settings = new SNMPConnectionSettings();

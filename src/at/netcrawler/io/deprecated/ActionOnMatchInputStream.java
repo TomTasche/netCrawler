@@ -16,9 +16,7 @@ public class ActionOnMatchInputStream extends FilterInputStream {
 	private StringBuilder line = new StringBuilder();
 	private final Pattern pattern;
 	
-	private final List<ActionOnMatchListener> listeners =
-		new ArrayList<ActionOnMatchListener>();
-	
+	private final List<ActionOnMatchListener> listeners = new ArrayList<ActionOnMatchListener>();
 	
 	public ActionOnMatchInputStream(InputStream in, Pattern pattern) {
 		super(in);
@@ -26,10 +24,10 @@ public class ActionOnMatchInputStream extends FilterInputStream {
 		this.pattern = pattern;
 	}
 	
-	
 	public void addListener(ActionOnMatchListener listener) {
 		listeners.add(listener);
 	}
+	
 	public void removeListener(ActionOnMatchListener listener) {
 		listeners.remove(listener);
 	}
@@ -56,7 +54,8 @@ public class ActionOnMatchInputStream extends FilterInputStream {
 	
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return StreamUtil.read(this, b, off, len);
+		return StreamUtil.read(
+				this, b, off, len);
 	}
 	
 }

@@ -12,10 +12,10 @@ public class IPDeviceAccessor extends DeviceAccessor {
 	
 	private final IPAddress ipAddress;
 	
-	
 	public IPDeviceAccessor(IPAddress ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+	
 	public IPDeviceAccessor(InetAddress inetAddress) {
 		if (inetAddress instanceof Inet4Address) {
 			ipAddress = IPv4Address.getByAddress(inetAddress);
@@ -27,10 +27,10 @@ public class IPDeviceAccessor extends DeviceAccessor {
 		}
 	}
 	
-	
 	public IPAddress getIpAddress() {
 		return ipAddress;
 	}
+	
 	public InetAddress getInetAddress() {
 		return ipAddress.toInetAddress();
 	}

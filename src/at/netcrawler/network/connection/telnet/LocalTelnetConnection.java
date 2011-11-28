@@ -13,7 +13,6 @@ public class LocalTelnetConnection extends TelnetConnection {
 	
 	private Socket socket;
 	
-	
 	public LocalTelnetConnection(IPDeviceAccessor accessor,
 			TelnetConnectionSettings settings) throws IOException {
 		super(accessor, settings);
@@ -22,7 +21,8 @@ public class LocalTelnetConnection extends TelnetConnection {
 				accessor.getInetAddress(), settings.getPort());
 		
 		socket = new Socket();
-		socket.connect(endpoint, settings.getTimeout());
+		socket.connect(
+				endpoint, settings.getTimeout());
 	}
 	
 	@Override

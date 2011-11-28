@@ -10,6 +10,7 @@ import at.andiwand.library.cli.CommandLine;
 public interface TelnetClient extends CommandLine {
 	
 	public InputStream getInputStream() throws IOException;
+	
 	public OutputStream getOutputStream() throws IOException;
 	
 	public void close() throws IOException;

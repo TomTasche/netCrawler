@@ -18,13 +18,13 @@ public abstract class AbstractNetworkModelExtension implements
 	
 	private boolean finalized;
 	
-	
 	protected AbstractNetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass) {
 		setExtendedModelClass(extendedModelClass);
 		setRequiredExtensions(new HashSet<NetworkModelExtension>());
 		setExtensionTypeMap(new HashMap<String, Class<?>>());
 	}
+	
 	protected AbstractNetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass,
 			Map<String, Class<?>> extendedTypeMap) {
@@ -34,6 +34,7 @@ public abstract class AbstractNetworkModelExtension implements
 		
 		finalizeExtension();
 	}
+	
 	protected AbstractNetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass,
 			Set<? extends NetworkModelExtension> requiredExtensions,
@@ -45,7 +46,6 @@ public abstract class AbstractNetworkModelExtension implements
 		
 		finalizeExtension();
 	}
-	
 	
 	@Override
 	public final Class<? extends NetworkModel> getExtendedModelClass() {
@@ -70,20 +70,18 @@ public abstract class AbstractNetworkModelExtension implements
 	
 	@Override
 	public final boolean isExtensionSupported(NetworkModel model) {
-		if (!extendedModelClass.equals(model.getClass()))
-			return false;
+		if (!extendedModelClass.equals(model.getClass())) return false;
 		
-		if (!model.getExtensions().containsAll(requiredExtensions))
-			return false;
+		if (!model.getExtensions().containsAll(
+				requiredExtensions)) return false;
 		
 		return true;
 	}
 	
-	
 	private void setExtendedModelClass(
 			Class<? extends NetworkModel> extendedModelClass) {
-		if (extendedModelClass == null)
-			throw new IllegalArgumentException("Passing null is illigal!");
+		if (extendedModelClass == null) throw new IllegalArgumentException(
+				"Passing null is illigal!");
 		
 		this.extendedModelClass = extendedModelClass;
 	}
@@ -97,15 +95,13 @@ public abstract class AbstractNetworkModelExtension implements
 		this.extensionTypeMap = extensionTypeMap;
 	}
 	
-	
 	protected final void finalizeExtension() {
 		if (finalized) return;
 		
-		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions))
-			requiredExtensions = Collections
-					.unmodifiableSet(requiredExtensions);
-		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap))
-			extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
+		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions)) requiredExtensions = Collections
+				.unmodifiableSet(requiredExtensions);
+		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap)) extensionTypeMap = Collections
+				.unmodifiableMap(extensionTypeMap);
 		
 		finalized = true;
 	}
@@ -122,12 +118,12 @@ public abstract class AbstractNetworkModelExtension implements
 		throw new IllegalStateException("The extension is finalized!");
 	}
 	
-	
 	protected final void addRequiredExtension(NetworkModelExtension extension) {
 		checkNotFinalized();
 		
-		if (!extension.getExtendedModelClass().equals(extendedModelClass))
-			throw new IllegalArgumentException("Illegal model class extension!");
+		if (!extension.getExtendedModelClass().equals(
+				extendedModelClass)) throw new IllegalArgumentException(
+				"Illegal model class extension!");
 		
 		requiredExtensions.add(extension);
 	}
@@ -135,7 +131,8 @@ public abstract class AbstractNetworkModelExtension implements
 	protected final void addExtensionType(String key, Class<?> type) {
 		checkNotFinalized();
 		
-		extensionTypeMap.put(key, type);
+		extensionTypeMap.put(
+				key, type);
 	}
 	
 	protected final void removeRequiredExtension(NetworkModelExtension extension) {

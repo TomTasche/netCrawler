@@ -16,20 +16,17 @@ public class ReadAfterMatchInputStream extends FilterInputStream {
 	private Matcher matcher;
 	private boolean matched;
 	
-	
 	public ReadAfterMatchInputStream(InputStream in, Pattern pattern) {
 		super(in);
 		
 		this.pattern = pattern;
 	}
 	
-	
 	public Matcher getFinalMatcher() {
 		if (!matched) return null;
 		
 		return matcher;
 	}
-	
 	
 	@Override
 	public int read() throws IOException {
@@ -55,7 +52,8 @@ public class ReadAfterMatchInputStream extends FilterInputStream {
 	
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return StreamUtil.read(this, b, off, len);
+		return StreamUtil.read(
+				this, b, off, len);
 	}
 	
 }

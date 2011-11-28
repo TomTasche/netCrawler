@@ -1,6 +1,5 @@
 package at.netcrawler.network.connection;
 
-
 public abstract class ConnectionSettings {
 	
 	public static final int DEFAULT_TIMEOUT = 1500;
@@ -10,6 +9,7 @@ public abstract class ConnectionSettings {
 	public ConnectionSettings() {
 		timeout = DEFAULT_TIMEOUT;
 	}
+	
 	public ConnectionSettings(ConnectionSettings settings) {
 		timeout = settings.timeout;
 	}

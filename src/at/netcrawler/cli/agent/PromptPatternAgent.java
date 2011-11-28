@@ -25,7 +25,6 @@ public class PromptPatternAgent extends CommandLineAgent {
 	public static final String DEFAULT_KILLER_PREFIX = "_netcrawler_";
 	public static final String DEFAULT_RANDOM_SEPARATOR = "_";
 	
-	
 	protected final InputStream inputStream;
 	protected final OutputStream outputStream;
 	
@@ -44,11 +43,13 @@ public class PromptPatternAgent extends CommandLineAgent {
 			String commentPrefix) {
 		this(commandLine, promptPattern, commentPrefix, DEFAULT_KILLER_PREFIX);
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, String promptPattern,
 			String commentPrefix, String killerPrefix) {
 		this(commandLine, DEFAULT_CHARSET, promptPattern, commentPrefix,
 				killerPrefix, DEFAULT_RANDOM_SEPARATOR);
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, Charset charset,
 			String promptPattern, String commentPrefix, String killerPrefix,
 			String randomSeparator) {
@@ -68,6 +69,7 @@ public class PromptPatternAgent extends CommandLineAgent {
 		this.killerPrefix = killerPrefix;
 		this.randomSeparator = randomSeparator;
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, String charset,
 			String promptPattern, String commentPrefix, String killerPrefix,
 			String randomSeperator) {

@@ -12,9 +12,11 @@ public abstract class NetworkDeviceExtension extends
 	protected NetworkDeviceExtension() {
 		super(EXTENDED_MODEL_CLASS);
 	}
+	
 	protected NetworkDeviceExtension(Map<String, Class<?>> extendedTypeMap) {
 		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
 	}
+	
 	protected NetworkDeviceExtension(
 			Set<NetworkDeviceExtension> requiredExtensions,
 			Map<String, Class<?>> extendedTypeMap) {

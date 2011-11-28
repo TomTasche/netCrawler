@@ -19,7 +19,6 @@ public class CiscoPromptPatternAgent extends PromptPatternAgent {
 	public static final Pattern MORE_PATTERN = Pattern.compile(
 			".*?(.+)more\\1.*?", Pattern.CASE_INSENSITIVE);
 	
-	
 	private final byte[] space;
 	
 	public CiscoPromptPatternAgent(CommandLine commandLine) {

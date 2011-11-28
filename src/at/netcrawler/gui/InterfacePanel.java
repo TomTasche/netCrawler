@@ -1,4 +1,5 @@
 package at.netcrawler.gui;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
@@ -6,10 +7,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
-public class InterfacePanel extends JComponent{
-
+public class InterfacePanel extends JComponent {
+	
 	private static final long serialVersionUID = 7612096074789240186L;
-
+	
 	JPanel panel = new JPanel();
 	
 	JLabel text = new JLabel("Hallo :D");
@@ -20,5 +21,5 @@ public class InterfacePanel extends JComponent{
 		setLayout(new BorderLayout());
 		add(panel);
 	}
-
+	
 }

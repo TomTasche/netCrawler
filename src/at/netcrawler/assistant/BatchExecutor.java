@@ -40,13 +40,13 @@ import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
 
 
 public class BatchExecutor extends JFrame {
-
+	
 	private static final long serialVersionUID = 890687415300742520L;
-
+	
 	final String SSH_1 = "SSH v1";
 	final String SSH_2 = "SSH v2";
-	final String TELNET = "Telnet";	
-
+	final String TELNET = "Telnet";
+	
 	JPanel panel = new JPanel();
 	
 	JLabel ipLabel = new JLabel("IP:");
@@ -54,7 +54,7 @@ public class BatchExecutor extends JFrame {
 	JLabel portLabel = new JLabel("Port:");
 	JLabel usernameLabel = new JLabel("Username:");
 	JLabel passwordLabel = new JLabel("Password:");
-	JLabel batchLabel  = new JLabel("Batch:");
+	JLabel batchLabel = new JLabel("Batch:");
 	
 	JTextField ipField = new JTextField("192.168.0.254");
 	JComboBox connectionBox = new JComboBox(new String[] {SSH_2, SSH_1, TELNET});
@@ -64,16 +64,14 @@ public class BatchExecutor extends JFrame {
 	JTextArea responseArea = new JTextArea();
 	JTextArea batchArea = new JTextArea();
 	
-	
 	JButton fileButton = new JButton("Choose batch");
 	JButton execute = new JButton("Execute");
-		
+	
 	JFileChooser fileChooser = new JFileChooser();
 	
 	JScrollPane batchScrollPane = new JScrollPane(batchArea);
 	JScrollPane responseScrollPane = new JScrollPane(responseArea);
-
-
+	
 	public BatchExecutor() {
 		setTitle("Batcheria");
 		
@@ -85,7 +83,8 @@ public class BatchExecutor extends JFrame {
 		panel.setLayout(layout);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
-
+		
+		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
 						.addGroup(layout.createParallelGroup()
@@ -142,11 +141,12 @@ public class BatchExecutor extends JFrame {
 						.addComponent(execute)
 				)
 		);
-
+		//@formatter:on
+		
 		fileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				fileChooser.showOpenDialog(BatchExecutor.this);
-
+				
 				File batchFile = fileChooser.getSelectedFile();
 				
 				if (batchFile == null) {
@@ -169,7 +169,8 @@ public class BatchExecutor extends JFrame {
 				try {
 					responseArea.setText("");
 					
-					String output = openConnection(usernameField.getText(),
+					String output = openConnection(
+							usernameField.getText(),
 							new String(passwordField.getPassword()),
 							ipField.getText(), batchArea.getText(),
 							connectionBox.getSelectedItem().toString(),
@@ -200,8 +201,7 @@ public class BatchExecutor extends JFrame {
 		
 		pack();
 	}
-
-
+	
 	private String openConnection(String username, String password, String ip,
 			String batch, String connection, int port) throws IOException {
 		CommandLine commandLine;
@@ -265,8 +265,7 @@ public class BatchExecutor extends JFrame {
 		
 		return result;
 	}
-
-
+	
 	public static void main(String[] args) throws Throwable {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		

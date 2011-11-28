@@ -1,25 +1,21 @@
 package at.netcrawler.network.connection.snmp;
 
-
 public class SNMPObject {
 	
 	public static enum Type {
-		INTEGER, UNSIGNED, STRING, HEX_STRING, DECIMAL_STRING,
-		NULLOBJ, OBJID, TIMETICKS, IPADDRESS, BITS;
+		INTEGER, UNSIGNED, STRING, HEX_STRING, DECIMAL_STRING, NULLOBJ, OBJID,
+		TIMETICKS, IPADDRESS, BITS;
 	}
-	
 	
 	private final String oid;
 	private final Type type;
 	private final String value;
-	
 	
 	public SNMPObject(String oid, Type type, String value) {
 		this.oid = oid;
 		this.type = type;
 		this.value = value;
 	}
-	
 	
 	@Override
 	public String toString() {
@@ -33,7 +29,8 @@ public class SNMPObject {
 		if (!(obj instanceof SNMPObject)) return false;
 		SNMPObject object = (SNMPObject) obj;
 		
-		return oid.equals(object.oid) && type.equals(object.type) && value.equals(object.value);
+		return oid.equals(object.oid) && type.equals(object.type)
+				&& value.equals(object.value);
 	}
 	
 	@Override
@@ -50,9 +47,11 @@ public class SNMPObject {
 	public String getOid() {
 		return oid;
 	}
+	
 	public Type getType() {
 		return type;
 	}
+	
 	public String getValue() {
 		return value;
 	}

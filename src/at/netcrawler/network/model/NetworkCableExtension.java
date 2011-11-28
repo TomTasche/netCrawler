@@ -12,9 +12,11 @@ public abstract class NetworkCableExtension extends
 	protected NetworkCableExtension() {
 		super(EXTENDED_MODEL_CLASS);
 	}
+	
 	protected NetworkCableExtension(Map<String, Class<?>> extendedTypeMap) {
 		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
 	}
+	
 	protected NetworkCableExtension(
 			Set<NetworkDeviceExtension> requiredExtensions,
 			Map<String, Class<?>> extendedTypeMap) {

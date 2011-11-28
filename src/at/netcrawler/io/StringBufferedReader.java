@@ -31,7 +31,8 @@ public class StringBufferedReader extends FilterReader {
 	
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException {
-		return ReaderUtil.read(this, cbuf, off, len);
+		return ReaderUtil.read(
+				this, cbuf, off, len);
 	}
 	
 	public void clearBuffer() {
