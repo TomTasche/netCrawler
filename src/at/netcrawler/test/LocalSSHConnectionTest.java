@@ -20,7 +20,6 @@ public class LocalSSHConnectionTest {
 		String username = "cisco";
 		String password = "cisco";
 		
-		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
 		SSHConnectionSettings settings = new SSHConnectionSettings();

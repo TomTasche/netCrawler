@@ -15,6 +15,7 @@ public class SSHConnectionSettings extends ConnectionSettings {
 	public SSHConnectionSettings() {
 		port = DEFAULT_PORT;
 	}
+	
 	public SSHConnectionSettings(SSHConnectionSettings settings) {
 		super(settings);
 		
@@ -24,12 +25,15 @@ public class SSHConnectionSettings extends ConnectionSettings {
 	public SSHVersion getVersion() {
 		return version;
 	}
+	
 	public int getPort() {
 		return port;
 	}
+	
 	public String getUsername() {
 		return username;
 	}
+	
 	public String getPassword() {
 		return password;
 	}
@@ -37,12 +41,15 @@ public class SSHConnectionSettings extends ConnectionSettings {
 	public void setVersion(SSHVersion version) {
 		this.version = version;
 	}
+	
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}

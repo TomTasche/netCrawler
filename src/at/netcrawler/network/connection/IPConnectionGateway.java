@@ -5,8 +5,8 @@ import java.io.IOException;
 import at.netcrawler.network.IPDeviceAccessor;
 
 
-public abstract class IPConnectionGateway<CS extends ConnectionSettings> extends
-		ConnectionGateway<IPDeviceAccessor, CS> {
+public abstract class IPConnectionGateway<CS extends ConnectionSettings>
+		extends ConnectionGateway<IPDeviceAccessor, CS> {
 	
 	@Override
 	public Class<IPDeviceAccessor> getDeviceAccessorClass() {

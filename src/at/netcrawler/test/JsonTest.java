@@ -14,9 +14,12 @@ public class JsonTest {
 		Gson gson = new Gson();
 		
 		Map<String, Object> valueMap = new HashMap<String, Object>();
-		valueMap.put("name", "das ist ein name");
-		valueMap.put("upTime", 1002);
-		valueMap.put("ip", IPv4Address.getByAddress("10.0.0.1"));
+		valueMap.put(
+				"name", "das ist ein name");
+		valueMap.put(
+				"upTime", 1002);
+		valueMap.put(
+				"ip", IPv4Address.getByAddress("10.0.0.1"));
 		
 		System.out.println(gson.toJson(valueMap));
 	}

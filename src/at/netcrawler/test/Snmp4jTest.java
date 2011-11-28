@@ -18,7 +18,6 @@ public class Snmp4jTest {
 		String address = "udp:192.168.0.161/161";
 		String community = "netCrawler";
 		
-		
 		DefaultUdpTransportMapping transport = new DefaultUdpTransportMapping();
 		Snmp snmp = new Snmp(transport);
 		transport.listen();
@@ -36,7 +35,8 @@ public class Snmp4jTest {
 		pdu.setMaxRepetitions(100);
 		pdu.setNonRepeaters(0);
 		
-		ResponseEvent responseEvent = snmp.send(pdu, target);
+		ResponseEvent responseEvent = snmp.send(
+				pdu, target);
 		PDU response = responseEvent.getResponse();
 		System.out.println(response.size());
 		

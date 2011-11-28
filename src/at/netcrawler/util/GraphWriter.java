@@ -9,13 +9,13 @@ import java.nio.charset.Charset;
 
 import com.google.gson.Gson;
 
-public class GraphWriter {
 
+public class GraphWriter {
+	
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	private static final Gson GSON = new Gson();
-
-
+	
 	public static void toJson(File file, Object graph) throws IOException {
 		String json = GSON.toJson(graph);
 		
@@ -35,7 +35,7 @@ public class GraphWriter {
 			outputStream.close();
 		}
 	}
-
+	
 	public static void toHtml(File file, Object graph) {
 		// TODO: implement.
 		// TODO: encode images in base64

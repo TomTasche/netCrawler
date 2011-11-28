@@ -14,7 +14,6 @@ public class NetworkDevice extends NetworkModel {
 	
 	public static final Map<String, Class<?>> TYPE_MAP;
 	
-	
 	public static final String IDENTICATION = "device.identication";
 	public static final Class<String> IDENTICATION_TYPE = String.class;
 	
@@ -28,13 +27,16 @@ public class NetworkDevice extends NetworkModel {
 	public static final Class<Long> UPTIME_TYPE = Long.class;
 	
 	public static final String CAPABILITIES = "device.capability";
-	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil.castClass(Set.class);
+	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil
+			.castClass(Set.class);
 	
 	public static final String INTERFACES = "device.interfaces";
-	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil.castClass(Set.class);
+	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil
+			.castClass(Set.class);
 	
 	public static final String MANAGEMENT_ADDRESSES = "device.managementIpSet";
-	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil.castClass(Set.class);
+	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil
+			.castClass(Set.class);
 	
 	// TODO: add generic information
 	
@@ -53,13 +55,9 @@ public class NetworkDevice extends NetworkModel {
 		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
-	
-	
-	
 	public NetworkDevice() {
 		super(TYPE_MAP);
 	}
-	
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -69,12 +67,15 @@ public class NetworkDevice extends NetworkModel {
 		if (!(obj instanceof NetworkDevice)) return false;
 		NetworkDevice device = (NetworkDevice) obj;
 		
-		return getValue(IDENTICATION).equals(device.getValue(IDENTICATION));
+		return getValue(
+				IDENTICATION).equals(
+				device.getValue(IDENTICATION));
 	}
 	
 	@Override
 	public int hashCode() {
-		return getValue(IDENTICATION).hashCode();
+		return getValue(
+				IDENTICATION).hashCode();
 	}
 	
 }

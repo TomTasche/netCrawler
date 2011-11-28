@@ -11,13 +11,16 @@ import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
 import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;
 import at.netcrawler.network.connection.snmp.SNMPVersion;
 
+
 public class OidFetcher {
 	
 	@SuppressWarnings("serial")
 	public static void main(String[] args) throws IOException {
 		Map<String, String> namesForOid = new HashMap<String, String>() {
 			{
-				put("1.3.6.1.2.1.1.1", "os"); // Linux beathe 3.0.0-13-generic #22-Ubuntu SMP Wed Nov 2 13:27:26 UTC 2011 x86_64
+				put("1.3.6.1.2.1.1.1", "os"); // Linux beathe 3.0.0-13-generic
+												// #22-Ubuntu SMP Wed Nov 2
+												// 13:27:26 UTC 2011 x86_64
 				put("1.3.6.1.2.1.31.1.1.1.1", "interface.name");
 				put("1.3.6.1.2.1.2.2.1.2", "interface.description");
 				put("1.3.6.1.2.1.2.2.1.6", "interface.address");
@@ -38,10 +41,9 @@ public class OidFetcher {
 		};
 		
 		String address = "127.0.0.1";
-//		String address = "192.168.1.5";
+		// String address = "192.168.1.5";
 		IPv4Address ipAddress = IPv4Address.getByAddress(address);
 		int port = 161;
-		
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
@@ -55,10 +57,11 @@ public class OidFetcher {
 				settings);
 		
 		for (String oid : namesForOid.keySet()) {
-//			String result = connection.get(oid).getValue();
-			String result = connection.walk(oid).toString();
-//			String result = connection.walkTable(oid).toString();
-//			String result = connection.getBulk(oid).toString();
+			// String result = connection.get(oid).getValue();
+			String result = connection.walk(
+					oid).toString();
+			// String result = connection.walkTable(oid).toString();
+			// String result = connection.getBulk(oid).toString();
 			System.out.println(namesForOid.get(oid) + ":");
 			System.out.println(result);
 			System.out.println("----");

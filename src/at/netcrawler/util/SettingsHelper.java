@@ -13,16 +13,18 @@ import java.util.prefs.Preferences;
 
 import com.google.gson.Gson;
 
+
 public class SettingsHelper {
-
+	
 	private static final Charset UTF8 = Charset.forName("UTF-8");
-
-	private static final Preferences PREFERENCES = Preferences.userRoot().node("netcrawler");
-	private static final File SETTINGS_FILE = new File(PREFERENCES.absolutePath());
-
+	
+	private static final Preferences PREFERENCES = Preferences.userRoot().node(
+			"netcrawler");
+	private static final File SETTINGS_FILE = new File(
+			PREFERENCES.absolutePath());
+	
 	private static final Gson GSON = new Gson();
-
-
+	
 	public static Settings load() throws IOException {
 		FileInputStream inputStream = null;
 		InputStreamReader reader = null;
@@ -33,18 +35,20 @@ public class SettingsHelper {
 			bufferedReader = new BufferedReader(reader);
 			
 			StringBuilder builder = new StringBuilder();
-			for (String s = bufferedReader.readLine(); s != null; s = bufferedReader.readLine()) {
+			for (String s = bufferedReader.readLine(); s != null; s = bufferedReader
+					.readLine()) {
 				builder.append(s);
 			}
 			
-			return GSON.fromJson(builder.toString(), Settings.class);
+			return GSON.fromJson(
+					builder.toString(), Settings.class);
 		} finally {
 			bufferedReader.close();
 			reader.close();
 			inputStream.close();
 		}
 	}
-
+	
 	public static void write(Settings settings) throws IOException {
 		String json = GSON.toJson(settings);
 		

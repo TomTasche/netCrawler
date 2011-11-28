@@ -5,7 +5,7 @@ import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
 import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;
-import at.netcrawler.network.controller.snmp.SNMPDeviceManager;
+import at.netcrawler.network.manager.snmp.SNMPDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 
 
@@ -15,7 +15,6 @@ public class SNMPDeviceManagerTest {
 		String address = "192.168.1.5";
 		IPv4Address ipAddress = IPv4Address.getByAddress(address);
 		int port = 161;
-		
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		

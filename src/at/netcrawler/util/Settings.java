@@ -5,28 +5,24 @@ import java.awt.Dimension;
 
 public class Settings {
 	
-	private boolean keepServerAlive;
-	private int[] lastWindowSize;
+	private Dimension lastWindowSize;
+	private int lastWindowState;
 	
-
 	private Settings() {}
 	
-	
-	public void setKeepServerAlive(boolean keepServerAlive) {
-		this.keepServerAlive = keepServerAlive;
-	}
-	
-	public boolean isKeepServerAlive() {
-		return keepServerAlive;
-	}
-	
 	public void setLastWindowSize(Dimension dimension) {
-		lastWindowSize = new int[2];
-		lastWindowSize[0] = dimension.width;
-		lastWindowSize[1] = dimension.height;
+		this.lastWindowSize = dimension;
 	}
 	
 	public Dimension getLastWindowSize() {
-		return new Dimension(lastWindowSize[0], lastWindowSize[1]);
+		return lastWindowSize;
+	}
+	
+	public int getLastWindowState() {
+		return lastWindowState;
+	}
+	
+	public void setLastWindowState(int lastWindowState) {
+		this.lastWindowState = lastWindowState;
 	}
 }

@@ -16,13 +16,12 @@ public class RoutingTable implements Iterable<RoutingTable.Route> {
 		private SubnetMask subnetMask;
 		private IPv4Address nextHop;
 		
-		
-		public Route(IPv4Address network, SubnetMask subnetMask, IPv4Address nextHop) {
+		public Route(IPv4Address network, SubnetMask subnetMask,
+				IPv4Address nextHop) {
 			this.network = network;
 			this.subnetMask = subnetMask;
 			this.nextHop = nextHop;
 		}
-		
 		
 		@Override
 		public String toString() {
@@ -33,31 +32,26 @@ public class RoutingTable implements Iterable<RoutingTable.Route> {
 		public IPv4Address getNetwork() {
 			return network;
 		}
+		
 		public SubnetMask getSubnetMask() {
 			return subnetMask;
 		}
+		
 		public IPv4Address getNextHop() {
 			return nextHop;
 		}
 	}
 	
-	
-	
-	
 	private List<Route> table = new LinkedList<Route>();
-	
-	
 	
 	@Override
 	public String toString() {
 		return table.toString();
 	}
 	
-	
 	public List<Route> getRoutingTable() {
 		return new ArrayList<Route>(table);
 	}
-	
 	
 	public void addRoute(Route route) {
 		table.add(route);
@@ -66,7 +60,6 @@ public class RoutingTable implements Iterable<RoutingTable.Route> {
 	public void removeRoute(Route route) {
 		table.remove(route);
 	}
-	
 	
 	@Override
 	public Iterator<Route> iterator() {

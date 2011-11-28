@@ -12,9 +12,11 @@ public abstract class NetworkInterfaceExtension extends
 	protected NetworkInterfaceExtension() {
 		super(EXTENDED_MODEL_CLASS);
 	}
+	
 	protected NetworkInterfaceExtension(Map<String, Class<?>> extendedTypeMap) {
 		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
 	}
+	
 	protected NetworkInterfaceExtension(
 			Set<NetworkInterfaceExtension> requiredExtensions,
 			Map<String, Class<?>> extendedTypeMap) {

@@ -1,4 +1,4 @@
-package at.netcrawler.network.controller;
+package at.netcrawler.network.manager;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -21,19 +21,19 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 	
 	private final Map<NetworkDeviceExtension, DeviceExtensionManager<C>> extensionManagerMap = new LinkedHashMap<NetworkDeviceExtension, DeviceExtensionManager<C>>();
 	
-	
 	public DeviceManager(NetworkDevice device, C connection) {
 		this.device = device;
 		this.connection = connection;
 	}
 	
-	
 	public final NetworkDevice getDevice() {
 		return device;
 	}
+	
 	public final C getConnection() {
 		return connection;
 	}
+	
 	public final boolean hasExtensionManager(
 			Class<? extends NetworkDeviceExtension> extensionClass) {
 		try {
@@ -44,6 +44,7 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
 		return extensionManagerMap.containsKey(extension);
 	}
@@ -58,22 +59,31 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public final DeviceExtensionManager<C> getExtensionManager(
 			NetworkDeviceExtension extension) {
 		return extensionManagerMap.get(extension);
 	}
+	
 	public abstract String getIdentication() throws IOException;
+	
 	public abstract String getHostname() throws IOException;
+	
 	public abstract String getSystem() throws IOException;
+	
 	public abstract long getUptime() throws IOException;
+	
 	public abstract Set<Capability> getCapabilities() throws IOException;
+	
 	public abstract Set<NetworkInterface> getInterfaces() throws IOException;
+	
 	public abstract Set<IPAddress> getManagementAddresses() throws IOException;
+	
 	// TODO: add generic methods
 	
 	public abstract boolean setHostname(String hostname) throws IOException;
-	// TODO: add generic methods
 	
+	// TODO: add generic methods
 	
 	public final boolean addExtensionManager(NetworkDeviceExtension extension,
 			DeviceExtensionManager<C> extensionManager) {
@@ -95,7 +105,8 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 		}
 		
 		extensionManager.setDeviceManager(this);
-		extensionManagerMap.put(extension, extensionManager);
+		extensionManagerMap.put(
+				extension, extensionManager);
 		
 		return true;
 	}
@@ -113,16 +124,21 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 		return true;
 	}
 	
-	
 	public final void readDevice() throws IOException {
-		device.setValue(NetworkDevice.IDENTICATION, getIdentication());
-		device.setValue(NetworkDevice.HOSTNAME, getHostname());
-		device.setValue(NetworkDevice.SYSTEM, getSystem());
-		device.setValue(NetworkDevice.UPTIME, getUptime());
-		device.setValue(NetworkDevice.CAPABILITIES, getCapabilities());
-		device.setValue(NetworkDevice.INTERFACES, getInterfaces());
-		device.setValue(NetworkDevice.MANAGEMENT_ADDRESSES,
-				getManagementAddresses());
+		device.setValue(
+				NetworkDevice.IDENTICATION, getIdentication());
+		device.setValue(
+				NetworkDevice.HOSTNAME, getHostname());
+		device.setValue(
+				NetworkDevice.SYSTEM, getSystem());
+		device.setValue(
+				NetworkDevice.UPTIME, getUptime());
+		device.setValue(
+				NetworkDevice.CAPABILITIES, getCapabilities());
+		device.setValue(
+				NetworkDevice.INTERFACES, getInterfaces());
+		device.setValue(
+				NetworkDevice.MANAGEMENT_ADDRESSES, getManagementAddresses());
 		// TODO: use generic information
 		
 		for (Map.Entry<NetworkDeviceExtension, DeviceExtensionManager<C>> entry : extensionManagerMap

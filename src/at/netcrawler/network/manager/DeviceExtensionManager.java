@@ -1,4 +1,4 @@
-package at.netcrawler.network.controller;
+package at.netcrawler.network.manager;
 
 import java.io.IOException;
 
@@ -15,25 +15,27 @@ public abstract class DeviceExtensionManager<C extends DeviceConnection> {
 	private DeviceManager<C> deviceManager;
 	protected C connection;
 	
-	
 	public DeviceExtensionManager(
 			Class<? extends NetworkDeviceExtension> extensionClass) {
 		this.extensionClass = extensionClass;
 	}
 	
-	
 	public Class<? extends NetworkDeviceExtension> getExtensionClass() {
 		return extensionClass;
 	}
+	
 	public final NetworkDevice getDevice() {
 		return device;
 	}
+	
 	public final NetworkDevice getNetworkDevice() {
 		return deviceManager.getDevice();
 	}
+	
 	public final DeviceManager<C> getDeviceManager() {
 		return deviceManager;
 	}
+	
 	public final C getConnection() {
 		return connection;
 	}

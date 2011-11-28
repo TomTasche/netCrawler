@@ -7,10 +7,10 @@ public class TelnetConnectionSettings extends ConnectionSettings {
 	
 	public static final int DEFAULT_PORT = 23;
 	
-	
 	private int port;
 	
 	public TelnetConnectionSettings() {}
+	
 	public TelnetConnectionSettings(TelnetConnectionSettings settings) {
 		super(settings);
 		

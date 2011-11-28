@@ -29,8 +29,8 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.util.JFrameUtil;
-import at.netcrawler.io.IgnoreLastLineInputStream;
-import at.netcrawler.io.ReadUntilMatchInputStream;
+import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
+import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
@@ -73,11 +73,13 @@ public class ConfigurationExecutor extends JFrame {
 		
 		fileChooser.setFileFilter(new FileFilter() {
 			public String getDescription() {
-				return "Configuration file (*" + Configuration.FILE_SUFFIX + ")";
+				return "Configuration file (*" + Configuration.FILE_SUFFIX
+						+ ")";
 			}
+			
 			public boolean accept(File f) {
-				return f.isDirectory()
-						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
+				return f.isDirectory() || f.getName().endsWith(
+						Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -86,6 +88,7 @@ public class ConfigurationExecutor extends JFrame {
 		layout.setAutoCreateGaps(true);
 		panel.setLayout(layout);
 		
+		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
 						.addGroup(layout.createParallelGroup()
@@ -130,6 +133,7 @@ public class ConfigurationExecutor extends JFrame {
 				.addGap(10)
 				.addComponent(execute)
 		);
+		//@formatter:on
 		
 		execute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -173,8 +177,7 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
-			return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
 		
 		try {
 			open(fileChooser.getSelectedFile());
@@ -182,7 +185,8 @@ public class ConfigurationExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
@@ -191,18 +195,20 @@ public class ConfigurationExecutor extends JFrame {
 			execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(file, new EncryptionCallback() {
-			public String getPassword(Encryption encryption) {
-				return ConfigurationDialog
-						.showDecryptionDialog(ConfigurationExecutor.this);
-			}
-		});
+		configuration.readFromJsonFile(
+				file, new EncryptionCallback() {
+					public String getPassword(Encryption encryption) {
+						return ConfigurationDialog
+								.showDecryptionDialog(ConfigurationExecutor.this);
+					}
+				});
 		
 		setConfiguration(configuration);
 		
@@ -237,7 +243,7 @@ public class ConfigurationExecutor extends JFrame {
 			break;
 		
 		default:
-			throw new IllegalStateException("Unreachable section");
+			throw new IllegalStateException("Unreachable section!");
 		}
 		
 		InputStream inputStream = commandLine.getInputStream();
@@ -262,8 +268,7 @@ public class ConfigurationExecutor extends JFrame {
 		String batch = configuration.getBatch((String) batches
 				.getSelectedItem());
 		
-		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n")
-				.getBytes());
+		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
 		
 		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
@@ -284,7 +289,6 @@ public class ConfigurationExecutor extends JFrame {
 			batches.addItem(batchName);
 		}
 	}
-	
 	
 	public static void main(String[] args) throws Throwable {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

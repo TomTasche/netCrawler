@@ -1,4 +1,4 @@
-package at.netcrawler.io;
+package at.netcrawler.io.deprecated;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -11,11 +11,9 @@ public class IgnoreFirstLineInputStream extends FilterInputStream {
 	
 	private boolean firstLine;
 	
-	
 	public IgnoreFirstLineInputStream(InputStream in) {
 		super(in);
 	}
-	
 	
 	@Override
 	public int read() throws IOException {
@@ -43,7 +41,8 @@ public class IgnoreFirstLineInputStream extends FilterInputStream {
 	
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return StreamUtil.read(this, b, off, len);
+		return StreamUtil.read(
+				this, b, off, len);
 	}
 	
 }

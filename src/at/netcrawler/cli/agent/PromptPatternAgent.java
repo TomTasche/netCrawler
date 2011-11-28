@@ -11,9 +11,9 @@ import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StreamUtil;
-import at.netcrawler.io.IgnoreFirstLineInputStream;
-import at.netcrawler.io.ReadAfterMatchInputStream;
-import at.netcrawler.io.ReadUntilMatchInputStream;
+import at.netcrawler.io.deprecated.IgnoreFirstLineInputStream;
+import at.netcrawler.io.deprecated.ReadAfterMatchInputStream;
+import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 
 
 public class PromptPatternAgent extends CommandLineAgent {
@@ -24,7 +24,6 @@ public class PromptPatternAgent extends CommandLineAgent {
 	public static final String DEFAULT_CHARSET = "US-ASCII";
 	public static final String DEFAULT_KILLER_PREFIX = "_netcrawler_";
 	public static final String DEFAULT_RANDOM_SEPARATOR = "_";
-	
 	
 	protected final InputStream inputStream;
 	protected final OutputStream outputStream;
@@ -44,11 +43,13 @@ public class PromptPatternAgent extends CommandLineAgent {
 			String commentPrefix) {
 		this(commandLine, promptPattern, commentPrefix, DEFAULT_KILLER_PREFIX);
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, String promptPattern,
 			String commentPrefix, String killerPrefix) {
 		this(commandLine, DEFAULT_CHARSET, promptPattern, commentPrefix,
 				killerPrefix, DEFAULT_RANDOM_SEPARATOR);
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, Charset charset,
 			String promptPattern, String commentPrefix, String killerPrefix,
 			String randomSeparator) {
@@ -56,7 +57,6 @@ public class PromptPatternAgent extends CommandLineAgent {
 		
 		try {
 			inputStream = commandLine.getInputStream();
-//			inputStream = new TeeInputStream(commandLine.getInputStream(), System.out);
 			outputStream = commandLine.getOutputStream();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -69,6 +69,7 @@ public class PromptPatternAgent extends CommandLineAgent {
 		this.killerPrefix = killerPrefix;
 		this.randomSeparator = randomSeparator;
 	}
+	
 	public PromptPatternAgent(CommandLine commandLine, String charset,
 			String promptPattern, String commentPrefix, String killerPrefix,
 			String randomSeperator) {

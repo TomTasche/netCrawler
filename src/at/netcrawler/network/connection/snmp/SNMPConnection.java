@@ -14,11 +14,8 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	public static final int DEFAULT_MAX_REPETITIONS = 10;
 	
-	
-	
 	protected final SNMPConnectionSettings settings;
 	protected final SNMPVersion version;
-	
 	
 	public SNMPConnection(IPDeviceAccessor accessor,
 			SNMPConnectionSettings settings) {
@@ -27,8 +24,6 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		this.settings = new SNMPConnectionSettings(settings);
 		version = settings.getVersion();
 	}
-	
-	
 	
 	public SNMPConnectionSettings getSettings() {
 		return settings;
@@ -39,7 +34,6 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		return version;
 	}
 	
-	
 	@Override
 	public SNMPObject get(String oid) throws IOException {
 		List<SNMPObject> result = get(new String[] {oid});
@@ -48,7 +42,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public SNMPObject getNext(String oid) throws IOException { 
+	public SNMPObject getNext(String oid) throws IOException {
 		List<SNMPObject> result = getNext(new String[] {oid});
 		if (result == null) return null;
 		return result.get(0);
@@ -56,27 +50,33 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	@Override
 	public List<SNMPObject> getBulk(String oid) throws IOException {
-		return getBulk(DEFAULT_MAX_REPETITIONS, oid);
+		return getBulk(
+				DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
-	public List<SNMPObject> getBulk(int maxRepetitions, String... oids) throws IOException {
-		return getBulk(0, maxRepetitions, oids);
+	public List<SNMPObject> getBulk(int maxRepetitions, String... oids)
+			throws IOException {
+		return getBulk(
+				0, maxRepetitions, oids);
 	}
 	
 	@Override
-	public final List<SNMPObject> getBulk(int nonRepeaters, int maxRepetitions, String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException("Version 1 doesn't support the GETBULK request");
+	public final List<SNMPObject> getBulk(int nonRepeaters, int maxRepetitions,
+			String... oids) throws IOException {
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request");
 		
-		return getBulkImpl(nonRepeaters, maxRepetitions, oids);
+		return getBulkImpl(
+				nonRepeaters, maxRepetitions, oids);
 	}
 	
-	protected abstract List<SNMPObject> getBulkImpl(int nonRepeaters, int maxRepetitions, String... oids) throws IOException;
-	
+	protected abstract List<SNMPObject> getBulkImpl(int nonRepeaters,
+			int maxRepetitions, String... oids) throws IOException;
 	
 	@Override
-	public SNMPObject set(String oid, Type type, String value) throws IOException {
+	public SNMPObject set(String oid, Type type, String value)
+			throws IOException {
 		return set(new SNMPObject(oid, type, value));
 	}
 	
@@ -88,7 +88,8 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public boolean setAndVerify(String oid, Type type, String value) throws IOException {
+	public boolean setAndVerify(String oid, Type type, String value)
+			throws IOException {
 		return setAndVerify(new SNMPObject(oid, type, value));
 	}
 	
@@ -97,13 +98,11 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		List<SNMPObject> responses = set(objects);
 		
 		for (SNMPObject object : objects) {
-			if (!responses.contains(object))
-				return false;
+			if (!responses.contains(object)) return false;
 		}
 		
 		return true;
 	}
-	
 	
 	@Override
 	public List<SNMPObject> walkNext(String oid) throws IOException {
@@ -114,8 +113,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 			SNMPObject nextObject = getNext(lastOid);
 			String nextOid = nextObject.getOid();
 			
-			if (!nextOid.startsWith(oid))
-				break;
+			if (!nextOid.startsWith(oid)) break;
 			
 			result.add(nextObject);
 			lastOid = nextOid;
@@ -124,35 +122,40 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		return result;
 	}
 	
-	
 	@Override
 	public final List<SNMPObject> walkBulk(String oid) throws IOException {
-		return walkBulk(DEFAULT_MAX_REPETITIONS, oid);
+		return walkBulk(
+				DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
-	public final List<SNMPObject> walkBulk(int maxRepetitions, String oid) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException("Version 1 doesn't support the GETBULK request");
+	public final List<SNMPObject> walkBulk(int maxRepetitions, String oid)
+			throws IOException {
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkImpl(maxRepetitions, oid);
+		return walkBulkImpl(
+				maxRepetitions, oid);
 	}
 	
-	protected List<SNMPObject> walkBulkImpl(int maxRepetitions, String oid) throws IOException {
+	protected List<SNMPObject> walkBulkImpl(int maxRepetitions, String oid)
+			throws IOException {
 		List<SNMPObject> result = new ArrayList<SNMPObject>();
 		String lastOid = oid;
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(maxRepetitions, lastOid);
-			String nextOid = nextBulk.get(nextBulk.size() - 1).getOid();
+			List<SNMPObject> nextBulk = getBulk(
+					maxRepetitions, lastOid);
+			String nextOid = nextBulk.get(
+					nextBulk.size() - 1).getOid();
 			
 			if (!nextOid.startsWith(oid)) {
 				for (int i = 0; i < nextBulk.size() - 1; i++) {
 					SNMPObject object = nextBulk.get(i);
 					
-					if (!object.getOid().startsWith(oid))
-						break mainLoop;
+					if (!object.getOid().startsWith(
+							oid)) break mainLoop;
 					
 					result.add(object);
 				}
@@ -188,14 +191,13 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		mainLoop:
 		while (true) {
 			List<SNMPObject> nextObjects = getNext(lastOids);
-			if (nextObjects.size() != columns)
-				break;
+			if (nextObjects.size() != columns) break;
 			
 			String[] nextOids = new String[columns];
 			for (int i = 0; i < columns; i++) {
-				String oid = nextObjects.get(i).getOid();
-				if (!oid.startsWith(oids[i]))
-					break mainLoop;
+				String oid = nextObjects.get(
+						i).getOid();
+				if (!oid.startsWith(oids[i])) break mainLoop;
 				
 				nextOids[i] = oid;
 			}
@@ -208,19 +210,24 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public final List<SNMPObject[]> walkBulkTable(String... oids) throws IOException {
-		return walkBulkTable(DEFAULT_MAX_REPETITIONS, oids);
+	public final List<SNMPObject[]> walkBulkTable(String... oids)
+			throws IOException {
+		return walkBulkTable(
+				DEFAULT_MAX_REPETITIONS, oids);
 	}
 	
 	@Override
-	public final List<SNMPObject[]> walkBulkTable(int maxRepetitions, String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException("Version 1 doesn't support the GETBULK request");
+	public final List<SNMPObject[]> walkBulkTable(int maxRepetitions,
+			String... oids) throws IOException {
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkTableImpl(maxRepetitions, oids);
+		return walkBulkTableImpl(
+				maxRepetitions, oids);
 	}
 	
-	protected List<SNMPObject[]> walkBulkTableImpl(int maxRepetitions, String... oids) throws IOException {
+	protected List<SNMPObject[]> walkBulkTableImpl(int maxRepetitions,
+			String... oids) throws IOException {
 		List<SNMPObject[]> result = new ArrayList<SNMPObject[]>();
 		
 		int columns = oids.length;
@@ -228,7 +235,8 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(maxRepetitions, lastOids);
+			List<SNMPObject> nextBulk = getBulk(
+					maxRepetitions, lastOids);
 			String[] nextOids = new String[columns];
 			
 			int newRows = 0;

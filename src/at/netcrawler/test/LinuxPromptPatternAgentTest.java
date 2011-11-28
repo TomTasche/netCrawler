@@ -41,7 +41,6 @@ public class LinuxPromptPatternAgentTest {
 		String username = "andreas";
 		String password = getPassword(username);
 		
-		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
 		SSHConnectionSettings settings = new SSHConnectionSettings();
@@ -53,10 +52,9 @@ public class LinuxPromptPatternAgentTest {
 		LocalSSHConnection connection = new LocalSSHConnection(accessor,
 				settings);
 		
-		
 		LinuxPromptPatternAgent agent = new LinuxPromptPatternAgent(connection);
-		agent.execute("uname -l").readInput();
-		
+		agent.execute(
+				"uname -l").readInput();
 		
 		connection.close();
 	}

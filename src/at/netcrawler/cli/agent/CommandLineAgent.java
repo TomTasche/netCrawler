@@ -14,7 +14,8 @@ public abstract class CommandLineAgent {
 	}
 	
 	public String readExecute(String command) throws IOException {
-		return execute(command).readInput();
+		return execute(
+				command).readInput();
 	}
 	
 	public abstract CommandLineProcess execute(String command)

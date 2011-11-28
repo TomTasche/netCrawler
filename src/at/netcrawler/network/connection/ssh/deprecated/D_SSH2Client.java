@@ -22,29 +22,36 @@ public class D_SSH2Client extends D_SSHClient {
 	private PipedInputStream inputStream;
 	private PipedOutputStream outputStream;
 	
-	
-	
 	public D_SSH2Client() {}
+	
 	public D_SSH2Client(String login, String password) throws IOException {
 		super(login, password);
 	}
-	public D_SSH2Client(InetAddress address, String username, String password) throws IOException {
+	
+	public D_SSH2Client(InetAddress address, String username, String password)
+			throws IOException {
 		super(address, username, password);
 	}
-	public D_SSH2Client(String host, String username, String password) throws IOException {
+	
+	public D_SSH2Client(String host, String username, String password)
+			throws IOException {
 		super(host, username, password);
 	}
-	public D_SSH2Client(InetSocketAddress socketAddress, String username, String password) throws IOException {
+	
+	public D_SSH2Client(InetSocketAddress socketAddress, String username,
+			String password) throws IOException {
 		super(socketAddress, username, password);
 	}
-	public D_SSH2Client(String host, int port, String username, String password) throws IOException {
+	
+	public D_SSH2Client(String host, int port, String username, String password)
+			throws IOException {
 		super(host, port, username, password);
 	}
-	public D_SSH2Client(InetAddress address, int port, String username, String password) throws IOException {
+	
+	public D_SSH2Client(InetAddress address, int port, String username,
+			String password) throws IOException {
 		super(address, port, username, password);
 	}
-	
-	
 	
 	public Channel getChannel() {
 		return channel;
@@ -53,19 +60,21 @@ public class D_SSH2Client extends D_SSHClient {
 	public InputStream getInputStream() {
 		return inputStream;
 	}
+	
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}
 	
-	
 	@Override
-	public void connect(InetAddress address, int port, String username, String password) throws IOException {
+	public void connect(InetAddress address, int port, String username,
+			String password) throws IOException {
 		JSch jsch = new JSch();
 		inputStream = new PipedInputStream();
 		outputStream = new PipedOutputStream();
 		
 		try {
-			session = jsch.getSession(username, address.getHostAddress(), port);
+			session = jsch.getSession(
+					username, address.getHostAddress(), port);
 			session.setUserInfo(new SimpleUserInfo(password));
 			session.setDaemonThread(true);
 			session.connect();
@@ -85,8 +94,6 @@ public class D_SSH2Client extends D_SSHClient {
 		session.disconnect();
 	}
 	
-	
-	
 	public class SimpleUserInfo implements UserInfo {
 		private String password;
 		
@@ -94,12 +101,25 @@ public class D_SSH2Client extends D_SSHClient {
 			this.password = password;
 		}
 		
-		public String getPassword() { return password; }
-		public String getPassphrase() { return null; }
+		public String getPassword() {
+			return password;
+		}
 		
-		public boolean promptYesNo(String str){ return true; }
-		public boolean promptPassword(String message) { return true; }
-		public boolean promptPassphrase(String message) { return true; }
+		public String getPassphrase() {
+			return null;
+		}
+		
+		public boolean promptYesNo(String str) {
+			return true;
+		}
+		
+		public boolean promptPassword(String message) {
+			return true;
+		}
+		
+		public boolean promptPassphrase(String message) {
+			return true;
+		}
 		
 		public void showMessage(String message) {}
 	}

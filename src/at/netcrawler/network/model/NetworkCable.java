@@ -9,11 +9,8 @@ public class NetworkCable extends NetworkModel {
 	
 	public static final Map<String, Class<?>> TYPE_MAP;
 	
-	
 	public static final String TYPE = "cable.type";
 	public static final Class<String> TYPE_TYPE = String.class;
-	
-	
 	
 	static {
 		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
@@ -22,9 +19,6 @@ public class NetworkCable extends NetworkModel {
 		
 		TYPE_MAP = Collections.unmodifiableMap(map);
 	}
-	
-	
-	
 	
 	public NetworkCable() {
 		super(TYPE_MAP);

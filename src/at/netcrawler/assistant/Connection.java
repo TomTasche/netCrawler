@@ -7,10 +7,8 @@ import java.util.Map;
 
 public enum Connection {
 	
-	NOTHING("- Choose connection -", -1),
-	TELNET("Telnet", 23),
-	SSH1("SSH v1", 22),
-	SSH2("SSH v2", 22);
+	NOTHING("- Choose connection -", -1), TELNET("Telnet", 23), SSH1("SSH v1",
+			22), SSH2("SSH v2", 22);
 	
 	private static final Map<String, Connection> NAME_MAP;
 	
@@ -18,7 +16,8 @@ public enum Connection {
 		Map<String, Connection> nameMap = new HashMap<String, Connection>();
 		
 		for (Connection connection : values()) {
-			nameMap.put(connection.name, connection);
+			nameMap.put(
+					connection.name, connection);
 		}
 		
 		NAME_MAP = Collections.unmodifiableMap(nameMap);

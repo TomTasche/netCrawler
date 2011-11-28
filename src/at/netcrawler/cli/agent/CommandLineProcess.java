@@ -12,7 +12,6 @@ public class CommandLineProcess {
 	
 	public static final String DEFAULT_CHARSET = "US-ASCII";
 	
-	
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
 	private final Charset charset;
@@ -21,12 +20,14 @@ public class CommandLineProcess {
 	public CommandLineProcess(InputStream inputStream, OutputStream outputStream) {
 		this(inputStream, outputStream, DEFAULT_CHARSET);
 	}
+	
 	public CommandLineProcess(InputStream inputStream,
 			OutputStream outputStream, Charset charset) {
 		this.inputStream = inputStream;
 		this.outputStream = outputStream;
 		this.charset = charset;
 	}
+	
 	public CommandLineProcess(InputStream inputStream,
 			OutputStream outputStream, String charset) {
 		this(inputStream, outputStream, Charset.forName(charset));
@@ -35,18 +36,22 @@ public class CommandLineProcess {
 	public InputStream getInputStream() {
 		return inputStream;
 	}
+	
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}
+	
 	public Charset getCharset() {
 		return charset;
 	}
+	
 	public int getStatus() {
 		return status;
 	}
 	
 	public String readInput() throws IOException {
-		return StreamUtil.readStream(inputStream, charset);
+		return StreamUtil.readStream(
+				inputStream, charset);
 	}
 	
 }
