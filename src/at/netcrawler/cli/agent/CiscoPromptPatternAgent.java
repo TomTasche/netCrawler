@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
-import at.netcrawler.io.ActionOnMatchInputStream;
-import at.netcrawler.io.ActionOnMatchListener;
-import at.netcrawler.io.IgnoreLineOnMatchInputStream;
+import at.netcrawler.io.deprecated.ActionOnMatchInputStream;
+import at.netcrawler.io.deprecated.ActionOnMatchListener;
+import at.netcrawler.io.deprecated.IgnoreLineOnMatchInputStream;
 
 
 public class CiscoPromptPatternAgent extends PromptPatternAgent {

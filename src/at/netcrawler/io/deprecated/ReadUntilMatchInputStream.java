@@ -1,4 +1,4 @@
-package at.netcrawler.io;
+package at.netcrawler.io.deprecated;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -9,15 +9,16 @@ import java.util.regex.Pattern;
 import at.andiwand.library.util.StreamUtil;
 
 
-public class ReadAfterMatchInputStream extends FilterInputStream {
+public class ReadUntilMatchInputStream extends FilterInputStream {
 	
 	private StringBuilder line = new StringBuilder();
 	private Pattern pattern;
 	private Matcher matcher;
-	private boolean matched;
+	
+	private boolean closed;
 	
 	
-	public ReadAfterMatchInputStream(InputStream in, Pattern pattern) {
+	public ReadUntilMatchInputStream(InputStream in, Pattern pattern) {
 		super(in);
 		
 		this.pattern = pattern;
@@ -25,7 +26,7 @@ public class ReadAfterMatchInputStream extends FilterInputStream {
 	
 	
 	public Matcher getFinalMatcher() {
-		if (!matched) return null;
+		if (!closed) return null;
 		
 		return matcher;
 	}
@@ -33,24 +34,24 @@ public class ReadAfterMatchInputStream extends FilterInputStream {
 	
 	@Override
 	public int read() throws IOException {
-		if (matched) return in.read();
+		if (closed) return -1;
 		
-		int read;
-		while ((read = in.read()) != -1) {
-			line.append((char) read);
-			
-			matcher = pattern.matcher(line);
-			if (matcher.matches()) {
-				matched = true;
-				break;
-			}
-			
-			if ((read == '\n') || (read == '\r')) {
-				line = new StringBuilder();
-			}
+		int read = in.read();
+		if (read == -1) {
+			closed = true;
+			return -1;
 		}
 		
-		return in.read();
+		line.append((char) read);
+		
+		matcher = pattern.matcher(line);
+		if (matcher.matches()) closed = true;
+		
+		if ((read == '\n') || (read == '\r')) {
+			line = new StringBuilder();
+		}
+		
+		return read;
 	}
 	
 	@Override

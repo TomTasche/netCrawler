@@ -219,7 +219,7 @@ public class ConfigurationManager extends JFrame {
 		try {
 			IPv4Address.getByAddress(address.getText());
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Illegal ip Address!");
+			throw new IllegalArgumentException("Illegal IP address!");
 		}
 	}
 	private void validateConnection() {

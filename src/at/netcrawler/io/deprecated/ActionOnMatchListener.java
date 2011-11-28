@@ -1,4 +1,4 @@
-package at.netcrawler.io;
+package at.netcrawler.io.deprecated;
 
 
 public interface ActionOnMatchListener {

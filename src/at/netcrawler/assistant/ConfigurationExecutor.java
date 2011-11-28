@@ -29,8 +29,8 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.util.JFrameUtil;
-import at.netcrawler.io.IgnoreLastLineInputStream;
-import at.netcrawler.io.ReadUntilMatchInputStream;
+import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
+import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 import at.netcrawler.network.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHConnectionSettings;

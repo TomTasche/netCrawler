@@ -11,9 +11,9 @@ import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StreamUtil;
-import at.netcrawler.io.IgnoreFirstLineInputStream;
-import at.netcrawler.io.ReadAfterMatchInputStream;
-import at.netcrawler.io.ReadUntilMatchInputStream;
+import at.netcrawler.io.deprecated.IgnoreFirstLineInputStream;
+import at.netcrawler.io.deprecated.ReadAfterMatchInputStream;
+import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 
 
 public class PromptPatternAgent extends CommandLineAgent {
@@ -56,7 +56,6 @@ public class PromptPatternAgent extends CommandLineAgent {
 		
 		try {
 			inputStream = commandLine.getInputStream();
-//			inputStream = new TeeInputStream(commandLine.getInputStream(), System.out);
 			outputStream = commandLine.getOutputStream();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
