@@ -43,58 +43,38 @@ public class GeneralPanel extends JComponent {
 		groupLayout.setAutoCreateGaps(true);
 		
 		groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
+				.addGroup(groupLayout.createParallelGroup()
+				
+				.addComponent(host).addComponent(sys).addComponent(clock))
 				.addGroup(
 						groupLayout.createParallelGroup()
 						
-						.addComponent(
-								host).addComponent(
-								sys).addComponent(
-								clock)).addGroup(
+						.addComponent(hostName).addComponent(system)
+								.addComponent(clockTime)).addGroup(
 						groupLayout.createParallelGroup()
 						
-						.addComponent(
-								hostName).addComponent(
-								system).addComponent(
-								clockTime)).addGroup(
-						groupLayout.createParallelGroup()
-						
-						.addComponent(
-								editHost).addComponent(
-								editClock)));
+						.addComponent(editHost).addComponent(editClock)));
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
 				.addGroup(
-						groupLayout.createParallelGroup(
-								Alignment.BASELINE).addComponent(
-								host).addComponent(
-								hostName).addComponent(
-								editHost)).addGroup(
-						groupLayout.createParallelGroup(
-								Alignment.BASELINE).addComponent(
-								sys).addComponent(
-								system)).addGroup(
-						groupLayout.createParallelGroup(
-								Alignment.BASELINE).addComponent(
-								clock).addComponent(
-								clockTime).addComponent(
-								editClock)));
+						groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(host).addComponent(hostName)
+								.addComponent(editHost)).addGroup(
+						groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(sys).addComponent(system))
+				.addGroup(
+						groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(clock).addComponent(clockTime)
+								.addComponent(editClock)));
 		
-		generalTabs.addTab(
-				"Show Running Config", shRun);
-		generalTabs.setMnemonicAt(
-				0, KeyEvent.VK_1);
-		generalTabs.addTab(
-				"Show Version", shVer);
-		generalTabs.setMnemonicAt(
-				1, KeyEvent.VK_2);
-		generalTabs.addTab(
-				"CDP", shCdp);
-		generalTabs.setMnemonicAt(
-				2, KeyEvent.VK_3);
+		generalTabs.addTab("Show Running Config", shRun);
+		generalTabs.setMnemonicAt(0, KeyEvent.VK_1);
+		generalTabs.addTab("Show Version", shVer);
+		generalTabs.setMnemonicAt(1, KeyEvent.VK_2);
+		generalTabs.addTab("CDP", shCdp);
+		generalTabs.setMnemonicAt(2, KeyEvent.VK_3);
 		
 		for (int i = 0; i < generalTabs.getTabCount(); i++) {
-			generalTabs.getComponentAt(
-					i).setBackground(
-					new Color(0, 0, 0, 1));
+			generalTabs.getComponentAt(i).setBackground(new Color(0, 0, 0, 1));
 		}
 		
 		setLayout(new BorderLayout());

@@ -50,8 +50,7 @@ public class CommandLineProcess {
 	}
 	
 	public String readInput() throws IOException {
-		return StreamUtil.readStream(
-				inputStream, charset);
+		return StreamUtil.readStream(inputStream, charset);
 	}
 	
 }

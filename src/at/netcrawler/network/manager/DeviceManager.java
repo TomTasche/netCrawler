@@ -105,8 +105,7 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 		}
 		
 		extensionManager.setDeviceManager(this);
-		extensionManagerMap.put(
-				extension, extensionManager);
+		extensionManagerMap.put(extension, extensionManager);
 		
 		return true;
 	}
@@ -125,20 +124,14 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 	}
 	
 	public final void readDevice() throws IOException {
-		device.setValue(
-				NetworkDevice.IDENTICATION, getIdentication());
-		device.setValue(
-				NetworkDevice.HOSTNAME, getHostname());
-		device.setValue(
-				NetworkDevice.SYSTEM, getSystem());
-		device.setValue(
-				NetworkDevice.UPTIME, getUptime());
-		device.setValue(
-				NetworkDevice.CAPABILITIES, getCapabilities());
-		device.setValue(
-				NetworkDevice.INTERFACES, getInterfaces());
-		device.setValue(
-				NetworkDevice.MANAGEMENT_ADDRESSES, getManagementAddresses());
+		device.setValue(NetworkDevice.IDENTICATION, getIdentication());
+		device.setValue(NetworkDevice.HOSTNAME, getHostname());
+		device.setValue(NetworkDevice.SYSTEM, getSystem());
+		device.setValue(NetworkDevice.UPTIME, getUptime());
+		device.setValue(NetworkDevice.CAPABILITIES, getCapabilities());
+		device.setValue(NetworkDevice.INTERFACES, getInterfaces());
+		device.setValue(NetworkDevice.MANAGEMENT_ADDRESSES,
+				getManagementAddresses());
 		// TODO: use generic information
 		
 		for (Map.Entry<NetworkDeviceExtension, DeviceExtensionManager<C>> entry : extensionManagerMap

@@ -21,8 +21,7 @@ public abstract class RouterExtensionManager<C extends DeviceConnection>
 	public void readDeviceExtension() throws IOException {
 		NetworkDevice device = getDevice();
 		
-		device.setValue(
-				RouterExtension.ROUTING_TABLE, getRoutingTable());
+		device.setValue(RouterExtension.ROUTING_TABLE, getRoutingTable());
 	}
 	
 }

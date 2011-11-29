@@ -2,7 +2,7 @@ package at.netcrawler.network.connection;
 
 import java.io.IOException;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
 public abstract class IPConnectionGateway<CS extends ConnectionSettings>

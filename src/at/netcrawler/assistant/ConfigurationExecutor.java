@@ -31,10 +31,10 @@ import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.util.JFrameUtil;
 import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
 import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.connection.ssh.console.LocalSSHConsoleConnection;
+import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
 
@@ -78,8 +78,8 @@ public class ConfigurationExecutor extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory() || f.getName().endsWith(
-						Configuration.FILE_SUFFIX);
+				return f.isDirectory()
+						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -185,8 +185,7 @@ public class ConfigurationExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -195,20 +194,18 @@ public class ConfigurationExecutor extends JFrame {
 			execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(
-				file, new EncryptionCallback() {
-					public String getPassword(Encryption encryption) {
-						return ConfigurationDialog
-								.showDecryptionDialog(ConfigurationExecutor.this);
-					}
-				});
+		configuration.readFromJsonFile(file, new EncryptionCallback() {
+			public String getPassword(Encryption encryption) {
+				return ConfigurationDialog
+						.showDecryptionDialog(ConfigurationExecutor.this);
+			}
+		});
 		
 		setConfiguration(configuration);
 		
@@ -218,8 +215,8 @@ public class ConfigurationExecutor extends JFrame {
 	private void execute() throws IOException {
 		CommandLine commandLine;
 		
-		IPDeviceAccessor accessor = new IPDeviceAccessor(
-				configuration.getAddress());
+		IPDeviceAccessor accessor = new IPDeviceAccessor(configuration
+				.getAddress());
 		
 		Connection connection = configuration.getConnection();
 		switch (connection) {
@@ -231,7 +228,7 @@ public class ConfigurationExecutor extends JFrame {
 			break;
 		case SSH1:
 		case SSH2:
-			SSHConnectionSettings sshSettings = new SSHConnectionSettings();
+			SSHConsoleConnectionSettings sshSettings = new SSHConsoleConnectionSettings();
 			sshSettings
 					.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
 							: SSHVersion.VERSION2);
@@ -239,7 +236,7 @@ public class ConfigurationExecutor extends JFrame {
 			sshSettings.setUsername(configuration.getUsername());
 			sshSettings.setPassword(configuration.getPassword());
 			
-			commandLine = new LocalSSHConnection(accessor, sshSettings);
+			commandLine = new LocalSSHConsoleConnection(accessor, sshSettings);
 			break;
 		
 		default:

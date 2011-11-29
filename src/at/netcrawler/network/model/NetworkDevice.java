@@ -67,15 +67,12 @@ public class NetworkDevice extends NetworkModel {
 		if (!(obj instanceof NetworkDevice)) return false;
 		NetworkDevice device = (NetworkDevice) obj;
 		
-		return getValue(
-				IDENTICATION).equals(
-				device.getValue(IDENTICATION));
+		return getValue(IDENTICATION).equals(device.getValue(IDENTICATION));
 	}
 	
 	@Override
 	public int hashCode() {
-		return getValue(
-				IDENTICATION).hashCode();
+		return getValue(IDENTICATION).hashCode();
 	}
 	
 }

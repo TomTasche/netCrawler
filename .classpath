@@ -10,6 +10,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/snmp4j-2.0.2.jar" sourcepath="lib/snmp4j-2.0.2.zip"/>
 	<classpathentry kind="lib" path="lib/mindterm_3.4.jar" sourcepath="lib/mindterm_3.4.zip"/>
-	<classpathentry kind="lib" path="lib/jsch-0.1.44.jar" sourcepath="lib/jsch-0.1.44.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

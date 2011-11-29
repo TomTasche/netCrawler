@@ -4,7 +4,7 @@ public abstract class ConnectionSettings {
 	
 	public static final int DEFAULT_TIMEOUT = 1500;
 	
-	protected int timeout;
+	private int timeout;
 	
 	public ConnectionSettings() {
 		timeout = DEFAULT_TIMEOUT;

@@ -1,6 +1,6 @@
 package at.netcrawler.network.connection.ssh;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.IPDeviceConnection;
 
 

@@ -28,10 +28,8 @@ public abstract class CommandLineAgent2 {
 		this.commandLine = commandLine;
 		
 		try {
-			in = initReader(
-					commandLine.getInputStream(), charset);
-			out = initWriter(
-					commandLine.getOutputStream(), charset);
+			in = initReader(commandLine.getInputStream(), charset);
+			out = initWriter(commandLine.getOutputStream(), charset);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

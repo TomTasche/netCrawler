@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
 public class LocalTelnetConnection extends TelnetConnection {
@@ -17,12 +17,11 @@ public class LocalTelnetConnection extends TelnetConnection {
 			TelnetConnectionSettings settings) throws IOException {
 		super(accessor, settings);
 		
-		InetSocketAddress endpoint = new InetSocketAddress(
-				accessor.getInetAddress(), settings.getPort());
+		InetSocketAddress endpoint = new InetSocketAddress(accessor
+				.getInetAddress(), settings.getPort());
 		
 		socket = new Socket();
-		socket.connect(
-				endpoint, settings.getTimeout());
+		socket.connect(endpoint, settings.getTimeout());
 	}
 	
 	@Override

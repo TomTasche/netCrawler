@@ -62,8 +62,8 @@ public class GUI extends JFrame {
 		
 		public void windowClosing(WindowEvent e) {
 			Object[] options = {"OK", "Abbruch"};
-			if (JOptionPane.showOptionDialog(
-					null, "Wollen Sie das Programm wirklich beenden?", "",
+			if (JOptionPane.showOptionDialog(null,
+					"Wollen Sie das Programm wirklich beenden?", "",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, options, options[0]) == JOptionPane.OK_OPTION) {
 				System.exit(0);
@@ -88,21 +88,15 @@ public class GUI extends JFrame {
 		
 		overviewNorth.add(deviceList);
 		
-		overview.add(
-				overviewNorth, BorderLayout.NORTH);
-		overview.add(
-				overviewCenter, BorderLayout.CENTER);
+		overview.add(overviewNorth, BorderLayout.NORTH);
+		overview.add(overviewCenter, BorderLayout.CENTER);
 		overview.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		overviewscroll.setBorder(BorderFactory.createEmptyBorder(
-				5, 5, 5, 5));
+		overviewscroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
-		content.add(
-				toolbar, BorderLayout.WEST);
-		content.add(
-				buttonOverviewCenter, BorderLayout.CENTER);
+		content.add(toolbar, BorderLayout.WEST);
+		content.add(buttonOverviewCenter, BorderLayout.CENTER);
 		content.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		contentscroll.setBorder(BorderFactory.createEmptyBorder(
-				5, 5, 5, 5));
+		contentscroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		all.add(contentscroll, BorderLayout.NORTH);
 		all.add(overviewscroll, BorderLayout.EAST);
@@ -114,8 +108,7 @@ public class GUI extends JFrame {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screen.width - getWidth()) / 2;
 		int y = (screen.height - getHeight()) / 2;
-		setLocation(
-				x, y);
+		setLocation(x, y);
 		
 		setVisible(true);
 	}

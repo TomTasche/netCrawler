@@ -4,10 +4,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.connection.ssh.console.LocalSSHConsoleConnection;
+import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 
 
 public class LocalSSHConnectionTest {
@@ -22,14 +22,14 @@ public class LocalSSHConnectionTest {
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		SSHConnectionSettings settings = new SSHConnectionSettings();
+		SSHConsoleConnectionSettings settings = new SSHConsoleConnectionSettings();
 		settings.setVersion(version);
 		settings.setPort(port);
 		settings.setUsername(username);
 		settings.setPassword(password);
 		
-		LocalSSHConnection connection = new LocalSSHConnection(accessor,
-				settings);
+		LocalSSHConsoleConnection connection = new LocalSSHConsoleConnection(
+				accessor, settings);
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = connection.getOutputStream();
 		

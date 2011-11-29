@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.IPDeviceConnection;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
 
@@ -50,15 +50,13 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	@Override
 	public List<SNMPObject> getBulk(String oid) throws IOException {
-		return getBulk(
-				DEFAULT_MAX_REPETITIONS, oid);
+		return getBulk(DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
 	public List<SNMPObject> getBulk(int maxRepetitions, String... oids)
 			throws IOException {
-		return getBulk(
-				0, maxRepetitions, oids);
+		return getBulk(0, maxRepetitions, oids);
 	}
 	
 	@Override
@@ -67,8 +65,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
 				"Version 1 doesn't support the GETBULK request");
 		
-		return getBulkImpl(
-				nonRepeaters, maxRepetitions, oids);
+		return getBulkImpl(nonRepeaters, maxRepetitions, oids);
 	}
 	
 	protected abstract List<SNMPObject> getBulkImpl(int nonRepeaters,
@@ -124,8 +121,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	
 	@Override
 	public final List<SNMPObject> walkBulk(String oid) throws IOException {
-		return walkBulk(
-				DEFAULT_MAX_REPETITIONS, oid);
+		return walkBulk(DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
@@ -134,8 +130,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
 				"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkImpl(
-				maxRepetitions, oid);
+		return walkBulkImpl(maxRepetitions, oid);
 	}
 	
 	protected List<SNMPObject> walkBulkImpl(int maxRepetitions, String oid)
@@ -145,17 +140,14 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(
-					maxRepetitions, lastOid);
-			String nextOid = nextBulk.get(
-					nextBulk.size() - 1).getOid();
+			List<SNMPObject> nextBulk = getBulk(maxRepetitions, lastOid);
+			String nextOid = nextBulk.get(nextBulk.size() - 1).getOid();
 			
 			if (!nextOid.startsWith(oid)) {
 				for (int i = 0; i < nextBulk.size() - 1; i++) {
 					SNMPObject object = nextBulk.get(i);
 					
-					if (!object.getOid().startsWith(
-							oid)) break mainLoop;
+					if (!object.getOid().startsWith(oid)) break mainLoop;
 					
 					result.add(object);
 				}
@@ -195,8 +187,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 			
 			String[] nextOids = new String[columns];
 			for (int i = 0; i < columns; i++) {
-				String oid = nextObjects.get(
-						i).getOid();
+				String oid = nextObjects.get(i).getOid();
 				if (!oid.startsWith(oids[i])) break mainLoop;
 				
 				nextOids[i] = oid;
@@ -212,8 +203,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	@Override
 	public final List<SNMPObject[]> walkBulkTable(String... oids)
 			throws IOException {
-		return walkBulkTable(
-				DEFAULT_MAX_REPETITIONS, oids);
+		return walkBulkTable(DEFAULT_MAX_REPETITIONS, oids);
 	}
 	
 	@Override
@@ -222,8 +212,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
 				"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkTableImpl(
-				maxRepetitions, oids);
+		return walkBulkTableImpl(maxRepetitions, oids);
 	}
 	
 	protected List<SNMPObject[]> walkBulkTableImpl(int maxRepetitions,
@@ -235,8 +224,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(
-					maxRepetitions, lastOids);
+			List<SNMPObject> nextBulk = getBulk(maxRepetitions, lastOids);
 			String[] nextOids = new String[columns];
 			
 			int newRows = 0;

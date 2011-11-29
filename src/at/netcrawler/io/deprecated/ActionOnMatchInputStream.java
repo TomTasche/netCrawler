@@ -54,8 +54,7 @@ public class ActionOnMatchInputStream extends FilterInputStream {
 	
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return StreamUtil.read(
-				this, b, off, len);
+		return StreamUtil.read(this, b, off, len);
 	}
 	
 }

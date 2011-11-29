@@ -26,8 +26,7 @@ public class OpaqueTabbedPane extends JTabbedPane {
 	@Override
 	public void insertTab(String title, Icon icon, Component component,
 			String tip, int index) {
-		super.insertTab(
-				title, icon, component, tip, index);
+		super.insertTab(title, icon, component, tip, index);
 		
 		component.setBackground(OPAQUE);
 	}

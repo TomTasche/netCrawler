@@ -63,29 +63,23 @@ public class Device extends JFrame implements ListSelectionListener {
 		
 		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		listPanel.add(
-				buttonPanel, BorderLayout.NORTH);
-		listPanel.add(
-				centerPanel, BorderLayout.CENTER);
+		listPanel.add(buttonPanel, BorderLayout.NORTH);
+		listPanel.add(centerPanel, BorderLayout.CENTER);
 		
-		scroll.setBorder(BorderFactory.createEmptyBorder(
-				5, 5, 5, 5));
+		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
 		buttonPanel.add(menuList);
 		
 		menuList.addListSelectionListener(this);
 		
-		panel.add(
-				content, BorderLayout.CENTER);
-		panel.add(
-				scroll, BorderLayout.WEST);
+		panel.add(content, BorderLayout.CENTER);
+		panel.add(scroll, BorderLayout.WEST);
 		add(panel);
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screen.width - getWidth()) / 2;
 		int y = (screen.height - getHeight()) / 2;
-		setLocation(
-				x, y);
+		setLocation(x, y);
 		
 		setVisible(true);
 	}

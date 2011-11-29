@@ -65,8 +65,8 @@ public class ConfigurationManager extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory() || f.getName().endsWith(
-						Configuration.FILE_SUFFIX);
+				return f.isDirectory()
+						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -214,8 +214,7 @@ public class ConfigurationManager extends JFrame {
 	private void addBatch(String name, String batch) {
 		JTextArea textArea = new JTextArea(batch);
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		batchTabbedPane.add(
-				name, scrollPane);
+		batchTabbedPane.add(name, scrollPane);
 	}
 	
 	private void validateIP() {
@@ -257,33 +256,30 @@ public class ConfigurationManager extends JFrame {
 		batchName = batchName.trim();
 		
 		if (batchName.isEmpty()) {
-			ConfigurationDialog.showErrorDialog(
-					ConfigurationManager.this, "Batch name is empty!");
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+					"Batch name is empty!");
 			
 			return;
 		}
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-				ConfigurationDialog
-						.showErrorDialog(
-								ConfigurationManager.this,
-								"Batch name already exists!");
+				ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+						"Batch name already exists!");
 				
 				return;
 			}
 		}
 		
-		addBatch(
-				batchName, "");
+		addBatch(batchName, "");
 		batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
 		batchNewName.setText("");
 	}
 	
 	private void doChoose() {
 		if (batchTabbedPane.getTabCount() <= 0) {
-			ConfigurationDialog.showErrorDialog(
-					ConfigurationManager.this, "Add batch name first!");
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+					"Add batch name first!");
 			return;
 		}
 		
@@ -306,8 +302,7 @@ public class ConfigurationManager extends JFrame {
 					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					ConfigurationManager.this, e);
+			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
 		}
 	}
 	
@@ -319,8 +314,8 @@ public class ConfigurationManager extends JFrame {
 			encryptionBag.setEncryption(Encryption.PLAIN);
 			
 			Configuration configuration = new Configuration();
-			configuration.readFromJsonFile(
-					fileChooser.getSelectedFile(), new EncryptionCallback() {
+			configuration.readFromJsonFile(fileChooser.getSelectedFile(),
+					new EncryptionCallback() {
 						public String getPassword(Encryption encryption) {
 							String password = ConfigurationDialog
 									.showDecryptionDialog(ConfigurationManager.this);
@@ -335,8 +330,7 @@ public class ConfigurationManager extends JFrame {
 			setConfiguration(configuration);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -344,8 +338,7 @@ public class ConfigurationManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 			return;
 		}
 		
@@ -354,8 +347,7 @@ public class ConfigurationManager extends JFrame {
 			
 			File file = fileChooser.getSelectedFile();
 			
-			if (!file.getName().endsWith(
-					Configuration.FILE_SUFFIX)) {
+			if (!file.getName().endsWith(Configuration.FILE_SUFFIX)) {
 				File newFile = new File(file.getPath(), file.getName()
 						+ Configuration.FILE_SUFFIX);
 				fileChooser.setSelectedFile(newFile);
@@ -370,13 +362,11 @@ public class ConfigurationManager extends JFrame {
 			}
 			
 			Configuration configuration = getConfiguration();
-			configuration.writeToJsonFile(
-					fileChooser.getSelectedFile(),
+			configuration.writeToJsonFile(fileChooser.getSelectedFile(),
 					encryptionBag.getEncryption(), encryptionBag.getPassword());
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -421,8 +411,7 @@ public class ConfigurationManager extends JFrame {
 		batchTabbedPane.removeAll();
 		for (Map.Entry<String, String> entry : configuration.getBatches()
 				.entrySet()) {
-			addBatch(
-					entry.getKey(), entry.getValue());
+			addBatch(entry.getKey(), entry.getValue());
 		}
 	}
 	

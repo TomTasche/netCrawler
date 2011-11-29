@@ -52,15 +52,12 @@ public class NetworkInterface extends NetworkModel {
 		if (!(obj instanceof NetworkInterface)) return false;
 		NetworkInterface networkInterface = (NetworkInterface) obj;
 		
-		return getValue(
-				NAME).equals(
-				networkInterface.getValue(NAME));
+		return getValue(NAME).equals(networkInterface.getValue(NAME));
 	}
 	
 	@Override
 	public int hashCode() {
-		return getValue(
-				NAME).hashCode();
+		return getValue(NAME).hashCode();
 	}
 	
 }

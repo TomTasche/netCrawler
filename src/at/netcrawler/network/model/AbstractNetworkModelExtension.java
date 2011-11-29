@@ -72,8 +72,7 @@ public abstract class AbstractNetworkModelExtension implements
 	public final boolean isExtensionSupported(NetworkModel model) {
 		if (!extendedModelClass.equals(model.getClass())) return false;
 		
-		if (!model.getExtensions().containsAll(
-				requiredExtensions)) return false;
+		if (!model.getExtensions().containsAll(requiredExtensions)) return false;
 		
 		return true;
 	}
@@ -121,8 +120,7 @@ public abstract class AbstractNetworkModelExtension implements
 	protected final void addRequiredExtension(NetworkModelExtension extension) {
 		checkNotFinalized();
 		
-		if (!extension.getExtendedModelClass().equals(
-				extendedModelClass)) throw new IllegalArgumentException(
+		if (!extension.getExtendedModelClass().equals(extendedModelClass)) throw new IllegalArgumentException(
 				"Illegal model class extension!");
 		
 		requiredExtensions.add(extension);
@@ -131,8 +129,7 @@ public abstract class AbstractNetworkModelExtension implements
 	protected final void addExtensionType(String key, Class<?> type) {
 		checkNotFinalized();
 		
-		extensionTypeMap.put(
-				key, type);
+		extensionTypeMap.put(key, type);
 	}
 	
 	protected final void removeRequiredExtension(NetworkModelExtension extension) {

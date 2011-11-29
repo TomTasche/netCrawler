@@ -1,6 +1,6 @@
 package at.netcrawler.network.connection;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
 public abstract class IPDeviceConnection extends DeviceConnection {

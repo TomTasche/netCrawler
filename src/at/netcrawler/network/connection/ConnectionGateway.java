@@ -2,7 +2,7 @@ package at.netcrawler.network.connection;
 
 import java.io.IOException;
 
-import at.netcrawler.network.DeviceAccessor;
+import at.netcrawler.network.accessor.DeviceAccessor;
 
 
 public abstract class ConnectionGateway<DA extends DeviceAccessor, CS extends ConnectionSettings> {

@@ -1,4 +1,4 @@
-package at.netcrawler.network;
+package at.netcrawler.network.accessor;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;

@@ -1,7 +1,7 @@
 package at.netcrawler.test;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
 import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;

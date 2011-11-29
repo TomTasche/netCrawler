@@ -42,8 +42,7 @@ public enum Encryption {
 		Map<String, Encryption> nameMap = new HashMap<String, Encryption>();
 		
 		for (Encryption encryption : values()) {
-			nameMap.put(
-					encryption.name, encryption);
+			nameMap.put(encryption.name, encryption);
 		}
 		
 		NAME_MAP = Collections.unmodifiableMap(nameMap);
@@ -93,8 +92,7 @@ public enum Encryption {
 			NoSuchPaddingException, InvalidKeyException {
 		Key key = generateKey(password);
 		Cipher cipher = Cipher.getInstance(transformation);
-		cipher.init(
-				Cipher.DECRYPT_MODE, key);
+		cipher.init(Cipher.DECRYPT_MODE, key);
 		return new CipherInputStream(inputStream, cipher);
 	}
 	
@@ -103,8 +101,7 @@ public enum Encryption {
 			NoSuchPaddingException, InvalidKeyException {
 		Key key = generateKey(password);
 		Cipher cipher = Cipher.getInstance(transformation);
-		cipher.init(
-				Cipher.ENCRYPT_MODE, key);
+		cipher.init(Cipher.ENCRYPT_MODE, key);
 		return new CipherOutputStream(outputStream, cipher);
 	}
 	
@@ -120,8 +117,7 @@ public enum Encryption {
 			
 			if (hashLength != maxKeyLength) {
 				key = new byte[maxKeyLength];
-				int max = Math.max(
-						hashLength, maxKeyLength);
+				int max = Math.max(hashLength, maxKeyLength);
 				
 				for (int i = 0; i < max; i++) {
 					key[i % maxKeyLength] ^= passwordHash[i % hashLength];

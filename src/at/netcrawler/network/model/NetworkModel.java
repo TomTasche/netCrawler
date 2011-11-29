@@ -70,8 +70,7 @@ public abstract class NetworkModel {
 		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
 				"Unknown key!");
 		
-		valueMap.put(
-				key, value);
+		valueMap.put(key, value);
 	}
 	
 	public final void clear() {
@@ -113,8 +112,7 @@ public abstract class NetworkModel {
 	}
 	
 	public final boolean addExtension(NetworkModelExtension extension) {
-		if (!getClass().equals(
-				extension.getExtendedModelClass())) throw new IllegalArgumentException(
+		if (!getClass().equals(extension.getExtendedModelClass())) throw new IllegalArgumentException(
 				"Illegal model class extension!");
 		if (extensions.contains(extension)) return false;
 		if (extension.isExtensionSupported(this)) return false;
@@ -142,8 +140,7 @@ public abstract class NetworkModel {
 	
 	public final void fireValueChanged(String key, String value) {
 		for (NetworkModelListener listener : listeners) {
-			listener.valueChanged(
-					key, value);
+			listener.valueChanged(key, value);
 		}
 	}
 	

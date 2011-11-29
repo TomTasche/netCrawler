@@ -1,10 +1,11 @@
-package at.netcrawler.network.connection.ssh.deprecated;
+package at.netcrawler.network.connection.ssh.console.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 
 import com.mindbright.jca.security.interfaces.RSAPublicKey;
 import com.mindbright.ssh.SSH;
@@ -15,41 +16,21 @@ import com.mindbright.ssh.SSHInteractorAdapter;
 import com.mindbright.ssh.SSHRSAKeyFile;
 
 
-public class D_SSH1Client extends D_SSHClient {
-	
-	public static final int DEFAULT_TIMEOUT = 1000;
+public class LocalSSH1ConsoleConnectionImpl extends
+		LocalSSHConsoleConnectionImpl {
 	
 	private SSHConsoleClient client;
 	
-	public D_SSH1Client() {}
-	
-	public D_SSH1Client(String login, String password) throws IOException {
-		super(login, password);
-	}
-	
-	public D_SSH1Client(InetAddress address, String username, String password)
-			throws IOException {
-		super(address, username, password);
-	}
-	
-	public D_SSH1Client(String host, String username, String password)
-			throws IOException {
-		super(host, username, password);
-	}
-	
-	public D_SSH1Client(InetSocketAddress socketAddress, String username,
-			String password) throws IOException {
-		super(socketAddress, username, password);
-	}
-	
-	public D_SSH1Client(String host, int port, String username, String password)
-			throws IOException {
-		super(host, port, username, password);
-	}
-	
-	public D_SSH1Client(InetAddress address, int port, String username,
-			String password) throws IOException {
-		super(address, port, username, password);
+	public LocalSSH1ConsoleConnectionImpl(IPDeviceAccessor accessor,
+			SSHConsoleConnectionSettings settings) throws IOException {
+		super(accessor, settings);
+		
+		client = new SSHConsoleClient(accessor.getIpAddress().toString(),
+				settings.getPort(), new SimpleAuthenticator(settings
+						.getUsername(), settings.getPassword()),
+				new SSHInteractorAdapter());
+		
+		if (!client.shell()) throw new IOException("Was not able to connect!");
 	}
 	
 	@Override
@@ -63,17 +44,7 @@ public class D_SSH1Client extends D_SSHClient {
 	}
 	
 	@Override
-	public void connect(InetAddress address, int port, String username,
-			String password) throws IOException {
-		client = new SSHConsoleClient(address.getHostAddress(), port,
-				new SimpleAuthenticator(username, password),
-				new SSHInteractorAdapter());
-		
-		if (!client.shell()) throw new IOException("Was not able to connect!");
-	}
-	
-	@Override
-	public void close() {
+	protected void closeImpl() throws IOException {
 		client.close();
 	}
 	

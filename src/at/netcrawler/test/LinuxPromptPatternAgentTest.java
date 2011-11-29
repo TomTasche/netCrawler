@@ -6,10 +6,10 @@ import javax.swing.JPasswordField;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.cli.agent.LinuxPromptPatternAgent;
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.connection.ssh.console.LocalSSHConsoleConnection;
+import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 
 
 public class LinuxPromptPatternAgentTest {
@@ -43,18 +43,17 @@ public class LinuxPromptPatternAgentTest {
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		SSHConnectionSettings settings = new SSHConnectionSettings();
+		SSHConsoleConnectionSettings settings = new SSHConsoleConnectionSettings();
 		settings.setVersion(version);
 		settings.setPort(port);
 		settings.setUsername(username);
 		settings.setPassword(password);
 		
-		LocalSSHConnection connection = new LocalSSHConnection(accessor,
-				settings);
+		LocalSSHConsoleConnection connection = new LocalSSHConsoleConnection(
+				accessor, settings);
 		
 		LinuxPromptPatternAgent agent = new LinuxPromptPatternAgent(connection);
-		agent.execute(
-				"uname -l").readInput();
+		agent.execute("uname -l").readInput();
 		
 		connection.close();
 	}

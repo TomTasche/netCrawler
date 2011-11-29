@@ -2,7 +2,7 @@ package at.netcrawler.network.connection.telnet;
 
 import java.io.IOException;
 
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.IPConnectionGateway;
 
 

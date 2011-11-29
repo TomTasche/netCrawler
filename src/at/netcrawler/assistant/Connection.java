@@ -16,8 +16,7 @@ public enum Connection {
 		Map<String, Connection> nameMap = new HashMap<String, Connection>();
 		
 		for (Connection connection : values()) {
-			nameMap.put(
-					connection.name, connection);
+			nameMap.put(connection.name, connection);
 		}
 		
 		NAME_MAP = Collections.unmodifiableMap(nameMap);

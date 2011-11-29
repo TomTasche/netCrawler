@@ -26,26 +26,22 @@ public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 	
 	@Override
 	public String getIdentication() throws IOException {
-		return connection.get(
-				"1.3.6.1.2.1.1.2.0").getValue();
+		return connection.get("1.3.6.1.2.1.1.2.0").getValue();
 	}
 	
 	@Override
 	public String getHostname() throws IOException {
-		return connection.get(
-				"1.3.6.1.2.1.1.5.0").getValue();
+		return connection.get("1.3.6.1.2.1.1.5.0").getValue();
 	}
 	
 	@Override
 	public String getSystem() throws IOException {
-		return connection.get(
-				"1.3.6.1.2.1.1.1.0").getValue();
+		return connection.get("1.3.6.1.2.1.1.1.0").getValue();
 	}
 	
 	@Override
 	public Set<Capability> getCapabilities() throws IOException {
-		String services = connection.get(
-				"1.3.6.1.2.1.1.7.0").getValue();
+		String services = connection.get("1.3.6.1.2.1.1.7.0").getValue();
 		int servicesInt = Integer.parseInt(services);
 		
 		Set<Capability> result = new HashSet<Capability>();
@@ -73,18 +69,17 @@ public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 			SNMPObject[] row = table.get(i);
 			NetworkInterface newInterface = new NetworkInterface();
 			
-			newInterface.setValue(
-					NetworkInterface.NAME, row[0].getValue());
-			newInterface.setValue(
-					NetworkInterface.FULL_NAME, row[1].getValue());
+			newInterface.setValue(NetworkInterface.NAME, row[0].getValue());
+			newInterface
+					.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
 			String addressString = row[2].getValue();
 			if (!addressString.isEmpty()) {
 				try {
 					MACAddress address = MACAddress.getByAddress(addressString);
 					
 					newInterface.addExtension(EthernetInterfaceExtension.class);
-					newInterface.setValue(
-							EthernetInterfaceExtension.ADDRESS, address);
+					newInterface.setValue(EthernetInterfaceExtension.ADDRESS,
+							address);
 				} catch (Exception e) {
 					
 				}
@@ -104,8 +99,8 @@ public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
 	
 	@Override
 	public boolean setHostname(String hostname) throws IOException {
-		return connection.setAndVerify(
-				"1.3.6.1.2.1.1.5.0", Type.STRING, hostname);
+		return connection.setAndVerify("1.3.6.1.2.1.1.5.0", Type.STRING,
+				hostname);
 	}
 	
 }
