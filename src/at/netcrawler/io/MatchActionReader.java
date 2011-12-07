@@ -18,6 +18,7 @@ public abstract class MatchActionReader extends StringBufferedReader {
 		this.pattern = pattern;
 	}
 	
+	// TODO: optimize line wise
 	@Override
 	public final int read() throws IOException {
 		int read = super.read();

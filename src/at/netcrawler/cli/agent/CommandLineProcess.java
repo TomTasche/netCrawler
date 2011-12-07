@@ -36,7 +36,7 @@ public abstract class CommandLineProcess {
 		executeImpl();
 	}
 	
-	protected abstract void executeImpl();
+	protected void executeImpl() {}
 	
 	private PushbackReader initReader(Reader reader) {
 		inCloser = new CloseableReader(reader);
@@ -63,9 +63,7 @@ public abstract class CommandLineProcess {
 		return command;
 	}
 	
-	public final void close() throws IOException {
-		closeImpl();
-		
+	protected final void closeStreams() {
 		inCloser.close();
 		outCloser.close();
 		
@@ -75,7 +73,12 @@ public abstract class CommandLineProcess {
 		}
 	}
 	
-	protected abstract void closeImpl();
+	public final void close() throws IOException {
+		closeImpl();
+		closeStreams();
+	}
+	
+	protected void closeImpl() {}
 	
 	public void waitFor() throws InterruptedException {
 		synchronized (monitor) {

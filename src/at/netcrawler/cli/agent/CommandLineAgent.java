@@ -15,13 +15,15 @@ import java.util.regex.Pattern;
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.ReaderUtil;
+import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
+import at.netcrawler.io.MatchActionReader;
 
 
 public abstract class CommandLineAgent {
 	
 	public static final Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
-	public static final String DEFAULT_NEW_LINE = "\r\n";
+	public static final String DEFAULT_NEW_LINE = "\n";
 	
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String COMMENT_SUFFIX_SEPARATOR = " - ";
@@ -30,6 +32,7 @@ public abstract class CommandLineAgent {
 	protected final PushbackReader in;
 	protected final Writer out;
 	
+	private final Pattern promtPattern;
 	private final String commentPrefix;
 	private final String newLine;
 	
@@ -37,17 +40,19 @@ public abstract class CommandLineAgent {
 	
 	private CommandLineProcess lastProcess;
 	
-	public CommandLineAgent(CommandLine commandLine, String commentPrefix) {
-		this(commandLine, DEFAULT_CHARSET, commentPrefix);
-	}
-	
-	public CommandLineAgent(CommandLine commandLine, Charset charset,
+	public CommandLineAgent(CommandLine commandLine, Pattern promtPattern,
 			String commentPrefix) {
-		this(commandLine, charset, commentPrefix, DEFAULT_NEW_LINE);
+		this(commandLine, DEFAULT_CHARSET, promtPattern, commentPrefix);
 	}
 	
 	public CommandLineAgent(CommandLine commandLine, Charset charset,
-			String commentPrefix, String newLine) {
+			Pattern promtPattern, String commentPrefix) {
+		this(commandLine, charset, promtPattern, commentPrefix,
+				DEFAULT_NEW_LINE);
+	}
+	
+	public CommandLineAgent(CommandLine commandLine, Charset charset,
+			Pattern promtPattern, String commentPrefix, String newLine) {
 		this.commandLine = commandLine;
 		
 		try {
@@ -58,6 +63,7 @@ public abstract class CommandLineAgent {
 			this.in = in;
 			this.out = out;
 			
+			this.promtPattern = promtPattern;
 			this.commentPrefix = commentPrefix;
 			this.newLine = newLine;
 			
@@ -117,8 +123,7 @@ public abstract class CommandLineAgent {
 		out.write(comment + newLine);
 		out.flush();
 		
-		match(Pattern.compile(comment, Pattern.LITERAL));
-		flushLine();
+		match(PatternUtil.endsWithPattern(comment));
 		flushLine();
 	}
 	
@@ -162,4 +167,23 @@ public abstract class CommandLineAgent {
 		lastProcess = process;
 	}
 	
+	public String execute(String command) throws IOException {
+		CommandLineProcess process = createSimpleProcess(command);
+		execute(process);
+		
+		return ReaderUtil.read(process.in);
+	}
+	
+	protected CommandLineProcess createSimpleProcess(String command) {
+		return new CommandLineProcess(command) {
+			@Override
+			protected Reader hookReader(Reader reader) {
+				return new MatchActionReader(reader, promtPattern) {
+					protected void match(Matcher matcher) {
+						closeStreams();
+					}
+				};
+			}
+		};
+	}
 }

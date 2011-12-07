@@ -1,11 +1,17 @@
 package at.netcrawler.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.deprecated.LinuxPromptPatternAgent;
+import at.netcrawler.cli.agent.LinuxCommandLineAgent;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -49,11 +55,25 @@ public class LinuxPromptPatternAgentTest {
 		settings.setUsername(username);
 		settings.setPassword(password);
 		
-		LocalSSHConnection connection = new LocalSSHConnection();
+		final LocalSSHConnection connection = new LocalSSHConnection();
 		connection.connect(accessor, settings);
 		
-		LinuxPromptPatternAgent agent = new LinuxPromptPatternAgent(connection);
-		agent.execute("uname -l").readInput();
+		LinuxCommandLineAgent agent = new LinuxCommandLineAgent(
+				new CommandLine() {
+					public OutputStream getOutputStream() throws IOException {
+						return connection.getOutputStream();
+					}
+					
+					public InputStream getInputStream() throws IOException {
+						return new TeeInputStream(connection.getInputStream(),
+								System.out);
+					}
+					
+					public void close() throws IOException {
+						connection.close();
+					}
+				});
+		agent.execute("uname -a");
 		
 		connection.close();
 	}

@@ -57,7 +57,7 @@ public class LocalSSHConnectionTest {
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = connection.getOutputStream();
 		
-		outputStream.write("uname -a\n".getBytes());
+		outputStream.write("uname -a\r\n".getBytes());
 		outputStream.flush();
 		
 		while (true) {
