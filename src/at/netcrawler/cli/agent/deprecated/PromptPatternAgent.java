@@ -1,4 +1,4 @@
-package at.netcrawler.cli.agent;
+package at.netcrawler.cli.agent.deprecated;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +8,9 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.util.PatternUtil;
-import at.andiwand.library.util.StreamUtil;
 import at.netcrawler.io.deprecated.IgnoreFirstLineInputStream;
 import at.netcrawler.io.deprecated.ReadAfterMatchInputStream;
 import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;

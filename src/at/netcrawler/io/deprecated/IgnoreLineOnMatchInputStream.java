@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.StreamUtil;
 
 
 public class IgnoreLineOnMatchInputStream extends FilterInputStream {

@@ -1,6 +1,9 @@
 package at.netcrawler.network.connection.ssh;
 
-public interface SSHClient {
+import at.andiwand.library.cli.CommandLine;
+
+
+public interface SSHClient extends CommandLine {
 	
 	public SSHVersion getVersion();
 	

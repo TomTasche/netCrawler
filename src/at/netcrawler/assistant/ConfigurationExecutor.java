@@ -28,15 +28,16 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
-import at.andiwand.library.util.JFrameUtil;
+import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.StreamUtil;
 import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
 import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ssh.LocalSSHConnection;
+import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.ssh.console.LocalSSHConsoleConnection;
-import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
+import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -219,16 +220,19 @@ public class ConfigurationExecutor extends JFrame {
 				.getAddress());
 		
 		Connection connection = configuration.getConnection();
+		
 		switch (connection) {
 		case TELNET:
-			TelnetConnectionSettings telnetSettings = new TelnetConnectionSettings();
+			TelnetSettings telnetSettings = new TelnetSettings();
 			telnetSettings.setPort(configuration.getPort());
 			
-			commandLine = new LocalTelnetConnection(accessor, telnetSettings);
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection();
+			telnetConnection.connect(accessor, telnetSettings);
+			commandLine = telnetConnection;
 			break;
 		case SSH1:
 		case SSH2:
-			SSHConsoleConnectionSettings sshSettings = new SSHConsoleConnectionSettings();
+			SSHSettings sshSettings = new SSHSettings();
 			sshSettings
 					.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
 							: SSHVersion.VERSION2);
@@ -236,7 +240,9 @@ public class ConfigurationExecutor extends JFrame {
 			sshSettings.setUsername(configuration.getUsername());
 			sshSettings.setPassword(configuration.getPassword());
 			
-			commandLine = new LocalSSHConsoleConnection(accessor, sshSettings);
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection();
+			sshConsoleConnection.connect(accessor, sshSettings);
+			commandLine = sshConsoleConnection;
 			break;
 		
 		default:
@@ -255,9 +261,11 @@ public class ConfigurationExecutor extends JFrame {
 				outputStream.write("\n".getBytes());
 				outputStream.write(password.getBytes());
 				outputStream.write("\n".getBytes());
+				outputStream.flush();
 			} else if (!password.isEmpty()) {
 				outputStream.write(password.getBytes());
 				outputStream.write("\n".getBytes());
+				outputStream.flush();
 			}
 		}
 		
@@ -270,6 +278,8 @@ public class ConfigurationExecutor extends JFrame {
 		
 		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
 		inputStream = new IgnoreLastLineInputStream(inputStream);
+		
+		StreamUtil.readStream(inputStream);
 		
 		commandLine.close();
 	}

@@ -3,11 +3,12 @@ package at.netcrawler.network.connection;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
-public abstract class IPDeviceConnection extends DeviceConnection {
+public abstract class IPDeviceConnection<S extends ConnectionSettings> extends
+		GenericDeviceConnection<IPDeviceAccessor, S> {
 	
-	public IPDeviceConnection(IPDeviceAccessor accessor,
-			ConnectionSettings settings) {
-		super(accessor, settings);
+	@Override
+	public Class<IPDeviceAccessor> getAccessorClass() {
+		return IPDeviceAccessor.class;
 	}
 	
 }

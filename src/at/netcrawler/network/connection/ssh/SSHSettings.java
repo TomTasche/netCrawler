@@ -3,7 +3,7 @@ package at.netcrawler.network.connection.ssh;
 import at.netcrawler.network.connection.TCPIPConnectionSettings;
 
 
-public class SSHConnectionSettings extends TCPIPConnectionSettings {
+public class SSHSettings extends TCPIPConnectionSettings {
 	
 	public static final int DEFAULT_PORT = 22;
 	
@@ -11,11 +11,11 @@ public class SSHConnectionSettings extends TCPIPConnectionSettings {
 	private String username;
 	private String password;
 	
-	public SSHConnectionSettings() {
+	public SSHSettings() {
 		setPort(DEFAULT_PORT);
 	}
 	
-	public SSHConnectionSettings(SSHConnectionSettings settings) {
+	public SSHSettings(SSHSettings settings) {
 		super(settings);
 	}
 	

@@ -7,6 +7,8 @@ public abstract class TCPIPConnectionSettings extends ConnectionSettings {
 	public TCPIPConnectionSettings() {}
 	
 	public TCPIPConnectionSettings(TCPIPConnectionSettings settings) {
+		super(settings);
+		
 		setPort(settings.port);
 	}
 	

@@ -7,9 +7,8 @@ import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
-import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
-import at.netcrawler.network.connection.snmp.SNMPManager;
 import at.netcrawler.network.connection.snmp.SNMPObject;
+import at.netcrawler.network.connection.snmp.SNMPSettings;
 import at.netcrawler.network.connection.snmp.SNMPVersion;
 
 
@@ -25,12 +24,13 @@ public class LocalSNMPConnectionTest {
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		SNMPConnectionSettings settings = new SNMPConnectionSettings();
+		SNMPSettings settings = new SNMPSettings();
 		settings.setVersion(version);
 		settings.setPort(port);
 		settings.setCommunity(community);
 		
-		SNMPManager snmp = new LocalSNMPConnection(accessor, settings);
+		LocalSNMPConnection snmp = new LocalSNMPConnection();
+		snmp.connect(accessor, settings);
 		System.out.println(snmp.get("1.3.6.1.2.1.1.4.0", "1.3.6.1.2.1.1.5.0",
 				"1.3.6.1.6.3.10.2.1.1.0"));
 		System.out.println(snmp.getBulk("1.3.6.1.2.1.1"));

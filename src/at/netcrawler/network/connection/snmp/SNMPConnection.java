@@ -9,29 +9,27 @@ import at.netcrawler.network.connection.IPDeviceConnection;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
 
 
-public abstract class SNMPConnection extends IPDeviceConnection implements
-		SNMPManager {
+public abstract class SNMPConnection extends IPDeviceConnection<SNMPSettings>
+		implements SNMPManager {
 	
 	public static final int DEFAULT_MAX_REPETITIONS = 10;
 	
-	protected final SNMPConnectionSettings settings;
-	protected final SNMPVersion version;
-	
-	public SNMPConnection(IPDeviceAccessor accessor,
-			SNMPConnectionSettings settings) {
-		super(accessor, settings);
-		
-		this.settings = new SNMPConnectionSettings(settings);
-		version = settings.getVersion();
-	}
-	
-	public SNMPConnectionSettings getSettings() {
-		return settings;
-	}
+	protected SNMPVersion version;
 	
 	@Override
 	public SNMPVersion getVersion() {
 		return version;
+	}
+	
+	@Override
+	public Class<SNMPSettings> getSettingsClass() {
+		return SNMPSettings.class;
+	}
+	
+	@Override
+	protected void connectGenericImpl(IPDeviceAccessor accessor,
+			SNMPSettings settings) throws IOException {
+		version = settings.getVersion();
 	}
 	
 	@Override

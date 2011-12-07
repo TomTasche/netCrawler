@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.StreamUtil;
 
 
 public class IgnoreLastLineInputStream extends FilterInputStream {

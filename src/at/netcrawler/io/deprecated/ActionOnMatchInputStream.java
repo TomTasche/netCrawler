@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.StreamUtil;
 
 
 public class ActionOnMatchInputStream extends FilterInputStream {

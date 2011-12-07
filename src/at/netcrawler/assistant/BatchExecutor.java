@@ -25,18 +25,18 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.andiwand.library.util.JFrameUtil;
 import at.andiwand.library.util.PatternUtil;
-import at.andiwand.library.util.StreamUtil;
 import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
 import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ssh.LocalSSHConnection;
+import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.ssh.console.LocalSSHConsoleConnection;
-import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
+import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 
 public class BatchExecutor extends JFrame {
@@ -208,27 +208,25 @@ public class BatchExecutor extends JFrame {
 		IPv4Address ipAddress = IPv4Address.getByAddress(ip);
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		if (connection.equals(SSH_2)) {
-			SSHConsoleConnectionSettings settings = new SSHConsoleConnectionSettings();
+		if (connection.equals(SSH_1) || connection.equals(SSH_2)) {
+			SSHSettings settings = new SSHSettings();
 			settings.setVersion(SSHVersion.VERSION2);
+			settings.setVersion(connection.equals(SSH_1) ? SSHVersion.VERSION1
+					: SSHVersion.VERSION2);
 			settings.setPort(port);
 			settings.setUsername(username);
 			settings.setPassword(password);
 			
-			commandLine = new LocalSSHConsoleConnection(accessor, settings);
-		} else if (connection.equals(SSH_1)) {
-			SSHConsoleConnectionSettings settings = new SSHConsoleConnectionSettings();
-			settings.setVersion(SSHVersion.VERSION1);
-			settings.setPort(port);
-			settings.setUsername(username);
-			settings.setPassword(password);
-			
-			commandLine = new LocalSSHConsoleConnection(accessor, settings);
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection();
+			sshConsoleConnection.connect(accessor, settings);
+			commandLine = sshConsoleConnection;
 		} else if (connection.equals(TELNET)) {
-			TelnetConnectionSettings settings = new TelnetConnectionSettings();
+			TelnetSettings settings = new TelnetSettings();
 			settings.setPort(port);
 			
-			commandLine = new LocalTelnetConnection(accessor, settings);
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection();
+			telnetConnection.connect(accessor, settings);
+			commandLine = telnetConnection;
 			
 			OutputStream outputStream = commandLine.getOutputStream();
 			

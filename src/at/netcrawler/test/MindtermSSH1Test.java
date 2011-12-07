@@ -6,7 +6,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.StreamUtil;
 
 import com.mindbright.jca.security.interfaces.RSAPublicKey;
 import com.mindbright.ssh.SSH;

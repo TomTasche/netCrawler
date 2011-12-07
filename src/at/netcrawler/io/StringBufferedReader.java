@@ -4,8 +4,6 @@ import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import at.andiwand.library.util.ReaderUtil;
-
 
 public class StringBufferedReader extends FilterReader {
 	
@@ -17,8 +15,8 @@ public class StringBufferedReader extends FilterReader {
 		buffer = new StringBuilder();
 	}
 	
-	public StringBuilder getBuffer() {
-		return buffer;
+	public final String getBuffer() {
+		return buffer.toString();
 	}
 	
 	@Override
@@ -31,10 +29,13 @@ public class StringBufferedReader extends FilterReader {
 	
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException {
-		return ReaderUtil.read(this, cbuf, off, len);
+		int read = in.read(cbuf, off, len);
+		if (read == -1) return -1;
+		buffer.append(cbuf, off, len);
+		return read;
 	}
 	
-	public void clearBuffer() {
+	public final void clearBuffer() {
 		buffer = new StringBuilder();
 	}
 	

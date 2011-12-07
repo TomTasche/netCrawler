@@ -1,11 +1,11 @@
-package at.netcrawler.network.connection.ssh.console.impl;
+package at.netcrawler.network.connection.ssh.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.console.SSHConsoleConnectionSettings;
+import at.netcrawler.network.connection.ssh.SSHSettings;
 
 import com.mindbright.jca.security.interfaces.RSAPublicKey;
 import com.mindbright.ssh.SSH;
@@ -16,37 +16,7 @@ import com.mindbright.ssh.SSHInteractorAdapter;
 import com.mindbright.ssh.SSHRSAKeyFile;
 
 
-public class LocalSSH1ConsoleConnectionImpl extends
-		LocalSSHConsoleConnectionImpl {
-	
-	private SSHConsoleClient client;
-	
-	public LocalSSH1ConsoleConnectionImpl(IPDeviceAccessor accessor,
-			SSHConsoleConnectionSettings settings) throws IOException {
-		super(accessor, settings);
-		
-		client = new SSHConsoleClient(accessor.getIpAddress().toString(),
-				settings.getPort(), new SimpleAuthenticator(settings
-						.getUsername(), settings.getPassword()),
-				new SSHInteractorAdapter());
-		
-		if (!client.shell()) throw new IOException("Was not able to connect!");
-	}
-	
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return client.getStdOut();
-	}
-	
-	@Override
-	public OutputStream getOutputStream() throws IOException {
-		return client.getStdIn();
-	}
-	
-	@Override
-	protected void closeImpl() throws IOException {
-		client.close();
-	}
+public class LocalSSH1ConnectionImpl extends LocalSSHConnectionImpl {
 	
 	private class SimpleAuthenticator implements SSHAuthenticator {
 		private String username;
@@ -92,6 +62,32 @@ public class LocalSSH1ConsoleConnectionImpl extends
 				throws IOException {
 			return true;
 		}
+	}
+	
+	private SSHConsoleClient client;
+	
+	@Override
+	protected void connectGenericImpl(IPDeviceAccessor accessor,
+			SSHSettings settings) throws IOException {
+		client = new SSHConsoleClient(accessor.getIpAddress().toString(),
+				settings.getPort(), new SimpleAuthenticator(settings
+						.getUsername(), settings.getPassword()),
+				new SSHInteractorAdapter());
+	}
+	
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return client.getStdOut();
+	}
+	
+	@Override
+	public OutputStream getOutputStream() throws IOException {
+		return client.getStdIn();
+	}
+	
+	@Override
+	protected void closeImpl() throws IOException {
+		client.close();
 	}
 	
 }

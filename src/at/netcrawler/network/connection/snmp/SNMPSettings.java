@@ -3,7 +3,7 @@ package at.netcrawler.network.connection.snmp;
 import at.netcrawler.network.connection.TCPIPConnectionSettings;
 
 
-public class SNMPConnectionSettings extends TCPIPConnectionSettings {
+public class SNMPSettings extends TCPIPConnectionSettings {
 	
 	public static final int DEFAULT_PORT = 161;
 	public static final int DEFAULT_RETRIES = 1;
@@ -17,13 +17,13 @@ public class SNMPConnectionSettings extends TCPIPConnectionSettings {
 	private String cryptoKey;
 	private int retries;
 	
-	public SNMPConnectionSettings() {
+	public SNMPSettings() {
 		setPort(DEFAULT_PORT);
 		setRetries(DEFAULT_RETRIES);
 		setTimeout(DEFAULT_TIMEOUT);
 	}
 	
-	public SNMPConnectionSettings(SNMPConnectionSettings settings) {
+	public SNMPSettings(SNMPSettings settings) {
 		super(settings);
 		
 		setVersion(settings.version);

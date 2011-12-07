@@ -13,17 +13,6 @@ public class LocalTelnetConnection extends TelnetConnection {
 	
 	private Socket socket;
 	
-	public LocalTelnetConnection(IPDeviceAccessor accessor,
-			TelnetConnectionSettings settings) throws IOException {
-		super(accessor, settings);
-		
-		InetSocketAddress endpoint = new InetSocketAddress(accessor
-				.getInetAddress(), settings.getPort());
-		
-		socket = new Socket();
-		socket.connect(endpoint, settings.getTimeout());
-	}
-	
 	@Override
 	public InputStream getInputStream() throws IOException {
 		return socket.getInputStream();
@@ -32,6 +21,16 @@ public class LocalTelnetConnection extends TelnetConnection {
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return socket.getOutputStream();
+	}
+	
+	@Override
+	protected void connectGenericImpl(IPDeviceAccessor accessor,
+			TelnetSettings settings) throws IOException {
+		InetSocketAddress endpoint = new InetSocketAddress(accessor
+				.getInetAddress(), settings.getPort());
+		
+		socket = new Socket();
+		socket.connect(endpoint, settings.getTimeout());
 	}
 	
 	@Override

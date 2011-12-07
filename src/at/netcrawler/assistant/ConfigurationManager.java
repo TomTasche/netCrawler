@@ -30,8 +30,8 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.CloseableTabbedPane;
+import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.andiwand.library.util.JFrameUtil;
 
 
 public class ConfigurationManager extends JFrame {
@@ -50,6 +50,7 @@ public class ConfigurationManager extends JFrame {
 	
 	private JFileChooser batchFileChooser = new JFileChooser();
 	private JFileChooser fileChooser = new JFileChooser();
+	private File activeFile;
 	
 	private EncryptionBag encryptionBag;
 	
@@ -342,15 +343,16 @@ public class ConfigurationManager extends JFrame {
 			return;
 		}
 		
-		if (fileChooser.getSelectedFile() == null) {
+		if (activeFile == null) {
 			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) return;
 			
-			File file = fileChooser.getSelectedFile();
+			// TODO: fix bug! null pointer
+			activeFile = fileChooser.getSelectedFile();
 			
-			if (!file.getName().endsWith(Configuration.FILE_SUFFIX)) {
-				File newFile = new File(file.getPath(), file.getName()
+			if (!activeFile.getName().endsWith(Configuration.FILE_SUFFIX)) {
+				activeFile = new File(activeFile.getPath(), activeFile
+						.getName()
 						+ Configuration.FILE_SUFFIX);
-				fileChooser.setSelectedFile(newFile);
 			}
 		}
 		
@@ -362,8 +364,8 @@ public class ConfigurationManager extends JFrame {
 			}
 			
 			Configuration configuration = getConfiguration();
-			configuration.writeToJsonFile(fileChooser.getSelectedFile(),
-					encryptionBag.getEncryption(), encryptionBag.getPassword());
+			configuration.writeToJsonFile(activeFile, encryptionBag
+					.getEncryption(), encryptionBag.getPassword());
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);
@@ -371,15 +373,14 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void doSaveAs() {
-		File tmp = fileChooser.getSelectedFile();
-		fileChooser.setSelectedFile(null);
+		File tmp = activeFile;
+		activeFile = null;
 		
 		encryptionBag = null;
 		
 		doSave();
 		
-		if (fileChooser.getSelectedFile() == null) fileChooser
-				.setSelectedFile(tmp);
+		if (activeFile == null) activeFile = tmp;
 	}
 	
 	private Configuration getConfiguration() {

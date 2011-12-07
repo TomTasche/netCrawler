@@ -145,9 +145,10 @@ public class LocalSNMPConnection extends SNMPConnection {
 	private Snmp snmp;
 	private Target target;
 	
-	public LocalSNMPConnection(IPDeviceAccessor accessor,
-			SNMPConnectionSettings settings) throws IOException {
-		super(accessor, settings);
+	@Override
+	protected void connectGenericImpl(IPDeviceAccessor accessor,
+			SNMPSettings settings) throws IOException {
+		super.connectImpl(accessor, settings);
 		
 		DefaultUdpTransportMapping transportMapping = new DefaultUdpTransportMapping();
 		snmp = new Snmp(transportMapping);
@@ -192,6 +193,11 @@ public class LocalSNMPConnection extends SNMPConnection {
 		target.setVersion(VERSION_TRANSLATION_MAP.get(version));
 		target.setRetries(settings.getRetries());
 		target.setTimeout(settings.getTimeout());
+	}
+	
+	@Override
+	protected void closeImpl() throws IOException {
+		snmp.close();
 	}
 	
 	@Override
@@ -322,11 +328,6 @@ public class LocalSNMPConnection extends SNMPConnection {
 		PDU response = buildAndSendSet(objects);
 		
 		return convert(response);
-	}
-	
-	@Override
-	protected void closeImpl() throws IOException {
-		snmp.close();
 	}
 	
 }

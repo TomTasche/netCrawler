@@ -1,56 +1,88 @@
 package at.netcrawler.cli.agent;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.io.PushbackReader;
+import java.io.Reader;
+import java.io.Writer;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.CloseableReader;
+import at.andiwand.library.io.CloseableWriter;
 
 
-public class CommandLineProcess {
+public abstract class CommandLineProcess {
 	
-	public static final String DEFAULT_CHARSET = "US-ASCII";
+	private final String command;
 	
-	private final InputStream inputStream;
-	private final OutputStream outputStream;
-	private final Charset charset;
-	protected int status;
+	private CloseableReader inCloser;
+	private CloseableWriter outCloser;
+	protected PushbackReader in;
+	protected Writer out;
 	
-	public CommandLineProcess(InputStream inputStream, OutputStream outputStream) {
-		this(inputStream, outputStream, DEFAULT_CHARSET);
+	private final Object monitor = new Object();
+	private boolean closed;
+	
+	public CommandLineProcess(String command) {
+		this.command = command;
 	}
 	
-	public CommandLineProcess(InputStream inputStream,
-			OutputStream outputStream, Charset charset) {
-		this.inputStream = inputStream;
-		this.outputStream = outputStream;
-		this.charset = charset;
+	public String getCommand() {
+		return command;
 	}
 	
-	public CommandLineProcess(InputStream inputStream,
-			OutputStream outputStream, String charset) {
-		this(inputStream, outputStream, Charset.forName(charset));
+	public final void execute(Reader in, Writer out) {
+		this.in = initReader(in);
+		this.out = initWriter(out);
+		
+		executeImpl();
 	}
 	
-	public InputStream getInputStream() {
-		return inputStream;
+	protected abstract void executeImpl();
+	
+	private PushbackReader initReader(Reader reader) {
+		inCloser = new CloseableReader(reader);
+		reader = hookReader(reader);
+		return new PushbackReader(reader);
 	}
 	
-	public OutputStream getOutputStream() {
-		return outputStream;
+	private Writer initWriter(Writer writer) {
+		outCloser = new CloseableWriter(writer);
+		writer = hookWriter(writer);
+		return writer;
 	}
 	
-	public Charset getCharset() {
-		return charset;
+	protected Reader hookReader(Reader reader) {
+		return reader;
 	}
 	
-	public int getStatus() {
-		return status;
+	protected Writer hookWriter(Writer writer) {
+		return writer;
 	}
 	
-	public String readInput() throws IOException {
-		return StreamUtil.readStream(inputStream, charset);
+	@Override
+	public String toString() {
+		return command;
+	}
+	
+	public final void close() throws IOException {
+		closeImpl();
+		
+		inCloser.close();
+		outCloser.close();
+		
+		synchronized (monitor) {
+			closed = true;
+			monitor.notifyAll();
+		}
+	}
+	
+	protected abstract void closeImpl();
+	
+	public void waitFor() throws InterruptedException {
+		synchronized (monitor) {
+			if (closed) return;
+			
+			monitor.wait();
+		}
 	}
 	
 }

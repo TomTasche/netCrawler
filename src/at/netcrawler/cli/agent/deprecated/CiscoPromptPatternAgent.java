@@ -1,4 +1,4 @@
-package at.netcrawler.cli.agent;
+package at.netcrawler.cli.agent.deprecated;
 
 import java.io.IOException;
 import java.io.InputStream;

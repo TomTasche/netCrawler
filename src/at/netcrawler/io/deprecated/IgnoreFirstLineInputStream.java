@@ -4,7 +4,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import at.andiwand.library.util.StreamUtil;
+import at.andiwand.library.io.StreamUtil;
 
 
 public class IgnoreFirstLineInputStream extends FilterInputStream {
