@@ -27,6 +27,7 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.AfterMatchLineReader;
 import at.andiwand.library.io.CachedLineReader;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.IgnoreLastLineReader;
@@ -34,6 +35,7 @@ import at.andiwand.library.io.LineReader;
 import at.andiwand.library.io.MatchTerminatedLineReader;
 import at.andiwand.library.io.ReaderUtil;
 import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
@@ -60,11 +62,11 @@ public class BatchExecutor extends JFrame {
 	JLabel passwordLabel = new JLabel("Password:");
 	JLabel batchLabel = new JLabel("Batch:");
 	
-	JTextField ipField = new JTextField("192.168.0.254");
+	JTextField ipField = new JTextField("127.0.0.1");
 	JComboBox connectionBox = new JComboBox(new String[] {SSH_2, SSH_1, TELNET});
 	JTextField portField = new JTextField("22");
-	JTextField usernameField = new JTextField("cisco");
-	JPasswordField passwordField = new JPasswordField("cisco");
+	JTextField usernameField = new JTextField("andreas");
+	JPasswordField passwordField = new JPasswordField("");
 	JTextArea responseArea = new JTextArea();
 	JTextArea batchArea = new JTextArea();
 	
@@ -250,15 +252,21 @@ public class BatchExecutor extends JFrame {
 		InputStream inputStream = commandLine.getInputStream();
 		OutputStream outputStream = commandLine.getOutputStream();
 		
-		String end = "!asdf1234asdf";
+		String start = "!-start-";
+		Pattern startPattern = Pattern.compile(".+" + Pattern.quote(start));
+		
+		String end = "!-end-";
 		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
 		
-		outputStream.write((batch + "\n" + end + "\n").getBytes());
+		outputStream.write((start + "\n" + batch + "\n" + end + "\n")
+				.getBytes());
 		outputStream.flush();
 		
+		inputStream = new TeeInputStream(inputStream, System.out);
 		Reader reader = new FluidInputStreamReader(inputStream);
 		LineReader lineReader = new MatchTerminatedLineReader(reader,
 				endPattern);
+		lineReader = new AfterMatchLineReader(lineReader, startPattern);
 		lineReader = new IgnoreLastLineReader(lineReader);
 		reader = new CachedLineReader(lineReader);
 		

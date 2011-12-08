@@ -31,7 +31,6 @@ public abstract class CommandLineAgent {
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String COMMENT_SUFFIX_SEPARATOR = " - ";
 	
-	protected final CommandLine commandLine;
 	protected final PushbackReader in;
 	protected final Writer out;
 	
@@ -56,15 +55,30 @@ public abstract class CommandLineAgent {
 	
 	public CommandLineAgent(CommandLine commandLine, Charset charset,
 			Pattern promtPattern, String commentPrefix, String newLine) {
-		this.commandLine = commandLine;
-		
 		try {
-			PushbackReader in = initReader(commandLine.getInputStream(),
-					charset);
-			Writer out = initWriter(commandLine.getOutputStream(), charset);
+			in = initReader(commandLine.getInputStream(), charset);
+			out = initWriter(commandLine.getOutputStream(), charset);
 			
-			this.in = in;
-			this.out = out;
+			this.promtPattern = promtPattern;
+			this.commentPrefix = commentPrefix;
+			this.newLine = newLine;
+			
+			initCommandLine();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public CommandLineAgent(CommandLineSocket socket, Pattern promtPattern,
+			String commentPrefix) {
+		this(socket, promtPattern, commentPrefix, DEFAULT_NEW_LINE);
+	}
+	
+	public CommandLineAgent(CommandLineSocket socket, Pattern promtPattern,
+			String commentPrefix, String newLine) {
+		try {
+			in = initReader(socket.getReader());
+			out = initWriter(socket.getWriter());
 			
 			this.promtPattern = promtPattern;
 			this.commentPrefix = commentPrefix;

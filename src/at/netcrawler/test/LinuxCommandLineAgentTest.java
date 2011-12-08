@@ -12,7 +12,7 @@ import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 
 
-public class LinuxPromptPatternAgentTest {
+public class LinuxCommandLineAgentTest {
 	
 	public static String getPassword(String username) {
 		final JPasswordField passwordField = new JPasswordField();
@@ -55,6 +55,8 @@ public class LinuxPromptPatternAgentTest {
 		
 		LinuxCommandLineAgent agent = new LinuxCommandLineAgent(connection);
 		System.out.println(agent.execute("uname -a"));
+		System.out.println(agent.execute("pwd"));
+		System.out.println(agent.execute("date"));
 		
 		connection.close();
 	}

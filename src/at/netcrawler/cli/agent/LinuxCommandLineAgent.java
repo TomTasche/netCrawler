@@ -17,4 +17,8 @@ public class LinuxCommandLineAgent extends CommandLineAgent {
 		super(commandLine, CHARSET, PROMT_PATTERN, COMMENT_PREFIX);
 	}
 	
+	public LinuxCommandLineAgent(CommandLineSocket socket) {
+		super(socket, PROMT_PATTERN, COMMENT_PREFIX);
+	}
+	
 }

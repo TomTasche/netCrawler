@@ -30,12 +30,10 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.io.CachedLineReader;
 import at.andiwand.library.io.FluidInputStreamReader;
-import at.andiwand.library.io.IgnoreLastLineReader;
 import at.andiwand.library.io.LineReader;
+import at.andiwand.library.io.LineReaderUtil;
 import at.andiwand.library.io.MatchTerminatedLineReader;
-import at.andiwand.library.io.ReaderUtil;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -283,10 +281,8 @@ public class ConfigurationExecutor extends JFrame {
 		Reader reader = new FluidInputStreamReader(inputStream);
 		LineReader lineReader = new MatchTerminatedLineReader(reader,
 				endPattern);
-		lineReader = new IgnoreLastLineReader(lineReader);
-		reader = new CachedLineReader(lineReader);
 		
-		ReaderUtil.flush(reader);
+		LineReaderUtil.flush(lineReader);
 		
 		commandLine.close();
 	}
