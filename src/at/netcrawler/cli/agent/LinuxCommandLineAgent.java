@@ -10,7 +10,7 @@ public class LinuxCommandLineAgent extends CommandLineAgent {
 	
 	private static final String COMMENT_PREFIX = "#";
 	private static final Pattern PROMT_PATTERN = Pattern
-			.compile("(.*?)@(.*?):(.*?)\\$");
+			.compile("(.*?)@(.*?):(.*?)\\$", Pattern.MULTILINE);
 	private static final Charset CHARSET = Charset.forName("UTF-8");
 	
 	public LinuxCommandLineAgent(CommandLine commandLine) {

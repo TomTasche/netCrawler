@@ -13,11 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.io.CachedLineReader;
 import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.IgnoreLastLineReader;
+import at.andiwand.library.io.LineReader;
+import at.andiwand.library.io.MatchTerminatedLineReader;
 import at.andiwand.library.io.ReaderUtil;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
-import at.netcrawler.io.MatchActionReader;
 
 
 public abstract class CommandLineAgent {
@@ -38,7 +41,7 @@ public abstract class CommandLineAgent {
 	
 	private final Random random = new Random();
 	
-	private CommandLineProcess lastProcess;
+	private ProcessTerminator lastTerminator;
 	
 	public CommandLineAgent(CommandLine commandLine, Pattern promtPattern,
 			String commentPrefix) {
@@ -120,15 +123,21 @@ public abstract class CommandLineAgent {
 	protected void synchronizeStreams() throws IOException {
 		String comment = prepareComment(SYNCHRONIZE_COMMENT);
 		
-		out.write(comment + newLine);
+		out.write(newLine + comment + newLine);
 		out.flush();
 		
-		match(PatternUtil.endsWithPattern(comment));
+		find(promtPattern);
+		find(PatternUtil.endsWithPattern(comment));
 		flushLine();
+		find(promtPattern);
 	}
 	
 	protected final Matcher match(Pattern pattern) throws IOException {
 		return ReaderUtil.match(in, pattern);
+	}
+	
+	protected final Matcher find(Pattern pattern) throws IOException {
+		return ReaderUtil.find(in, pattern);
 	}
 	
 	protected final String readLine() throws IOException {
@@ -147,42 +156,39 @@ public abstract class CommandLineAgent {
 		return commentPrefix + string + COMMENT_SUFFIX_SEPARATOR + suffix;
 	}
 	
-	public void execute(CommandLineProcess process) throws IOException {
-		if (lastProcess != null) {
+	public final CommandLineSocket execute(String command,
+			ProcessTerminator terminator) throws IOException {
+		if (lastTerminator != null) {
 			try {
-				lastProcess.waitFor();
+				lastTerminator.waitFor();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
-		String command = process.getCommand();
-		
 		out.write(command + newLine);
 		out.flush();
 		
 		flushLine();
-		process.execute(in, out);
+		CommandLineSocket socket = new CommandLineSocket(in, out);
 		
-		lastProcess = process;
+		return terminator.hookSocket(socket);
 	}
 	
 	public String execute(String command) throws IOException {
-		CommandLineProcess process = createSimpleProcess(command);
-		execute(process);
+		ProcessTerminator terminator = buildSimpleProcessTerminator();
+		CommandLineSocket socket = execute(command, terminator);
 		
-		return ReaderUtil.read(process.in);
+		return ReaderUtil.read(socket.getReader());
 	}
 	
-	protected CommandLineProcess createSimpleProcess(String command) {
-		return new CommandLineProcess(command) {
-			@Override
+	protected ProcessTerminator buildSimpleProcessTerminator() {
+		return new ProcessTerminator() {
 			protected Reader hookReader(Reader reader) {
-				return new MatchActionReader(reader, promtPattern) {
-					protected void match(Matcher matcher) {
-						closeStreams();
-					}
-				};
+				LineReader lineReader = new MatchTerminatedLineReader(reader,
+						promtPattern);
+				lineReader = new IgnoreLastLineReader(lineReader);
+				return new CachedLineReader(lineReader);
 			}
 		};
 	}

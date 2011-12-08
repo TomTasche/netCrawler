@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -26,11 +27,14 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.CachedLineReader;
+import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.IgnoreLastLineReader;
+import at.andiwand.library.io.LineReader;
+import at.andiwand.library.io.MatchTerminatedLineReader;
+import at.andiwand.library.io.ReaderUtil;
 import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.andiwand.library.util.PatternUtil;
-import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
-import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -156,7 +160,7 @@ public class BatchExecutor extends JFrame {
 				try {
 					FileInputStream inputStream = new FileInputStream(batchFile);
 					
-					String batch = StreamUtil.readStream(inputStream);
+					String batch = StreamUtil.read(inputStream);
 					batchArea.setText(batch);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -247,16 +251,18 @@ public class BatchExecutor extends JFrame {
 		OutputStream outputStream = commandLine.getOutputStream();
 		
 		String end = "!asdf1234asdf";
-		Pattern endPattern = Pattern.compile(".+"
-				+ PatternUtil.escapeString(end));
+		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
 		
 		outputStream.write((batch + "\n" + end + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
-		inputStream = new IgnoreLastLineInputStream(inputStream);
+		Reader reader = new FluidInputStreamReader(inputStream);
+		LineReader lineReader = new MatchTerminatedLineReader(reader,
+				endPattern);
+		lineReader = new IgnoreLastLineReader(lineReader);
+		reader = new CachedLineReader(lineReader);
 		
-		String result = StreamUtil.readStream(inputStream);
+		String result = ReaderUtil.read(reader);
 		
 		commandLine.close();
 		

@@ -19,17 +19,18 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 	
 	private static final String DISCONNECT_MESSAGE = "close";
 	
-	private Socket socket;
-	private SSH2Transport transport;
+	private SSH2SimpleClient client;
 	private SSH2ConsoleRemote console;
 	
 	@Override
 	protected void connectGenericImpl(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {
 		try {
-			socket = new Socket(accessor.getInetAddress(), settings.getPort());
-			transport = new SSH2Transport(socket, new SecureRandomAndPad());
-			SSH2SimpleClient client = new SSH2SimpleClient(transport, settings
+			Socket socket = new Socket(accessor.getInetAddress(), settings
+					.getPort());
+			SSH2Transport transport = new SSH2Transport(socket,
+					new SecureRandomAndPad());
+			client = new SSH2SimpleClient(transport, settings
 					.getUsername(), settings.getPassword());
 			console = new SSH2ConsoleRemote(client.getConnection());
 			if (!console.shell(true)) throw new IOException(
@@ -51,9 +52,8 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 	
 	@Override
 	public void closeImpl() throws IOException {
-		console.close();
-		transport.normalDisconnect(DISCONNECT_MESSAGE);
-		socket.close();
+		console.close(true);
+		client.getTransport().normalDisconnect(DISCONNECT_MESSAGE);
 	}
 	
 }

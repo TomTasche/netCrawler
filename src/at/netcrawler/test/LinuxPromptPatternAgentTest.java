@@ -1,15 +1,9 @@
 package at.netcrawler.test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import at.andiwand.library.cli.CommandLine;
-import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.cli.agent.LinuxCommandLineAgent;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -35,6 +29,7 @@ public class LinuxPromptPatternAgentTest {
 		JDialog dialog = optionPane.createDialog("Password for user: "
 				+ username);
 		dialog.setVisible(true);
+		dialog.dispose();
 		
 		return new String(passwordField.getPassword());
 	}
@@ -58,22 +53,8 @@ public class LinuxPromptPatternAgentTest {
 		final LocalSSHConnection connection = new LocalSSHConnection();
 		connection.connect(accessor, settings);
 		
-		LinuxCommandLineAgent agent = new LinuxCommandLineAgent(
-				new CommandLine() {
-					public OutputStream getOutputStream() throws IOException {
-						return connection.getOutputStream();
-					}
-					
-					public InputStream getInputStream() throws IOException {
-						return new TeeInputStream(connection.getInputStream(),
-								System.out);
-					}
-					
-					public void close() throws IOException {
-						connection.close();
-					}
-				});
-		agent.execute("uname -a");
+		LinuxCommandLineAgent agent = new LinuxCommandLineAgent(connection);
+		System.out.println(agent.execute("uname -a"));
 		
 		connection.close();
 	}

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -29,9 +30,12 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.io.StreamUtil;
-import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
-import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
+import at.andiwand.library.io.CachedLineReader;
+import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.IgnoreLastLineReader;
+import at.andiwand.library.io.LineReader;
+import at.andiwand.library.io.MatchTerminatedLineReader;
+import at.andiwand.library.io.ReaderUtil;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -276,10 +280,13 @@ public class ConfigurationExecutor extends JFrame {
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
-		inputStream = new IgnoreLastLineInputStream(inputStream);
+		Reader reader = new FluidInputStreamReader(inputStream);
+		LineReader lineReader = new MatchTerminatedLineReader(reader,
+				endPattern);
+		lineReader = new IgnoreLastLineReader(lineReader);
+		reader = new CachedLineReader(lineReader);
 		
-		StreamUtil.readStream(inputStream);
+		ReaderUtil.flush(reader);
 		
 		commandLine.close();
 	}
