@@ -27,16 +27,13 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.io.AfterMatchLineReader;
-import at.andiwand.library.io.CachedLineReader;
 import at.andiwand.library.io.FluidInputStreamReader;
-import at.andiwand.library.io.IgnoreLastLineReader;
-import at.andiwand.library.io.LineReader;
-import at.andiwand.library.io.MatchTerminatedLineReader;
-import at.andiwand.library.io.ReaderUtil;
 import at.andiwand.library.io.StreamUtil;
-import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.netcrawler.io.AfterLineMatchReader;
+import at.netcrawler.io.FilterFirstLineReader;
+import at.netcrawler.io.FilterLastLineReader;
+import at.netcrawler.io.UntilLineMatchReader;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -262,15 +259,13 @@ public class BatchExecutor extends JFrame {
 				.getBytes());
 		outputStream.flush();
 		
-		inputStream = new TeeInputStream(inputStream, System.out);
 		Reader reader = new FluidInputStreamReader(inputStream);
-		LineReader lineReader = new MatchTerminatedLineReader(reader,
-				endPattern);
-		lineReader = new AfterMatchLineReader(lineReader, startPattern);
-		lineReader = new IgnoreLastLineReader(lineReader);
-		reader = new CachedLineReader(lineReader);
+		reader = new AfterLineMatchReader(reader, startPattern);
+		reader = new UntilLineMatchReader(reader, endPattern);
+		reader = new FilterFirstLineReader(reader);
+		reader = new FilterLastLineReader(reader);
 		
-		String result = ReaderUtil.read(reader);
+		String result = StreamUtil.read(reader);
 		
 		commandLine.close();
 		

@@ -1,0 +1,1 @@
+optimize cli filter streams

@@ -13,14 +13,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLine;
-import at.andiwand.library.io.CachedLineReader;
 import at.andiwand.library.io.FluidInputStreamReader;
-import at.andiwand.library.io.IgnoreLastLineReader;
-import at.andiwand.library.io.LineReader;
-import at.andiwand.library.io.MatchTerminatedLineReader;
-import at.andiwand.library.io.ReaderUtil;
+import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
+import at.netcrawler.io.FilterFirstLineReader;
+import at.netcrawler.io.UntilLineMatchReader;
 
 
 public abstract class CommandLineAgent {
@@ -147,19 +145,19 @@ public abstract class CommandLineAgent {
 	}
 	
 	protected final Matcher match(Pattern pattern) throws IOException {
-		return ReaderUtil.match(in, pattern);
+		return StreamUtil.match(in, pattern);
 	}
 	
 	protected final Matcher find(Pattern pattern) throws IOException {
-		return ReaderUtil.find(in, pattern);
+		return StreamUtil.find(in, pattern);
 	}
 	
 	protected final String readLine() throws IOException {
-		return ReaderUtil.readLine(in);
+		return StreamUtil.readLine(in);
 	}
 	
 	protected final void flushLine() throws IOException {
-		ReaderUtil.flushLine(in);
+		StreamUtil.flushLine(in);
 	}
 	
 	private String prepareComment(String string) {
@@ -193,16 +191,15 @@ public abstract class CommandLineAgent {
 		ProcessTerminator terminator = buildSimpleProcessTerminator();
 		CommandLineSocket socket = execute(command, terminator);
 		
-		return ReaderUtil.read(socket.getReader());
+		return StreamUtil.read(socket.getReader());
 	}
 	
 	protected ProcessTerminator buildSimpleProcessTerminator() {
 		return new ProcessTerminator() {
 			protected Reader hookReader(Reader reader) {
-				LineReader lineReader = new MatchTerminatedLineReader(reader,
-						promtPattern);
-				lineReader = new IgnoreLastLineReader(lineReader);
-				return new CachedLineReader(lineReader);
+				reader = new UntilLineMatchReader(reader, promtPattern);
+				reader = new FilterFirstLineReader(reader);
+				return reader;
 			}
 		};
 	}
