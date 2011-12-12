@@ -47,22 +47,24 @@ public abstract class FilterLineMatchActionReader extends FilterReader {
 						else in.unread(read);
 					}
 					
+					if (buffer.length() <= 0) {
+						buffer = null;
+						return -1;
+					}
+					
 					index = 0;
 					break;
 				}
 				
 				if (pattern.matcher(buffer).matches()) {
-					StreamUtil.flushLine(in);
-					buffer = new StringBuilder();
 					match();
+					buffer = new StringBuilder();
 				}
 			}
 		}
 		
 		int read = buffer.charAt(index++);
-		
 		if (index >= buffer.length()) buffer = null;
-		
 		return read;
 	}
 	

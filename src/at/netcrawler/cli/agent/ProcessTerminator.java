@@ -7,7 +7,7 @@ import at.andiwand.library.io.CloseableReader;
 import at.andiwand.library.io.CloseableWriter;
 
 
-public abstract class ProcessTerminator {
+public abstract class ProcessTerminator extends CommandLineSocketHook {
 	
 	private CloseableReader inCloser;
 	private CloseableWriter outCloser;
@@ -19,6 +19,7 @@ public abstract class ProcessTerminator {
 		return terminated;
 	}
 	
+	@Override
 	public final CommandLineSocket hookSocket(CommandLineSocket socket) {
 		inCloser = new CloseableReader(socket.getReader());
 		outCloser = new CloseableWriter(socket.getWriter());
@@ -32,8 +33,10 @@ public abstract class ProcessTerminator {
 		return new CommandLineSocket(reader, writer);
 	}
 	
+	@Override
 	protected abstract Reader hookReader(Reader reader);
 	
+	@Override
 	protected Writer hookWriter(Writer writer) {
 		return writer;
 	}

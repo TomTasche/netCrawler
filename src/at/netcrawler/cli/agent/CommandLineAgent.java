@@ -17,7 +17,7 @@ import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
-import at.netcrawler.io.FilterFirstLineReader;
+import at.netcrawler.io.FilterLastLineReader;
 import at.netcrawler.io.UntilLineMatchReader;
 
 
@@ -135,10 +135,14 @@ public abstract class CommandLineAgent {
 	protected void synchronizeStreams() throws IOException {
 		String comment = prepareComment(SYNCHRONIZE_COMMENT);
 		
-		out.write(newLine + comment + newLine);
+		out.write(newLine);
 		out.flush();
 		
 		find(promtPattern);
+		
+		out.write(comment + newLine);
+		out.flush();
+		
 		find(PatternUtil.endsWithPattern(comment));
 		flushLine();
 		find(promtPattern);
@@ -169,7 +173,8 @@ public abstract class CommandLineAgent {
 	}
 	
 	public final CommandLineSocket execute(String command,
-			ProcessTerminator terminator) throws IOException {
+			CommandLineSocketHook socketHook, ProcessTerminator terminator)
+			throws IOException {
 		if (lastTerminator != null) {
 			try {
 				lastTerminator.waitFor();
@@ -178,26 +183,38 @@ public abstract class CommandLineAgent {
 			}
 		}
 		
-		try {
-			lastTerminator.waitFor();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-		
 		out.write(command + newLine);
 		out.flush();
 		
 		flushLine();
 		CommandLineSocket socket = new CommandLineSocket(in, out);
+		socket = terminator.hookSocket(socket);
+		socket = socketHook.hookSocket(socket);
 		
-		return terminator.hookSocket(socket);
+		return socket;
+	}
+	
+	public final String execute(String command,
+			CommandLineSocketHook socketHook) throws IOException {
+		ProcessTerminator terminator = buildSimpleProcessTerminator();
+		CommandLineSocket socket = execute(command, socketHook, terminator);
+		
+		return StreamUtil.read(socket.getReader());
 	}
 	
 	public String execute(String command) throws IOException {
-		ProcessTerminator terminator = buildSimpleProcessTerminator();
-		CommandLineSocket socket = execute(command, terminator);
+		CommandLineSocketHook socketHook = buildSimpleCommandLineSocketHook();
 		
-		return StreamUtil.read(socket.getReader());
+		return execute(command, socketHook);
+	}
+	
+	protected CommandLineSocketHook buildSimpleCommandLineSocketHook() {
+		return new CommandLineSocketHook() {
+			@Override
+			protected Reader hookReader(Reader reader) {
+				return new FilterLastLineReader(reader);
+			}
+		};
 	}
 	
 	protected ProcessTerminator buildSimpleProcessTerminator() {
@@ -208,7 +225,6 @@ public abstract class CommandLineAgent {
 						terminate();
 					}
 				};
-				reader = new FilterFirstLineReader(reader);
 				return reader;
 			}
 		};

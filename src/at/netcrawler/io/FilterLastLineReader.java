@@ -10,6 +10,7 @@ import at.andiwand.library.io.StreamUtil;
 public class FilterLastLineReader extends FilterReader {
 	
 	private StringBuilder buffer;
+	private StringBuilder newLineBuffer;
 	private Character first;
 	private int index;
 	private boolean closed;
@@ -24,6 +25,8 @@ public class FilterLastLineReader extends FilterReader {
 		
 		if (buffer == null) {
 			buffer = new StringBuilder();
+			if (newLineBuffer != null) buffer.append(newLineBuffer);
+			newLineBuffer = new StringBuilder();
 			
 			while (true) {
 				int read;
@@ -40,18 +43,20 @@ public class FilterLastLineReader extends FilterReader {
 					return -1;
 				}
 				
-				buffer.append((char) read);
-				
 				if ((read == '\n') || (read == '\r')) {
+					newLineBuffer.append((char) read);
+					
 					if (read == '\r') {
 						read = in.read();
-						if (read == '\n') buffer.append((char) read);
+						if (read == '\n') newLineBuffer.append((char) read);
 						else first = (char) read;
 					}
 					
 					index = 0;
 					break;
 				}
+				
+				buffer.append((char) read);
 			}
 		}
 		
