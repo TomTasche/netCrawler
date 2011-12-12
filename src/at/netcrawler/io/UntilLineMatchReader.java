@@ -20,6 +20,8 @@ public class UntilLineMatchReader extends FilterReader {
 		this.pattern = pattern;
 	}
 	
+	protected void match() {}
+	
 	@Override
 	public int read() throws IOException {
 		if (match) return -1;
@@ -30,7 +32,10 @@ public class UntilLineMatchReader extends FilterReader {
 		if ((read == '\n') || (read == '\r')) line = new StringBuilder();
 		else line.append((char) read);
 		
-		if (pattern.matcher(line).matches()) match = true;
+		if (pattern.matcher(line).matches()) {
+			match = true;
+			match();
+		}
 		
 		return read;
 	}

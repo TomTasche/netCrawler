@@ -178,6 +178,12 @@ public abstract class CommandLineAgent {
 			}
 		}
 		
+		try {
+			lastTerminator.waitFor();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		
 		out.write(command + newLine);
 		out.flush();
 		
@@ -197,7 +203,11 @@ public abstract class CommandLineAgent {
 	protected ProcessTerminator buildSimpleProcessTerminator() {
 		return new ProcessTerminator() {
 			protected Reader hookReader(Reader reader) {
-				reader = new UntilLineMatchReader(reader, promtPattern);
+				reader = new UntilLineMatchReader(reader, promtPattern) {
+					protected void match() {
+						terminate();
+					}
+				};
 				reader = new FilterFirstLineReader(reader);
 				return reader;
 			}
