@@ -42,32 +42,23 @@ public class GeneralPanel extends JComponent {
 		groupLayout.setAutoCreateContainerGaps(true);
 		groupLayout.setAutoCreateGaps(true);
 		
-		groupLayout.setHorizontalGroup(groupLayout
-				.createSequentialGroup()
-				.addGroup(groupLayout.createParallelGroup()
+		groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup().addGroup(
+				groupLayout.createParallelGroup()
 				
-				.addComponent(host).addComponent(sys).addComponent(clock))
-				.addGroup(
-						groupLayout.createParallelGroup()
-						
-						.addComponent(hostName).addComponent(system)
-								.addComponent(clockTime))
-				.addGroup(groupLayout.createParallelGroup()
+				.addComponent(host).addComponent(sys).addComponent(clock)).addGroup(
+				groupLayout.createParallelGroup()
 				
-				.addComponent(editHost).addComponent(editClock)));
-		groupLayout.setVerticalGroup(groupLayout
-				.createSequentialGroup()
-				.addGroup(
-						groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(host).addComponent(hostName)
-								.addComponent(editHost))
-				.addGroup(
-						groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(sys).addComponent(system))
-				.addGroup(
-						groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(clock).addComponent(clockTime)
-								.addComponent(editClock)));
+				.addComponent(hostName).addComponent(system).addComponent(
+						clockTime)).addGroup(groupLayout.createParallelGroup()
+		
+		.addComponent(editHost).addComponent(editClock)));
+		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup().addGroup(
+				groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(
+						host).addComponent(hostName).addComponent(editHost)).addGroup(
+				groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(
+						sys).addComponent(system)).addGroup(
+				groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(
+						clock).addComponent(clockTime).addComponent(editClock)));
 		
 		generalTabs.addTab("Show Running Config", shRun);
 		generalTabs.setMnemonicAt(0, KeyEvent.VK_1);

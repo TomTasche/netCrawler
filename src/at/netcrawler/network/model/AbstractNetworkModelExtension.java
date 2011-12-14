@@ -67,15 +67,6 @@ public abstract class AbstractNetworkModelExtension<E extends NetworkModelExtens
 		return extensionTypeMap;
 	}
 	
-	@Override
-	public final boolean isExtensionSupported(NetworkModel model) {
-		if (!extendedModelClass.equals(model.getClass())) return false;
-		
-		if (!model.getExtensions().containsAll(requiredExtensions)) return false;
-		
-		return true;
-	}
-	
 	private void setExtendedModelClass(
 			Class<? extends NetworkModel> extendedModelClass) {
 		if (extendedModelClass == null) throw new IllegalArgumentException(
@@ -95,10 +86,8 @@ public abstract class AbstractNetworkModelExtension<E extends NetworkModelExtens
 	protected final void finalizeExtension() {
 		if (finalized) return;
 		
-		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions)) requiredExtensions = Collections
-				.unmodifiableSet(requiredExtensions);
-		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap)) extensionTypeMap = Collections
-				.unmodifiableMap(extensionTypeMap);
+		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions)) requiredExtensions = Collections.unmodifiableSet(requiredExtensions);
+		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap)) extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
 		
 		finalized = true;
 	}

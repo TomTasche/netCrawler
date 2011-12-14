@@ -255,8 +255,7 @@ public class BatchExecutor extends JFrame {
 		String end = "!-end-";
 		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
 		
-		outputStream.write((start + "\n" + batch + "\n" + end + "\n")
-				.getBytes());
+		outputStream.write((start + "\n" + batch + "\n" + end + "\n").getBytes());
 		outputStream.flush();
 		
 		Reader reader = new FluidInputStreamReader(inputStream);

@@ -26,7 +26,7 @@ public class RoutingTable implements Iterable<RoutingTable.Route> {
 		@Override
 		public String toString() {
 			return "network: " + network.toString() + subnetMask.toString()
-					+ "next hop: " + nextHop;
+					+ "; next hop: " + nextHop;
 		}
 		
 		public IPv4Address getNetwork() {

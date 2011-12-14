@@ -94,8 +94,7 @@ public class LocalSNMPConnection extends SNMPConnection {
 			}
 			
 			TYPE_MAP = Collections.unmodifiableMap(typeMap);
-			VALUE_CONVERTER_MAP = Collections
-					.unmodifiableMap(valueConverterMap);
+			VALUE_CONVERTER_MAP = Collections.unmodifiableMap(valueConverterMap);
 		}
 		
 		public static Type getTypeByVariableClass(
@@ -125,11 +124,9 @@ public class LocalSNMPConnection extends SNMPConnection {
 	static {
 		Map<SNMPVersion, Integer> versionTranlationMap = new HashMap<SNMPVersion, Integer>();
 		versionTranlationMap.put(SNMPVersion.VERSION1, SnmpConstants.version1);
-		versionTranlationMap
-				.put(SNMPVersion.VERSION2C, SnmpConstants.version2c);
+		versionTranlationMap.put(SNMPVersion.VERSION2C, SnmpConstants.version2c);
 		versionTranlationMap.put(SNMPVersion.VERSION3, SnmpConstants.version3);
-		VERSION_TRANSLATION_MAP = Collections
-				.unmodifiableMap(versionTranlationMap);
+		VERSION_TRANSLATION_MAP = Collections.unmodifiableMap(versionTranlationMap);
 		
 		Map<SNMPSecurityLevel, Integer> securityLevelTranlationMap = new HashMap<SNMPSecurityLevel, Integer>();
 		securityLevelTranlationMap.put(SNMPSecurityLevel.NOAUTH_NOPRIV,
@@ -138,8 +135,7 @@ public class LocalSNMPConnection extends SNMPConnection {
 				SecurityLevel.AUTH_NOPRIV);
 		securityLevelTranlationMap.put(SNMPSecurityLevel.AUTH_PRIV,
 				SecurityLevel.AUTH_PRIV);
-		SECURITY_LEVEL_TRANSLATION_MAP = Collections
-				.unmodifiableMap(securityLevelTranlationMap);
+		SECURITY_LEVEL_TRANSLATION_MAP = Collections.unmodifiableMap(securityLevelTranlationMap);
 	}
 	
 	private Snmp snmp;
@@ -158,8 +154,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 		case VERSION1:
 		case VERSION2C:
 			CommunityTarget communityTarget = new CommunityTarget();
-			communityTarget.setCommunity(new OctetString(settings
-					.getCommunity()));
+			communityTarget.setCommunity(new OctetString(
+					settings.getCommunity()));
 			target = communityTarget;
 			break;
 		case VERSION3:
@@ -182,8 +178,7 @@ public class LocalSNMPConnection extends SNMPConnection {
 			
 			UserTarget userTarget = new UserTarget();
 			userTarget.setSecurityName(usernameOct);
-			userTarget.setSecurityModel(SECURITY_LEVEL_TRANSLATION_MAP
-					.get(settings.getSecurityLevel()));
+			userTarget.setSecurityModel(SECURITY_LEVEL_TRANSLATION_MAP.get(settings.getSecurityLevel()));
 			target = userTarget;
 			break;
 		}
@@ -257,8 +252,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 			String value = object.getValue();
 			
 			OID oid = new OID(oidString);
-			Variable variable = SupportedType.getValueConverterByType(type)
-					.convert(value);
+			Variable variable = SupportedType.getValueConverterByType(type).convert(
+					value);
 			
 			pdu.add(new VariableBinding(oid, variable));
 		}
@@ -299,8 +294,7 @@ public class LocalSNMPConnection extends SNMPConnection {
 			Variable variable = variableBinding.getVariable();
 			
 			String oid = variableBinding.getOid().toString();
-			Type type = SupportedType.getTypeByVariableClass(variable
-					.getClass());
+			Type type = SupportedType.getTypeByVariableClass(variable.getClass());
 			String value = variableBinding.getVariable().toString();
 			
 			result.add(new SNMPObject(oid, type, value));

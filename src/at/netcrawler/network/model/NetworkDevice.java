@@ -27,16 +27,13 @@ public class NetworkDevice extends NetworkModel {
 	public static final Class<Long> UPTIME_TYPE = Long.class;
 	
 	public static final String CAPABILITIES = "device.capability";
-	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil
-			.castClass(Set.class);
+	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil.castClass(Set.class);
 	
 	public static final String INTERFACES = "device.interfaces";
-	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil
-			.castClass(Set.class);
+	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil.castClass(Set.class);
 	
 	public static final String MANAGEMENT_ADDRESSES = "device.managementIpSet";
-	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil
-			.castClass(Set.class);
+	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil.castClass(Set.class);
 	
 	// TODO: add generic information
 	

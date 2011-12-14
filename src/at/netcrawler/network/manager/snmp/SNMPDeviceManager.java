@@ -74,8 +74,7 @@ public class SNMPDeviceManager extends DeviceManager {
 			NetworkInterface newInterface = new NetworkInterface();
 			
 			newInterface.setValue(NetworkInterface.NAME, row[0].getValue());
-			newInterface
-					.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
+			newInterface.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
 			String addressString = row[2].getValue();
 			if (!addressString.isEmpty()) {
 				try {

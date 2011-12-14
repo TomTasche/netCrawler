@@ -46,10 +46,10 @@ public class CiscoCommandLineAgent extends
 	protected void initCommandLineGeneric(CiscoCommandLineAgentSettings settings)
 			throws IOException {
 		if (settings != null) {
-			if (settings.getLogonUsername() != null) out.write(settings
-					.getLogonUsername() + NEW_LINE);
-			if (settings.getLogonPassword() != null) out.write(settings
-					.getLogonPassword() + NEW_LINE);
+			if (settings.getLogonUsername() != null) out.write(settings.getLogonUsername()
+					+ NEW_LINE);
+			if (settings.getLogonPassword() != null) out.write(settings.getLogonPassword()
+					+ NEW_LINE);
 		}
 		
 		super.initCommandLineGeneric(settings);

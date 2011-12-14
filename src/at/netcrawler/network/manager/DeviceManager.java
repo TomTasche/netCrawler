@@ -70,8 +70,7 @@ public abstract class DeviceManager {
 	public final boolean addExtensionManager(
 			DeviceExtensionManager extensionManager) {
 		DeviceManager deviceManager = extensionManager.getDeviceManager();
-		NetworkDeviceExtension deviceExtension = extensionManager
-				.getExtension();
+		NetworkDeviceExtension deviceExtension = extensionManager.getExtension();
 		
 		if (deviceManager == this) {
 			return false;
@@ -80,8 +79,7 @@ public abstract class DeviceManager {
 					"The extension manager is already in use!");
 		}
 		
-		for (NetworkDeviceExtension requiredExtension : deviceExtension
-				.getRequiredExtensions()) {
+		for (NetworkDeviceExtension requiredExtension : deviceExtension.getRequiredExtensions()) {
 			if (!hasExtensionManager(requiredExtension)) {
 				throw new IllegalArgumentException(
 						"Does not contain required extension managers!");
@@ -119,7 +117,7 @@ public abstract class DeviceManager {
 		
 		for (DeviceExtensionManager extensionManager : extensionManagers) {
 			if (extensionManager.hasExtension()) {
-				device.addExtension(extensionManager.getExtensionClass());
+				device.addExtension(extensionManager.getExtension());
 				extensionManager.readDeviceExtension();
 			}
 		}

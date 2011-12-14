@@ -33,8 +33,8 @@ public class ConfigurationDialog {
 		final JPasswordField passwordRepeatField = new JPasswordField();
 		
 		encryptionComboBox.setSelectedItem(Encryption.DES);
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150,
+				passwordField.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -124,8 +124,8 @@ public class ConfigurationDialog {
 		JLabel passwordLabel = new JLabel("Password:");
 		final JPasswordField passwordField = new JPasswordField();
 		
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150,
+				passwordField.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()

@@ -66,6 +66,13 @@ public abstract class NetworkModel {
 		}
 	}
 	
+	public final boolean isExtensionSupported(NetworkModelExtension extension) {
+		if (!getClass().equals(extension.getExtendedModelClass())) return false;
+		if (!extensions.containsAll(extension.getRequiredExtensions())) return false;
+		
+		return true;
+	}
+	
 	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
 				"Unknown key!");
@@ -115,7 +122,7 @@ public abstract class NetworkModel {
 		if (!getClass().equals(extension.getExtendedModelClass())) throw new IllegalArgumentException(
 				"Illegal model class extension!");
 		if (extensions.contains(extension)) return false;
-		if (extension.isExtensionSupported(this)) return false;
+		if (!isExtensionSupported(extension)) return false;
 		
 		extensions.add(extension);
 		typeMap.putAll(extension.getExtensionTypeMap());

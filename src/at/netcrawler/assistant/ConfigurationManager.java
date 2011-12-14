@@ -146,8 +146,7 @@ public class ConfigurationManager extends JFrame {
 		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Connection connection = (Connection) connections
-						.getSelectedItem();
+				Connection connection = (Connection) connections.getSelectedItem();
 				
 				port.setText("" + connection.getDefaultPort());
 			}
@@ -299,8 +298,7 @@ public class ConfigurationManager extends JFrame {
 				builder.append((char) tmp);
 			}
 			
-			((JTextArea) ((JScrollPane) batchTabbedPane.getSelectedComponent())
-					.getViewport().getView()).setText(builder.toString());
+			((JTextArea) ((JScrollPane) batchTabbedPane.getSelectedComponent()).getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
@@ -318,8 +316,7 @@ public class ConfigurationManager extends JFrame {
 			configuration.readFromJsonFile(fileChooser.getSelectedFile(),
 					new EncryptionCallback() {
 						public String getPassword(Encryption encryption) {
-							String password = ConfigurationDialog
-									.showDecryptionDialog(ConfigurationManager.this);
+							String password = ConfigurationDialog.showDecryptionDialog(ConfigurationManager.this);
 							encryptionBag.setEncryption(encryption);
 							encryptionBag.setPassword(password);
 							return password;
@@ -392,10 +389,9 @@ public class ConfigurationManager extends JFrame {
 		configuration.setPassword(new String(password.getPassword()));
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
-			configuration.putBatch(batchTabbedPane.getTitleAt(i),
-					((JTextArea) ((JScrollPane) batchTabbedPane
-							.getComponentAt(i)).getViewport().getView())
-							.getText());
+			configuration.putBatch(
+					batchTabbedPane.getTitleAt(i),
+					((JTextArea) ((JScrollPane) batchTabbedPane.getComponentAt(i)).getViewport().getView()).getText());
 		}
 		
 		return configuration;
@@ -409,8 +405,7 @@ public class ConfigurationManager extends JFrame {
 		password.setText(configuration.getPassword());
 		
 		batchTabbedPane.removeAll();
-		for (Map.Entry<String, String> entry : configuration.getBatches()
-				.entrySet()) {
+		for (Map.Entry<String, String> entry : configuration.getBatches().entrySet()) {
 			addBatch(entry.getKey(), entry.getValue());
 		}
 	}

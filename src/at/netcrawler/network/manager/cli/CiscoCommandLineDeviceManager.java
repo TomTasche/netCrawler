@@ -38,11 +38,15 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 		addExtensionManager(new CiscoCommandLineExtensionManager());
 	}
 	
-	private String executeAndFind(String command, Pattern pattern, int group)
+	protected String execute(String command) throws IOException {
+		return agent.execute(command);
+	}
+	
+	protected String executeAndFind(String command, Pattern pattern, int group)
 			throws IOException {
 		String result = agent.execute(command);
 		Matcher matcher = pattern.matcher(result);
-		matcher.find();
+		if (!matcher.find()) return null;
 		return matcher.group(group);
 	}
 	

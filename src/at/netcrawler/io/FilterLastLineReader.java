@@ -52,6 +52,11 @@ public class FilterLastLineReader extends FilterReader {
 						else first = (char) read;
 					}
 					
+					if (buffer.length() == 0) {
+						buffer = null;
+						return read();
+					}
+					
 					index = 0;
 					break;
 				}

@@ -204,8 +204,7 @@ public class ConfigurationExecutor extends JFrame {
 		Configuration configuration = new Configuration();
 		configuration.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
-				return ConfigurationDialog
-						.showDecryptionDialog(ConfigurationExecutor.this);
+				return ConfigurationDialog.showDecryptionDialog(ConfigurationExecutor.this);
 			}
 		});
 		
@@ -234,9 +233,8 @@ public class ConfigurationExecutor extends JFrame {
 		case SSH1:
 		case SSH2:
 			SSHSettings sshSettings = new SSHSettings();
-			sshSettings
-					.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
-							: SSHVersion.VERSION2);
+			sshSettings.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
+					: SSHVersion.VERSION2);
 			sshSettings.setPort(configuration.getPort());
 			sshSettings.setUsername(configuration.getUsername());
 			sshSettings.setPassword(configuration.getPassword());
@@ -271,8 +269,7 @@ public class ConfigurationExecutor extends JFrame {
 		}
 		
 		Pattern endPattern = Pattern.compile(".*" + BATCH_SUFFIX);
-		String batch = configuration.getBatch((String) batches
-				.getSelectedItem());
+		String batch = configuration.getBatch((String) batches.getSelectedItem());
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();

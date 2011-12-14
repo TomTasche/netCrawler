@@ -24,8 +24,7 @@ public abstract class RouterExtensionManager<M extends DeviceManager> extends
 	@Override
 	public boolean hasExtension() throws IOException {
 		NetworkDevice device = getDevice();
-		Set<Capability> capabilities = GenericsUtil.castObject(device
-				.getValue(NetworkDevice.CAPABILITIES));
+		Set<Capability> capabilities = GenericsUtil.castObject(device.getValue(NetworkDevice.CAPABILITIES));
 		
 		return capabilities.contains(Capability.ROUTER);
 	}

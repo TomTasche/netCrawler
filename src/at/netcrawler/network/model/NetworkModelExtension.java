@@ -12,6 +12,4 @@ public interface NetworkModelExtension {
 	
 	public Map<String, Class<?>> getExtensionTypeMap();
 	
-	public boolean isExtensionSupported(NetworkModel model);
-	
 }
