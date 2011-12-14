@@ -217,8 +217,8 @@ public class ConfigurationExecutor extends JFrame {
 	private void execute() throws IOException {
 		CommandLine commandLine;
 		
-		IPDeviceAccessor accessor = new IPDeviceAccessor(configuration
-				.getAddress());
+		IPDeviceAccessor accessor = new IPDeviceAccessor(
+				configuration.getAddress());
 		
 		Connection connection = configuration.getConnection();
 		

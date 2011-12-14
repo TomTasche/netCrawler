@@ -17,11 +17,15 @@ import at.netcrawler.network.model.NetworkInterface;
 import at.netcrawler.network.model.extension.EthernetInterfaceExtension;
 
 
-public class SNMPDeviceManager extends DeviceManager<SNMPConnection> {
+public class SNMPDeviceManager extends DeviceManager {
+	
+	private final SNMPConnection connection;
 	
 	public SNMPDeviceManager(NetworkDevice device, SNMPConnection connection)
 			throws IOException {
-		super(device, connection);
+		super(device);
+		
+		this.connection = connection;
 	}
 	
 	@Override

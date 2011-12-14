@@ -1,0 +1,2 @@
+cisco WS-C3550-48 (PowerPC) processor (revision D0) with 65526K/8192K bytes of memory
+cisco 2811 (MPC860) processor (revision 0x200) with 60416K/5120K bytes of memory

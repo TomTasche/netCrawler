@@ -350,9 +350,8 @@ public class ConfigurationManager extends JFrame {
 			activeFile = fileChooser.getSelectedFile();
 			
 			if (!activeFile.getName().endsWith(Configuration.FILE_SUFFIX)) {
-				activeFile = new File(activeFile.getPath(), activeFile
-						.getName()
-						+ Configuration.FILE_SUFFIX);
+				activeFile = new File(activeFile.getPath(),
+						activeFile.getName() + Configuration.FILE_SUFFIX);
 			}
 		}
 		
@@ -364,8 +363,8 @@ public class ConfigurationManager extends JFrame {
 			}
 			
 			Configuration configuration = getConfiguration();
-			configuration.writeToJsonFile(activeFile, encryptionBag
-					.getEncryption(), encryptionBag.getPassword());
+			configuration.writeToJsonFile(activeFile,
+					encryptionBag.getEncryption(), encryptionBag.getPassword());
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);

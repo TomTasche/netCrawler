@@ -1,1 +1,3 @@
-optimize cli filter streams
+* improve system string from CiscoCommandLineDeviceManager
+* improve CiscoCommandLineAgent logon -> logic
+* optimize cli filter streams

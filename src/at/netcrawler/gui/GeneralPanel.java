@@ -42,7 +42,8 @@ public class GeneralPanel extends JComponent {
 		groupLayout.setAutoCreateContainerGaps(true);
 		groupLayout.setAutoCreateGaps(true);
 		
-		groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
+		groupLayout.setHorizontalGroup(groupLayout
+				.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup()
 				
 				.addComponent(host).addComponent(sys).addComponent(clock))
@@ -50,15 +51,17 @@ public class GeneralPanel extends JComponent {
 						groupLayout.createParallelGroup()
 						
 						.addComponent(hostName).addComponent(system)
-								.addComponent(clockTime)).addGroup(
-						groupLayout.createParallelGroup()
-						
-						.addComponent(editHost).addComponent(editClock)));
-		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
+								.addComponent(clockTime))
+				.addGroup(groupLayout.createParallelGroup()
+				
+				.addComponent(editHost).addComponent(editClock)));
+		groupLayout.setVerticalGroup(groupLayout
+				.createSequentialGroup()
 				.addGroup(
 						groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(host).addComponent(hostName)
-								.addComponent(editHost)).addGroup(
+								.addComponent(editHost))
+				.addGroup(
 						groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(sys).addComponent(system))
 				.addGroup(

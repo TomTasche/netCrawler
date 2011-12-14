@@ -173,10 +173,10 @@ public class BatchExecutor extends JFrame {
 					responseArea.setText("");
 					
 					String output = openConnection(usernameField.getText(),
-							new String(passwordField.getPassword()), ipField
-									.getText(), batchArea.getText(),
-							connectionBox.getSelectedItem().toString(), Integer
-									.parseInt(portField.getText()));
+							new String(passwordField.getPassword()),
+							ipField.getText(), batchArea.getText(),
+							connectionBox.getSelectedItem().toString(),
+							Integer.parseInt(portField.getText()));
 					
 					responseArea.setText(output);
 				} catch (IOException e) {

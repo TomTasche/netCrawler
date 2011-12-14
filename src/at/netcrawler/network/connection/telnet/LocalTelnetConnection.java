@@ -26,8 +26,8 @@ public class LocalTelnetConnection extends TelnetConnection {
 	@Override
 	protected void connectGenericImpl(IPDeviceAccessor accessor,
 			TelnetSettings settings) throws IOException {
-		InetSocketAddress endpoint = new InetSocketAddress(accessor
-				.getInetAddress(), settings.getPort());
+		InetSocketAddress endpoint = new InetSocketAddress(
+				accessor.getInetAddress(), settings.getPort());
 		
 		socket = new Socket();
 		socket.connect(endpoint, settings.getTimeout());

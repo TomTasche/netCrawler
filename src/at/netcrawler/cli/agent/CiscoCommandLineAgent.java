@@ -12,7 +12,8 @@ import at.netcrawler.io.FilterLastLineReader;
 import at.netcrawler.io.FilterLineMatchActionReader;
 
 
-public class CiscoCommandLineAgent extends CommandLineAgent {
+public class CiscoCommandLineAgent extends
+		GenericCommandLineAgent<CiscoCommandLineAgentSettings> {
 	
 	private static final String NEW_LINE = "\r";
 	private static final String COMMENT_PREFIX = "!";
@@ -22,19 +23,41 @@ public class CiscoCommandLineAgent extends CommandLineAgent {
 	private static final Pattern MORE_PATTERN = Pattern.compile(
 			"(.+).*?(.+)more\\2.*?\\1", Pattern.CASE_INSENSITIVE);
 	private static final String MORE_STRING = " ";
-	private static final char[] STATUS_PREFIXES = {'%'};
+	private static final char[] STATUS_PREFIXES = {'%', '*'};
 	
-	public CiscoCommandLineAgent(CommandLine commandLine) {
-		super(commandLine, CHARSET, PROMT_PATTERN, COMMENT_PREFIX, NEW_LINE);
+	public CiscoCommandLineAgent(CommandLine commandLine,
+			CiscoCommandLineAgentSettings settings) {
+		super(commandLine, settings, CHARSET, PROMT_PATTERN, COMMENT_PREFIX,
+				NEW_LINE);
 	}
 	
-	public CiscoCommandLineAgent(CommandLineSocket socket) {
-		super(socket, PROMT_PATTERN, COMMENT_PREFIX, NEW_LINE);
+	public CiscoCommandLineAgent(CommandLineSocket socket,
+			CiscoCommandLineAgentSettings settings) {
+		super(socket, settings, PROMT_PATTERN, COMMENT_PREFIX, NEW_LINE);
 	}
 	
 	@Override
 	protected Reader hookReader(Reader reader) {
 		return new CharPrefixLineFilterReader(reader, STATUS_PREFIXES);
+	}
+	
+	// TODO: improve
+	@Override
+	protected void initCommandLineGeneric(CiscoCommandLineAgentSettings settings)
+			throws IOException {
+		if (settings != null) {
+			if (settings.getLogonUsername() != null) out.write(settings
+					.getLogonUsername() + NEW_LINE);
+			if (settings.getLogonPassword() != null) out.write(settings
+					.getLogonPassword() + NEW_LINE);
+		}
+		
+		super.initCommandLineGeneric(settings);
+	}
+	
+	@Override
+	public Class<CiscoCommandLineAgentSettings> getSettingsClass() {
+		return CiscoCommandLineAgentSettings.class;
 	}
 	
 	@Override
@@ -52,8 +75,14 @@ public class CiscoCommandLineAgent extends CommandLineAgent {
 							
 							while (true) {
 								int read = in.read();
-								if (read == -1) return;
-								if (read == 0x12) return;
+								
+								switch (read) {
+								case -1:
+								case 0x12:
+								case '\n':
+								case '\r':
+									return;
+								}
 							}
 						} catch (IOException e) {}
 					}

@@ -9,11 +9,11 @@ import java.util.Set;
 import at.andiwand.library.util.CollectionUtil;
 
 
-public abstract class AbstractNetworkModelExtension implements
-		NetworkModelExtension {
+public abstract class AbstractNetworkModelExtension<E extends NetworkModelExtension>
+		implements NetworkModelExtension {
 	
 	private Class<? extends NetworkModel> extendedModelClass;
-	private Set<NetworkModelExtension> requiredExtensions;
+	private Set<E> requiredExtensions;
 	private Map<String, Class<?>> extensionTypeMap;
 	
 	private boolean finalized;
@@ -21,7 +21,7 @@ public abstract class AbstractNetworkModelExtension implements
 	protected AbstractNetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass) {
 		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>());
+		setRequiredExtensions(new HashSet<E>());
 		setExtensionTypeMap(new HashMap<String, Class<?>>());
 	}
 	
@@ -29,7 +29,7 @@ public abstract class AbstractNetworkModelExtension implements
 			Class<? extends NetworkModel> extendedModelClass,
 			Map<String, Class<?>> extendedTypeMap) {
 		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>());
+		setRequiredExtensions(new HashSet<E>());
 		setExtensionTypeMap(new HashMap<String, Class<?>>(extendedTypeMap));
 		
 		finalizeExtension();
@@ -37,11 +37,10 @@ public abstract class AbstractNetworkModelExtension implements
 	
 	protected AbstractNetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass,
-			Set<? extends NetworkModelExtension> requiredExtensions,
+			Set<? extends E> requiredExtensions,
 			Map<String, Class<?>> extendedTypeMap) {
 		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>(
-				requiredExtensions));
+		setRequiredExtensions(new HashSet<E>(requiredExtensions));
 		setExtensionTypeMap(new HashMap<String, Class<?>>(extendedTypeMap));
 		
 		finalizeExtension();
@@ -55,7 +54,7 @@ public abstract class AbstractNetworkModelExtension implements
 	}
 	
 	@Override
-	public final Set<NetworkModelExtension> getRequiredExtensions() {
+	public final Set<E> getRequiredExtensions() {
 		checkFinalized();
 		
 		return requiredExtensions;
@@ -85,8 +84,7 @@ public abstract class AbstractNetworkModelExtension implements
 		this.extendedModelClass = extendedModelClass;
 	}
 	
-	private void setRequiredExtensions(
-			Set<NetworkModelExtension> requiredExtensions) {
+	private void setRequiredExtensions(Set<E> requiredExtensions) {
 		this.requiredExtensions = requiredExtensions;
 	}
 	
@@ -117,7 +115,7 @@ public abstract class AbstractNetworkModelExtension implements
 		throw new IllegalStateException("The extension is finalized!");
 	}
 	
-	protected final void addRequiredExtension(NetworkModelExtension extension) {
+	protected final void addRequiredExtension(E extension) {
 		checkNotFinalized();
 		
 		if (!extension.getExtendedModelClass().equals(extendedModelClass)) throw new IllegalArgumentException(

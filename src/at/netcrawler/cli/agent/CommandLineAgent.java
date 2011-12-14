@@ -40,18 +40,22 @@ public abstract class CommandLineAgent {
 	
 	private ProcessTerminator lastTerminator;
 	
-	public CommandLineAgent(CommandLine commandLine, Pattern promtPattern,
+	public CommandLineAgent(CommandLine commandLine,
+			CommandLineAgentSettings settings, Pattern promtPattern,
 			String commentPrefix) {
-		this(commandLine, DEFAULT_CHARSET, promtPattern, commentPrefix);
+		this(commandLine, settings, DEFAULT_CHARSET, promtPattern,
+				commentPrefix);
 	}
 	
-	public CommandLineAgent(CommandLine commandLine, Charset charset,
+	public CommandLineAgent(CommandLine commandLine,
+			CommandLineAgentSettings settings, Charset charset,
 			Pattern promtPattern, String commentPrefix) {
-		this(commandLine, charset, promtPattern, commentPrefix,
+		this(commandLine, settings, charset, promtPattern, commentPrefix,
 				DEFAULT_NEW_LINE);
 	}
 	
-	public CommandLineAgent(CommandLine commandLine, Charset charset,
+	public CommandLineAgent(CommandLine commandLine,
+			CommandLineAgentSettings settings, Charset charset,
 			Pattern promtPattern, String commentPrefix, String newLine) {
 		try {
 			in = initReader(commandLine.getInputStream(), charset);
@@ -61,18 +65,20 @@ public abstract class CommandLineAgent {
 			this.commentPrefix = commentPrefix;
 			this.newLine = newLine;
 			
-			initCommandLine();
+			initCommandLine(settings);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public CommandLineAgent(CommandLineSocket socket, Pattern promtPattern,
+	public CommandLineAgent(CommandLineSocket socket,
+			CommandLineAgentSettings settings, Pattern promtPattern,
 			String commentPrefix) {
-		this(socket, promtPattern, commentPrefix, DEFAULT_NEW_LINE);
+		this(socket, settings, promtPattern, commentPrefix, DEFAULT_NEW_LINE);
 	}
 	
-	public CommandLineAgent(CommandLineSocket socket, Pattern promtPattern,
+	public CommandLineAgent(CommandLineSocket socket,
+			CommandLineAgentSettings settings, Pattern promtPattern,
 			String commentPrefix, String newLine) {
 		try {
 			in = initReader(socket.getReader());
@@ -82,7 +88,7 @@ public abstract class CommandLineAgent {
 			this.commentPrefix = commentPrefix;
 			this.newLine = newLine;
 			
-			initCommandLine();
+			initCommandLine(settings);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -128,7 +134,8 @@ public abstract class CommandLineAgent {
 		return writer;
 	}
 	
-	protected void initCommandLine() throws IOException {
+	protected void initCommandLine(CommandLineAgentSettings settings)
+			throws IOException {
 		synchronizeStreams();
 	}
 	
@@ -172,6 +179,8 @@ public abstract class CommandLineAgent {
 		return commentPrefix + string + COMMENT_SUFFIX_SEPARATOR + suffix;
 	}
 	
+	public abstract Class<? extends CommandLineAgentSettings> getSettingsClass();
+	
 	public final CommandLineSocket execute(String command,
 			CommandLineSocketHook socketHook, ProcessTerminator terminator)
 			throws IOException {
@@ -194,8 +203,8 @@ public abstract class CommandLineAgent {
 		return socket;
 	}
 	
-	public final String execute(String command,
-			CommandLineSocketHook socketHook) throws IOException {
+	public final String execute(String command, CommandLineSocketHook socketHook)
+			throws IOException {
 		ProcessTerminator terminator = buildSimpleProcessTerminator();
 		CommandLineSocket socket = execute(command, socketHook, terminator);
 		

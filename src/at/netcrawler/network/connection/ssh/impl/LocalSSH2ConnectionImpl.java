@@ -26,8 +26,8 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 	protected void connectGenericImpl(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {
 		try {
-			Socket socket = new Socket(accessor.getInetAddress(), settings
-					.getPort());
+			Socket socket = new Socket(accessor.getInetAddress(),
+					settings.getPort());
 			SSH2Transport transport = new SSH2Transport(socket,
 					new SecureRandomAndPad());
 			client = new SSH2SimpleClient(transport, settings.getUsername(),
