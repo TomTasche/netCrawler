@@ -1,8 +1,17 @@
 package at.netcrawler.test;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.GroupLayout;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.network.ip.IPv4Address;
@@ -29,14 +38,79 @@ public class SimpleSchoolCrawler {
 		public String password;
 	}
 	
-	public static void main(String[] args) throws Throwable {
-		String rootAddressString = "192.168.0.254";
-		IPv4Address rootAddress = IPv4Address.getByAddress(rootAddressString);
+	public static Logon getLogon() {
+		JPanel panel = new JPanel();
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
+		layout.setAutoCreateContainerGaps(true);
+		layout.setAutoCreateGaps(true);
+		
+		JLabel label = new JLabel("Choose your logon settings:");
+		JLabel usernameLabel = new JLabel("Username:");
+		JLabel passwordLabel = new JLabel("Password:");
+		final JTextField usernameField = new JTextField();
+		final JPasswordField passwordField = new JPasswordField();
+		
+		usernameField.setPreferredSize(new Dimension(150,
+				usernameField.getPreferredSize().height));
+		
+		//@formatter:off
+		layout.setHorizontalGroup(layout.createParallelGroup()
+				.addComponent(label)
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup()
+								.addComponent(usernameLabel)
+								.addComponent(passwordLabel)
+						)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(usernameField)
+								.addComponent(passwordField)
+						)
+				)
+		);
+		
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.addComponent(label)
+				.addGap(20)
+				.addGroup(layout.createParallelGroup()
+						.addComponent(usernameLabel)
+						.addComponent(usernameField)
+				)
+				.addGroup(layout.createParallelGroup()
+						.addComponent(passwordLabel)
+						.addComponent(passwordField)
+				)
+		);
+		//@formatter:on
+		
+		JOptionPane optionPane = new JOptionPane(panel,
+				JOptionPane.QUESTION_MESSAGE) {
+			private static final long serialVersionUID = 646321718244222228L;
+			
+			public void selectInitialValue() {
+				usernameField.requestFocusInWindow();
+			}
+		};
+		
+		JDialog dialog = optionPane.createDialog("Logon");
+		dialog.setVisible(true);
+		dialog.dispose();
+		
+		if (usernameField.getText().isEmpty()) return null;
+		if (passwordField.getPassword().length == 0) return null;
 		
 		Logon logon = new Logon();
-		logon.username = "cisco";
-		logon.password = "cisco";
+		logon.username = usernameField.getText();
+		logon.password = new String(passwordField.getPassword());
 		
+		return logon;
+	}
+	
+	public static void main(String[] args) throws Throwable {
+		String rootAddressString = "192.168.0.254";
+		
+		IPv4Address rootAddress = IPv4Address.getByAddress(rootAddressString);
+		Logon logon = getLogon();
 		Set<String> usedIDs = new HashSet<String>();
 		
 		crawlDevice(rootAddress, logon, usedIDs);
@@ -59,8 +133,8 @@ public class SimpleSchoolCrawler {
 		if (commandLine == null) throw new IOException("not able to connect!");
 		
 		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
-		agentSettings.setLogonUsername(logon.username);
-		agentSettings.setLogonPassword(logon.password);
+		// agentSettings.setLogonUsername(logon.username);
+		// agentSettings.setLogonPassword(logon.password);
 		
 		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(commandLine,
 				agentSettings);
