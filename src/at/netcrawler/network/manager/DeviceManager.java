@@ -104,7 +104,7 @@ public abstract class DeviceManager {
 		return true;
 	}
 	
-	public final void readDevice() throws IOException {
+	public void readDevice() throws IOException {
 		device.setValue(NetworkDevice.IDENTICATION, getIdentication());
 		device.setValue(NetworkDevice.HOSTNAME, getHostname());
 		device.setValue(NetworkDevice.SYSTEM, getSystem());
@@ -123,7 +123,7 @@ public abstract class DeviceManager {
 		}
 	}
 	
-	public final void fetchDevice() throws IOException {
+	public void fetchDevice() throws IOException {
 		device.clear();
 		
 		readDevice();

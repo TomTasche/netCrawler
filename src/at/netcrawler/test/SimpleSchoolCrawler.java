@@ -3,6 +3,7 @@ package at.netcrawler.test;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
@@ -106,10 +107,27 @@ public class SimpleSchoolCrawler {
 		return logon;
 	}
 	
-	public static void main(String[] args) throws Throwable {
-		String rootAddressString = "192.168.0.254";
+	public static IPv4Address getRootAddress() {
+		final JTextField rootAddress = new JTextField();
 		
-		IPv4Address rootAddress = IPv4Address.getByAddress(rootAddressString);
+		JOptionPane optionPane = new JOptionPane(rootAddress,
+				JOptionPane.QUESTION_MESSAGE) {
+			private static final long serialVersionUID = 646321718244222228L;
+			
+			public void selectInitialValue() {
+				rootAddress.requestFocusInWindow();
+			}
+		};
+		
+		JDialog dialog = optionPane.createDialog("Root Address");
+		dialog.setVisible(true);
+		dialog.dispose();
+		
+		return IPv4Address.getByAddress(rootAddress.getText());
+	}
+	
+	public static void main(String[] args) throws Throwable {
+		IPv4Address rootAddress = getRootAddress();
 		Logon logon = getLogon();
 		Set<String> usedIDs = new HashSet<String>();
 		
@@ -127,14 +145,15 @@ public class SimpleSchoolCrawler {
 			
 			try {
 				commandLine = openConnection(accessor, settings);
+				break;
 			} catch (IOException e) {}
 		}
 		
 		if (commandLine == null) throw new IOException("not able to connect!");
 		
 		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
-		// agentSettings.setLogonUsername(logon.username);
-		// agentSettings.setLogonPassword(logon.password);
+		agentSettings.setLogonUsername(logon.username);
+		agentSettings.setLogonPassword(logon.password);
 		
 		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(commandLine,
 				agentSettings);
@@ -144,25 +163,35 @@ public class SimpleSchoolCrawler {
 				device, agent);
 		
 		String id = deviceManager.getIdentication();
-		if (usedIDs.contains(id)) return;
+		if (usedIDs.contains(id)) {
+			commandLine.close();
+			return;
+		}
 		
 		deviceManager.readDevice();
 		
+		commandLine.close();
+		
+		System.out.println();
 		System.out.println("hostname:		"
 				+ device.getValue(NetworkDevice.HOSTNAME));
-		System.out.println("model number:	"
+		System.out.println("model number:		"
 				+ device.getValue(CiscoExtension.MODEL_NUMBER));
-		System.out.println("serial number:	"
+		System.out.println("serial number:		"
 				+ device.getValue(CiscoExtension.SYSTEM_SERIAL_NUMBER));
 		System.out.println("processor:		"
 				+ device.getValue(CiscoExtension.PROCESSOR_STRING));
-		System.out.println();
+		System.out.println("processor board id:	"
+				+ device.getValue(NetworkDevice.IDENTICATION));
 		
 		usedIDs.add(id);
 		
 		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoExtension.CDP_NEIGHBORS);
 		for (CDPNeighbors.Neighbor neighbor : neighbors) {
-			IPv4Address neighborAddress = neighbor.getManagementAddresses().iterator().next();
+			Iterator<IPv4Address> neighborAddressIterator = neighbor.getManagementAddresses().iterator();
+			if (!neighborAddressIterator.hasNext()) continue;
+			
+			IPv4Address neighborAddress = neighborAddressIterator.next();
 			
 			crawlDevice(neighborAddress, logon, usedIDs);
 		}

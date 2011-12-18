@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 import at.andiwand.library.cli.CommandLine;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.UnlimitedPushbackReader;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
 import at.netcrawler.io.FilterLastLineReader;
@@ -29,7 +29,7 @@ public abstract class CommandLineAgent {
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String COMMENT_SUFFIX_SEPARATOR = " - ";
 	
-	protected final PushbackReader in;
+	protected final UnlimitedPushbackReader in;
 	protected final Writer out;
 	
 	private final Pattern promtPattern;
@@ -94,16 +94,16 @@ public abstract class CommandLineAgent {
 		}
 	}
 	
-	private PushbackReader initReader(InputStream in, Charset charset) {
+	private UnlimitedPushbackReader initReader(InputStream in, Charset charset) {
 		in = hookInputStream(in);
 		
 		Reader reader = new FluidInputStreamReader(in, charset);
 		return initReader(reader);
 	}
 	
-	private PushbackReader initReader(Reader reader) {
+	private UnlimitedPushbackReader initReader(Reader reader) {
 		reader = hookReader(reader);
-		return new PushbackReader(reader);
+		return new UnlimitedPushbackReader(reader);
 	}
 	
 	private Writer initWriter(OutputStream out, Charset charset) {

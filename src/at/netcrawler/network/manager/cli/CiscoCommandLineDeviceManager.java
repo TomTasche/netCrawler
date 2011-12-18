@@ -2,7 +2,6 @@ package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPAddress;
@@ -36,18 +35,6 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoCommandLineExtensionManager());
-	}
-	
-	protected String execute(String command) throws IOException {
-		return agent.execute(command);
-	}
-	
-	protected String executeAndFind(String command, Pattern pattern, int group)
-			throws IOException {
-		String result = agent.execute(command);
-		Matcher matcher = pattern.matcher(result);
-		if (!matcher.find()) return null;
-		return matcher.group(group);
 	}
 	
 	public String getIdentication() throws IOException {

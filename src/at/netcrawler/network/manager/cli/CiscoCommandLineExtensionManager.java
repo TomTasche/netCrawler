@@ -22,19 +22,19 @@ public class CiscoCommandLineExtensionManager extends
 	
 	private static final String MODEL_NUMBER_COMMAND = "show version";
 	private static final Pattern MODEL_NUMBER_PATTERN = Pattern.compile(
-			"^model number: (.*)$", Pattern.MULTILINE
+			"^model number\\s*: (.*)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int MODEL_NUMBER_GROUP = 1;
 	
 	private static final String SYSTEM_SERIAL_NUMBER_COMMAND = "show version";
 	private static final Pattern SYSTEM_SERIAL_NUMBER_PATTERN = Pattern.compile(
-			"^System serial number: (.*)$", Pattern.MULTILINE
+			"^System serial number\\s*: (.*)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int SYSTEM_SERIAL_NUMBER_GROUP = 1;
 	
 	private static final String PROCESSOR_STRING_COMMAND = "show version";
 	private static final Pattern PROCESSOR_STRING_PATTERN = Pattern.compile(
-			"^cisco (.+?) \\((.+?)\\) processor \\((.+?)\\) with (.+?) bytes of memory.*",
+			"^(.*?) with (.+?) bytes of memory.*",
 			Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 	private static final int PROCESSOR_STRING_GROUP = 0;
 	
@@ -42,38 +42,38 @@ public class CiscoCommandLineExtensionManager extends
 	private static final Pattern CDP_NEIGHBORS_SEPARATOR = Pattern.compile(
 			"^-{2,}$", Pattern.MULTILINE);
 	private static final Pattern CDP_NEIGHBORS_NAME_PATTERN = Pattern.compile(
-			"^device id: (.*?)$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^device id\\s*: (.*?)$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_NAME_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_LOCAL_INTERFACE_PATTERN = Pattern.compile(
 			".*port id \\(outgoing port\\): (.*?)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_LOCAL_INTERFACE_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_HOLD_TIME_PATTERN = Pattern.compile(
-			"^holdtime: (.*?)$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^holdtime\\s*: (.*?)( (.*))?$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_HOLD_TIME_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_CAPABILITIES_PATTERN = Pattern.compile(
-			".*capabilities: (.*?)$", Pattern.MULTILINE
+			".*capabilities\\s*: (.*?)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_CAPABILITIES_GROUP = 1;
-	private static final Pattern CDP_NEIGHBORS_CAPABILITIES_SEPARATOR = Pattern.compile(", ?");
+	private static final Pattern CDP_NEIGHBORS_CAPABILITIES_SEPARATOR = Pattern.compile(" ");
 	private static final Map<String, Capability> CDP_NEIGHBORS_CAPABILITIES_MAP = new HashMap<String, Capability>() {
 		private static final long serialVersionUID = -2377198487555883189L;
 		
 		{
 			// TODO: complete it
 			put("router", Capability.ROUTER);
-			put("swtich", Capability.SWITCH);
+			put("switch", Capability.SWITCH);
 		}
 	};
 	private static final Pattern CDP_NEIGHBORS_PLATFORM_PATTERN = Pattern.compile(
-			"^platform: (.*?),.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^platform\\s*: (.*?),.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_PLATFORM_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_REMOTE_INTERFACE_PATTERN = Pattern.compile(
-			"^interface: (.*?),.*", Pattern.MULTILINE
+			"^interface\\s*: (.*?),.*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_REMOTE_INTERFACE_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_MANAGEMENT_ADDRESS_PATTERN = Pattern.compile(
-			".*ip address ?: (.*?)$", Pattern.MULTILINE
+			".*ip address\\s*: (.*?)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_MANAGEMENT_ADDRESS_GROUP = 1;
 	

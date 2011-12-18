@@ -1,6 +1,7 @@
 package at.netcrawler.cli.agent;
 
 import java.io.IOException;
+import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -60,6 +61,33 @@ public class CiscoCommandLineAgent extends
 		return CiscoCommandLineAgentSettings.class;
 	}
 	
+	private static void flushBackspace(PushbackReader in) throws IOException {
+		int spaces = 0;
+		
+		while (true) {
+			int read = in.read();
+			
+			switch (read) {
+			case 8:
+				if (spaces > 0) spaces--;
+				break;
+			case ' ':
+				spaces++;
+				break;
+			
+			default:
+				in.unread(read);
+				
+				if (spaces > 0) {
+					for (int i = 0; i < spaces; i++)
+						in.unread(' ');
+				}
+				
+				return;
+			}
+		}
+	}
+	
 	@Override
 	protected CommandLineSocketHook buildSimpleCommandLineSocketHook() {
 		return new CommandLineSocketHook() {
@@ -78,9 +106,13 @@ public class CiscoCommandLineAgent extends
 								
 								switch (read) {
 								case -1:
-								case 0x12:
+								case 18:
 								case '\n':
 								case '\r':
+									return;
+								case 8:
+									in.unread(read);
+									flushBackspace(in);
 									return;
 								}
 							}
