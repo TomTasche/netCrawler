@@ -343,12 +343,11 @@ public class ConfigurationManager extends JFrame {
 		if (activeFile == null) {
 			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) return;
 			
-			// TODO: fix bug! null pointer
 			activeFile = fileChooser.getSelectedFile();
 			
 			if (!activeFile.getName().endsWith(Configuration.FILE_SUFFIX)) {
-				activeFile = new File(activeFile.getPath(),
-						activeFile.getName() + Configuration.FILE_SUFFIX);
+				activeFile = new File(activeFile.getPath()
+						+ Configuration.FILE_SUFFIX);
 			}
 		}
 		

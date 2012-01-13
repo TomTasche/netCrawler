@@ -5,7 +5,7 @@ import java.util.Set;
 
 
 public abstract class NetworkDeviceExtension extends
-		AbstractNetworkModelExtension<NetworkDeviceExtension> {
+		NetworkModelExtension {
 	
 	public static final Class<NetworkDevice> EXTENDED_MODEL_CLASS = NetworkDevice.class;
 	

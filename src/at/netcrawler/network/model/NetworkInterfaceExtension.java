@@ -4,8 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class NetworkInterfaceExtension extends
-		AbstractNetworkModelExtension<NetworkInterfaceExtension> {
+public abstract class NetworkInterfaceExtension extends NetworkModelExtension {
 	
 	public static final Class<NetworkInterface> EXTENDED_MODEL_CLASS = NetworkInterface.class;
 	

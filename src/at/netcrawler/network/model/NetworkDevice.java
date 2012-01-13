@@ -56,20 +56,4 @@ public class NetworkDevice extends NetworkModel {
 		super(TYPE_MAP);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) return false;
-		if (obj == this) return true;
-		
-		if (!(obj instanceof NetworkDevice)) return false;
-		NetworkDevice device = (NetworkDevice) obj;
-		
-		return getValue(IDENTICATION).equals(device.getValue(IDENTICATION));
-	}
-	
-	@Override
-	public int hashCode() {
-		return getValue(IDENTICATION).hashCode();
-	}
-	
 }

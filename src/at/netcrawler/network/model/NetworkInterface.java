@@ -44,20 +44,4 @@ public class NetworkInterface extends NetworkModel {
 		super(TYPE_MAP);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) return false;
-		if (obj == this) return true;
-		
-		if (!(obj instanceof NetworkInterface)) return false;
-		NetworkInterface networkInterface = (NetworkInterface) obj;
-		
-		return getValue(NAME).equals(networkInterface.getValue(NAME));
-	}
-	
-	@Override
-	public int hashCode() {
-		return getValue(NAME).hashCode();
-	}
-	
 }

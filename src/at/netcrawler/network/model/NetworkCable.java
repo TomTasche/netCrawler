@@ -24,9 +24,4 @@ public class NetworkCable extends NetworkModel {
 		super(TYPE_MAP);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		return false;
-	}
-	
 }

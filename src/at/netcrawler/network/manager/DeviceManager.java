@@ -9,6 +9,7 @@ import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.model.NetworkModelExtension;
 
 
 public abstract class DeviceManager {
@@ -26,11 +27,7 @@ public abstract class DeviceManager {
 	}
 	
 	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
-		for (DeviceExtensionManager extensionManager : extensionManagers) {
-			if (extensionManager.equals(extension)) return true;
-		}
-		
-		return false;
+		return hasExtensionManager(extension.getClass());
 	}
 	
 	public final boolean hasExtensionManager(
@@ -72,18 +69,15 @@ public abstract class DeviceManager {
 		DeviceManager deviceManager = extensionManager.getDeviceManager();
 		NetworkDeviceExtension deviceExtension = extensionManager.getExtension();
 		
-		if (deviceManager == this) {
-			return false;
-		} else if (deviceManager != null) {
-			throw new IllegalArgumentException(
-					"The extension manager is already in use!");
-		}
+		if (deviceManager == this) return false;
+		if (deviceManager != null) throw new IllegalArgumentException(
+				"The extension manager is already in use!");
 		
-		for (NetworkDeviceExtension requiredExtension : deviceExtension.getRequiredExtensions()) {
-			if (!hasExtensionManager(requiredExtension)) {
-				throw new IllegalArgumentException(
-						"Does not contain required extension managers!");
-			}
+		for (NetworkModelExtension requiredExtension : deviceExtension.getRequiredExtensions()) {
+			NetworkDeviceExtension requiredDeviceExtension = (NetworkDeviceExtension) requiredExtension;
+			
+			if (!hasExtensionManager(requiredDeviceExtension)) throw new IllegalArgumentException(
+					"Required extension managers are missing!");
 		}
 		
 		extensionManager.setDeviceManager(this);
