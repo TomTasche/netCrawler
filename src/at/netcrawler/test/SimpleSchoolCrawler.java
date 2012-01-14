@@ -222,12 +222,12 @@ public class SimpleSchoolCrawler {
 	public static CommandLine openConnection(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
 		if (settings.getClass().equals(SSHSettings.class)) {
-			LocalSSHConnection connection = new LocalSSHConnection();
-			connection.connect(accessor, settings);
+			LocalSSHConnection connection = new LocalSSHConnection(
+					(IPDeviceAccessor) accessor, (SSHSettings) settings);
 			return connection;
 		} else if (settings.getClass().equals(TelnetSettings.class)) {
-			LocalTelnetConnection connection = new LocalTelnetConnection();
-			connection.connect(accessor, settings);
+			LocalTelnetConnection connection = new LocalTelnetConnection(
+					(IPDeviceAccessor) accessor, (TelnetSettings) settings);
 			return connection;
 		}
 		

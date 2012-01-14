@@ -141,10 +141,9 @@ public class LocalSNMPConnection extends SNMPConnection {
 	private Snmp snmp;
 	private Target target;
 	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
-			SNMPSettings settings) throws IOException {
-		super.connectImpl(accessor, settings);
+	public LocalSNMPConnection(IPDeviceAccessor accessor, SNMPSettings settings)
+			throws IOException {
+		super(accessor, settings);
 		
 		DefaultUdpTransportMapping transportMapping = new DefaultUdpTransportMapping();
 		snmp = new Snmp(transportMapping);

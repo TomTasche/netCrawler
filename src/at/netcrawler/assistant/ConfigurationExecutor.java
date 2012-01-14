@@ -226,8 +226,8 @@ public class ConfigurationExecutor extends JFrame {
 			TelnetSettings telnetSettings = new TelnetSettings();
 			telnetSettings.setPort(configuration.getPort());
 			
-			LocalTelnetConnection telnetConnection = new LocalTelnetConnection();
-			telnetConnection.connect(accessor, telnetSettings);
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
+					accessor, telnetSettings);
 			commandLine = telnetConnection;
 			break;
 		case SSH1:
@@ -239,8 +239,8 @@ public class ConfigurationExecutor extends JFrame {
 			sshSettings.setUsername(configuration.getUsername());
 			sshSettings.setPassword(configuration.getPassword());
 			
-			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection();
-			sshConsoleConnection.connect(accessor, sshSettings);
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
+					accessor, sshSettings);
 			commandLine = sshConsoleConnection;
 			break;
 		

@@ -51,8 +51,8 @@ public class LinuxCommandLineAgentTest {
 		settings.setUsername(username);
 		settings.setPassword(password);
 		
-		final LocalSSHConnection connection = new LocalSSHConnection();
-		connection.connect(accessor, settings);
+		final LocalSSHConnection connection = new LocalSSHConnection(accessor,
+				settings);
 		
 		LinuxCommandLineAgentSettings agentSettings = new LinuxCommandLineAgentSettings();
 		

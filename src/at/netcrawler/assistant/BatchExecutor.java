@@ -220,15 +220,13 @@ public class BatchExecutor extends JFrame {
 			settings.setUsername(username);
 			settings.setPassword(password);
 			
-			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection();
-			sshConsoleConnection.connect(accessor, settings);
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(accessor, settings);
 			commandLine = sshConsoleConnection;
 		} else if (connection.equals(TELNET)) {
 			TelnetSettings settings = new TelnetSettings();
 			settings.setPort(port);
 			
-			LocalTelnetConnection telnetConnection = new LocalTelnetConnection();
-			telnetConnection.connect(accessor, settings);
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(accessor, settings);
 			commandLine = telnetConnection;
 			
 			OutputStream outputStream = commandLine.getOutputStream();

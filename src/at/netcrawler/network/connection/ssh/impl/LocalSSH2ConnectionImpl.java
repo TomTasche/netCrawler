@@ -22,9 +22,10 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 	private SSH2SimpleClient client;
 	private SSH2ConsoleRemote console;
 	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
+	public LocalSSH2ConnectionImpl(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {
+		super(accessor, settings);
+		
 		try {
 			Socket socket = new Socket(accessor.getInetAddress(),
 					settings.getPort());

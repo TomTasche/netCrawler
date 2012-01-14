@@ -64,11 +64,12 @@ public class LocalSSH1ConnectionImpl extends LocalSSHConnectionImpl {
 		}
 	}
 	
-	private SSHConsoleClient client;
+	private final SSHConsoleClient client;
 	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
+	public LocalSSH1ConnectionImpl(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {
+		super(accessor, settings);
+		
 		client = new SSHConsoleClient(accessor.getIpAddress().toString(),
 				settings.getPort(), new SimpleAuthenticator(
 						settings.getUsername(), settings.getPassword()),

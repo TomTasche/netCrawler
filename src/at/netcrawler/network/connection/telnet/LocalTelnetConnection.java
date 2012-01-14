@@ -11,7 +11,18 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 public class LocalTelnetConnection extends TelnetConnection {
 	
-	private Socket socket;
+	private final Socket socket;
+	
+	public LocalTelnetConnection(IPDeviceAccessor accessor,
+			TelnetSettings settings) throws IOException {
+		super(accessor, settings);
+		
+		InetSocketAddress endpoint = new InetSocketAddress(
+				accessor.getInetAddress(), settings.getPort());
+		
+		socket = new Socket();
+		socket.connect(endpoint, settings.getTimeout());
+	}
 	
 	@Override
 	public InputStream getInputStream() throws IOException {
@@ -21,16 +32,6 @@ public class LocalTelnetConnection extends TelnetConnection {
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return socket.getOutputStream();
-	}
-	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
-			TelnetSettings settings) throws IOException {
-		InetSocketAddress endpoint = new InetSocketAddress(
-				accessor.getInetAddress(), settings.getPort());
-		
-		socket = new Socket();
-		socket.connect(endpoint, settings.getTimeout());
 	}
 	
 	@Override

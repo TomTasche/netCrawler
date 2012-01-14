@@ -25,8 +25,7 @@ public class SNMPDeviceManagerTest {
 		settings.setPassword("ciscocisco");
 		settings.setCryptoKey("ciscocisco");
 		
-		LocalSNMPConnection connection = new LocalSNMPConnection();
-		connection.connect(accessor, settings);
+		LocalSNMPConnection connection = new LocalSNMPConnection(accessor, settings);
 		
 		NetworkDevice device = new NetworkDevice();
 		SNMPDeviceManager deviceManager = new SNMPDeviceManager(device,

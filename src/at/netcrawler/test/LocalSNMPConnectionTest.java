@@ -29,8 +29,7 @@ public class LocalSNMPConnectionTest {
 		settings.setPort(port);
 		settings.setCommunity(community);
 		
-		LocalSNMPConnection snmp = new LocalSNMPConnection();
-		snmp.connect(accessor, settings);
+		LocalSNMPConnection snmp = new LocalSNMPConnection(accessor, settings);
 		System.out.println(snmp.get("1.3.6.1.2.1.1.4.0", "1.3.6.1.2.1.1.5.0",
 				"1.3.6.1.6.3.10.2.1.1.0"));
 		System.out.println(snmp.getBulk("1.3.6.1.2.1.1"));

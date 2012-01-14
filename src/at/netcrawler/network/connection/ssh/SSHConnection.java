@@ -3,17 +3,16 @@ package at.netcrawler.network.connection.ssh;
 import java.io.IOException;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.IPDeviceConnection;
+import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
-public abstract class SSHConnection extends IPDeviceConnection<SSHSettings>
-		implements SSHClient {
+public abstract class SSHConnection extends TCPIPDeviceConnection implements
+		SSHClient {
 	
 	private SSHVersion version;
 	
-	@Override
-	public Class<SSHSettings> getSettingsClass() {
-		return SSHSettings.class;
+	public SSHConnection(IPDeviceAccessor accessor, SSHSettings settings) {
+		super(accessor, settings);
 	}
 	
 	@Override

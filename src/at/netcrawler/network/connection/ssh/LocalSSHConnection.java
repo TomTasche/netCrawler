@@ -10,12 +10,11 @@ import at.netcrawler.network.connection.ssh.impl.LocalSSHConnectionImpl;
 
 public class LocalSSHConnection extends SSHConnection {
 	
-	private LocalSSHConnectionImpl client;
+	private final LocalSSHConnectionImpl client;
 	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
-			SSHSettings settings) throws IOException {
-		super.connectGenericImpl(accessor, settings);
+	public LocalSSHConnection(IPDeviceAccessor accessor, SSHSettings settings)
+			throws IOException {
+		super(accessor, settings);
 		
 		client = LocalSSHConnectionImpl.getInstance(accessor, settings);
 	}

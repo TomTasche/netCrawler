@@ -51,8 +51,8 @@ public class LocalSSHConnectionTest {
 		settings.setUsername(username);
 		settings.setPassword(password);
 		
-		LocalSSHConnection connection = new LocalSSHConnection();
-		connection.connect(accessor, settings);
+		LocalSSHConnection connection = new LocalSSHConnection(accessor,
+				settings);
 		
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = connection.getOutputStream();

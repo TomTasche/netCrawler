@@ -17,19 +17,22 @@ public abstract class LocalSSHConnectionImpl extends LocalSSHConnection {
 		
 		switch (settings.getVersion()) {
 		case VERSION1:
-			result = new LocalSSH1ConnectionImpl();
+			result = new LocalSSH1ConnectionImpl(accessor, settings);
 			break;
 		case VERSION2:
-			result = new LocalSSH2ConnectionImpl();
+			result = new LocalSSH2ConnectionImpl(accessor, settings);
 			break;
 		
 		default:
 			throw new IllegalStateException("Unreachable section");
 		}
 		
-		result.connect(accessor, settings);
-		
 		return result;
+	}
+	
+	public LocalSSHConnectionImpl(IPDeviceAccessor accessor,
+			SSHSettings settings) throws IOException {
+		super(accessor, settings);
 	}
 	
 	@Override

@@ -24,10 +24,10 @@ public class CiscoCommandLineDeviceManagerTest {
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
 		
-//		TelnetSettings settings = new TelnetSettings();
-//		settings.setPort(port);
-//		
-//		LocalTelnetConnection connection = new LocalTelnetConnection();
+		// TelnetSettings settings = new TelnetSettings();
+		// settings.setPort(port);
+		//
+		// LocalTelnetConnection connection = new LocalTelnetConnection();
 		
 		SSHSettings settings = new SSHSettings();
 		settings.setVersion(SSHVersion.VERSION2);
@@ -35,12 +35,12 @@ public class CiscoCommandLineDeviceManagerTest {
 		settings.setUsername("cisco");
 		settings.setPassword("cisco");
 		
-		LocalSSHConnection connection = new LocalSSHConnection();
-		connection.connect(accessor, settings);
+		LocalSSHConnection connection = new LocalSSHConnection(accessor,
+				settings);
 		
 		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
-//		agentSettings.setLogonUsername("cisco");
-//		agentSettings.setLogonPassword("cisco");
+		// agentSettings.setLogonUsername("cisco");
+		// agentSettings.setLogonPassword("cisco");
 		
 		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection,
 				agentSettings);

@@ -5,31 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.IPDeviceConnection;
+import at.netcrawler.network.connection.TCPIPDeviceConnection;
 import at.netcrawler.network.connection.snmp.SNMPObject.Type;
 
 
-public abstract class SNMPConnection extends IPDeviceConnection<SNMPSettings>
-		implements SNMPManager {
+public abstract class SNMPConnection extends TCPIPDeviceConnection implements
+		SNMPManager {
 	
 	public static final int DEFAULT_MAX_REPETITIONS = 10;
 	
 	protected SNMPVersion version;
 	
+	public SNMPConnection(IPDeviceAccessor accessor, SNMPSettings settings) {
+		super(accessor, settings);
+		
+		version = settings.getVersion();
+	}
+	
 	@Override
 	public SNMPVersion getVersion() {
 		return version;
-	}
-	
-	@Override
-	public Class<SNMPSettings> getSettingsClass() {
-		return SNMPSettings.class;
-	}
-	
-	@Override
-	protected void connectGenericImpl(IPDeviceAccessor accessor,
-			SNMPSettings settings) throws IOException {
-		version = settings.getVersion();
 	}
 	
 	@Override

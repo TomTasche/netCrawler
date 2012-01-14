@@ -1,14 +1,14 @@
 package at.netcrawler.network.connection.telnet;
 
-import at.netcrawler.network.connection.IPDeviceConnection;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
-public abstract class TelnetConnection extends
-		IPDeviceConnection<TelnetSettings> implements TelnetClient {
+public abstract class TelnetConnection extends TCPIPDeviceConnection implements
+		TelnetClient {
 	
-	@Override
-	public Class<TelnetSettings> getSettingsClass() {
-		return TelnetSettings.class;
+	public TelnetConnection(IPDeviceAccessor accessor, TelnetSettings settings) {
+		super(accessor, settings);
 	}
 	
 }
