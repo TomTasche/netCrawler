@@ -17,9 +17,7 @@ public class TopologyInterface {
 	
 	@Override
 	public String toString() {
-		String name = (String) networkInterface.getValue(NetworkInterface.NAME);
-		
-		return device.toString() + ": " + name;
+		return device.toString() + ": " + getName();
 	}
 	
 	@Override
@@ -30,8 +28,8 @@ public class TopologyInterface {
 		if (!(obj instanceof TopologyInterface)) return false;
 		TopologyInterface interfaze = (TopologyInterface) obj;
 		
-		String nameA = (String) networkInterface.getValue(NetworkInterface.NAME);
-		String nameB = (String) interfaze.networkInterface.getValue(NetworkInterface.NAME);
+		String nameA = getName();
+		String nameB = interfaze.getName();
 		
 		return device.equals(interfaze.device) && nameA.equals(nameB);
 	}
@@ -42,7 +40,6 @@ public class TopologyInterface {
 		if (name == null) return 0;
 		
 		if (device == null) return name.hashCode();
-		
 		return device.hashCode() ^ name.hashCode();
 	}
 	
@@ -52,6 +49,10 @@ public class TopologyInterface {
 	
 	public TopologyDevice getDevice() {
 		return device;
+	}
+	
+	public String getName() {
+		return (String) networkInterface.getValue(NetworkInterface.NAME);
 	}
 	
 }

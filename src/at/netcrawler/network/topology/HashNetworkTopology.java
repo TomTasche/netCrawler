@@ -8,28 +8,43 @@ import java.util.Set;
 
 public class HashNetworkTopology extends NetworkTopology {
 	
-	private final Set<TopologyDevice> devices;
-	private final Map<TopologyInterface, TopologyCable> connectionMap;
-	private final Set<TopologyCable> cables;
-	
-	public HashNetworkTopology() {
-		devices = new HashSet<TopologyDevice>();
-		connectionMap = new HashMap<TopologyInterface, TopologyCable>();
-		cables = new HashSet<TopologyCable>();
+	private class InterfaceAdapter extends TopologyDeviceAdapter {
+		@Override
+		public void interfaceAdded(TopologyInterface interfaze) {
+			System.out.println("yessss 1");
+			
+			synchronized (HashNetworkTopology.this) {
+				interfaces.add(interfaze);
+			}
+		}
+		
+		@Override
+		public void interfaceRemoved(TopologyInterface interfaze) {
+			System.out.println("yessss 2");
+			
+			synchronized (HashNetworkTopology.this) {
+				TopologyCable cable = connectionMap.get(interfaze);
+				removeCable(cable);
+				
+				interfaces.remove(interfaze);
+			}
+		}
 	}
 	
+	private final Set<TopologyDevice> devices = new HashSet<TopologyDevice>();
+	private final Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
+	private final Map<TopologyInterface, TopologyCable> connectionMap = new HashMap<TopologyInterface, TopologyCable>();
+	private final Set<TopologyCable> cables = new HashSet<TopologyCable>();
+	
+	public HashNetworkTopology() {}
+	
 	public HashNetworkTopology(NetworkTopology networkTopology) {
-		devices = new HashSet<TopologyDevice>(networkTopology.getDevices());
-		cables = new HashSet<TopologyCable>(networkTopology.getCables());
+		for (TopologyDevice device : networkTopology.getDevices()) {
+			addDevice(device);
+		}
 		
-		connectionMap = new HashMap<TopologyInterface, TopologyCable>();
-		
-		for (TopologyCable cable : cables) {
-			for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
-				if (connectionMap.containsKey(interfaze)) throw new IllegalArgumentException(
-						"Illegal cable!");
-				connectionMap.put(interfaze, cable);
-			}
+		for (TopologyCable cable : networkTopology.getCables()) {
+			addCable(cable);
 		}
 	}
 	
@@ -60,7 +75,17 @@ public class HashNetworkTopology extends NetworkTopology {
 	
 	@Override
 	public synchronized boolean addDevice(TopologyDevice device) {
-		return devices.add(device);
+		if (devices.contains(device)) return false;
+		
+		device.addListener(new InterfaceAdapter());
+		
+		for (TopologyInterface interfaze : device.getInterfaces()) {
+			interfaces.add(interfaze);
+		}
+		
+		devices.add(device);
+		
+		return true;
 	}
 	
 	@Override
@@ -68,6 +93,7 @@ public class HashNetworkTopology extends NetworkTopology {
 		if (cables.contains(cable)) return false;
 		
 		for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
+			if (!interfaces.contains(interfaze)) return false;
 			if (connectionMap.containsKey(interfaze)) return false;
 			connectionMap.put(interfaze, cable);
 		}
@@ -84,6 +110,8 @@ public class HashNetworkTopology extends NetworkTopology {
 		for (TopologyInterface interfaze : device.getInterfaces()) {
 			TopologyCable cable = connectionMap.get(interfaze);
 			removeCable(cable);
+			
+			interfaces.remove(interfaze);
 		}
 		
 		devices.remove(device);

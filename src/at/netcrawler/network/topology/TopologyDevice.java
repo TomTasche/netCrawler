@@ -52,13 +52,15 @@ public class TopologyDevice {
 		String identicationA = (String) networkDevice.getValue(NetworkDevice.IDENTICATION);
 		String identicationB = (String) device.networkDevice.getValue(NetworkDevice.IDENTICATION);
 		
+		if (identicationA == identicationB) return true;
+		if (identicationA == null) return false;
 		return identicationA.equals(identicationB);
 	}
 	
 	@Override
 	public int hashCode() {
 		String identication = (String) networkDevice.getValue(NetworkDevice.IDENTICATION);
-		
+		if (identication == null) return 0;
 		return identication.hashCode();
 	}
 	
@@ -70,6 +72,16 @@ public class TopologyDevice {
 		synchronized (interfaces) {
 			return new HashSet<TopologyInterface>(interfaces);
 		}
+	}
+	
+	public TopologyInterface getInterfaceByName(String name) {
+		synchronized (interfaces) {
+			for (TopologyInterface interfaze : interfaces) {
+				if (name.equals(interfaze.getName())) return interfaze;
+			}
+		}
+		
+		return null;
 	}
 	
 	private void setInterfaces(Set<TopologyInterface> newInterfaces) {
