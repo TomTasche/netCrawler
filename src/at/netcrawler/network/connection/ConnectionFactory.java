@@ -9,8 +9,8 @@ import at.netcrawler.network.accessor.DeviceAccessor;
 
 public class ConnectionFactory {
 	
-	private Map<Class<? extends DeviceConnection>, ConnectionGateway> gatewayMap = new HashMap<Class<? extends DeviceConnection>, ConnectionGateway>();
-	private Map<Class<? extends DeviceConnection>, ConnectionSettings> settingsMap = new HashMap<Class<? extends DeviceConnection>, ConnectionSettings>();
+	private Map<Class<? extends Connection>, ConnectionGateway> gatewayMap = new HashMap<Class<? extends Connection>, ConnectionGateway>();
+	private Map<Class<? extends Connection>, ConnectionSettings> settingsMap = new HashMap<Class<? extends Connection>, ConnectionSettings>();
 	
 	public ConnectionFactory() {}
 	
@@ -18,7 +18,7 @@ public class ConnectionFactory {
 		gatewayMap.put(gateway.getConnectionClass(), gateway);
 	}
 	
-	public void removeGateway(Class<? extends DeviceConnection> connectionClass) {
+	public void removeGateway(Class<? extends Connection> connectionClass) {
 		gatewayMap.remove(connectionClass);
 	}
 	
@@ -31,7 +31,7 @@ public class ConnectionFactory {
 	}
 	
 	public void removeConnectionSettings(
-			Class<? extends DeviceConnection> connectionClass) {
+			Class<? extends Connection> connectionClass) {
 		settingsMap.remove(connectionClass);
 	}
 	
@@ -40,18 +40,17 @@ public class ConnectionFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <C extends DeviceConnection> C openConnection(
-			DeviceAccessor accessor, ConnectionSettings settings,
-			Class<C> connectionClass) throws IOException {
+	public <C extends Connection> C openConnection(DeviceAccessor accessor,
+			ConnectionSettings settings, Class<C> connectionClass)
+			throws IOException {
 		ConnectionGateway gateway = gatewayMap.get(connectionClass);
 		if (gateway == null) return null;
 		
 		return (C) gateway.openConnection(accessor, settings);
 	}
 	
-	public <C extends DeviceConnection> C openConnection(
-			DeviceAccessor accessor, Class<C> connectionClass)
-			throws IOException {
+	public <C extends Connection> C openConnection(DeviceAccessor accessor,
+			Class<C> connectionClass) throws IOException {
 		ConnectionSettings settings = settingsMap.get(connectionClass);
 		if (settings == null) throw new IllegalArgumentException(
 				"No default settings found!");

@@ -3,8 +3,8 @@ package at.netcrawler.network.manager;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 
-public abstract class GenericDeviceExtensionManager<M extends DeviceManager>
-		extends DeviceExtensionManager {
+public abstract class GenericDeviceExtensionManager<M extends DeviceManager> extends
+		DeviceExtensionManager {
 	
 	protected M deviceManager;
 	

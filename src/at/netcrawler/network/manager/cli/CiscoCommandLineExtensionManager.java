@@ -34,22 +34,24 @@ public class CiscoCommandLineExtensionManager extends
 	
 	private static final String PROCESSOR_STRING_COMMAND = "show version";
 	private static final Pattern PROCESSOR_STRING_PATTERN = Pattern.compile(
-			"^(.*?) with (.+?) bytes of memory.*",
-			Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^(.*?) with (.+?) bytes of memory.*", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE);
 	private static final int PROCESSOR_STRING_GROUP = 0;
 	
 	private static final String CDP_NEIGHBORS_COMMAND = "show cdp neighbors detail";
 	private static final Pattern CDP_NEIGHBORS_SEPARATOR = Pattern.compile(
 			"^-{2,}$", Pattern.MULTILINE);
 	private static final Pattern CDP_NEIGHBORS_NAME_PATTERN = Pattern.compile(
-			"^device id\\s*: (.*?)$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^device id\\s*: (.*?)$", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_NAME_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_LOCAL_INTERFACE_PATTERN = Pattern.compile(
 			".*port id \\(outgoing port\\): (.*?)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_LOCAL_INTERFACE_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_HOLD_TIME_PATTERN = Pattern.compile(
-			"^holdtime\\s*: (.*?)( (.*))?$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^holdtime\\s*: (.*?)( (.*))?$", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_HOLD_TIME_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_CAPABILITIES_PATTERN = Pattern.compile(
 			".*capabilities\\s*: (.*?)$", Pattern.MULTILINE
@@ -66,7 +68,8 @@ public class CiscoCommandLineExtensionManager extends
 		}
 	};
 	private static final Pattern CDP_NEIGHBORS_PLATFORM_PATTERN = Pattern.compile(
-			"^platform\\s*: (.*?),.*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+			"^platform\\s*: (.*?),.*", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE);
 	private static final int CDP_NEIGHBORS_PLATFORM_GROUP = 1;
 	private static final Pattern CDP_NEIGHBORS_REMOTE_INTERFACE_PATTERN = Pattern.compile(
 			"^interface\\s*: (.*?),.*", Pattern.MULTILINE

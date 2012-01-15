@@ -5,11 +5,11 @@ import java.io.IOException;
 import at.netcrawler.network.accessor.DeviceAccessor;
 
 
-public abstract class DeviceConnection {
+public abstract class Connection {
 	
 	private boolean closed;
 	
-	public DeviceConnection(DeviceAccessor accessor, ConnectionSettings settings) {}
+	public Connection(DeviceAccessor accessor, ConnectionSettings settings) {}
 	
 	public final boolean isClosed() {
 		return closed;

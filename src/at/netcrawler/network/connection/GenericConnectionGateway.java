@@ -9,7 +9,7 @@ public abstract class GenericConnectionGateway<A extends DeviceAccessor, S exten
 		ConnectionGateway {
 	
 	@Override
-	public abstract Class<? extends DeviceConnection> getConnectionClass();
+	public abstract Class<? extends Connection> getConnectionClass();
 	
 	@Override
 	public abstract Class<A> getAccessorClass();
@@ -19,12 +19,12 @@ public abstract class GenericConnectionGateway<A extends DeviceAccessor, S exten
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	protected final DeviceConnection openConnectionImpl(DeviceAccessor accessor,
+	protected final Connection openConnectionImpl(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
 		return openConnectionGenericImpl((A) accessor, (S) settings);
 	}
 	
-	protected abstract DeviceConnection openConnectionGenericImpl(A accessor,
+	protected abstract Connection openConnectionGenericImpl(A accessor,
 			S settings) throws IOException;
 	
 }

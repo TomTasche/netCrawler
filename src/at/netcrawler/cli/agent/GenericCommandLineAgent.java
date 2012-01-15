@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import at.andiwand.library.cli.CommandLine;
 
 
-public abstract class GenericCommandLineAgent<S extends CommandLineAgentSettings>
-		extends CommandLineAgent {
+public abstract class GenericCommandLineAgent<S extends CommandLineAgentSettings> extends
+		CommandLineAgent {
 	
 	public GenericCommandLineAgent(CommandLine commandLine, S settings,
 			Pattern promtPattern, String commentPrefix) {

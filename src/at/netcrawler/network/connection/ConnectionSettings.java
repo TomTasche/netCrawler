@@ -17,7 +17,7 @@ public abstract class ConnectionSettings implements Cloneable {
 	@Override
 	public abstract ConnectionSettings clone();
 	
-	public abstract Class<? extends DeviceConnection> getConnectionClass();
+	public abstract Class<? extends Connection> getConnectionClass();
 	
 	public int getTimeout() {
 		return timeout;
