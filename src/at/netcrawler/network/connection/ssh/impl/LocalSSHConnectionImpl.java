@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
+import at.netcrawler.network.connection.ssh.SSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 
 
-public abstract class LocalSSHConnectionImpl extends LocalSSHConnection {
+public abstract class LocalSSHConnectionImpl extends SSHConnection {
 	
 	public static LocalSSHConnectionImpl getInstance(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {

@@ -14,6 +14,12 @@ public class ConnectionFactory {
 	
 	public ConnectionFactory() {}
 	
+	public ConnectionFactory(ConnectionGateway... gateways) {
+		for (ConnectionGateway gateway : gateways) {
+			addGateway(gateway);
+		}
+	}
+	
 	public void addGateway(ConnectionGateway gateway) {
 		gatewayMap.put(gateway.getConnectionClass(), gateway);
 	}
@@ -37,6 +43,11 @@ public class ConnectionFactory {
 	
 	public void removeConnectionSettings(ConnectionSettings settings) {
 		removeConnectionSettings(settings.getConnectionClass());
+	}
+	
+	public Connection openConnection(DeviceAccessor accessor,
+			ConnectionSettings settings) throws IOException {
+		return openConnection(accessor, settings, settings.getConnectionClass());
 	}
 	
 	@SuppressWarnings("unchecked")

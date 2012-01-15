@@ -5,7 +5,7 @@ import java.io.IOException;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
-public abstract class LocalSSHGateway extends SSHGateway {
+public class LocalSSHGateway extends SSHGateway {
 	
 	@Override
 	public SSHConnection openConnectionGenericImpl(IPDeviceAccessor accessor,

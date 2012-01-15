@@ -41,7 +41,7 @@ public class ConfigurationManager extends JFrame {
 	private static final String TITLE = "Configuration Manager";
 	
 	private JTextField address = new JTextField();
-	private JComboBox connections = new JComboBox(Connection.values());
+	private JComboBox connections = new JComboBox(ConnectionType.values());
 	private JTextField port = new JTextField();
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
@@ -146,7 +146,7 @@ public class ConfigurationManager extends JFrame {
 		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Connection connection = (Connection) connections.getSelectedItem();
+				ConnectionType connection = (ConnectionType) connections.getSelectedItem();
 				
 				port.setText("" + connection.getDefaultPort());
 			}
@@ -226,7 +226,7 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void validateConnection() {
-		if (((Connection) connections.getSelectedItem()).legalConnection()) return;
+		if (((ConnectionType) connections.getSelectedItem()).legalConnection()) return;
 		
 		throw new IllegalArgumentException("Choose connection!");
 	}
@@ -309,23 +309,24 @@ public class ConfigurationManager extends JFrame {
 		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
 		
 		try {
+			File file = fileChooser.getSelectedFile();
 			final EncryptionBag encryptionBag = new EncryptionBag();
 			encryptionBag.setEncryption(Encryption.PLAIN);
 			
 			Configuration configuration = new Configuration();
-			configuration.readFromJsonFile(fileChooser.getSelectedFile(),
-					new EncryptionCallback() {
-						public String getPassword(Encryption encryption) {
-							String password = ConfigurationDialog.showDecryptionDialog(ConfigurationManager.this);
-							encryptionBag.setEncryption(encryption);
-							encryptionBag.setPassword(password);
-							return password;
-						}
-					});
-			
-			this.encryptionBag = encryptionBag;
+			configuration.readFromJsonFile(file, new EncryptionCallback() {
+				public String getPassword(Encryption encryption) {
+					String password = ConfigurationDialog.showDecryptionDialog(ConfigurationManager.this);
+					encryptionBag.setEncryption(encryption);
+					encryptionBag.setPassword(password);
+					return password;
+				}
+			});
 			
 			setConfiguration(configuration);
+			
+			this.encryptionBag = encryptionBag;
+			activeFile = file;
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);
@@ -382,7 +383,7 @@ public class ConfigurationManager extends JFrame {
 		Configuration configuration = new Configuration();
 		
 		configuration.setAddress(IPv4Address.getByAddress(address.getText()));
-		configuration.setConnection((Connection) connections.getSelectedItem());
+		configuration.setConnection((ConnectionType) connections.getSelectedItem());
 		configuration.setPort(Integer.parseInt(port.getText()));
 		configuration.setUsername(username.getText());
 		configuration.setPassword(new String(password.getPassword()));

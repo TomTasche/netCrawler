@@ -33,12 +33,12 @@ import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
 import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHSettings;
-import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetSettings;
+import at.netcrawler.network.connection.ConnectionFactory;
+import at.netcrawler.network.connection.ConnectionSettings;
+import at.netcrawler.network.connection.ssh.LocalSSHGateway;
+import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -58,6 +58,9 @@ public class ConfigurationExecutor extends JFrame {
 	private JFileChooser fileChooser = new JFileChooser();
 	
 	private Configuration configuration;
+	
+	private ConnectionFactory connectionFactory = new ConnectionFactory(
+			new LocalTelnetGateway(), new LocalSSHGateway());
 	
 	public ConfigurationExecutor() {
 		setTitle(TITLE);
@@ -214,44 +217,17 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	private void execute() throws IOException {
-		CommandLine commandLine;
-		
-		IPDeviceAccessor accessor = new IPDeviceAccessor(
+		DeviceAccessor accessor = new IPDeviceAccessor(
 				configuration.getAddress());
+		ConnectionSettings settings = configuration.generateSettings();
 		
-		Connection connection = configuration.getConnection();
-		
-		switch (connection) {
-		case TELNET:
-			TelnetSettings telnetSettings = new TelnetSettings();
-			telnetSettings.setPort(configuration.getPort());
-			
-			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
-					accessor, telnetSettings);
-			commandLine = telnetConnection;
-			break;
-		case SSH1:
-		case SSH2:
-			SSHSettings sshSettings = new SSHSettings();
-			sshSettings.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
-					: SSHVersion.VERSION2);
-			sshSettings.setPort(configuration.getPort());
-			sshSettings.setUsername(configuration.getUsername());
-			sshSettings.setPassword(configuration.getPassword());
-			
-			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
-					accessor, sshSettings);
-			commandLine = sshConsoleConnection;
-			break;
-		
-		default:
-			throw new IllegalStateException("Unreachable section!");
-		}
+		CommandLine commandLine = (CommandLine) connectionFactory.openConnection(
+				accessor, settings);
 		
 		InputStream inputStream = commandLine.getInputStream();
 		OutputStream outputStream = commandLine.getOutputStream();
 		
-		if (configuration.getConnection() == Connection.TELNET) {
+		if (configuration.getConnection() == ConnectionType.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
 			
@@ -268,7 +244,7 @@ public class ConfigurationExecutor extends JFrame {
 			}
 		}
 		
-		Pattern endPattern = Pattern.compile(".*" + BATCH_SUFFIX);
+		Pattern endPattern = Pattern.compile(".+" + BATCH_SUFFIX);
 		String batch = configuration.getBatch((String) batches.getSelectedItem());
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
