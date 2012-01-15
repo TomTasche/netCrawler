@@ -15,4 +15,14 @@ public class TelnetSettings extends TCPIPConnectionSettings {
 		super(settings);
 	}
 	
+	@Override
+	public TelnetSettings clone() {
+		return new TelnetSettings(this);
+	}
+	
+	@Override
+	public final Class<TelnetConnection> getConnectionClass() {
+		return TelnetConnection.class;
+	}
+	
 }

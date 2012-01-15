@@ -4,14 +4,24 @@ import java.io.IOException;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.TCPIPConnectionGateway;
-import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
 public abstract class TelnetGateway extends
 		TCPIPConnectionGateway<TelnetSettings> {
 	
 	@Override
-	public abstract TCPIPDeviceConnection openConnection(
-			IPDeviceAccessor accessor, TelnetSettings settings) throws IOException;
+	public final Class<TelnetConnection> getConnectionClass() {
+		return TelnetConnection.class;
+	}
+	
+	@Override
+	public final Class<TelnetSettings> getSettingsClass() {
+		return TelnetSettings.class;
+	}
+	
+	@Override
+	public abstract TelnetConnection openConnectionGenericImpl(
+			IPDeviceAccessor accessor, TelnetSettings settings)
+			throws IOException;
 	
 }

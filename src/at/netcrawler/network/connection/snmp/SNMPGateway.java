@@ -4,13 +4,22 @@ import java.io.IOException;
 
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.TCPIPConnectionGateway;
-import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
 public abstract class SNMPGateway extends TCPIPConnectionGateway<SNMPSettings> {
 	
 	@Override
-	public abstract TCPIPDeviceConnection openConnection(
+	public final Class<SNMPConnection> getConnectionClass() {
+		return SNMPConnection.class;
+	}
+	
+	@Override
+	public final Class<SNMPSettings> getSettingsClass() {
+		return SNMPSettings.class;
+	}
+	
+	@Override
+	public abstract SNMPConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, SNMPSettings settings)
 			throws IOException;
 	

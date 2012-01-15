@@ -6,9 +6,18 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
 public abstract class IPConnectionGateway<S extends ConnectionSettings> extends
-		ConnectionGateway<IPDeviceAccessor, S> {
+		GenericConnectionGateway<IPDeviceAccessor, S> {
 	
-	public abstract IPDeviceConnection openConnection(
+	@Override
+	public abstract Class<? extends IPDeviceConnection> getConnectionClass();
+	
+	@Override
+	public Class<IPDeviceAccessor> getAccessorClass() {
+		return IPDeviceAccessor.class;
+	}
+	
+	@Override
+	public abstract IPDeviceConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, S settings) throws IOException;
 	
 }

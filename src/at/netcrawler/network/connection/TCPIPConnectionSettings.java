@@ -12,6 +12,12 @@ public abstract class TCPIPConnectionSettings extends ConnectionSettings {
 		setPort(settings.port);
 	}
 	
+	@Override
+	public abstract TCPIPConnectionSettings clone();
+	
+	@Override
+	public abstract Class<? extends TCPIPDeviceConnection> getConnectionClass();
+	
 	public int getPort() {
 		return port;
 	}

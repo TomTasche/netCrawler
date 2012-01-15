@@ -34,6 +34,16 @@ public class SNMPSettings extends TCPIPConnectionSettings {
 		setCryptoKey(settings.cryptoKey);
 	}
 	
+	@Override
+	public SNMPSettings clone() {
+		return new SNMPSettings(this);
+	}
+	
+	@Override
+	public Class<SNMPConnection> getConnectionClass() {
+		return SNMPConnection.class;
+	}
+	
 	public SNMPVersion getVersion() {
 		return version;
 	}

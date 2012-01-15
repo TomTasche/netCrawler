@@ -19,6 +19,16 @@ public class SSHSettings extends TCPIPConnectionSettings {
 		super(settings);
 	}
 	
+	@Override
+	public SSHSettings clone() {
+		return new SSHSettings(this);
+	}
+	
+	@Override
+	public Class<SSHConnection> getConnectionClass() {
+		return SSHConnection.class;
+	}
+	
 	public SSHVersion getVersion() {
 		return version;
 	}
