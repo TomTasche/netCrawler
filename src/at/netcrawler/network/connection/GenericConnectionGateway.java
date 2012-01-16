@@ -9,9 +9,6 @@ public abstract class GenericConnectionGateway<A extends DeviceAccessor, S exten
 		ConnectionGateway {
 	
 	@Override
-	public abstract Class<? extends Connection> getConnectionClass();
-	
-	@Override
 	public abstract Class<A> getAccessorClass();
 	
 	@Override

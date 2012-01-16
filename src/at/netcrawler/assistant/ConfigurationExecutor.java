@@ -35,7 +35,7 @@ import at.andiwand.library.io.StreamUtil;
 import at.netcrawler.io.UntilLineMatchReader;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.ConnectionFactory;
+import at.netcrawler.network.connection.ConnectionBuilder;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
@@ -59,7 +59,7 @@ public class ConfigurationExecutor extends JFrame {
 	
 	private Configuration configuration;
 	
-	private ConnectionFactory connectionFactory = new ConnectionFactory(
+	private ConnectionBuilder connectionFactory = new ConnectionBuilder(
 			new LocalTelnetGateway(), new LocalSSHGateway());
 	
 	public ConfigurationExecutor() {

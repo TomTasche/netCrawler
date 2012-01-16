@@ -7,14 +7,14 @@ import java.util.Map;
 import at.netcrawler.network.accessor.DeviceAccessor;
 
 
-public class ConnectionFactory {
+public class ConnectionBuilder {
 	
 	private Map<Class<? extends Connection>, ConnectionGateway> gatewayMap = new HashMap<Class<? extends Connection>, ConnectionGateway>();
 	private Map<Class<? extends Connection>, ConnectionSettings> settingsMap = new HashMap<Class<? extends Connection>, ConnectionSettings>();
 	
-	public ConnectionFactory() {}
+	public ConnectionBuilder() {}
 	
-	public ConnectionFactory(ConnectionGateway... gateways) {
+	public ConnectionBuilder(ConnectionGateway... gateways) {
 		for (ConnectionGateway gateway : gateways) {
 			addGateway(gateway);
 		}
