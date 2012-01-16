@@ -4,13 +4,13 @@ import java.io.Reader;
 import java.io.Writer;
 
 
-public class CommandLineSocketHook {
+public class CLISocketHook {
 	
-	public CommandLineSocket hookSocket(CommandLineSocket socket) {
+	public CLISocket hookSocket(CLISocket socket) {
 		Reader reader = hookReader(socket.getReader());
 		Writer writer = hookWriter(socket.getWriter());
 		
-		return new CommandLineSocket(reader, writer);
+		return new CLISocket(reader, writer);
 	}
 	
 	protected Reader hookReader(Reader reader) {

@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPAddress;
-import at.netcrawler.cli.agent.CommandLineAgent;
+import at.netcrawler.cli.agent.PromtPatternCLIAgent;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
@@ -31,7 +31,7 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	private static final int SYSTEM_GROUP = 0;
 	
 	public CiscoCommandLineDeviceManager(NetworkDevice device,
-			CommandLineAgent agent) {
+			PromtPatternCLIAgent agent) {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoCommandLineExtensionManager());

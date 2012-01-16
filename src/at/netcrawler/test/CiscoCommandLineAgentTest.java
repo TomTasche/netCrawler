@@ -1,8 +1,8 @@
 package at.netcrawler.test;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.CiscoCommandLineAgent;
-import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
+import at.netcrawler.cli.agent.CiscoCLIAgent;
+import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -32,10 +32,9 @@ public class CiscoCommandLineAgentTest {
 		LocalSSHConnection connection = new LocalSSHConnection(accessor,
 				settings);
 		
-		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
+		CiscoCLIAgentSettings agentSettings = new CiscoCLIAgentSettings();
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection,
-				agentSettings);
+		CiscoCLIAgent agent = new CiscoCLIAgent(connection, agentSettings);
 		System.out.println(agent.execute("show cdp neighbors detail"));
 		
 		connection.close();

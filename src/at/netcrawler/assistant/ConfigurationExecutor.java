@@ -28,7 +28,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
@@ -221,11 +221,11 @@ public class ConfigurationExecutor extends JFrame {
 				configuration.getAddress());
 		ConnectionSettings settings = configuration.generateSettings();
 		
-		CommandLine commandLine = (CommandLine) connectionFactory.openConnection(
+		CommandLineInterface cli = (CommandLineInterface) connectionFactory.openConnection(
 				accessor, settings);
 		
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
+		InputStream inputStream = cli.getInputStream();
+		OutputStream outputStream = cli.getOutputStream();
 		
 		if (configuration.getConnection() == ConnectionType.TELNET) {
 			String username = configuration.getUsername();
@@ -255,7 +255,7 @@ public class ConfigurationExecutor extends JFrame {
 		
 		StreamUtil.flush(reader);
 		
-		commandLine.close();
+		cli.close();
 	}
 	
 	public void setConfiguration(Configuration configuration) {

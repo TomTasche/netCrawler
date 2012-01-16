@@ -3,8 +3,8 @@ package at.netcrawler.test;
 import java.io.IOException;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.CiscoCommandLineAgent;
-import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
+import at.netcrawler.cli.agent.CiscoCLIAgent;
+import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
 import at.netcrawler.network.CDPNeighbors;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
@@ -38,12 +38,11 @@ public class CiscoCommandLineDeviceManagerTest {
 		LocalSSHConnection connection = new LocalSSHConnection(accessor,
 				settings);
 		
-		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
+		CiscoCLIAgentSettings agentSettings = new CiscoCLIAgentSettings();
 		// agentSettings.setLogonUsername("cisco");
 		// agentSettings.setLogonPassword("cisco");
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection,
-				agentSettings);
+		CiscoCLIAgent agent = new CiscoCLIAgent(connection, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		

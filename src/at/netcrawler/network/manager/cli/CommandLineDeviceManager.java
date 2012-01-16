@@ -6,19 +6,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import at.netcrawler.cli.agent.CommandLineAgent;
+import at.netcrawler.cli.agent.PromtPatternCLIAgent;
 import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 
 
 public abstract class CommandLineDeviceManager extends DeviceManager {
 	
-	protected final CommandLineAgent agent;
+	protected final PromtPatternCLIAgent agent;
 	
 	private boolean commandOutputCaching;
 	private Map<String, String> commandOutputCache = new HashMap<String, String>();
 	
-	public CommandLineDeviceManager(NetworkDevice device, CommandLineAgent agent) {
+	public CommandLineDeviceManager(NetworkDevice device, PromtPatternCLIAgent agent) {
 		super(device);
 		
 		this.agent = agent;

@@ -13,7 +13,7 @@ import at.andiwand.library.io.StreamUtil;
 public class CharPrefixLineFilterReader extends FilterReader {
 	
 	private final PushbackReader in;
-	private final Set<Character> prefixSet = new HashSet<Character>();
+	private final Set<Character> prefixes;
 	
 	private boolean newLine = true;
 	
@@ -21,27 +21,36 @@ public class CharPrefixLineFilterReader extends FilterReader {
 		super(new PushbackReader(in));
 		
 		this.in = (PushbackReader) super.in;
+		prefixes = new HashSet<Character>();
+	}
+	
+	public CharPrefixLineFilterReader(Reader in, Set<Character> prefixes) {
+		super(new PushbackReader(in));
+		
+		this.in = (PushbackReader) super.in;
+		this.prefixes = new HashSet<Character>(prefixes);
 	}
 	
 	public CharPrefixLineFilterReader(Reader in, char... prefixes) {
 		this(in);
 		
-		for (char prefix : prefixes)
+		for (char prefix : prefixes) {
 			addPrefix(prefix);
+		}
 	}
 	
 	public boolean addPrefix(char prefix) {
 		if ((prefix == '\n') || (prefix == '\r')) return false;
 		
-		return prefixSet.add(prefix);
+		return prefixes.add(prefix);
 	}
 	
 	public boolean removePrefix(char prefix) {
-		return prefixSet.remove(prefix);
+		return prefixes.remove(prefix);
 	}
 	
 	private boolean matchPrefix(char c) {
-		for (char prefix : prefixSet) {
+		for (char prefix : prefixes) {
 			if (c == prefix) return true;
 		}
 		

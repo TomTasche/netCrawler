@@ -5,8 +5,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.LinuxCommandLineAgent;
-import at.netcrawler.cli.agent.LinuxCommandLineAgentSettings;
+import at.netcrawler.cli.agent.LinuxCLIAgent;
+import at.netcrawler.cli.agent.LinuxCLIAgentSettings;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -54,9 +54,9 @@ public class LinuxCommandLineAgentTest {
 		final LocalSSHConnection connection = new LocalSSHConnection(accessor,
 				settings);
 		
-		LinuxCommandLineAgentSettings agentSettings = new LinuxCommandLineAgentSettings();
+		LinuxCLIAgentSettings agentSettings = new LinuxCLIAgentSettings();
 		
-		LinuxCommandLineAgent agent = new LinuxCommandLineAgent(connection,
+		LinuxCLIAgent agent = new LinuxCLIAgent(connection,
 				agentSettings);
 		System.out.println(agent.execute("uname -a"));
 		System.out.println(agent.execute("pwd"));

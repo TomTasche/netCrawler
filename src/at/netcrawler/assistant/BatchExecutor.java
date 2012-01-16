@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
@@ -206,7 +206,7 @@ public class BatchExecutor extends JFrame {
 	
 	private String openConnection(String username, String password, String ip,
 			String batch, String connection, int port) throws IOException {
-		CommandLine commandLine;
+		CommandLineInterface cli;
 		
 		IPv4Address ipAddress = IPv4Address.getByAddress(ip);
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
@@ -222,16 +222,16 @@ public class BatchExecutor extends JFrame {
 			
 			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
 					accessor, settings);
-			commandLine = sshConsoleConnection;
+			cli = sshConsoleConnection;
 		} else if (connection.equals(TELNET)) {
 			TelnetSettings settings = new TelnetSettings();
 			settings.setPort(port);
 			
 			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
 					accessor, settings);
-			commandLine = telnetConnection;
+			cli = telnetConnection;
 			
-			OutputStream outputStream = commandLine.getOutputStream();
+			OutputStream outputStream = cli.getOutputStream();
 			
 			if (!username.isEmpty()) {
 				outputStream.write(username.getBytes());
@@ -246,8 +246,8 @@ public class BatchExecutor extends JFrame {
 			throw new IllegalStateException();
 		}
 		
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
+		InputStream inputStream = cli.getInputStream();
+		OutputStream outputStream = cli.getOutputStream();
 		
 		String start = "!-start-";
 		Pattern startPattern = Pattern.compile(".+" + Pattern.quote(start));
@@ -266,7 +266,7 @@ public class BatchExecutor extends JFrame {
 		
 		String result = StreamUtil.read(reader);
 		
-		commandLine.close();
+		cli.close();
 		
 		return result;
 	}

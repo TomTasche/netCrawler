@@ -4,12 +4,12 @@ import java.io.Reader;
 import java.io.Writer;
 
 
-public class CommandLineSocket {
+public class CLISocket {
 	
 	private final Reader reader;
 	private final Writer writer;
 	
-	public CommandLineSocket(Reader reader, Writer writer) {
+	public CLISocket(Reader reader, Writer writer) {
 		this.reader = reader;
 		this.writer = writer;
 	}

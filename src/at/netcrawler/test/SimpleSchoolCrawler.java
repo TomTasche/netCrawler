@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.CiscoCommandLineAgent;
-import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
+import at.netcrawler.cli.agent.CiscoCLIAgent;
+import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
 import at.netcrawler.network.CDPNeighbors;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -138,25 +138,24 @@ public class SimpleSchoolCrawler {
 			Set<String> usedIDs) throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings;
-		CommandLine commandLine = null;
+		CommandLineInterface cli = null;
 		
 		for (int i = 0; i < 3; i++) {
 			settings = generateSettings(i, logon);
 			
 			try {
-				commandLine = openConnection(accessor, settings);
+				cli = openConnection(accessor, settings);
 				break;
 			} catch (IOException e) {}
 		}
 		
-		if (commandLine == null) throw new IOException("not able to connect!");
+		if (cli == null) throw new IOException("not able to connect!");
 		
-		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
+		CiscoCLIAgentSettings agentSettings = new CiscoCLIAgentSettings();
 		agentSettings.setLogonUsername(logon.username);
 		agentSettings.setLogonPassword(logon.password);
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(commandLine,
-				agentSettings);
+		CiscoCLIAgent agent = new CiscoCLIAgent(cli, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		CiscoCommandLineDeviceManager deviceManager = new CiscoCommandLineDeviceManager(
@@ -164,13 +163,13 @@ public class SimpleSchoolCrawler {
 		
 		String id = deviceManager.getIdentication();
 		if (usedIDs.contains(id)) {
-			commandLine.close();
+			cli.close();
 			return;
 		}
 		
 		deviceManager.readDevice();
 		
-		commandLine.close();
+		cli.close();
 		
 		System.out.println();
 		System.out.println("hostname:		"
@@ -219,7 +218,7 @@ public class SimpleSchoolCrawler {
 		}
 	}
 	
-	public static CommandLine openConnection(DeviceAccessor accessor,
+	public static CommandLineInterface openConnection(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
 		if (settings.getClass().equals(SSHSettings.class)) {
 			LocalSSHConnection connection = new LocalSSHConnection(

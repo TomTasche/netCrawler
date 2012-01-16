@@ -7,7 +7,7 @@ import at.andiwand.library.io.CloseableReader;
 import at.andiwand.library.io.CloseableWriter;
 
 
-public abstract class ProcessTerminator extends CommandLineSocketHook {
+public abstract class CLIProcessTerminator extends CLISocketHook {
 	
 	private CloseableReader inCloser;
 	private CloseableWriter outCloser;
@@ -20,7 +20,7 @@ public abstract class ProcessTerminator extends CommandLineSocketHook {
 	}
 	
 	@Override
-	public final CommandLineSocket hookSocket(CommandLineSocket socket) {
+	public final CLISocket hookSocket(CLISocket socket) {
 		inCloser = new CloseableReader(socket.getReader());
 		outCloser = new CloseableWriter(socket.getWriter());
 		
@@ -30,7 +30,7 @@ public abstract class ProcessTerminator extends CommandLineSocketHook {
 		Writer writer = outCloser;
 		writer = hookWriter(writer);
 		
-		return new CommandLineSocket(reader, writer);
+		return new CLISocket(reader, writer);
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public abstract class ProcessTerminator extends CommandLineSocketHook {
 		return writer;
 	}
 	
-	protected void terminate() {
+	protected final void terminate() {
 		inCloser.close();
 		outCloser.close();
 		
@@ -51,7 +51,7 @@ public abstract class ProcessTerminator extends CommandLineSocketHook {
 		}
 	}
 	
-	public void waitFor() throws InterruptedException {
+	public final void waitFor() throws InterruptedException {
 		synchronized (lock) {
 			if (terminated) return;
 			lock.wait();
