@@ -1,4 +1,4 @@
-package at.rennweg.htl.netcrawler.data;
+package at.netcrawler.data;
 
 import java.io.BufferedWriter;
 import java.io.File;
