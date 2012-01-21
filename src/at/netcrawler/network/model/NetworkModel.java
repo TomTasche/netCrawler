@@ -54,16 +54,6 @@ public abstract class NetworkModel {
 		return new HashSet<NetworkModelExtension>(extensions);
 	}
 	
-	public final boolean hasExtension(NetworkModelExtension extension) {
-		return extensions.contains(extension);
-	}
-	
-	public final boolean hasExtension(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		return hasExtension(extension);
-	}
-	
 	public final boolean isExtensionSupported(NetworkModelExtension extension) {
 		if (!getClass().equals(extension.getExtendedModelClass())) return false;
 		if (!extensions.containsAll(extension.getRequiredExtensions())) return false;
@@ -75,6 +65,16 @@ public abstract class NetworkModel {
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
 		return isExtensionSupported(extension);
+	}
+	
+	public final boolean containsExtension(NetworkModelExtension extension) {
+		return extensions.contains(extension);
+	}
+	
+	public final boolean containsExtension(
+			Class<? extends NetworkModelExtension> extensionClass) {
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		return containsExtension(extension);
 	}
 	
 	public final void setValue(String key, Object value) {
@@ -105,8 +105,8 @@ public abstract class NetworkModel {
 		}
 	}
 	
-	public final boolean addListener(NetworkModelListener listener) {
-		return listeners.add(listener);
+	public final void addListener(NetworkModelListener listener) {
+		listeners.add(listener);
 	}
 	
 	public final boolean addExtension(
@@ -128,8 +128,8 @@ public abstract class NetworkModel {
 		return true;
 	}
 	
-	public final boolean removeListener(NetworkModelListener listener) {
-		return listeners.remove(listener);
+	public final void removeListener(NetworkModelListener listener) {
+		listeners.remove(listener);
 	}
 	
 	public final boolean removeExtension(

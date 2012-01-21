@@ -1,6 +1,6 @@
 package at.netcrawler.network.topology;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,13 +36,39 @@ public abstract class NetworkTopology extends
 	public abstract Set<TopologyDevice> getDevices();
 	
 	@Override
-	public final Collection<TopologyCable> getEdges() {
+	public final Set<TopologyCable> getEdges() {
 		return getCables();
 	}
 	
 	public abstract Set<TopologyCable> getCables();
 	
 	public abstract Map<TopologyInterface, TopologyCable> getConnectionMap();
+	
+	@Override
+	public final Set<TopologyCable> getConnectedEdges(TopologyDevice vertex) {
+		return getConnectedCables(vertex);
+	}
+	
+	public Set<TopologyCable> getConnectedCables(TopologyDevice device) {
+		Set<TopologyCable> result = new HashSet<TopologyCable>();
+		Map<TopologyInterface, TopologyCable> connectionMap = getConnectionMap();
+		
+		for (TopologyInterface interfaze : device.getInterfaces()) {
+			TopologyCable cable = connectionMap.get(interfaze);
+			result.add(cable);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public final Set<TopologyDevice> getConnectedVertices(TopologyDevice vertex) {
+		return getConnectedDevices(vertex);
+	}
+	
+	public Set<TopologyDevice> getConnectedDevices(TopologyDevice device) {
+		return super.getConnectedVertices(device);
+	}
 	
 	@Override
 	public final boolean addVertex(TopologyDevice vertex) {

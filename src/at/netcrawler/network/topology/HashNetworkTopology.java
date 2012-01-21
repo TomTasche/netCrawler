@@ -11,8 +11,6 @@ public class HashNetworkTopology extends NetworkTopology {
 	private class InterfaceAdapter extends TopologyDeviceAdapter {
 		@Override
 		public void interfaceAdded(TopologyInterface interfaze) {
-			System.out.println("yessss 1");
-			
 			synchronized (HashNetworkTopology.this) {
 				interfaces.add(interfaze);
 			}
@@ -20,8 +18,6 @@ public class HashNetworkTopology extends NetworkTopology {
 		
 		@Override
 		public void interfaceRemoved(TopologyInterface interfaze) {
-			System.out.println("yessss 2");
-			
 			synchronized (HashNetworkTopology.this) {
 				TopologyCable cable = connectionMap.get(interfaze);
 				removeCable(cable);
@@ -71,6 +67,19 @@ public class HashNetworkTopology extends NetworkTopology {
 	@Override
 	public synchronized Map<TopologyInterface, TopologyCable> getConnectionMap() {
 		return new HashMap<TopologyInterface, TopologyCable>(connectionMap);
+	}
+	
+	@Override
+	public synchronized Set<TopologyCable> getConnectedCables(
+			TopologyDevice device) {
+		Set<TopologyCable> result = new HashSet<TopologyCable>();
+		
+		for (TopologyInterface interfaze : device.getInterfaces()) {
+			TopologyCable cable = connectionMap.get(interfaze);
+			result.add(cable);
+		}
+		
+		return result;
 	}
 	
 	@Override
