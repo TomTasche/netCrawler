@@ -61,7 +61,6 @@ public abstract class NetworkModel {
 	public final boolean hasExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		
 		return hasExtension(extension);
 	}
 	
@@ -75,14 +74,12 @@ public abstract class NetworkModel {
 	public final boolean isExtensionSupported(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		
 		return isExtensionSupported(extension);
 	}
 	
 	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
 				"Unknown key!");
-		
 		Object oldValue = valueMap.put(key, value);
 		
 		if (value == oldValue) return;
@@ -99,7 +96,6 @@ public abstract class NetworkModel {
 	public final void clearExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		
 		clearExtension(extension);
 	}
 	
@@ -116,7 +112,6 @@ public abstract class NetworkModel {
 	public final boolean addExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		
 		return addExtension(extension);
 	}
 	
@@ -130,7 +125,6 @@ public abstract class NetworkModel {
 		typeMap.putAll(extension.getExtensionTypeMap());
 		
 		fireExtensionAdded(extension);
-		
 		return true;
 	}
 	
@@ -141,7 +135,6 @@ public abstract class NetworkModel {
 	public final boolean removeExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
-		
 		return removeExtension(extension);
 	}
 	
@@ -153,27 +146,26 @@ public abstract class NetworkModel {
 			typeMap.remove(key);
 		}
 		
-		if (extensions.remove(extension)) {
-			fireExtensionAdded(extension);
-			return true;
-		}
+		if (!extensions.remove(extension)) return false;
 		
-		return false;
+		fireExtensionRemoved(extension);
+		return true;
 	}
 	
-	public final void fireValueChanged(String key, Object value, Object oldValue) {
+	private final void fireValueChanged(String key, Object value,
+			Object oldValue) {
 		for (NetworkModelListener listener : listeners) {
 			listener.valueChanged(key, value, oldValue);
 		}
 	}
 	
-	public final void fireExtensionAdded(NetworkModelExtension extension) {
+	private final void fireExtensionAdded(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionAdded(extension);
 		}
 	}
 	
-	public final void fireExtensionRemoved(NetworkModelExtension extension) {
+	private final void fireExtensionRemoved(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionRemoved(extension);
 		}
