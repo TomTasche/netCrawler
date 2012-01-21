@@ -141,9 +141,4 @@ public class HashNetworkTopology extends NetworkTopology {
 		return true;
 	}
 	
-	@Override
-	public synchronized boolean removeAllCables(TopologyCable cable) {
-		return super.removeAllCables(cable);
-	}
-	
 }

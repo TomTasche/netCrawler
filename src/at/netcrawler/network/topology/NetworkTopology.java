@@ -98,13 +98,4 @@ public abstract class NetworkTopology extends
 	
 	public abstract boolean removeCable(TopologyCable cable);
 	
-	@Override
-	public final boolean removeAllEdges(TopologyCable edge) {
-		return removeAllCables(edge);
-	}
-	
-	public boolean removeAllCables(TopologyCable cable) {
-		return super.removeAllEdges(cable);
-	}
-	
 }
