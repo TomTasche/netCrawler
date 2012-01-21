@@ -105,7 +105,7 @@ public abstract class NetworkModel {
 		}
 	}
 	
-	public final boolean addModelListener(NetworkModelListener listener) {
+	public final boolean addListener(NetworkModelListener listener) {
 		return listeners.add(listener);
 	}
 	
@@ -128,7 +128,7 @@ public abstract class NetworkModel {
 		return true;
 	}
 	
-	public final boolean removeModelListener(NetworkModelListener listener) {
+	public final boolean removeListener(NetworkModelListener listener) {
 		return listeners.remove(listener);
 	}
 	

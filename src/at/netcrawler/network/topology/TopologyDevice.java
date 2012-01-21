@@ -30,7 +30,7 @@ public class TopologyDevice {
 	public TopologyDevice(NetworkDevice networkDevice) {
 		this.networkDevice = networkDevice;
 		
-		networkDevice.addModelListener(new DeviceAdapter());
+		networkDevice.addListener(new DeviceAdapter());
 		setDeviceInterfaces();
 	}
 	
