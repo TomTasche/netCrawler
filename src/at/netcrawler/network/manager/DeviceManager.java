@@ -1,7 +1,7 @@
 package at.netcrawler.network.manager;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
@@ -16,7 +16,7 @@ public abstract class DeviceManager {
 	
 	private final NetworkDevice device;
 	
-	private final Set<DeviceExtensionManager> extensionManagers = new HashSet<DeviceExtensionManager>();
+	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
 	
 	public DeviceManager(NetworkDevice device) {
 		this.device = device;
