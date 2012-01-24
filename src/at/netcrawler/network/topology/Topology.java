@@ -15,7 +15,7 @@ public abstract class Topology extends
 		AbstractHypergraph<TopologyDevice, TopologyCable> implements
 		ListenableGraph<TopologyDevice, TopologyCable> {
 	
-	private final List<TopologyListener> listeners = new ArrayList<TopologyListener>();
+	private final List<GraphListener> listeners = new ArrayList<GraphListener>();
 	
 	public abstract Map<TopologyInterface, TopologyCable> getConnectionMap();
 	
@@ -32,12 +32,7 @@ public abstract class Topology extends
 	}
 	
 	@Override
-	public void addListener(
-			GraphListener<TopologyDevice, TopologyCable> listener) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public void addListener(TopologyListener listener) {
+	public void addListener(GraphListener listener) {
 		synchronized (listeners) {
 			listeners.add(listener);
 		}
@@ -62,12 +57,7 @@ public abstract class Topology extends
 	}
 	
 	@Override
-	public void removeListener(
-			GraphListener<TopologyDevice, TopologyCable> listener) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public final void removeListener(TopologyListener listener) {
+	public void removeListener(GraphListener listener) {
 		synchronized (listeners) {
 			listeners.remove(listener);
 		}
@@ -93,7 +83,7 @@ public abstract class Topology extends
 	
 	private void fireVertexAdded(TopologyDevice vertex) {
 		synchronized (listeners) {
-			for (TopologyListener listener : listeners) {
+			for (GraphListener listener : listeners) {
 				listener.vertexAdded(vertex);
 			}
 		}
@@ -101,7 +91,7 @@ public abstract class Topology extends
 	
 	private void fireVertexRemoved(TopologyDevice vertex) {
 		synchronized (listeners) {
-			for (TopologyListener listener : listeners) {
+			for (GraphListener listener : listeners) {
 				listener.vertexRemoved(vertex);
 			}
 		}
@@ -109,7 +99,7 @@ public abstract class Topology extends
 	
 	private void fireEdgeAdded(TopologyCable edge) {
 		synchronized (listeners) {
-			for (TopologyListener listener : listeners) {
+			for (GraphListener listener : listeners) {
 				listener.edgeAdded(edge);
 			}
 		}
@@ -117,7 +107,7 @@ public abstract class Topology extends
 	
 	private void fireEdgeRemoved(TopologyCable edge) {
 		synchronized (listeners) {
-			for (TopologyListener listener : listeners) {
+			for (GraphListener listener : listeners) {
 				listener.edgeRemoved(edge);
 			}
 		}

@@ -8,7 +8,7 @@ import at.andiwand.library.math.graph.AbstractHyperedge;
 import at.netcrawler.network.model.NetworkCable;
 
 
-public class TopologyCable extends AbstractHyperedge<TopologyDevice> {
+public class TopologyCable extends AbstractHyperedge {
 	
 	private final NetworkCable networkCable;
 	
