@@ -6,62 +6,62 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class HashNetworkTopology extends NetworkTopology {
+public class HashTopology extends Topology {
 	
 	private class InterfaceAdapter extends TopologyDeviceAdapter {
 		@Override
 		public void interfaceAdded(TopologyInterface interfaze) {
-			synchronized (HashNetworkTopology.this) {
+			synchronized (HashTopology.this) {
 				interfaces.add(interfaze);
 			}
 		}
 		
 		@Override
 		public void interfaceRemoved(TopologyInterface interfaze) {
-			synchronized (HashNetworkTopology.this) {
+			synchronized (HashTopology.this) {
 				TopologyCable cable = connectionMap.get(interfaze);
-				removeCable(cable);
+				removeEdge(cable);
 				
 				interfaces.remove(interfaze);
 			}
 		}
 	}
 	
-	private final Set<TopologyDevice> devices = new HashSet<TopologyDevice>();
+	private final Set<TopologyDevice> vertices = new HashSet<TopologyDevice>();
 	private final Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
 	private final Map<TopologyInterface, TopologyCable> connectionMap = new HashMap<TopologyInterface, TopologyCable>();
-	private final Set<TopologyCable> cables = new HashSet<TopologyCable>();
+	private final Set<TopologyCable> edges = new HashSet<TopologyCable>();
 	
-	public HashNetworkTopology() {}
+	public HashTopology() {}
 	
-	public HashNetworkTopology(NetworkTopology networkTopology) {
-		for (TopologyDevice device : networkTopology.getDevices()) {
-			addDevice(device);
+	public HashTopology(Topology topology) {
+		for (TopologyDevice device : topology.getVertices()) {
+			addVertex(device);
 		}
 		
-		for (TopologyCable cable : networkTopology.getCables()) {
-			addCable(cable);
+		for (TopologyCable cable : topology.getEdges()) {
+			addEdge(cable);
 		}
 	}
 	
 	@Override
-	public synchronized int getDeviceCount() {
-		return devices.size();
+	public synchronized int getVertexCount() {
+		return vertices.size();
 	}
 	
 	@Override
-	public synchronized int getCableCount() {
-		return cables.size();
+	public synchronized int getEdgeCount() {
+		return edges.size();
 	}
 	
 	@Override
-	public synchronized Set<TopologyDevice> getDevices() {
-		return new HashSet<TopologyDevice>(devices);
+	public synchronized Set<TopologyDevice> getVertices() {
+		return new HashSet<TopologyDevice>(vertices);
 	}
 	
 	@Override
-	public synchronized Set<TopologyCable> getCables() {
-		return new HashSet<TopologyCable>(cables);
+	public synchronized Set<TopologyCable> getEdges() {
+		return new HashSet<TopologyCable>(edges);
 	}
 	
 	@Override
@@ -83,23 +83,23 @@ public class HashNetworkTopology extends NetworkTopology {
 	}
 	
 	@Override
-	public synchronized boolean addDevice(TopologyDevice device) {
-		if (devices.contains(device)) return false;
+	protected synchronized boolean addVertexImpl(TopologyDevice vertex) {
+		if (vertices.contains(vertex)) return false;
 		
-		device.addListener(new InterfaceAdapter());
+		vertex.addListener(new InterfaceAdapter());
 		
-		for (TopologyInterface interfaze : device.getInterfaces()) {
+		for (TopologyInterface interfaze : vertex.getInterfaces()) {
 			interfaces.add(interfaze);
 		}
 		
-		devices.add(device);
+		vertices.add(vertex);
 		
 		return true;
 	}
 	
 	@Override
-	public synchronized boolean addCable(TopologyCable cable) {
-		if (cables.contains(cable)) return false;
+	protected synchronized boolean addEdgeImpl(TopologyCable cable) {
+		if (edges.contains(cable)) return false;
 		
 		for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
 			if (!interfaces.contains(interfaze)) return false;
@@ -107,36 +107,36 @@ public class HashNetworkTopology extends NetworkTopology {
 			connectionMap.put(interfaze, cable);
 		}
 		
-		cables.add(cable);
+		edges.add(cable);
 		
 		return true;
 	}
 	
 	@Override
-	public synchronized boolean removeDevice(TopologyDevice device) {
-		if (!devices.contains(device)) return false;
+	protected synchronized boolean removeVertexImpl(TopologyDevice vertex) {
+		if (!vertices.contains(vertex)) return false;
 		
-		for (TopologyInterface interfaze : device.getInterfaces()) {
+		for (TopologyInterface interfaze : vertex.getInterfaces()) {
 			TopologyCable cable = connectionMap.get(interfaze);
-			removeCable(cable);
+			removeEdge(cable);
 			
 			interfaces.remove(interfaze);
 		}
 		
-		devices.remove(device);
+		vertices.remove(vertex);
 		
 		return true;
 	}
 	
 	@Override
-	public synchronized boolean removeCable(TopologyCable cable) {
-		if (!cables.contains(cable)) return false;
+	protected synchronized boolean removeEdgeImpl(TopologyCable edge) {
+		if (!edges.contains(edge)) return false;
 		
-		for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
+		for (TopologyInterface interfaze : edge.getConnectedInterfaces()) {
 			connectionMap.remove(interfaze);
 		}
 		
-		cables.remove(cable);
+		edges.remove(edge);
 		
 		return true;
 	}

@@ -6,17 +6,17 @@ import java.util.HashSet;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
-import at.netcrawler.network.topology.HashNetworkTopology;
-import at.netcrawler.network.topology.NetworkTopology;
+import at.netcrawler.network.topology.HashTopology;
+import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
 
 
-public class HashNetworkTopologyTest {
+public class HashTopologyTest {
 	
 	public static void main(String[] args) {
-		NetworkTopology networkTopology = new HashNetworkTopology();
+		Topology topology = new HashTopology();
 		
 		NetworkDevice deviceA = new NetworkDevice();
 		NetworkInterface interfaceA = new NetworkInterface();
@@ -44,16 +44,16 @@ public class HashNetworkTopologyTest {
 				new HashSet<TopologyInterface>(Arrays.asList(
 						topologyInterfaceA, topologyInterfaceB)));
 		
-		networkTopology.addDevice(topologyDeviceA);
-		networkTopology.addDevice(topologyDeviceB);
-		networkTopology.addCable(topologyCable);
+		topology.addVertex(topologyDeviceA);
+		topology.addVertex(topologyDeviceB);
+		topology.addEdge(topologyCable);
 		
-		System.out.println(networkTopology.getEdgeCount());
+		System.out.println(topology.getEdgeCount());
 		
 		deviceA.setValue(NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>());
 		
-		System.out.println(networkTopology.getEdgeCount());
+		System.out.println(topology.getEdgeCount());
 	}
 	
 }
