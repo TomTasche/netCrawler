@@ -29,13 +29,14 @@ public class NetworkDevice extends NetworkModel {
 	public static final String CAPABILITIES = "device.capability";
 	public static final Class<Set<Capability>> CAPABILITIES_TYPE = GenericsUtil.castClass(Set.class);
 	
+	public static final String MAJOR_CAPABILITY = "device.majorCapability";
+	public static final Class<Capability> MAJOR_CAPABILITY_TYPE = Capability.class;
+	
 	public static final String INTERFACES = "device.interfaces";
 	public static final Class<Set<NetworkInterface>> INTERFACES_TYPE = GenericsUtil.castClass(Set.class);
 	
 	public static final String MANAGEMENT_ADDRESSES = "device.managementIpSet";
 	public static final Class<Set<IPAddress>> MANAGEMENT_ADDRESSES_TYPE = GenericsUtil.castClass(Set.class);
-	
-	// TODO: add generic information
 	
 	static {
 		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
@@ -45,9 +46,9 @@ public class NetworkDevice extends NetworkModel {
 		map.put(SYSTEM, SYSTEM_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);
 		map.put(CAPABILITIES, CAPABILITIES_TYPE);
+		map.put(MAJOR_CAPABILITY, MAJOR_CAPABILITY_TYPE);
 		map.put(INTERFACES, INTERFACES_TYPE);
 		map.put(MANAGEMENT_ADDRESSES, MANAGEMENT_ADDRESSES_TYPE);
-		// TODO: put generic information
 		
 		TYPE_MAP = Collections.unmodifiableMap(map);
 	}

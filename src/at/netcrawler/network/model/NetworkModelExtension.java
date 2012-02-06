@@ -87,8 +87,8 @@ public abstract class NetworkModelExtension {
 	
 	private void setExtendedModelClass(
 			Class<? extends NetworkModel> extendedModelClass) {
-		if (extendedModelClass == null) throw new IllegalArgumentException(
-				"Passing null is illigal!");
+		if (extendedModelClass == null)
+			throw new IllegalArgumentException("Passing null is illigal!");
 		
 		this.extendedModelClass = extendedModelClass;
 	}
@@ -105,8 +105,10 @@ public abstract class NetworkModelExtension {
 	protected final void finalizeExtension() {
 		if (finalized) return;
 		
-		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions)) requiredExtensions = Collections.unmodifiableSet(requiredExtensions);
-		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap)) extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
+		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions))
+			requiredExtensions = Collections.unmodifiableSet(requiredExtensions);
+		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap))
+			extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
 		
 		finalized = true;
 	}
@@ -126,8 +128,8 @@ public abstract class NetworkModelExtension {
 	protected final void addRequiredExtension(NetworkModelExtension extension) {
 		checkNotFinalized();
 		
-		if (!extension.getExtendedModelClass().equals(extendedModelClass)) throw new IllegalArgumentException(
-				"Illegal model class extension!");
+		if (!extension.getExtendedModelClass().equals(extendedModelClass))
+			throw new IllegalArgumentException("Illegal model class extension!");
 		
 		requiredExtensions.add(extension);
 	}

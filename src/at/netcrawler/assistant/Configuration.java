@@ -34,8 +34,8 @@ public class Configuration {
 	
 	private static void validateJsonName(JsonReader reader, String name)
 			throws IOException {
-		if (!reader.nextName().equals(name)) throw new IOException(
-				"Illegal JSON format!");
+		if (!reader.nextName().equals(name))
+			throw new IOException("Illegal JSON format!");
 	}
 	
 	private IPv4Address address;

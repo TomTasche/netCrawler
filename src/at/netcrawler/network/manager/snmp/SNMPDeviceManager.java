@@ -54,6 +54,12 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
+	public Capability getMajorCapability() throws IOException {
+		// TODO implement
+		return null;
+	}
+	
+	@Override
 	public long getUptime() throws IOException {
 		// TODO implement
 		return 0;

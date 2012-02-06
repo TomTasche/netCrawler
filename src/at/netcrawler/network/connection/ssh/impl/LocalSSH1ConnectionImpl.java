@@ -74,8 +74,8 @@ public class LocalSSH1ConnectionImpl extends LocalSSHConnectionImpl {
 				settings.getPort(), new SimpleAuthenticator(
 						settings.getUsername(), settings.getPassword()),
 				new SSHInteractorAdapter());
-		if (!client.shell()) throw new IOException(
-				"couldn't start a shell session!");
+		if (!client.shell())
+			throw new IOException("couldn't start a shell session!");
 	}
 	
 	@Override

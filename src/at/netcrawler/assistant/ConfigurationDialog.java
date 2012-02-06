@@ -98,7 +98,8 @@ public class ConfigurationDialog {
 			dialog.setVisible(true);
 			dialog.dispose();
 			
-			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION) return null;
+			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION)
+				return null;
 			
 			if (Arrays.equals(passwordField.getPassword(),
 					passwordRepeatField.getPassword())) break;

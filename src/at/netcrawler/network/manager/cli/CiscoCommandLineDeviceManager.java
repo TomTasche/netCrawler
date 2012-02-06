@@ -61,6 +61,12 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 		return null;
 	}
 	
+	@Override
+	public Capability getMajorCapability() throws IOException {
+		// TODO: implement
+		return null;
+	}
+	
 	public Set<NetworkInterface> getInterfaces() throws IOException {
 		// TODO: implement
 		return null;

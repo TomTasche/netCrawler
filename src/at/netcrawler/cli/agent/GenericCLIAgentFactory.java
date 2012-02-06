@@ -8,8 +8,16 @@ import at.andiwand.library.cli.CommandLineInterface;
 public abstract class GenericCLIAgentFactory<S extends CLIAgentSettings> extends
 		CLIAgentFactory {
 	
+	private final Class<S> settingsClass;
+	
+	public GenericCLIAgentFactory(Class<S> settingsClass) {
+		this.settingsClass = settingsClass;
+	}
+	
 	@Override
-	public abstract Class<S> getSettingsClass();
+	public final Class<S> getSettingsClass() {
+		return settingsClass;
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")

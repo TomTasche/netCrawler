@@ -1,4 +1,4 @@
-package at.netcrawler.gui;
+package at.netcrawler.gui.main;
 
 import java.awt.BorderLayout;
 

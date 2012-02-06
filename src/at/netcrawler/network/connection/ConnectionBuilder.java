@@ -63,8 +63,8 @@ public class ConnectionBuilder {
 	public <C extends Connection> C openConnection(DeviceAccessor accessor,
 			Class<C> connectionClass) throws IOException {
 		ConnectionSettings settings = settingsMap.get(connectionClass);
-		if (settings == null) throw new IllegalArgumentException(
-				"No default settings found!");
+		if (settings == null)
+			throw new IllegalArgumentException("No default settings found!");
 		
 		return openConnection(accessor, settings, connectionClass);
 	}

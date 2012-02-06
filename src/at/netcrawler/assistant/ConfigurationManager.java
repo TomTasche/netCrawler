@@ -226,7 +226,8 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void validateConnection() {
-		if (((ConnectionType) connections.getSelectedItem()).legalConnection()) return;
+		if (((ConnectionType) connections.getSelectedItem()).legalConnection())
+			return;
 		
 		throw new IllegalArgumentException("Choose connection!");
 	}
@@ -240,8 +241,8 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void validateBatch() {
-		if (batchTabbedPane.getTabCount() <= 0) throw new IllegalArgumentException(
-				"Contains no batches!");
+		if (batchTabbedPane.getTabCount() <= 0)
+			throw new IllegalArgumentException("Contains no batches!");
 	}
 	
 	private void validateAll() {
@@ -283,7 +284,8 @@ public class ConfigurationManager extends JFrame {
 			return;
 		}
 		
-		if (batchFileChooser.showOpenDialog(ConfigurationManager.this) == JFileChooser.CANCEL_OPTION) return;
+		if (batchFileChooser.showOpenDialog(ConfigurationManager.this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		File file = batchFileChooser.getSelectedFile();
 		
@@ -306,7 +308,8 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		try {
 			File file = fileChooser.getSelectedFile();
@@ -342,7 +345,8 @@ public class ConfigurationManager extends JFrame {
 		}
 		
 		if (activeFile == null) {
-			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) return;
+			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION)
+				return;
 			
 			activeFile = fileChooser.getSelectedFile();
 			

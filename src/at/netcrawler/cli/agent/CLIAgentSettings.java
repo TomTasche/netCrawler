@@ -20,7 +20,7 @@ public abstract class CLIAgentSettings implements Cloneable {
 	@Override
 	public abstract CLIAgentSettings clone();
 	
-	public abstract Class<? extends PromtPatternCLIAgent> getAgentClass();
+	public abstract Class<? extends CLIAgent> getAgentClass();
 	
 	public Charset getCharset() {
 		return charset;

@@ -55,8 +55,9 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	@Override
 	public final List<SNMPObject> getBulk(int nonRepeaters, int maxRepetitions,
 			String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request");
 		
 		return getBulkImpl(nonRepeaters, maxRepetitions, oids);
 	}
@@ -120,8 +121,9 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	@Override
 	public final List<SNMPObject> walkBulk(int maxRepetitions, String oid)
 			throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request");
 		
 		return walkBulkImpl(maxRepetitions, oid);
 	}
@@ -202,8 +204,9 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	@Override
 	public final List<SNMPObject[]> walkBulkTable(int maxRepetitions,
 			String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request");
 		
 		return walkBulkTableImpl(maxRepetitions, oids);
 	}

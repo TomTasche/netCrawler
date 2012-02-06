@@ -8,8 +8,9 @@ import at.andiwand.library.cli.CommandLineInterface;
 public abstract class PromtPatternCLIAgentFactory<S extends PromtPatternCLIAgentSettings> extends
 		GenericCLIAgentFactory<S> {
 	
-	@Override
-	public abstract Class<? extends PromtPatternCLIAgent> getAgentClass();
+	public PromtPatternCLIAgentFactory(Class<S> settingsClass) {
+		super(settingsClass);
+	}
 	
 	protected abstract PromtPatternCLIAgent createAgentGenericImpl(
 			CommandLineInterface cli, S settings) throws IOException;

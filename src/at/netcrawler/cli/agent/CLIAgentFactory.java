@@ -13,8 +13,8 @@ public abstract class CLIAgentFactory {
 	
 	public final CLIAgent createAgent(CommandLineInterface cli,
 			CLIAgentSettings settings) throws IOException {
-		if (!settings.getClass().equals(getSettingsClass())) throw new IllegalArgumentException(
-				"Illegal settings class!");
+		if (!settings.getClass().equals(getSettingsClass()))
+			throw new IllegalArgumentException("Illegal settings class!");
 		
 		return createAgentImpl(cli, settings);
 	}
@@ -24,8 +24,8 @@ public abstract class CLIAgentFactory {
 	
 	public final CLIAgent createAgent(CLISocket socket,
 			CLIAgentSettings settings) throws IOException {
-		if (!settings.getClass().equals(getSettingsClass())) throw new IllegalArgumentException(
-				"Illegal settings class!");
+		if (!settings.getClass().equals(getSettingsClass()))
+			throw new IllegalArgumentException("Illegal settings class!");
 		
 		return createAgentImpl(socket, settings);
 	}

@@ -76,10 +76,10 @@ public class CiscoCLIAgent extends PromtPatternCLIAgent {
 	// TODO: improve
 	private void handleLogin(CiscoCLIAgentSettings settings) throws IOException {
 		if (settings != null) {
-			if (settings.getLogonUsername() != null) out.write(settings.getLogonUsername()
-					+ newLine);
-			if (settings.getLogonPassword() != null) out.write(settings.getLogonPassword()
-					+ newLine);
+			if (settings.getLogonUsername() != null)
+				out.write(settings.getLogonUsername() + newLine);
+			if (settings.getLogonPassword() != null)
+				out.write(settings.getLogonPassword() + newLine);
 		}
 	}
 	

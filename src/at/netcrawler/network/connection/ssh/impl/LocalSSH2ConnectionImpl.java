@@ -34,8 +34,8 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 			client = new SSH2SimpleClient(transport, settings.getUsername(),
 					settings.getPassword());
 			console = new SSH2ConsoleRemote(client.getConnection());
-			if (!console.shell(true)) throw new IOException(
-					"couldn't start a shell session!");
+			if (!console.shell(true))
+				throw new IOException("couldn't start a shell session!");
 		} catch (SSH2Exception e) {
 			throw new IOException(e);
 		}

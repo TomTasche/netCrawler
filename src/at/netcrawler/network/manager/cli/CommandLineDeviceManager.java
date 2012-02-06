@@ -18,7 +18,8 @@ public abstract class CommandLineDeviceManager extends DeviceManager {
 	private boolean commandOutputCaching;
 	private Map<String, String> commandOutputCache = new HashMap<String, String>();
 	
-	public CommandLineDeviceManager(NetworkDevice device, PromtPatternCLIAgent agent) {
+	public CommandLineDeviceManager(NetworkDevice device,
+			PromtPatternCLIAgent agent) {
 		super(device);
 		
 		this.agent = agent;

@@ -56,8 +56,7 @@ public class LinuxCommandLineAgentTest {
 		
 		LinuxCLIAgentSettings agentSettings = new LinuxCLIAgentSettings();
 		
-		LinuxCLIAgent agent = new LinuxCLIAgent(connection,
-				agentSettings);
+		LinuxCLIAgent agent = new LinuxCLIAgent(connection, agentSettings);
 		System.out.println(agent.execute("uname -a"));
 		System.out.println(agent.execute("pwd"));
 		System.out.println(agent.execute("date"));
