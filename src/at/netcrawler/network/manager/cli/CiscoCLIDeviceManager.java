@@ -5,50 +5,46 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPAddress;
+import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.cli.agent.PromtPatternCLIAgent;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
 
 
-public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
+public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	
 	private static final String IDENTICATION_COMMAND = "show version";
-	private static final Pattern IDENTICATION_PATTERN = Pattern.compile(
+	private static final QuickPattern IDENTICATION_PATTERN = new QuickPattern(
 			"^processor board id ((.*?)( \\((.*?)\\))?)$", Pattern.MULTILINE
-					| Pattern.CASE_INSENSITIVE);
-	private static final int IDENTICATION_GROUP = 2;
+					| Pattern.CASE_INSENSITIVE, 2);
 	
 	private static final String HOSTNAME_COMMAND = "show running-config";
-	private static final Pattern HOSTNAME_PATTERN = Pattern.compile(
-			"^hostname (.*?)$", Pattern.MULTILINE);
-	private static final int HOSTNAME_GROUP = 1;
+	private static final QuickPattern HOSTNAME_PATTERN = new QuickPattern(
+			"^hostname (.*?)$", Pattern.MULTILINE, 1);
 	
 	private static final String SYSTEM_COMMAND = "show version";
-	private static final Pattern SYSTEM_PATTERN = Pattern.compile(
+	private static final QuickPattern SYSTEM_PATTERN = new QuickPattern(
 			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
-					| Pattern.CASE_INSENSITIVE);
-	private static final int SYSTEM_GROUP = 0;
+					| Pattern.CASE_INSENSITIVE, 0);
 	
-	public CiscoCommandLineDeviceManager(NetworkDevice device,
+	public CiscoCLIDeviceManager(NetworkDevice device,
 			PromtPatternCLIAgent agent) {
 		super(device, agent);
 		
-		addExtensionManager(new CiscoCommandLineExtensionManager());
+		addExtensionManager(new CiscoCLIExtensionManager());
 	}
 	
 	public String getIdentication() throws IOException {
-		return executeAndFind(IDENTICATION_COMMAND, IDENTICATION_PATTERN,
-				IDENTICATION_GROUP);
+		return executeAndFind(IDENTICATION_COMMAND, IDENTICATION_PATTERN);
 	}
 	
 	public String getHostname() throws IOException {
-		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN,
-				HOSTNAME_GROUP);
+		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN);
 	}
 	
 	public String getSystem() throws IOException {
-		return executeAndFind(SYSTEM_COMMAND, SYSTEM_PATTERN, SYSTEM_GROUP);
+		return executeAndFind(SYSTEM_COMMAND, SYSTEM_PATTERN);
 	}
 	
 	public long getUptime() throws IOException {
@@ -78,7 +74,14 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	}
 	
 	public boolean setHostname(String hostname) throws IOException {
-		throw new UnsupportedOperationException();
+		// TODO: implement
+		return false;
+	}
+	
+	@Override
+	public Set<IPAddress> discoverNeighbors() {
+		// TODO: implement
+		return null;
 	}
 	
 }

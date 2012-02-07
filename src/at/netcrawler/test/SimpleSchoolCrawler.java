@@ -27,7 +27,7 @@ import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetSettings;
-import at.netcrawler.network.manager.cli.CiscoCommandLineDeviceManager;
+import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoExtension;
 
@@ -158,8 +158,8 @@ public class SimpleSchoolCrawler {
 		CiscoCLIAgent agent = new CiscoCLIAgent(cli, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
-		CiscoCommandLineDeviceManager deviceManager = new CiscoCommandLineDeviceManager(
-				device, agent);
+		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
+				agent);
 		
 		String id = deviceManager.getIdentication();
 		if (usedIDs.contains(id)) {
@@ -167,7 +167,7 @@ public class SimpleSchoolCrawler {
 			return;
 		}
 		
-		deviceManager.readDevice();
+		deviceManager.updateDevice();
 		
 		cli.close();
 		

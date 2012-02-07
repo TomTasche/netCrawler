@@ -10,8 +10,7 @@ import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.RouterExtension;
 
 
-public abstract class RouterExtensionManager<M extends DeviceManager> extends
-		GenericDeviceExtensionManager<M> {
+public abstract class RouterExtensionManager extends DeviceExtensionManager {
 	
 	private static final Class<RouterExtension> EXTENSION_CLASS = RouterExtension.class;
 	
@@ -19,7 +18,21 @@ public abstract class RouterExtensionManager<M extends DeviceManager> extends
 		super(EXTENSION_CLASS);
 	}
 	
+	@Override
+	public final Object getValue(String key) throws IOException {
+		if (key.equals(RouterExtension.ROUTING_TABLE)) {
+			return getRoutingTable();
+		}
+		
+		throw new IllegalArgumentException("Unsupported key!");
+	}
+	
 	public abstract RoutingTable getRoutingTable() throws IOException;
+	
+	@Override
+	public final boolean setValue(String key, Object value) throws IOException {
+		throw new IllegalArgumentException("Unsupported key!");
+	}
 	
 	@Override
 	public boolean hasExtension() throws IOException {
@@ -27,13 +40,6 @@ public abstract class RouterExtensionManager<M extends DeviceManager> extends
 		Set<Capability> capabilities = GenericsUtil.castObject(device.getValue(NetworkDevice.CAPABILITIES));
 		
 		return capabilities.contains(Capability.ROUTER);
-	}
-	
-	@Override
-	public void readDeviceExtension() throws IOException {
-		NetworkDevice device = getDevice();
-		
-		device.setValue(RouterExtension.ROUTING_TABLE, getRoutingTable());
 	}
 	
 }

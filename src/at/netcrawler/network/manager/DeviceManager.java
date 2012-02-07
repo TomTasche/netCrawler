@@ -12,12 +12,13 @@ import at.netcrawler.network.model.NetworkInterface;
 import at.netcrawler.network.model.NetworkModelExtension;
 
 
-// TODO: add neighbor discovery method
 public abstract class DeviceManager {
 	
 	private final NetworkDevice device;
 	
 	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
+	
+	private double progress;
 	
 	public DeviceManager(NetworkDevice device) {
 		this.device = device;
@@ -27,23 +28,39 @@ public abstract class DeviceManager {
 		return device;
 	}
 	
-	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
-		return hasExtensionManager(extension.getClass());
+	public final double getProgress() {
+		return progress;
 	}
 	
-	public final boolean hasExtensionManager(
-			Class<? extends NetworkDeviceExtension> extensionClass) {
-		for (DeviceExtensionManager extensionManager : extensionManagers) {
-			if (extensionManager.getExtensionClass().equals(extensionClass))
-				return true;
+	public final Object getValue(String key) throws IOException {
+		if (key.equals(NetworkDevice.IDENTICATION)) {
+			return getIdentication();
+		} else if (key.equals(NetworkDevice.HOSTNAME)) {
+			return getHostname();
+		} else if (key.equals(NetworkDevice.SYSTEM)) {
+			return getSystem();
+		} else if (key.equals(NetworkDevice.UPTIME)) {
+			return getUptime();
+		} else if (key.equals(NetworkDevice.CAPABILITIES)) {
+			return getCapabilities();
+		} else if (key.equals(NetworkDevice.MAJOR_CAPABILITY)) {
+			return getMajorCapability();
+		} else if (key.equals(NetworkDevice.INTERFACES)) {
+			return getInterfaces();
+		} else if (key.equals(NetworkDevice.MANAGEMENT_ADDRESSES)) {
+			return getManagementAddresses();
 		}
 		
-		return false;
-	}
-	
-	public final boolean hasExtensionManager(
-			DeviceExtensionManager extensionManager) {
-		return extensionManagers.contains(extensionManager);
+		// TODO: optimize (string->extensionManager map)
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				try {
+					return extensionManager.getValue(key);
+				} catch (RuntimeException e) {}
+			}
+		}
+		
+		throw new IllegalArgumentException("Unsupported key!");
 	}
 	
 	public abstract String getIdentication() throws IOException;
@@ -62,10 +79,50 @@ public abstract class DeviceManager {
 	
 	public abstract Set<IPAddress> getManagementAddresses() throws IOException;
 	
+	public final boolean setValue(String key, Object value) throws IOException {
+		if (key.equals(NetworkDevice.HOSTNAME)) {
+			return setHostname((String) value);
+		}
+		
+		// TODO: optimize (string->extensionManager map)
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				try {
+					return extensionManager.setValue(key, value);
+				} catch (IllegalArgumentException e) {}
+			}
+		}
+		
+		throw new IllegalArgumentException("Unsupported key!");
+	}
+	
 	public abstract boolean setHostname(String hostname) throws IOException;
+	
+	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
+		return hasExtensionManager(extension.getClass());
+	}
+	
+	public final boolean hasExtensionManager(
+			Class<? extends NetworkDeviceExtension> extensionClass) {
+		for (DeviceExtensionManager extensionManager : extensionManagers) {
+			if (extensionManager.getExtensionClass().equals(extensionClass))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public final boolean hasExtensionManager(
+			DeviceExtensionManager extensionManager) {
+		synchronized (extensionManagers) {
+			return extensionManagers.contains(extensionManager);
+		}
+	}
 	
 	public final boolean addExtensionManager(
 			DeviceExtensionManager extensionManager) {
+		if (hasExtensionManager(extensionManager)) return false;
+		
 		DeviceManager deviceManager = extensionManager.getDeviceManager();
 		NetworkDeviceExtension deviceExtension = extensionManager.getExtension();
 		
@@ -83,47 +140,63 @@ public abstract class DeviceManager {
 		}
 		
 		extensionManager.setDeviceManager(this);
-		extensionManagers.add(extensionManager);
+		
+		synchronized (extensionManagers) {
+			extensionManagers.add(extensionManager);
+		}
 		
 		return true;
 	}
 	
 	public final boolean removeExtensionManager(
 			DeviceExtensionManager extensionManager) {
-		DeviceManager deviceManager = extensionManager.getDeviceManager();
+		if (!hasExtensionManager(extensionManager)) return false;
 		
+		DeviceManager deviceManager = extensionManager.getDeviceManager();
 		if (deviceManager != this) return false;
 		
-		extensionManagers.remove(extensionManager);
+		synchronized (extensionManagers) {
+			extensionManagers.remove(extensionManager);
+		}
+		
 		extensionManager.setDeviceManager(null);
 		
 		return true;
 	}
 	
-	// TODO: key looping -> progress
-	public void readDevice() throws IOException {
-		device.setValue(NetworkDevice.IDENTICATION, getIdentication());
-		device.setValue(NetworkDevice.HOSTNAME, getHostname());
-		device.setValue(NetworkDevice.SYSTEM, getSystem());
-		device.setValue(NetworkDevice.UPTIME, getUptime());
-		device.setValue(NetworkDevice.CAPABILITIES, getCapabilities());
-		device.setValue(NetworkDevice.MAJOR_CAPABILITY, getMajorCapability());
-		device.setValue(NetworkDevice.INTERFACES, getInterfaces());
-		device.setValue(NetworkDevice.MANAGEMENT_ADDRESSES,
-				getManagementAddresses());
+	public abstract Set<IPAddress> discoverNeighbors();
+	
+	public final void updateDevice() throws IOException {
+		progress = 0;
 		
-		for (DeviceExtensionManager extensionManager : extensionManagers) {
-			if (extensionManager.hasExtension()) {
-				device.addExtension(extensionManager.getExtension());
-				extensionManager.readDeviceExtension();
+		Set<String> keySet = NetworkDevice.TYPE_MAP.keySet();
+		
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				if (!extensionManager.hasExtension()) continue;
+				
+				NetworkDeviceExtension extension = extensionManager.getExtension();
+				Set<String> extensionKexSet = extension.getExtensionTypeMap().keySet();
+				keySet.addAll(extensionKexSet);
 			}
+		}
+		
+		int keyCount = keySet.size();
+		int fetchCount = 0;
+		
+		for (String key : keySet) {
+			Object value = getValue(key);
+			device.setValue(key, value);
+			
+			fetchCount++;
+			progress = (double) fetchCount / keyCount;
 		}
 	}
 	
-	public void fetchDevice() throws IOException {
+	public final void fetchDevice() throws IOException {
 		device.clear();
 		
-		readDevice();
+		updateDevice();
 	}
 	
 }

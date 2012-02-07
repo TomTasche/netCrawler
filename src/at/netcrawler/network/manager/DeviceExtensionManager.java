@@ -37,6 +37,8 @@ public abstract class DeviceExtensionManager {
 		return extensionClass;
 	}
 	
+	public abstract Object getValue(String key) throws IOException;
+	
 	public final NetworkDeviceExtension getExtension() {
 		try {
 			return extensionClass.newInstance();
@@ -57,6 +59,9 @@ public abstract class DeviceExtensionManager {
 		return deviceManager;
 	}
 	
+	public abstract boolean setValue(String key, Object value)
+			throws IOException;
+	
 	protected void setDeviceManager(DeviceManager deviceManager) {
 		if (deviceManager == null) {
 			this.device = null;
@@ -70,13 +75,5 @@ public abstract class DeviceExtensionManager {
 	}
 	
 	public abstract boolean hasExtension() throws IOException;
-	
-	public abstract void readDeviceExtension() throws IOException;
-	
-	public final void fetchDeviceExtension() throws IOException {
-		device.clearExtension(extensionClass);
-		
-		readDeviceExtension();
-	}
 	
 }

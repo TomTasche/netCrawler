@@ -89,9 +89,7 @@ public class SNMPDeviceManager extends DeviceManager {
 					newInterface.addExtension(EthernetInterfaceExtension.class);
 					newInterface.setValue(EthernetInterfaceExtension.ADDRESS,
 							address);
-				} catch (Exception e) {
-					
-				}
+				} catch (Exception e) {}
 			}
 			
 			interfaces.add(newInterface);
@@ -110,6 +108,12 @@ public class SNMPDeviceManager extends DeviceManager {
 	public boolean setHostname(String hostname) throws IOException {
 		return connection.setAndVerify("1.3.6.1.2.1.1.5.0", Type.STRING,
 				hostname);
+	}
+	
+	@Override
+	public Set<IPAddress> discoverNeighbors() {
+		// TODO implement
+		return null;
 	}
 	
 }
