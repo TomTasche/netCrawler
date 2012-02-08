@@ -23,6 +23,11 @@ public abstract class NetworkModel {
 	}
 	
 	@Override
+	public String toString() {
+		return valueMap.toString();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		if (obj == this) return true;

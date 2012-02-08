@@ -1,7 +1,10 @@
 package at.netcrawler.network.manager;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
@@ -19,6 +22,8 @@ public abstract class DeviceManager {
 	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
 	
 	private double progress;
+	// TODO: or polling?
+	private List<ManagerProgressListener> progressListeners = new ArrayList<ManagerProgressListener>();
 	
 	public DeviceManager(NetworkDevice device) {
 		this.device = device;
@@ -148,6 +153,13 @@ public abstract class DeviceManager {
 		return true;
 	}
 	
+	// TODO: or polling?
+	public void addProgressListener(ManagerProgressListener listener) {
+		synchronized (progressListeners) {
+			progressListeners.add(listener);
+		}
+	}
+	
 	public final boolean removeExtensionManager(
 			DeviceExtensionManager extensionManager) {
 		if (!hasExtensionManager(extensionManager)) return false;
@@ -164,12 +176,20 @@ public abstract class DeviceManager {
 		return true;
 	}
 	
+	// TODO: or polling?
+	public void removeProgressListener(ManagerProgressListener listener) {
+		synchronized (progressListeners) {
+			progressListeners.remove(listener);
+		}
+	}
+	
 	public abstract Set<IPAddress> discoverNeighbors();
 	
 	public final void updateDevice() throws IOException {
 		progress = 0;
 		
-		Set<String> keySet = NetworkDevice.TYPE_MAP.keySet();
+		Set<String> keySet = new HashSet<String>();
+		keySet.addAll(NetworkDevice.TYPE_MAP.keySet());
 		
 		synchronized (extensionManagers) {
 			for (DeviceExtensionManager extensionManager : extensionManagers) {
@@ -190,6 +210,8 @@ public abstract class DeviceManager {
 			
 			fetchCount++;
 			progress = (double) fetchCount / keyCount;
+			// TODO: or polling?
+			fireProgress(progress);
 		}
 	}
 	
@@ -197,6 +219,15 @@ public abstract class DeviceManager {
 		device.clear();
 		
 		updateDevice();
+	}
+	
+	// TODO: or polling?
+	private void fireProgress(double progress) {
+		synchronized (progressListeners) {
+			for (ManagerProgressListener progressListener : progressListeners) {
+				progressListener.updateOccured(progress);
+			}
+		}
 	}
 	
 }

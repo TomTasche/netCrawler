@@ -25,7 +25,7 @@ public abstract class CLIDeviceManager extends DeviceManager {
 	public String executeAndFind(String command, QuickPattern pattern)
 			throws IOException {
 		String result = execute(command);
-		return pattern.find(result);
+		return pattern.findGroup(result);
 	}
 	
 }

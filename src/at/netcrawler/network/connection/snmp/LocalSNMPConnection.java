@@ -13,6 +13,7 @@ import org.snmp4j.ScopedPDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.Target;
 import org.snmp4j.UserTarget;
+import org.snmp4j.event.ResponseEvent;
 import org.snmp4j.mp.MPv3;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.security.AuthMD5;
@@ -118,25 +119,24 @@ public class LocalSNMPConnection extends SNMPConnection {
 	private static final String NO_PASSWORD = "        ";
 	private static final String NO_CRYPTO_KEY = NO_PASSWORD;
 	
-	private static final Map<SNMPVersion, Integer> VERSION_TRANSLATION_MAP;
-	private static final Map<SNMPSecurityLevel, Integer> SECURITY_LEVEL_TRANSLATION_MAP;
-	
-	static {
-		Map<SNMPVersion, Integer> versionTranlationMap = new HashMap<SNMPVersion, Integer>();
-		versionTranlationMap.put(SNMPVersion.VERSION1, SnmpConstants.version1);
-		versionTranlationMap.put(SNMPVersion.VERSION2C, SnmpConstants.version2c);
-		versionTranlationMap.put(SNMPVersion.VERSION3, SnmpConstants.version3);
-		VERSION_TRANSLATION_MAP = Collections.unmodifiableMap(versionTranlationMap);
+	private static final Map<SNMPVersion, Integer> VERSION_TRANSLATION_MAP = new HashMap<SNMPVersion, Integer>() {
+		private static final long serialVersionUID = 1051440945943102967L;
 		
-		Map<SNMPSecurityLevel, Integer> securityLevelTranlationMap = new HashMap<SNMPSecurityLevel, Integer>();
-		securityLevelTranlationMap.put(SNMPSecurityLevel.NOAUTH_NOPRIV,
-				SecurityLevel.NOAUTH_NOPRIV);
-		securityLevelTranlationMap.put(SNMPSecurityLevel.AUTH_NOPRIV,
-				SecurityLevel.AUTH_NOPRIV);
-		securityLevelTranlationMap.put(SNMPSecurityLevel.AUTH_PRIV,
-				SecurityLevel.AUTH_PRIV);
-		SECURITY_LEVEL_TRANSLATION_MAP = Collections.unmodifiableMap(securityLevelTranlationMap);
-	}
+		{
+			put(SNMPVersion.VERSION1, SnmpConstants.version1);
+			put(SNMPVersion.VERSION2C, SnmpConstants.version2c);
+			put(SNMPVersion.VERSION3, SnmpConstants.version3);
+		}
+	};
+	private static final Map<SNMPSecurityLevel, Integer> SECURITY_LEVEL_TRANSLATION_MAP = new HashMap<SNMPSecurityLevel, Integer>() {
+		private static final long serialVersionUID = 3860939352265705050L;
+		
+		{
+			put(SNMPSecurityLevel.NOAUTH_NOPRIV, SecurityLevel.NOAUTH_NOPRIV);
+			put(SNMPSecurityLevel.AUTH_NOPRIV, SecurityLevel.AUTH_NOPRIV);
+			put(SNMPSecurityLevel.AUTH_PRIV, SecurityLevel.AUTH_PRIV);
+		}
+	};
 	
 	private Snmp snmp;
 	private Target target;
@@ -261,7 +261,10 @@ public class LocalSNMPConnection extends SNMPConnection {
 	}
 	
 	public PDU send(PDU pdu) throws IOException {
-		return snmp.send(pdu, target).getResponse();
+		ResponseEvent responseEvent = snmp.send(pdu, target);
+		PDU response = responseEvent.getResponse();
+		if (response == null) throw new SNMPException("Agent unreachable!");
+		return response;
 	}
 	
 	private PDU buildAndSend(int type, String... oids) throws IOException {
@@ -284,8 +287,6 @@ public class LocalSNMPConnection extends SNMPConnection {
 	}
 	
 	private List<SNMPObject> convert(PDU response) throws IOException {
-		if (response == null) return null;
-		
 		List<SNMPObject> result = new ArrayList<SNMPObject>(response.size());
 		
 		for (int i = 0; i < response.size(); i++) {

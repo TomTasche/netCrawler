@@ -101,14 +101,14 @@ public class CiscoCLIExtensionManager extends CiscoExtensionManager {
 			
 			if (neighborString.isEmpty()) continue;
 			
-			String name = CDP_NEIGHBORS_NAME_PATTERN.find(neighborString);
+			String name = CDP_NEIGHBORS_NAME_PATTERN.findGroup(neighborString);
 			
-			String localInterface = CDP_NEIGHBORS_LOCAL_INTERFACE_PATTERN.find(neighborString);
+			String localInterface = CDP_NEIGHBORS_LOCAL_INTERFACE_PATTERN.findGroup(neighborString);
 			
-			int holdTime = Integer.parseInt(CDP_NEIGHBORS_HOLD_TIME_PATTERN.find(neighborString));
+			int holdTime = Integer.parseInt(CDP_NEIGHBORS_HOLD_TIME_PATTERN.findGroup(neighborString));
 			
 			Set<Capability> capabilities = new HashSet<Capability>();
-			String capabilitiesString = CDP_NEIGHBORS_CAPABILITIES_PATTERN.find(neighborString);
+			String capabilitiesString = CDP_NEIGHBORS_CAPABILITIES_PATTERN.findGroup(neighborString);
 			String[] capabilityStrings = CDP_NEIGHBORS_CAPABILITIES_SEPARATOR.split(capabilitiesString);
 			for (String capabilityString : capabilityStrings) {
 				capabilityString = capabilityString.toLowerCase();
@@ -117,12 +117,12 @@ public class CiscoCLIExtensionManager extends CiscoExtensionManager {
 				capabilities.add(capability);
 			}
 			
-			String platform = CDP_NEIGHBORS_PLATFORM_PATTERN.find(neighborString);
+			String platform = CDP_NEIGHBORS_PLATFORM_PATTERN.findGroup(neighborString);
 			
-			String remoteInterface = CDP_NEIGHBORS_REMOTE_INTERFACE_PATTERN.find(neighborString);
+			String remoteInterface = CDP_NEIGHBORS_REMOTE_INTERFACE_PATTERN.findGroup(neighborString);
 			
 			Set<IPv4Address> managementAddresses = new HashSet<IPv4Address>();
-			List<String> managementAddressStrings = CDP_NEIGHBORS_MANAGEMENT_ADDRESS_PATTERN.findAll(neighborString);
+			List<String> managementAddressStrings = CDP_NEIGHBORS_MANAGEMENT_ADDRESS_PATTERN.findGroupAll(neighborString);
 			for (String managementAddressString : managementAddressStrings) {
 				IPv4Address managementAddress = IPv4Address.getByAddress(managementAddressString);
 				managementAddresses.add(managementAddress);
