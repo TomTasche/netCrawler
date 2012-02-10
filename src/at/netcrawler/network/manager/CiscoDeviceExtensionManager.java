@@ -4,26 +4,26 @@ import java.io.IOException;
 
 import at.netcrawler.network.CDPNeighbors;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.extension.CiscoExtension;
+import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
-public abstract class CiscoExtensionManager extends DeviceExtensionManager {
+public abstract class CiscoDeviceExtensionManager extends DeviceExtensionManager {
 	
-	private static final Class<CiscoExtension> EXTENSION_CLASS = CiscoExtension.class;
+	private static final Class<CiscoDeviceExtension> EXTENSION_CLASS = CiscoDeviceExtension.class;
 	
-	public CiscoExtensionManager() {
+	public CiscoDeviceExtensionManager() {
 		super(EXTENSION_CLASS);
 	}
 	
 	@Override
 	public final Object getValue(String key) throws IOException {
-		if (key.equals(CiscoExtension.MODEL_NUMBER)) {
+		if (key.equals(CiscoDeviceExtension.MODEL_NUMBER)) {
 			return getModelNumber();
-		} else if (key.equals(CiscoExtension.SYSTEM_SERIAL_NUMBER)) {
+		} else if (key.equals(CiscoDeviceExtension.SYSTEM_SERIAL_NUMBER)) {
 			return getSystemSerialNumber();
-		} else if (key.equals(CiscoExtension.PROCESSOR_STRING)) {
+		} else if (key.equals(CiscoDeviceExtension.PROCESSOR_STRING)) {
 			return getProcessorString();
-		} else if (key.equals(CiscoExtension.CDP_NEIGHBORS)) {
+		} else if (key.equals(CiscoDeviceExtension.CDP_NEIGHBORS)) {
 			return getCDPNeighbors();
 		}
 		

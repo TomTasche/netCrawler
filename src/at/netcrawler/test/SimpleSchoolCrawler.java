@@ -29,7 +29,7 @@ import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetSettings;
 import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.extension.CiscoExtension;
+import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
 public class SimpleSchoolCrawler {
@@ -175,17 +175,17 @@ public class SimpleSchoolCrawler {
 		System.out.println("hostname:		"
 				+ device.getValue(NetworkDevice.HOSTNAME));
 		System.out.println("model number:		"
-				+ device.getValue(CiscoExtension.MODEL_NUMBER));
+				+ device.getValue(CiscoDeviceExtension.MODEL_NUMBER));
 		System.out.println("serial number:		"
-				+ device.getValue(CiscoExtension.SYSTEM_SERIAL_NUMBER));
+				+ device.getValue(CiscoDeviceExtension.SYSTEM_SERIAL_NUMBER));
 		System.out.println("processor:		"
-				+ device.getValue(CiscoExtension.PROCESSOR_STRING));
+				+ device.getValue(CiscoDeviceExtension.PROCESSOR_STRING));
 		System.out.println("processor board id:	"
 				+ device.getValue(NetworkDevice.IDENTICATION));
 		
 		usedIDs.add(id);
 		
-		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoExtension.CDP_NEIGHBORS);
+		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
 		for (CDPNeighbors.Neighbor neighbor : neighbors) {
 			Iterator<IPv4Address> neighborAddressIterator = neighbor.getManagementAddresses().iterator();
 			if (!neighborAddressIterator.hasNext()) continue;

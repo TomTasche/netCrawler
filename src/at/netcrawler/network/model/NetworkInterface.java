@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import at.netcrawler.network.InterfaceType;
+
 
 public class NetworkInterface extends NetworkModel {
 	
@@ -14,6 +16,9 @@ public class NetworkInterface extends NetworkModel {
 	
 	public static final String FULL_NAME = "interface.fullName";
 	public static final Class<String> FULL_NAME_TYPE = String.class;
+	
+	public static final String TYPE = "interface.type";
+	public static final Class<InterfaceType> TYPE_TYPE = InterfaceType.class;
 	
 	public static final String ADMIN_STATE = "interface.adminState";
 	public static final Class<Boolean> ADMIN_STATE_TYPE = Boolean.class;
@@ -32,6 +37,7 @@ public class NetworkInterface extends NetworkModel {
 		
 		map.put(NAME, NAME_TYPE);
 		map.put(FULL_NAME, FULL_NAME_TYPE);
+		map.put(TYPE, TYPE_TYPE);
 		map.put(ADMIN_STATE, ADMIN_STATE_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);
 		map.put(SPEED, SPEED_TYPE);

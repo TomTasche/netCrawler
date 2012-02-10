@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="at/netcrawler/cli/agent/deprecated/|at/netcrawler/network/topology/old/" kind="src" path="src"/>
+	<classpathentry excluding="at/netcrawler/cli/agent/deprecated/|at/netcrawler/network/topology/old/|at/netcrawler/network/connection/snmpOld/" kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/common.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gson-1.7.1.jar" sourcepath="lib/gson-1.7.1-sources.jar">

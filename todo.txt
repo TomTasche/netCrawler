@@ -1,4 +1,0 @@
-* move ARPTable, CDPNeighbors, etc
-* improve system string from CiscoCommandLineDeviceManager
-* improve CiscoCommandLineAgent logon -> logic
-* optimize cli filter streams

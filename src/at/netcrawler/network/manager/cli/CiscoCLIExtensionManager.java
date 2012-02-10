@@ -13,11 +13,11 @@ import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.network.CDPNeighbors;
 import at.netcrawler.network.CDPNeighbors.Neighbor;
 import at.netcrawler.network.Capability;
-import at.netcrawler.network.manager.CiscoExtensionManager;
+import at.netcrawler.network.manager.CiscoDeviceExtensionManager;
 import at.netcrawler.network.manager.DeviceManager;
 
 
-public class CiscoCLIExtensionManager extends CiscoExtensionManager {
+public class CiscoCLIExtensionManager extends CiscoDeviceExtensionManager {
 	
 	private static final String MODEL_NUMBER_COMMAND = "show version";
 	private static final QuickPattern MODEL_NUMBER_PATTERN = new QuickPattern(

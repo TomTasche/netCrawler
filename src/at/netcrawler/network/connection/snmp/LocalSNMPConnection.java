@@ -23,6 +23,8 @@ import org.snmp4j.security.SecurityModels;
 import org.snmp4j.security.SecurityProtocols;
 import org.snmp4j.security.USM;
 import org.snmp4j.security.UsmUser;
+import org.snmp4j.smi.Counter32;
+import org.snmp4j.smi.Counter64;
 import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.IpAddress;
@@ -35,82 +37,137 @@ import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import at.andiwand.library.network.ip.IPv4Address;
+import at.andiwand.library.util.ObjectIdentifier;
+import at.andiwand.library.util.Timeticks;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.snmp.SNMPObject.Type;
 
 
 public class LocalSNMPConnection extends SNMPConnection {
 	
 	private static interface ValueConverter {
-		public Variable convert(String value);
+		public Variable convertFromObject(Object value);
+		
+		public Object convertFromVariable(Variable value);
 	}
 	
+	// TODO: improve
 	private static enum SupportedType implements ValueConverter {
-		INTEGER(Type.INTEGER, Integer32.class) {
-			public Variable convert(String value) {
-				return new Integer32(Integer.parseInt(value));
+		INTEGER(SNMPObjectType.INTEGER, Integer32.class) {
+			public Variable convertFromObject(Object value) {
+				return new Integer32((Integer) value);
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return ((Integer32) value).getValue();
 			}
 		},
-		UNSIGNED(Type.UNSIGNED, UnsignedInteger32.class) {
-			public Variable convert(String value) {
-				return new UnsignedInteger32(Long.parseLong(value));
+		UNSIGNED(SNMPObjectType.UNSIGNED, UnsignedInteger32.class) {
+			public Variable convertFromObject(Object value) {
+				return new UnsignedInteger32((Long) value);
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return ((UnsignedInteger32) value).getValue();
 			}
 		},
-		STRING(Type.STRING, OctetString.class) {
-			public Variable convert(String value) {
-				return new OctetString(value);
+		COUNTER32(SNMPObjectType.INTEGER, Counter32.class) {
+			public Variable convertFromObject(Object value) {
+				return new Counter32((Long) value);
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return ((Counter32) value).getValue();
 			}
 		},
-		NULLOBJ(Type.NULLOBJ, Null.class) {
-			public Variable convert(String value) {
-				return new Null();
+		COUNTER64(SNMPObjectType.INTEGER, Counter64.class) {
+			public Variable convertFromObject(Object value) {
+				return new Counter64((Long) value);
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return ((Counter64) value).getValue();
 			}
 		},
-		OBJID(Type.OBJID, OID.class) {
-			public Variable convert(String value) {
-				return new OID(value);
+		STRING(SNMPObjectType.STRING, OctetString.class) {
+			public Variable convertFromObject(Object value) {
+				return new OctetString((String) value);
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return ((OctetString) value).toString();
 			}
 		},
-		TIMETICKS(Type.TIMETICKS, TimeTicks.class) {
-			public Variable convert(String value) {
-				return new TimeTicks(Long.parseLong(value));
+		OBJID(SNMPObjectType.OBJID, OID.class) {
+			public Variable convertFromObject(Object value) {
+				return new OID(((ObjectIdentifier) value).getValue());
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return new ObjectIdentifier(((OID) value).getValue());
 			}
 		},
-		IPADDRESS(Type.IPADDRESS, IpAddress.class) {
-			public Variable convert(String value) {
-				return new IpAddress(value);
+		NULL_OBJ(SNMPObjectType.NULL_OBJ, Null.class) {
+			public Variable convertFromObject(Object value) {
+				return new Null(((SNMPNull) value).getSyntax());
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				Null nvll = (Null) value;
+				return new SNMPNull(nvll.getSyntax(), nvll.getSyntaxString());
+			}
+		},
+		TIMETICKS(SNMPObjectType.TIMETICKS, TimeTicks.class) {
+			@Override
+			public Variable convertFromObject(Object value) {
+				return new TimeTicks(((Timeticks) value).getMillis());
+			}
+			
+			@Override
+			public Object convertFromVariable(Variable value) {
+				return new Timeticks(((TimeTicks) value).getValue());
+			}
+		},
+		IPADDRESS(SNMPObjectType.IPADDRESS, IpAddress.class) {
+			public Variable convertFromObject(Object value) {
+				return new IpAddress(((IPv4Address) value).getBytes());
+			}
+			
+			public Object convertFromVariable(Variable value) {
+				return IPv4Address.getByAddress(((IpAddress) value).toByteArray());
 			}
 		};
 		
-		public static final Map<Class<? extends Variable>, Type> TYPE_MAP;
-		public static final Map<Type, ValueConverter> VALUE_CONVERTER_MAP;
+		private static final Map<Class<? extends Variable>, ValueConverter> VARIABLE_VALUE_CONVERTER_MAP;
+		private static final Map<SNMPObjectType, ValueConverter> OBJECT_VALUE_CONVERTER_MAP;
 		
 		static {
-			Map<Class<? extends Variable>, Type> typeMap = new HashMap<Class<? extends Variable>, Type>();
-			Map<Type, ValueConverter> valueConverterMap = new HashMap<Type, ValueConverter>();
+			Map<Class<? extends Variable>, ValueConverter> variableValueConverterMap = new HashMap<Class<? extends Variable>, ValueConverter>();
+			Map<SNMPObjectType, ValueConverter> objectValueConverterMap = new HashMap<SNMPObjectType, ValueConverter>();
 			
 			for (SupportedType type : values()) {
-				typeMap.put(type.variableClass, type.type);
-				valueConverterMap.put(type.type, type);
+				variableValueConverterMap.put(type.variableClass, type);
+				objectValueConverterMap.put(type.type, type);
 			}
 			
-			TYPE_MAP = Collections.unmodifiableMap(typeMap);
-			VALUE_CONVERTER_MAP = Collections.unmodifiableMap(valueConverterMap);
+			VARIABLE_VALUE_CONVERTER_MAP = Collections.unmodifiableMap(variableValueConverterMap);
+			OBJECT_VALUE_CONVERTER_MAP = Collections.unmodifiableMap(objectValueConverterMap);
 		}
 		
-		public static Type getTypeByVariableClass(
+		public static ValueConverter getConverterByVariableClass(
 				Class<? extends Variable> variableClass) {
-			return TYPE_MAP.get(variableClass);
+			return VARIABLE_VALUE_CONVERTER_MAP.get(variableClass);
 		}
 		
-		public static ValueConverter getValueConverterByType(Type type) {
-			return VALUE_CONVERTER_MAP.get(type);
+		public static ValueConverter getConverterByType(SNMPObjectType type) {
+			return OBJECT_VALUE_CONVERTER_MAP.get(type);
 		}
 		
-		public final Type type;
-		public final Class<? extends Variable> variableClass;
+		private final SNMPObjectType type;
+		private final Class<? extends Variable> variableClass;
 		
-		private SupportedType(Type type, Class<? extends Variable> variableClass) {
+		private SupportedType(SNMPObjectType type,
+				Class<? extends Variable> variableClass) {
 			this.type = type;
 			this.variableClass = variableClass;
 		}
@@ -195,24 +252,24 @@ public class LocalSNMPConnection extends SNMPConnection {
 	}
 	
 	@Override
-	public List<SNMPObject> get(String... oids) throws IOException {
+	public List<SNMPEntry> get(ObjectIdentifier... oids) throws IOException {
 		return buildSendAndConvert(PDU.GET, oids);
 	}
 	
 	@Override
-	public List<SNMPObject> getNext(String... oids) throws IOException {
+	public List<SNMPEntry> getNext(ObjectIdentifier... oids) throws IOException {
 		return buildSendAndConvert(PDU.GETNEXT, oids);
 	}
 	
 	@Override
-	protected List<SNMPObject> getBulkImpl(int nonRepeaters,
-			int maxRepetitions, String... oids) throws IOException {
+	protected List<SNMPEntry> getBulkImpl(int nonRepeaters, int maxRepetitions,
+			ObjectIdentifier... oids) throws IOException {
 		return buildSendAndConvertBulk(nonRepeaters, maxRepetitions, oids);
 	}
 	
 	@Override
-	public List<SNMPObject> set(SNMPObject... objects) throws IOException {
-		return buildSendAndConvertSet(objects);
+	public List<SNMPEntry> set(SNMPEntry... entries) throws IOException {
+		return buildSendAndConvertSet(entries);
 	}
 	
 	private PDU build(int type) {
@@ -223,17 +280,18 @@ public class LocalSNMPConnection extends SNMPConnection {
 		return pdu;
 	}
 	
-	private PDU build(int type, String... oids) {
+	private PDU build(int type, ObjectIdentifier... oids) {
 		PDU pdu = build(type);
 		
-		for (String oid : oids) {
-			pdu.add(new VariableBinding(new OID(oid)));
+		for (ObjectIdentifier oid : oids) {
+			pdu.add(new VariableBinding(new OID(oid.getValue())));
 		}
 		
 		return pdu;
 	}
 	
-	private PDU buildBulk(int nonRepeaters, int maxRepetitions, String... oids) {
+	private PDU buildBulk(int nonRepeaters, int maxRepetitions,
+			ObjectIdentifier... oids) {
 		PDU pdu = build(PDU.GETBULK, oids);
 		
 		pdu.setNonRepeaters(nonRepeaters);
@@ -242,17 +300,17 @@ public class LocalSNMPConnection extends SNMPConnection {
 		return pdu;
 	}
 	
-	private PDU buildSet(SNMPObject... objects) {
+	private PDU buildSet(SNMPEntry... entries) {
 		PDU pdu = build(PDU.SET);
 		
-		for (SNMPObject object : objects) {
-			String oidString = object.getOid();
-			Type type = object.getType();
-			String value = object.getValue();
+		for (SNMPEntry entry : entries) {
+			ObjectIdentifier objectIdentifier = entry.getObjectIdentifier();
+			SNMPObjectType type = entry.getType();
+			Object value = entry.getValue();
 			
-			OID oid = new OID(oidString);
-			Variable variable = SupportedType.getValueConverterByType(type).convert(
-					value);
+			OID oid = new OID(objectIdentifier.getValue());
+			ValueConverter valueConverter = SupportedType.getConverterByType(type);
+			Variable variable = valueConverter.convertFromObject(value);
 			
 			pdu.add(new VariableBinding(oid, variable));
 		}
@@ -263,61 +321,63 @@ public class LocalSNMPConnection extends SNMPConnection {
 	public PDU send(PDU pdu) throws IOException {
 		ResponseEvent responseEvent = snmp.send(pdu, target);
 		PDU response = responseEvent.getResponse();
-		if (response == null) throw new SNMPException("Agent unreachable!");
+		if (response == null) throw new IOException("Agent unreachable!");
 		return response;
 	}
 	
-	private PDU buildAndSend(int type, String... oids) throws IOException {
+	private PDU buildAndSend(int type, ObjectIdentifier... oids)
+			throws IOException {
 		PDU pdu = build(type, oids);
 		
 		return send(pdu);
 	}
 	
 	private PDU buildAndSendBulk(int nonRepeaters, int maxRepetitions,
-			String... oids) throws IOException {
+			ObjectIdentifier... oids) throws IOException {
 		PDU pdu = buildBulk(nonRepeaters, maxRepetitions, oids);
 		
 		return send(pdu);
 	}
 	
-	private PDU buildAndSendSet(SNMPObject... objects) throws IOException {
-		PDU pdu = buildSet(objects);
+	private PDU buildAndSendSet(SNMPEntry... entries) throws IOException {
+		PDU pdu = buildSet(entries);
 		
 		return send(pdu);
 	}
 	
-	private List<SNMPObject> convert(PDU response) throws IOException {
-		List<SNMPObject> result = new ArrayList<SNMPObject>(response.size());
+	private List<SNMPEntry> convert(PDU response) throws IOException {
+		List<SNMPEntry> result = new ArrayList<SNMPEntry>(response.size());
 		
 		for (int i = 0; i < response.size(); i++) {
 			VariableBinding variableBinding = response.get(i);
 			Variable variable = variableBinding.getVariable();
 			
-			String oid = variableBinding.getOid().toString();
-			Type type = SupportedType.getTypeByVariableClass(variable.getClass());
-			String value = variableBinding.getVariable().toString();
+			ObjectIdentifier oid = new ObjectIdentifier(
+					variableBinding.getOid().toString());
+			ValueConverter valueConverter = SupportedType.getConverterByVariableClass(variable.getClass());
+			Object value = valueConverter.convertFromVariable(variable);
 			
-			result.add(new SNMPObject(oid, type, value));
+			result.add(new SNMPEntry(oid, value));
 		}
 		
 		return result;
 	}
 	
-	private List<SNMPObject> buildSendAndConvert(int type, String... oids)
-			throws IOException {
+	private List<SNMPEntry> buildSendAndConvert(int type,
+			ObjectIdentifier... oids) throws IOException {
 		PDU response = buildAndSend(type, oids);
 		
 		return convert(response);
 	}
 	
-	private List<SNMPObject> buildSendAndConvertBulk(int nonRepeaters,
-			int maxRepetitions, String... oids) throws IOException {
+	private List<SNMPEntry> buildSendAndConvertBulk(int nonRepeaters,
+			int maxRepetitions, ObjectIdentifier... oids) throws IOException {
 		PDU response = buildAndSendBulk(nonRepeaters, maxRepetitions, oids);
 		
 		return convert(response);
 	}
 	
-	private List<SNMPObject> buildSendAndConvertSet(SNMPObject... objects)
+	private List<SNMPEntry> buildSendAndConvertSet(SNMPEntry... objects)
 			throws IOException {
 		PDU response = buildAndSendSet(objects);
 		

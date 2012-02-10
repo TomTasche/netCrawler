@@ -2,19 +2,22 @@ package at.netcrawler.network.manager.snmp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
-import at.andiwand.library.util.QuickPattern;
+import at.andiwand.library.util.ObjectIdentifier;
+import at.andiwand.library.util.Timeticks;
 import at.netcrawler.network.Capability;
+import at.netcrawler.network.InterfaceType;
 import at.netcrawler.network.connection.snmp.SNMPConnection;
-import at.netcrawler.network.connection.snmp.SNMPObject;
-import at.netcrawler.network.connection.snmp.SNMPObject.Type;
+import at.netcrawler.network.connection.snmp.SNMPEntry;
 import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
@@ -24,20 +27,63 @@ import at.netcrawler.network.model.extension.IPInterfaceExtension;
 
 public class SNMPDeviceManager extends DeviceManager {
 	
-	private static final String IDENTICATION_OID = "1.3.6.1.2.1.1.2.0";
-	private static final String HOSTNAME_OID = "1.3.6.1.2.1.1.5.0";
-	private static final String SYSTEM_OID = "1.3.6.1.2.1.1.1.0";
-	private static final String CAPABILITIES_OID = "1.3.6.1.2.1.1.7.0";
-	private static final String UPTIME_OID = "1.3.6.1.2.1.1.3.0";
-	private static final QuickPattern UPTIME_PATTERN = new QuickPattern(
-			"(\\d+):(\\d+):(\\d+)\\.(\\d+)");
-	private static final String INTERFACES_NAMES_OID = "1.3.6.1.2.1.31.1.1.1.1";
-	private static final String INTERFACES_DESCRIPTIONS_OID = "1.3.6.1.2.1.2.2.1.2";
-	private static final String INTERFACES_PHYSICAL_ADDRESSES_OID = "1.3.6.1.2.1.2.2.1.6";
-	private static final String INTERFACES_IP_IFID_OID = "1.3.6.1.2.1.4.20.1.2";
-	private static final String INTERFACES_IP_ADDRESSES_OID = "1.3.6.1.2.1.4.20.1.1";
-	private static final String INTERFACES_IP_NETMASK_OID = "1.3.6.1.2.1.4.20.1.3";
-	private static final String MANAGEMENT_ADDRESSES_OID = "1.3.6.1.2.1.4.20.1.1";
+	private static enum SupportedInterfaceType {
+		
+		ETHERNET_CSMACD(6, InterfaceType.ETHERNET),
+		SOFTWARE_LOOPBACK(24, InterfaceType.LOOPBACK),
+		ETHERNET_3MBIT(26, InterfaceType.ETHERNET),
+		FRAME_RELAY(32, InterfaceType.FRAME_RELAY);
+		
+		private static final Map<Integer, InterfaceType> TYPE_MAP = new HashMap<Integer, InterfaceType>();
+		
+		static {
+			for (SupportedInterfaceType type : values()) {
+				TYPE_MAP.put(type.snmpType, type.type);
+			}
+		}
+		
+		public static InterfaceType getType(int snmpType) {
+			InterfaceType type = TYPE_MAP.get(snmpType);
+			if (type == null) type = InterfaceType.UNKNOWN;
+			return type;
+		}
+		
+		private final int snmpType;
+		private final InterfaceType type;
+		
+		private SupportedInterfaceType(int snmpType, InterfaceType type) {
+			this.snmpType = snmpType;
+			this.type = type;
+		}
+		
+	}
+	
+	private static final ObjectIdentifier IDENTICATION_OID = new ObjectIdentifier(
+			"1.3.6.1.6.3.10.2.1.1.0");
+	private static final ObjectIdentifier HOSTNAME_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.1.5.0");
+	private static final ObjectIdentifier SYSTEM_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.1.1.0");
+	private static final ObjectIdentifier CAPABILITIES_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.1.7.0");
+	private static final ObjectIdentifier UPTIME_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.1.3.0");
+	private static final ObjectIdentifier INTERFACES_NAMES_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.31.1.1.1.1");
+	private static final ObjectIdentifier INTERFACES_DESCRIPTIONS_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.2.2.1.2");
+	private static final ObjectIdentifier INTERFACES_TYPE_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.2.2.1.3");
+	private static final ObjectIdentifier INTERFACES_PHYSICAL_ADDRESSES_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.2.2.1.6");
+	private static final ObjectIdentifier INTERFACES_IP_IFID_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.4.20.1.2");
+	private static final ObjectIdentifier INTERFACES_IP_ADDRESSES_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.4.20.1.1");
+	private static final ObjectIdentifier INTERFACES_IP_NETMASK_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.4.20.1.3");
+	private static final ObjectIdentifier MANAGEMENT_ADDRESSES_OID = new ObjectIdentifier(
+			"1.3.6.1.2.1.4.20.1.1");
 	
 	private final SNMPConnection connection;
 	
@@ -65,13 +111,12 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	public Set<Capability> getCapabilities() throws IOException {
-		String services = connection.get(CAPABILITIES_OID).getValue();
-		// TODO: fix
-		if (services.equals("noSuchInstance")) return null;
-		int servicesInt = Integer.parseInt(services);
+		Integer servicesInteger = connection.get(CAPABILITIES_OID).getValue();
+		if (servicesInteger == null) return null;
+		int services = servicesInteger;
 		
 		Set<Capability> result = new HashSet<Capability>();
-		if ((servicesInt & 0x04) != 0) result.add(Capability.ROUTER);
+		if ((services & 0x04) != 0) result.add(Capability.ROUTER);
 		return result;
 	}
 	
@@ -83,33 +128,30 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	public long getUptime() throws IOException {
-		String timeticks = connection.get(UPTIME_OID).getValue();
-		String[] time = UPTIME_PATTERN.findGroups(timeticks);
-		long hours = Long.parseLong(time[0]);
-		long minutes = Long.parseLong(time[1]);
-		long seconds = Long.parseLong(time[2]);
-		long millis = Long.parseLong(time[3]);
-		return hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000
-				+ millis;
+		Timeticks timeticks = connection.get(UPTIME_OID).getValue();
+		return timeticks.getMillis();
 	}
 	
 	@Override
 	public Set<NetworkInterface> getInterfaces() throws IOException {
-		List<SNMPObject[]> table = connection.walkTable(INTERFACES_NAMES_OID,
-				INTERFACES_DESCRIPTIONS_OID, INTERFACES_PHYSICAL_ADDRESSES_OID);
-		List<SNMPObject[]> ipTable = connection.walkTable(
+		List<SNMPEntry[]> table = connection.walkTable(INTERFACES_NAMES_OID,
+				INTERFACES_DESCRIPTIONS_OID, INTERFACES_TYPE_OID,
+				INTERFACES_PHYSICAL_ADDRESSES_OID);
+		List<SNMPEntry[]> ipTable = connection.walkTable(
 				INTERFACES_IP_IFID_OID, INTERFACES_IP_ADDRESSES_OID,
 				INTERFACES_IP_NETMASK_OID);
 		
 		List<NetworkInterface> interfaces = new ArrayList<NetworkInterface>();
 		
 		for (int i = 0; i < table.size(); i++) {
-			SNMPObject[] row = table.get(i);
+			SNMPEntry[] row = table.get(i);
 			NetworkInterface interfaze = new NetworkInterface();
 			
 			interfaze.setValue(NetworkInterface.NAME, row[0].getValue());
 			interfaze.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
-			String addressString = row[2].getValue();
+			InterfaceType interfaceType = SupportedInterfaceType.getType((Integer) row[2].getValue());
+			interfaze.setValue(NetworkInterface.TYPE, interfaceType);
+			String addressString = row[3].getValue();
 			if (!addressString.isEmpty()) {
 				try {
 					MACAddress address = MACAddress.getByAddress(addressString);
@@ -123,10 +165,10 @@ public class SNMPDeviceManager extends DeviceManager {
 			interfaces.add(interfaze);
 		}
 		
-		for (SNMPObject[] row : ipTable) {
-			int id = Integer.parseInt(row[0].getValue()) - 1;
-			IPAddress address = IPv4Address.getByAddress(row[1].getValue());
-			SubnetMask netmask = new SubnetMask(row[2].getValue());
+		for (SNMPEntry[] row : ipTable) {
+			int id = (Integer) row[0].getValue() - 1;
+			IPAddress address = row[1].getValue();
+			SubnetMask netmask = new SubnetMask((IPv4Address) row[2].getValue());
 			
 			NetworkInterface interfaze = interfaces.get(id);
 			interfaze.addExtension(IPInterfaceExtension.class);
@@ -139,12 +181,12 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	public Set<IPAddress> getManagementAddresses() throws IOException {
-		List<SNMPObject> addresses = connection.walk(MANAGEMENT_ADDRESSES_OID);
+		List<SNMPEntry> addresses = connection.walk(MANAGEMENT_ADDRESSES_OID);
 		Set<IPAddress> result = new HashSet<IPAddress>();
 		
 		// TODO: support ipv6
-		for (SNMPObject address : addresses) {
-			result.add(IPv4Address.getByAddress(address.getValue()));
+		for (SNMPEntry address : addresses) {
+			result.add((IPAddress) address.getValue());
 		}
 		
 		result.remove(IPv4Address.LOCALHOST);
@@ -154,7 +196,7 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	public boolean setHostname(String hostname) throws IOException {
-		return connection.setAndVerify(HOSTNAME_OID, Type.STRING, hostname);
+		return connection.setAndVerify(HOSTNAME_OID, hostname);
 	}
 	
 	@Override

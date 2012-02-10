@@ -12,7 +12,7 @@ import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.extension.CiscoExtension;
+import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
 public class CiscoCommandLineDeviceManagerTest {
@@ -50,7 +50,7 @@ public class CiscoCommandLineDeviceManagerTest {
 				agent);
 		deviceManager.updateDevice();
 		
-		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoExtension.CDP_NEIGHBORS);
+		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
 		for (CDPNeighbors.Neighbor neighbor : neighbors) {
 			System.out.println(neighbor);
 		}

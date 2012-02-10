@@ -8,7 +8,7 @@ import at.netcrawler.network.CDPNeighbors;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 
-public class CiscoExtension extends NetworkDeviceExtension {
+public class CiscoDeviceExtension extends NetworkDeviceExtension {
 	
 	public static final Map<String, Class<?>> EXTENSION_TYPE_MAP;
 	
@@ -35,7 +35,7 @@ public class CiscoExtension extends NetworkDeviceExtension {
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
-	public CiscoExtension() {
+	public CiscoDeviceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	
