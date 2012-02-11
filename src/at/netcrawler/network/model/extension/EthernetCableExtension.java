@@ -1,5 +1,6 @@
 package at.netcrawler.network.model.extension;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,13 +10,15 @@ import at.netcrawler.network.model.NetworkCableExtension;
 
 public class EthernetCableExtension extends NetworkCableExtension {
 	
-	public static final Map<String, Class<?>> EXTENSION_TYPE_MAP;
+	private static final long serialVersionUID = -491483133714519504L;
+	
+	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String CROSSOVER = "cable.ethernet.crossover";
-	public static final Class<Boolean> CROSSOVER_TYPE = Boolean.class;
+	public static final Type CROSSOVER_TYPE = Boolean.class;
 	
 	static {
-		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+		Map<String, Type> map = new HashMap<String, Type>();
 		
 		map.put(CROSSOVER, CROSSOVER_TYPE);
 		

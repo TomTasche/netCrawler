@@ -12,7 +12,6 @@ import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
-import at.netcrawler.network.model.NetworkModelExtension;
 
 
 public abstract class DeviceManager {
@@ -129,20 +128,11 @@ public abstract class DeviceManager {
 		if (hasExtensionManager(extensionManager)) return false;
 		
 		DeviceManager deviceManager = extensionManager.getDeviceManager();
-		NetworkDeviceExtension deviceExtension = extensionManager.getExtension();
 		
 		if (deviceManager == this) return false;
 		if (deviceManager != null)
 			throw new IllegalArgumentException(
 					"The extension manager is already in use!");
-		
-		for (NetworkModelExtension requiredExtension : deviceExtension.getRequiredExtensions()) {
-			NetworkDeviceExtension requiredDeviceExtension = (NetworkDeviceExtension) requiredExtension;
-			
-			if (!hasExtensionManager(requiredDeviceExtension))
-				throw new IllegalArgumentException(
-						"Required extension managers are missing!");
-		}
 		
 		extensionManager.setDeviceManager(this);
 		

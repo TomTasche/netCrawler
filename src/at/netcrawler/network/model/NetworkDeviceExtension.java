@@ -1,10 +1,12 @@
 package at.netcrawler.network.model;
 
+import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Set;
 
 
 public abstract class NetworkDeviceExtension extends NetworkModelExtension {
+	
+	private static final long serialVersionUID = 2137962615123976453L;
 	
 	public static final Class<NetworkDevice> EXTENDED_MODEL_CLASS = NetworkDevice.class;
 	
@@ -12,14 +14,8 @@ public abstract class NetworkDeviceExtension extends NetworkModelExtension {
 		super(EXTENDED_MODEL_CLASS);
 	}
 	
-	protected NetworkDeviceExtension(Map<String, Class<?>> extendedTypeMap) {
+	protected NetworkDeviceExtension(Map<String, Type> extendedTypeMap) {
 		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
-	}
-	
-	protected NetworkDeviceExtension(
-			Set<NetworkDeviceExtension> requiredExtensions,
-			Map<String, Class<?>> extendedTypeMap) {
-		super(EXTENDED_MODEL_CLASS, requiredExtensions, extendedTypeMap);
 	}
 	
 }

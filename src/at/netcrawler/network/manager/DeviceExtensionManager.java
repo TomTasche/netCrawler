@@ -6,6 +6,7 @@ import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 
+// TODO: add requirements?
 public abstract class DeviceExtensionManager {
 	
 	private final Class<? extends NetworkDeviceExtension> extensionClass;

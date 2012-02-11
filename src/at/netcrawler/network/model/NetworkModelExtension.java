@@ -1,15 +1,17 @@
 package at.netcrawler.network.model;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import at.andiwand.library.util.CollectionUtil;
 
 
-public abstract class NetworkModelExtension {
+public abstract class NetworkModelExtension implements Serializable {
+	
+	private static final long serialVersionUID = -5117690336143564492L;
 	
 	public static NetworkModelExtension getInstance(
 			Class<? extends NetworkModelExtension> extensionClass) {
@@ -21,43 +23,23 @@ public abstract class NetworkModelExtension {
 	}
 	
 	private Class<? extends NetworkModel> extendedModelClass;
-	private Set<NetworkModelExtension> requiredExtensions;
-	private Map<String, Class<?>> extensionTypeMap;
+	private Map<String, Type> extensionTypeMap;
 	
 	private boolean finalized;
 	
 	protected NetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass) {
 		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>());
-		setExtensionTypeMap(new HashMap<String, Class<?>>());
+		setExtensionTypeMap(new HashMap<String, Type>());
 	}
 	
 	protected NetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass,
-			Map<String, Class<?>> extendedTypeMap) {
+			Map<String, Type> extendedTypeMap) {
 		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>());
-		setExtensionTypeMap(new HashMap<String, Class<?>>(extendedTypeMap));
+		setExtensionTypeMap(new HashMap<String, Type>(extendedTypeMap));
 		
-		finalizeExtension();
-	}
-	
-	protected NetworkModelExtension(
-			Class<? extends NetworkModel> extendedModelClass,
-			Set<? extends NetworkModelExtension> requiredExtensions,
-			Map<String, Class<?>> extendedTypeMap) {
-		setExtendedModelClass(extendedModelClass);
-		setRequiredExtensions(new HashSet<NetworkModelExtension>(
-				requiredExtensions));
-		setExtensionTypeMap(new HashMap<String, Class<?>>(extendedTypeMap));
-		
-		finalizeExtension();
-	}
-	
-	@Override
-	public final int hashCode() {
-		return getClass().hashCode();
+		finalize();
 	}
 	
 	@Override
@@ -67,19 +49,18 @@ public abstract class NetworkModelExtension {
 		return getClass().equals(obj.getClass());
 	}
 	
+	@Override
+	public final int hashCode() {
+		return getClass().hashCode();
+	}
+	
 	public final Class<? extends NetworkModel> getExtendedModelClass() {
 		checkFinalized();
 		
 		return extendedModelClass;
 	}
 	
-	public final Set<NetworkModelExtension> getRequiredExtensions() {
-		checkFinalized();
-		
-		return requiredExtensions;
-	}
-	
-	public final Map<String, Class<?>> getExtensionTypeMap() {
+	public final Map<String, Type> getExtensionTypeMap() {
 		checkFinalized();
 		
 		return extensionTypeMap;
@@ -93,20 +74,13 @@ public abstract class NetworkModelExtension {
 		this.extendedModelClass = extendedModelClass;
 	}
 	
-	private void setRequiredExtensions(
-			Set<NetworkModelExtension> requiredExtensions) {
-		this.requiredExtensions = requiredExtensions;
-	}
-	
-	private void setExtensionTypeMap(Map<String, Class<?>> extensionTypeMap) {
+	private void setExtensionTypeMap(Map<String, Type> extensionTypeMap) {
 		this.extensionTypeMap = extensionTypeMap;
 	}
 	
-	protected final void finalizeExtension() {
+	protected final void finalize() {
 		if (finalized) return;
 		
-		if (!CollectionUtil.isUnmodifiableSet(requiredExtensions))
-			requiredExtensions = Collections.unmodifiableSet(requiredExtensions);
 		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap))
 			extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
 		
@@ -125,25 +99,10 @@ public abstract class NetworkModelExtension {
 		throw new IllegalStateException("The extension is finalized!");
 	}
 	
-	protected final void addRequiredExtension(NetworkModelExtension extension) {
-		checkNotFinalized();
-		
-		if (!extension.getExtendedModelClass().equals(extendedModelClass))
-			throw new IllegalArgumentException("Illegal model class extension!");
-		
-		requiredExtensions.add(extension);
-	}
-	
 	protected final void addExtensionType(String key, Class<?> type) {
 		checkNotFinalized();
 		
 		extensionTypeMap.put(key, type);
-	}
-	
-	protected final void removeRequiredExtension(NetworkModelExtension extension) {
-		checkNotFinalized();
-		
-		requiredExtensions.remove(extension);
 	}
 	
 	protected final void removeExtensionType(String key) {

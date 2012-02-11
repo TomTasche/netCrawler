@@ -1,4 +1,4 @@
-package at.netcrawler.data;
+package at.netcrawler.io.gson;
 
 import java.io.BufferedWriter;
 import java.io.File;

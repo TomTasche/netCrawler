@@ -1,5 +1,7 @@
 package at.netcrawler.network.model;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,18 +10,20 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class NetworkModel {
+public abstract class NetworkModel implements Serializable {
 	
-	private final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
+	private static final long serialVersionUID = -5895614487866391126L;
 	
-	private final Map<String, Class<?>> initialTypeMap;
-	private Map<String, Class<?>> typeMap;
+	private transient final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
+	
+	private transient final Map<String, Type> initialTypeMap;
+	private Map<String, Type> typeMap;
 	private final Map<String, Object> valueMap = new HashMap<String, Object>();
 	private final Set<NetworkModelExtension> extensions = new HashSet<NetworkModelExtension>();
 	
-	public NetworkModel(Map<String, Class<?>> initialTypeMap) {
+	public NetworkModel(Map<String, Type> initialTypeMap) {
 		this.initialTypeMap = initialTypeMap;
-		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
+		typeMap = new HashMap<String, Type>(initialTypeMap);
 	}
 	
 	@Override
@@ -47,8 +51,8 @@ public abstract class NetworkModel {
 		return valueMap.get(key);
 	}
 	
-	public final Map<String, Class<?>> getTypeMap() {
-		return new HashMap<String, Class<?>>(typeMap);
+	public final Map<String, Type> getTypeMap() {
+		return new HashMap<String, Type>(typeMap);
 	}
 	
 	public final Map<String, Object> getValueMap() {
@@ -62,8 +66,6 @@ public abstract class NetworkModel {
 	public final boolean isExtensionSupported(NetworkModelExtension extension) {
 		if (!getClass().equals(extension.getExtendedModelClass()))
 			return false;
-		if (!extensions.containsAll(extension.getRequiredExtensions()))
-			return false;
 		
 		return true;
 	}
@@ -72,6 +74,20 @@ public abstract class NetworkModel {
 			Class<? extends NetworkModelExtension> extensionClass) {
 		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
 		return isExtensionSupported(extension);
+	}
+	
+	public final void setValue(String key, Object value) {
+		if (!typeMap.containsKey(key))
+			throw new IllegalArgumentException("Unknown key!");
+		// TODO: fix
+//		Type type = typeMap.get(key);
+//		if (!type.equals(value.getClass()))
+//			throw new IllegalArgumentException("Illegal type!");
+		Object oldValue = valueMap.put(key, value);
+		
+		if (value == oldValue) return;
+		if ((value == null) || (value.equals(oldValue))) return;
+		fireValueChanged(key, value, oldValue);
 	}
 	
 	public final boolean containsExtension(NetworkModelExtension extension) {
@@ -84,19 +100,9 @@ public abstract class NetworkModel {
 		return containsExtension(extension);
 	}
 	
-	public final void setValue(String key, Object value) {
-		if (!typeMap.containsKey(key))
-			throw new IllegalArgumentException("Unknown key!");
-		Object oldValue = valueMap.put(key, value);
-		
-		if (value == oldValue) return;
-		if ((value == null) || (value.equals(oldValue))) return;
-		fireValueChanged(key, value, oldValue);
-	}
-	
 	public final void clear() {
 		valueMap.clear();
-		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
+		typeMap = new HashMap<String, Type>(initialTypeMap);
 		extensions.clear();
 	}
 	

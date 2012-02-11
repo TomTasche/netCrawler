@@ -7,6 +7,7 @@ import java.util.HashSet;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import at.andiwand.library.component.GridGraphLayout;
 import at.andiwand.library.component.JFrameUtil;
 import at.netcrawler.component.TopologyViewer;
 import at.netcrawler.network.Capability;
@@ -25,7 +26,9 @@ public class TopologyViewerTest {
 	public static void main(String[] args) throws Throwable {
 		Topology topology = new HashTopology();
 		
-		TopologyViewer topologyViewer = new TopologyViewer(topology);
+		TopologyViewer topologyViewer = new TopologyViewer();
+		topologyViewer.setGraphLayout(new GridGraphLayout(topologyViewer));
+		topologyViewer.setModel(topology);
 		topologyViewer.addRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		topologyViewer.addRenderingHint(RenderingHints.KEY_RENDERING,
