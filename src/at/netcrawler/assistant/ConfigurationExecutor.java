@@ -208,7 +208,8 @@ public class ConfigurationExecutor extends JFrame {
 		Configuration configuration = new Configuration();
 		configuration.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
-				return ConfigurationDialog.showDecryptionDialog(ConfigurationExecutor.this);
+				return ConfigurationDialog
+						.showDecryptionDialog(ConfigurationExecutor.this);
 			}
 		});
 		
@@ -218,12 +219,12 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	private void execute() throws IOException {
-		DeviceAccessor accessor = new IPDeviceAccessor(
-				configuration.getAddress());
+		DeviceAccessor accessor = new IPDeviceAccessor(configuration
+				.getAddress());
 		ConnectionSettings settings = configuration.generateSettings();
 		
-		CommandLineInterface cli = (CommandLineInterface) connectionFactory.openConnection(
-				accessor, settings);
+		CommandLineInterface cli = (CommandLineInterface) connectionFactory
+				.openConnection(accessor, settings);
 		
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();
@@ -246,7 +247,8 @@ public class ConfigurationExecutor extends JFrame {
 		}
 		
 		Pattern endPattern = Pattern.compile(".+" + BATCH_SUFFIX);
-		String batch = configuration.getBatch((String) batches.getSelectedItem());
+		String batch = configuration.getBatch((String) batches
+				.getSelectedItem());
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();

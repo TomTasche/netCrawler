@@ -59,9 +59,11 @@ public class TopologyViewerTest {
 		NetworkCable cable = new NetworkCable();
 		
 		TopologyDevice topologyDeviceA = new TopologyDevice(deviceA);
-		TopologyInterface topologyInterfaceA = topologyDeviceA.getInterfaceByName("eth0");
+		TopologyInterface topologyInterfaceA = topologyDeviceA
+				.getInterfaceByName("eth0");
 		TopologyDevice topologyDeviceB = new TopologyDevice(deviceB);
-		TopologyInterface topologyInterfaceB = topologyDeviceB.getInterfaceByName("eth0");
+		TopologyInterface topologyInterfaceB = topologyDeviceB
+				.getInterfaceByName("eth0");
 		TopologyCable topologyCable = new TopologyCable(cable,
 				new HashSet<TopologyInterface>(Arrays.asList(
 						topologyInterfaceA, topologyInterfaceB)));

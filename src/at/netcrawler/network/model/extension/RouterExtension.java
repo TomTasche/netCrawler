@@ -13,6 +13,8 @@ public class RouterExtension extends NetworkDeviceExtension {
 	
 	private static final long serialVersionUID = -1772889164593129184L;
 	
+	public static final RouterExtension EXTENSION = new RouterExtension();
+	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String ROUTING_TABLE = "device.router.routingTable";

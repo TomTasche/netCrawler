@@ -37,7 +37,8 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		
 		private static Image loadImage(String imageName) {
 			try {
-				return ImageIO.read(TopologyViewerDevice.class.getResource(imageName));
+				return ImageIO.read(TopologyViewerDevice.class
+						.getResource(imageName));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -78,7 +79,8 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		super(device);
 		
 		networkDevice = device.getNetworkDevice();
-		setCapability((Capability) networkDevice.getValue(NetworkDevice.MAJOR_CAPABILITY));
+		setCapability((Capability) networkDevice
+				.getValue(NetworkDevice.MAJOR_CAPABILITY));
 		networkDevice.addListener(new CapabilityAdapter());
 	}
 	

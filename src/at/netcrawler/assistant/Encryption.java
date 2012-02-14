@@ -30,7 +30,8 @@ public enum Encryption {
 			return outputStream;
 		}
 	},
-	DES("DES"), AES("AES");
+	DES("DES"),
+	AES("AES");
 	
 	private static final String KEY_CHARSET = "utf-8";
 	

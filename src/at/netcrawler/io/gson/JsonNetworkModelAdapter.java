@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import at.andiwand.library.util.GenericsUtil;
-import at.andiwand.library.util.StringComperator;
+import at.andiwand.library.util.StringLengthComperator;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
 
@@ -23,15 +23,17 @@ import com.google.gson.JsonSerializationContext;
 public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 	
 	private static final String EXTENSIONS_PROPERTY = "extensions";
-	private static final Type EXTENSION_TYPE = new GenericsUtil.TypeToken<Set<Class<? extends NetworkModelExtension>>>() {}.getType();
+	private static final Type EXTENSION_TYPE = new GenericsUtil.TypeToken<Set<Class<? extends NetworkModelExtension>>>() {}
+			.getType();
 	private static final String VALUES_PROPERTY = "values";
 	
 	@Override
 	public JsonElement serialize(NetworkModel src, Type typeOfSrc,
 			JsonSerializationContext context) {
-		Map<String, Object> valueMap = new TreeMap<String, Object>(
-				src.getValueMap());
-		Set<Class<?>> extensions = new TreeSet<Class<?>>(new StringComperator());
+		Map<String, Object> valueMap = new TreeMap<String, Object>(src
+				.getValueMap());
+		Set<Class<?>> extensions = new TreeSet<Class<?>>(
+				new StringLengthComperator());
 		
 		for (NetworkModelExtension extension : src.getExtensions()) {
 			extensions.add(extension.getClass());
@@ -54,14 +56,16 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 		try {
 			NetworkModel result = modelClass.newInstance();
 			
-			Set<Class<? extends NetworkModelExtension>> extensions = context.deserialize(
-					object.get(EXTENSIONS_PROPERTY), EXTENSION_TYPE);
+			Set<Class<? extends NetworkModelExtension>> extensions = context
+					.deserialize(object.get(EXTENSIONS_PROPERTY),
+							EXTENSION_TYPE);
 			
 			for (Class<? extends NetworkModelExtension> extension : extensions) {
 				result.addExtension(extension);
 			}
 			
-			JsonObject valueMapObject = object.get(VALUES_PROPERTY).getAsJsonObject();
+			JsonObject valueMapObject = object.get(VALUES_PROPERTY)
+					.getAsJsonObject();
 			
 			Map<String, Type> typeMap = result.getTypeMap();
 			
@@ -69,8 +73,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 				String key = entry.getKey();
 				JsonElement valueElement = entry.getValue();
 				
-				Object value = context.deserialize(valueElement,
-						typeMap.get(key));
+				Object value = context.deserialize(valueElement, typeMap
+						.get(key));
 				result.setValue(key, value);
 			}
 			

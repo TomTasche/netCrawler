@@ -14,6 +14,8 @@ public class IPInterfaceExtension extends NetworkInterfaceExtension {
 	
 	private static final long serialVersionUID = -9085694799945685464L;
 	
+	public static final IPInterfaceExtension EXTENSION = new IPInterfaceExtension();
+	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String ADDRESS = "interface.ip.address";

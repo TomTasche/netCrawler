@@ -28,12 +28,13 @@ public class CDPNeighbors implements Iterable<CDPNeighbors.Neighbor> {
 			this.name = name;
 			this.localInterface = localInterface;
 			this.holdTime = holdTime;
-			this.capabilities = Collections.unmodifiableSet(new HashSet<Capability>(
-					capabilities));
+			this.capabilities = Collections
+					.unmodifiableSet(new HashSet<Capability>(capabilities));
 			this.platform = platform;
 			this.remoteInterface = remoteInterface;
-			this.managementAddresses = Collections.unmodifiableSet(new HashSet<IPv4Address>(
-					managementAddresses));
+			this.managementAddresses = Collections
+					.unmodifiableSet(new HashSet<IPv4Address>(
+							managementAddresses));
 		}
 		
 		@Override

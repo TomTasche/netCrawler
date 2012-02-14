@@ -136,7 +136,8 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 		mainLoop:
 		while (true) {
 			List<SNMPEntry> nextBulk = getBulk(maxRepetitions, lastOid);
-			ObjectIdentifier nextOid = nextBulk.get(nextBulk.size() - 1).getObjectIdentifier();
+			ObjectIdentifier nextOid = nextBulk.get(nextBulk.size() - 1)
+					.getObjectIdentifier();
 			
 			if (!nextOid.startsWith(oid)) {
 				for (int i = 0; i < nextBulk.size() - 1; i++) {

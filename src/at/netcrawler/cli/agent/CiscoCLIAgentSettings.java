@@ -18,8 +18,9 @@ public class CiscoCLIAgentSettings extends PromtPatternCLIAgentSettings {
 	public static final Pattern DEFAULT_MORE_PATTERN = Pattern.compile(
 			"(.+).*?(.+)more\\2.*?\\1", Pattern.CASE_INSENSITIVE);
 	public static final String DEFAULT_MORE_STRING = " ";
-	public static final Set<Character> DEFAULT_STATUS_PREFIXES = Collections.unmodifiableSet(new HashSet<Character>(
-			Arrays.asList(new Character[] {'%', '*'})));
+	public static final Set<Character> DEFAULT_STATUS_PREFIXES = Collections
+			.unmodifiableSet(new HashSet<Character>(Arrays
+					.asList(new Character[] {'%', '*'})));
 	
 	private Pattern morePattern;
 	private String moreString;
@@ -104,8 +105,8 @@ public class CiscoCLIAgentSettings extends PromtPatternCLIAgentSettings {
 	}
 	
 	public void setStatusPrefixes(Set<Character> statusPrefixes) {
-		this.statusPrefixes = Collections.unmodifiableSet(new HashSet<Character>(
-				statusPrefixes));
+		this.statusPrefixes = Collections
+				.unmodifiableSet(new HashSet<Character>(statusPrefixes));
 	}
 	
 }

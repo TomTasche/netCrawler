@@ -27,7 +27,7 @@ public abstract class RouterExtensionManager extends DeviceExtensionManager {
 		throw new IllegalArgumentException("Unsupported key!");
 	}
 	
-	public abstract RoutingTable getRoutingTable() throws IOException;
+	protected abstract RoutingTable getRoutingTable() throws IOException;
 	
 	@Override
 	public final boolean setValue(String key, Object value) throws IOException {
@@ -37,7 +37,8 @@ public abstract class RouterExtensionManager extends DeviceExtensionManager {
 	@Override
 	public boolean hasExtension() throws IOException {
 		NetworkDevice device = getDevice();
-		Set<Capability> capabilities = GenericsUtil.castObject(device.getValue(NetworkDevice.CAPABILITIES));
+		Set<Capability> capabilities = GenericsUtil.castObject(device
+				.getValue(NetworkDevice.CAPABILITIES));
 		
 		return capabilities.contains(Capability.ROUTER);
 	}

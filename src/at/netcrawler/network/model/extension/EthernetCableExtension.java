@@ -12,6 +12,8 @@ public class EthernetCableExtension extends NetworkCableExtension {
 	
 	private static final long serialVersionUID = -491483133714519504L;
 	
+	public static final EthernetCableExtension EXTENSION = new EthernetCableExtension();
+	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String CROSSOVER = "cable.ethernet.crossover";

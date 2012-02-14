@@ -8,8 +8,8 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 public class LocalSSHGateway extends SSHGateway {
 	
 	@Override
-	protected SSHConnection openConnectionGenericImpl(IPDeviceAccessor accessor,
-			SSHSettings settings) throws IOException {
+	protected SSHConnection openConnectionGenericImpl(
+			IPDeviceAccessor accessor, SSHSettings settings) throws IOException {
 		return new LocalSSHConnection(accessor, settings);
 	}
 	

@@ -134,7 +134,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 			}
 			
 			public Object convertFromVariable(Variable value) {
-				return IPv4Address.getByAddress(((IpAddress) value).toByteArray());
+				return IPv4Address.getByAddress(((IpAddress) value)
+						.toByteArray());
 			}
 		};
 		
@@ -150,8 +151,10 @@ public class LocalSNMPConnection extends SNMPConnection {
 				objectValueConverterMap.put(type.type, type);
 			}
 			
-			VARIABLE_VALUE_CONVERTER_MAP = Collections.unmodifiableMap(variableValueConverterMap);
-			OBJECT_VALUE_CONVERTER_MAP = Collections.unmodifiableMap(objectValueConverterMap);
+			VARIABLE_VALUE_CONVERTER_MAP = Collections
+					.unmodifiableMap(variableValueConverterMap);
+			OBJECT_VALUE_CONVERTER_MAP = Collections
+					.unmodifiableMap(objectValueConverterMap);
 		}
 		
 		public static ValueConverter getConverterByVariableClass(
@@ -210,8 +213,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 		case VERSION1:
 		case VERSION2C:
 			CommunityTarget communityTarget = new CommunityTarget();
-			communityTarget.setCommunity(new OctetString(
-					settings.getCommunity()));
+			communityTarget.setCommunity(new OctetString(settings
+					.getCommunity()));
 			target = communityTarget;
 			break;
 		case VERSION3:
@@ -234,7 +237,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 			
 			UserTarget userTarget = new UserTarget();
 			userTarget.setSecurityName(usernameOct);
-			userTarget.setSecurityModel(SECURITY_LEVEL_TRANSLATION_MAP.get(settings.getSecurityLevel()));
+			userTarget.setSecurityModel(SECURITY_LEVEL_TRANSLATION_MAP
+					.get(settings.getSecurityLevel()));
 			target = userTarget;
 			break;
 		}
@@ -309,7 +313,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 			Object value = entry.getValue();
 			
 			OID oid = new OID(objectIdentifier.getValue());
-			ValueConverter valueConverter = SupportedType.getConverterByType(type);
+			ValueConverter valueConverter = SupportedType
+					.getConverterByType(type);
 			Variable variable = valueConverter.convertFromObject(value);
 			
 			pdu.add(new VariableBinding(oid, variable));
@@ -352,9 +357,10 @@ public class LocalSNMPConnection extends SNMPConnection {
 			VariableBinding variableBinding = response.get(i);
 			Variable variable = variableBinding.getVariable();
 			
-			ObjectIdentifier oid = new ObjectIdentifier(
-					variableBinding.getOid().toString());
-			ValueConverter valueConverter = SupportedType.getConverterByVariableClass(variable.getClass());
+			ObjectIdentifier oid = new ObjectIdentifier(variableBinding
+					.getOid().toString());
+			ValueConverter valueConverter = SupportedType
+					.getConverterByVariableClass(variable.getClass());
 			Object value = valueConverter.convertFromVariable(variable);
 			
 			result.add(new SNMPEntry(oid, value));

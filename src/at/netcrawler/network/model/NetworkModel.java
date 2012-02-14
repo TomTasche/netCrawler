@@ -73,7 +73,8 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final boolean isExtensionSupported(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		NetworkModelExtension extension = NetworkModelExtension
+				.getInstance(extensionClass);
 		return isExtensionSupported(extension);
 	}
 	
@@ -81,9 +82,9 @@ public abstract class NetworkModel implements Serializable {
 		if (!typeMap.containsKey(key))
 			throw new IllegalArgumentException("Unknown key!");
 		// TODO: fix
-//		Type type = typeMap.get(key);
-//		if (!type.equals(value.getClass()))
-//			throw new IllegalArgumentException("Illegal type!");
+		// Type type = typeMap.get(key);
+		// if (!type.equals(value.getClass()))
+		// throw new IllegalArgumentException("Illegal type!");
 		Object oldValue = valueMap.put(key, value);
 		
 		if (value == oldValue) return;
@@ -97,7 +98,8 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final boolean containsExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		NetworkModelExtension extension = NetworkModelExtension
+				.getInstance(extensionClass);
 		return containsExtension(extension);
 	}
 	
@@ -109,7 +111,8 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final void clearExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		NetworkModelExtension extension = NetworkModelExtension
+				.getInstance(extensionClass);
 		clearExtension(extension);
 	}
 	
@@ -125,7 +128,8 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final boolean addExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		NetworkModelExtension extension = NetworkModelExtension
+				.getInstance(extensionClass);
 		return addExtension(extension);
 	}
 	
@@ -148,7 +152,8 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final boolean removeExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		NetworkModelExtension extension = NetworkModelExtension
+				.getInstance(extensionClass);
 		return removeExtension(extension);
 	}
 	

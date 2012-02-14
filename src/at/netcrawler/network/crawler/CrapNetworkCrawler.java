@@ -45,23 +45,27 @@ public class CrapNetworkCrawler extends NetworkCrawler {
 	private void crawlImpl(Topology topology, IPv4Address address,
 			TopologyInterface source) throws IOException {
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
-		CommandLineInterface cli = (CommandLineInterface) gateway.openConnection(
-				accessor, settings);
-		PromtPatternCLIAgent agent = (PromtPatternCLIAgent) agentFactory.createAgent(
-				cli, agentSettings);
+		CommandLineInterface cli = (CommandLineInterface) gateway
+				.openConnection(accessor, settings);
+		PromtPatternCLIAgent agent = (PromtPatternCLIAgent) agentFactory
+				.createAgent(cli, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		DeviceManager manager = new CiscoCLIDeviceManager(device, agent);
-		manager.updateDevice();
+		manager.complete();
 		
 		TopologyDevice topologyDevice = new TopologyDevice(device);
 		if (!topology.addVertex(topologyDevice)) return;
 		
-		Map<IPv4Address, NetworkInterface> neighbors = manager.discoverNeighbors();
-		for (Map.Entry<IPv4Address, NetworkInterface> neighbor : neighbors.entrySet()) {
+		Map<IPv4Address, NetworkInterface> neighbors = manager
+				.discoverNeighbors();
+		for (Map.Entry<IPv4Address, NetworkInterface> neighbor : neighbors
+				.entrySet()) {
 			NetworkInterface interfaze = neighbor.getValue();
-			String interfaceName = (String) interfaze.getValue(NetworkInterface.NAME);
-			TopologyInterface topologyInterface = topologyDevice.getInterfaceByName(interfaceName);
+			String interfaceName = (String) interfaze
+					.getValue(NetworkInterface.NAME);
+			TopologyInterface topologyInterface = topologyDevice
+					.getInterfaceByName(interfaceName);
 			
 			crawlImpl(topology, neighbor.getKey(), topologyInterface);
 		}

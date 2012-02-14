@@ -45,7 +45,7 @@ public class SNMPDeviceManagerTest {
 		SNMPDeviceManager deviceManager = new SNMPDeviceManager(device,
 				connection);
 		
-		deviceManager.fetchDevice();
+		deviceManager.complete();
 		System.out.println(device);
 		System.out.println(device.getValue(NetworkDevice.INTERFACES));
 		System.out.println(device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));

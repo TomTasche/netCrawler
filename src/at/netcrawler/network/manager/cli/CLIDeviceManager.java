@@ -18,11 +18,11 @@ public abstract class CLIDeviceManager extends DeviceManager {
 		this.agent = agent;
 	}
 	
-	public String execute(String command) throws IOException {
+	protected final String execute(String command) throws IOException {
 		return agent.execute(command);
 	}
 	
-	public String executeAndFind(String command, QuickPattern pattern)
+	protected final String executeAndFind(String command, QuickPattern pattern)
 			throws IOException {
 		String result = execute(command);
 		return pattern.findGroup(result);

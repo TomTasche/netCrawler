@@ -2,7 +2,6 @@ package at.netcrawler.network.manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.netcrawler.DeviceSystem;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
@@ -23,8 +23,6 @@ public abstract class DeviceManager {
 	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
 	
 	private double progress;
-	// TODO: or polling?
-	private List<ManagerProgressListener> progressListeners = new ArrayList<ManagerProgressListener>();
 	
 	public DeviceManager(NetworkDevice device) {
 		this.device = device;
@@ -39,68 +37,87 @@ public abstract class DeviceManager {
 	}
 	
 	public final Object getValue(String key) throws IOException {
-		if (key.equals(NetworkDevice.HOSTNAME)) {
-			return getHostname();
-		} else if (key.equals(NetworkDevice.SYSTEM)) {
-			return getSystem();
-		} else if (key.equals(NetworkDevice.UPTIME)) {
-			return getUptime();
-		} else if (key.equals(NetworkDevice.CAPABILITIES)) {
-			return getCapabilities();
-		} else if (key.equals(NetworkDevice.MAJOR_CAPABILITY)) {
-			return getMajorCapability();
-		} else if (key.equals(NetworkDevice.INTERFACES)) {
-			return getInterfaces();
-		} else if (key.equals(NetworkDevice.MANAGEMENT_ADDRESSES)) {
-			return getManagementAddresses();
-		}
+		Object result = null;
 		
-		// TODO: optimize (string->extensionManager map)
-		synchronized (extensionManagers) {
-			for (DeviceExtensionManager extensionManager : extensionManagers) {
-				try {
-					return extensionManager.getValue(key);
-				} catch (RuntimeException e) {}
+		if (key.equals(NetworkDevice.HOSTNAME)) {
+			result = getHostname();
+		} else if (key.equals(NetworkDevice.SYSTEM)) {
+			result = getSystem();
+		} else if (key.equals(NetworkDevice.SYSTEM_STRING)) {
+			result = getSystemString();
+		} else if (key.equals(NetworkDevice.UPTIME)) {
+			result = getUptime();
+		} else if (key.equals(NetworkDevice.CAPABILITIES)) {
+			result = getCapabilities();
+		} else if (key.equals(NetworkDevice.MAJOR_CAPABILITY)) {
+			result = getMajorCapability();
+		} else if (key.equals(NetworkDevice.INTERFACES)) {
+			result = getInterfaces();
+		} else if (key.equals(NetworkDevice.MANAGEMENT_ADDRESSES)) {
+			result = getManagementAddresses();
+		} else {
+			// TODO: optimize (string->extensionManager map)
+			synchronized (extensionManagers) {
+				for (DeviceExtensionManager extensionManager : extensionManagers) {
+					try {
+						result = extensionManager.getValue(key);
+					} catch (RuntimeException e) {}
+				}
 			}
 		}
 		
-		throw new IllegalArgumentException("Unsupported key!");
+		if (result == null) {
+			throw new IllegalArgumentException("Unsupported key!");
+		} else {
+			device.setValue(key, result);
+			return result;
+		}
 	}
 	
-	public abstract String getIdentication() throws IOException;
+	protected abstract String getIdentication() throws IOException;
 	
-	public abstract String getHostname() throws IOException;
+	protected abstract String getHostname() throws IOException;
 	
-	public abstract String getSystem() throws IOException;
+	protected abstract DeviceSystem getSystem() throws IOException;
 	
-	public abstract long getUptime() throws IOException;
+	protected abstract String getSystemString() throws IOException;
 	
-	public abstract Set<Capability> getCapabilities() throws IOException;
+	protected abstract long getUptime() throws IOException;
 	
-	public abstract Capability getMajorCapability() throws IOException;
+	protected abstract Set<Capability> getCapabilities() throws IOException;
 	
-	public abstract Set<NetworkInterface> getInterfaces() throws IOException;
+	protected abstract Capability getMajorCapability() throws IOException;
 	
-	public abstract Set<IPAddress> getManagementAddresses() throws IOException;
+	protected abstract Set<NetworkInterface> getInterfaces() throws IOException;
+	
+	protected abstract Set<IPAddress> getManagementAddresses()
+			throws IOException;
 	
 	public final boolean setValue(String key, Object value) throws IOException {
-		if (key.equals(NetworkDevice.HOSTNAME)) {
-			return setHostname((String) value);
-		}
+		Boolean result = null;
 		
-		// TODO: optimize (string->extensionManager map)
-		synchronized (extensionManagers) {
-			for (DeviceExtensionManager extensionManager : extensionManagers) {
-				try {
-					return extensionManager.setValue(key, value);
-				} catch (IllegalArgumentException e) {}
+		if (key.equals(NetworkDevice.HOSTNAME)) {
+			result = setHostname((String) value);
+		} else {
+			// TODO: optimize (string->extensionManager map)
+			synchronized (extensionManagers) {
+				for (DeviceExtensionManager extensionManager : extensionManagers) {
+					try {
+						result = extensionManager.setValue(key, value);
+					} catch (IllegalArgumentException e) {}
+				}
 			}
 		}
 		
-		throw new IllegalArgumentException("Unsupported key!");
+		if (result == null) {
+			throw new IllegalArgumentException("Unsupported key!");
+		} else {
+			if (result) device.setValue(key, value);
+			return result;
+		}
 	}
 	
-	public abstract boolean setHostname(String hostname) throws IOException;
+	protected abstract boolean setHostname(String hostname) throws IOException;
 	
 	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
 		return hasExtensionManager(extension.getClass());
@@ -143,13 +160,6 @@ public abstract class DeviceManager {
 		return true;
 	}
 	
-	// TODO: or polling?
-	public void addProgressListener(ManagerProgressListener listener) {
-		synchronized (progressListeners) {
-			progressListeners.add(listener);
-		}
-	}
-	
 	public final boolean removeExtensionManager(
 			DeviceExtensionManager extensionManager) {
 		if (!hasExtensionManager(extensionManager)) return false;
@@ -166,58 +176,45 @@ public abstract class DeviceManager {
 		return true;
 	}
 	
-	// TODO: or polling?
-	public void removeProgressListener(ManagerProgressListener listener) {
-		synchronized (progressListeners) {
-			progressListeners.remove(listener);
-		}
-	}
-	
 	public abstract Map<IPv4Address, NetworkInterface> discoverNeighbors();
 	
-	public final void updateDevice() throws IOException {
+	public final NetworkDevice complete() throws IOException {
 		progress = 0;
 		
-		Set<String> keySet = new HashSet<String>();
-		keySet.addAll(NetworkDevice.TYPE_MAP.keySet());
+		List<String> keys = new ArrayList<String>();
+		keys.addAll(NetworkDevice.TYPE_MAP.keySet());
 		
 		synchronized (extensionManagers) {
 			for (DeviceExtensionManager extensionManager : extensionManagers) {
 				if (!extensionManager.hasExtension()) continue;
 				
-				NetworkDeviceExtension extension = extensionManager.getExtension();
-				Set<String> extensionKexSet = extension.getExtensionTypeMap().keySet();
-				keySet.addAll(extensionKexSet);
+				NetworkDeviceExtension extension = extensionManager
+						.getExtension();
+				Set<String> extensionKexSet = extension.getExtensionTypeMap()
+						.keySet();
+				keys.addAll(extensionKexSet);
 			}
 		}
 		
-		int keyCount = keySet.size();
+		keys.removeAll(device.getValueMap().keySet());
+		
+		int keyCount = keys.size();
 		int fetchCount = 0;
 		
-		for (String key : keySet) {
+		for (String key : keys) {
 			Object value = getValue(key);
 			device.setValue(key, value);
 			
 			fetchCount++;
 			progress = (double) fetchCount / keyCount;
-			// TODO: or polling?
-			fireProgress(progress);
 		}
-	}
-	
-	public final void fetchDevice() throws IOException {
-		device.clear();
 		
-		updateDevice();
+		return device;
 	}
 	
-	// TODO: or polling?
-	private void fireProgress(double progress) {
-		synchronized (progressListeners) {
-			for (ManagerProgressListener progressListener : progressListeners) {
-				progressListener.updateOccured(progress);
-			}
-		}
+	public final NetworkDevice fetch() throws IOException {
+		device.clear();
+		return complete();
 	}
 	
 }

@@ -30,6 +30,8 @@ import at.netcrawler.network.connection.telnet.TelnetSettings;
 import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
+import at.netcrawler.network.model.extension.CiscoRouterExtension;
+import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 
 
 public class SimpleSchoolCrawler {
@@ -52,8 +54,8 @@ public class SimpleSchoolCrawler {
 		final JTextField usernameField = new JTextField();
 		final JPasswordField passwordField = new JPasswordField();
 		
-		usernameField.setPreferredSize(new Dimension(150,
-				usernameField.getPreferredSize().height));
+		usernameField.setPreferredSize(new Dimension(150, usernameField
+				.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -135,7 +137,7 @@ public class SimpleSchoolCrawler {
 	}
 	
 	public static void crawlDevice(IPv4Address address, Logon logon,
-			Set<String> usedIDs) throws IOException {
+			Set<String> usedHostnames) throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings;
 		CommandLineInterface cli = null;
@@ -161,13 +163,14 @@ public class SimpleSchoolCrawler {
 		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
 				agent);
 		
-		String id = deviceManager.getIdentication();
-		if (usedIDs.contains(id)) {
+		String hostname = (String) deviceManager
+				.getValue(NetworkDevice.HOSTNAME);
+		if (usedHostnames.contains(hostname)) {
 			cli.close();
 			return;
 		}
 		
-		deviceManager.updateDevice();
+		deviceManager.complete();
 		
 		cli.close();
 		
@@ -175,22 +178,24 @@ public class SimpleSchoolCrawler {
 		System.out.println("hostname:		"
 				+ device.getValue(NetworkDevice.HOSTNAME));
 		System.out.println("model number:		"
-				+ device.getValue(CiscoDeviceExtension.MODEL_NUMBER));
+				+ device.getValue(CiscoSwitchExtension.MODEL_NUMBER));
 		System.out.println("serial number:		"
-				+ device.getValue(CiscoDeviceExtension.SYSTEM_SERIAL_NUMBER));
+				+ device.getValue(CiscoSwitchExtension.SYSTEM_SERIAL_NUMBER));
 		System.out.println("processor:		"
-				+ device.getValue(CiscoDeviceExtension.PROCESSOR_STRING));
+				+ device.getValue(CiscoRouterExtension.PROCESSOR_BOARD_ID));
 		
-		usedIDs.add(id);
+		usedHostnames.add(hostname);
 		
-		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
+		CDPNeighbors neighbors = (CDPNeighbors) device
+				.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
 		for (CDPNeighbors.Neighbor neighbor : neighbors) {
-			Iterator<IPv4Address> neighborAddressIterator = neighbor.getManagementAddresses().iterator();
+			Iterator<IPv4Address> neighborAddressIterator = neighbor
+					.getManagementAddresses().iterator();
 			if (!neighborAddressIterator.hasNext()) continue;
 			
 			IPv4Address neighborAddress = neighborAddressIterator.next();
 			
-			crawlDevice(neighborAddress, logon, usedIDs);
+			crawlDevice(neighborAddress, logon, usedHostnames);
 		}
 	}
 	

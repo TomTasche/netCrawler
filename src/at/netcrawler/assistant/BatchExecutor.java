@@ -173,10 +173,10 @@ public class BatchExecutor extends JFrame {
 					responseArea.setText("");
 					
 					String output = openConnection(usernameField.getText(),
-							new String(passwordField.getPassword()),
-							ipField.getText(), batchArea.getText(),
-							connectionBox.getSelectedItem().toString(),
-							Integer.parseInt(portField.getText()));
+							new String(passwordField.getPassword()), ipField
+									.getText(), batchArea.getText(),
+							connectionBox.getSelectedItem().toString(), Integer
+									.parseInt(portField.getText()));
 					
 					responseArea.setText(output);
 				} catch (IOException e) {
@@ -255,7 +255,8 @@ public class BatchExecutor extends JFrame {
 		String end = "!-end-";
 		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
 		
-		outputStream.write((start + "\n" + batch + "\n" + end + "\n").getBytes());
+		outputStream.write((start + "\n" + batch + "\n" + end + "\n")
+				.getBytes());
 		outputStream.flush();
 		
 		Reader reader = new FluidInputStreamReader(inputStream);

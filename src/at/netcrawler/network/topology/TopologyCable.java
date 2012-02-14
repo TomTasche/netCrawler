@@ -17,8 +17,9 @@ public class TopologyCable extends AbstractHyperedge {
 	public TopologyCable(NetworkCable networkCable,
 			Set<TopologyInterface> connectedInterfaces) {
 		this.networkCable = networkCable;
-		this.connectedInterfaces = Collections.unmodifiableSet(new HashSet<TopologyInterface>(
-				connectedInterfaces));
+		this.connectedInterfaces = Collections
+				.unmodifiableSet(new HashSet<TopologyInterface>(
+						connectedInterfaces));
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package at.netcrawler.network.connection.snmp;
 
-
 public class SNMPNull {
 	
 	private int syntax;

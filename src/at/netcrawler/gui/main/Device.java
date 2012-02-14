@@ -20,10 +20,12 @@ import javax.swing.event.ListSelectionListener;
 public class Device extends JFrame implements ListSelectionListener {
 	
 	public enum MenuEntry {
-		GENERAL("Allgemein", new GeneralPanel()), INTERFACES("Interfaces",
-				new InterfacePanel()), ROUTING("Routing", new RoutingPanel()),
-		SWITCHING("Switching", new SwitchingPanel()), SPECIFIC("Spezifisch",
-				new SpecificPanel()), CONSOLE("Konsole", new ConsolePanel());
+		GENERAL("Allgemein", new GeneralPanel()),
+		INTERFACES("Interfaces", new InterfacePanel()),
+		ROUTING("Routing", new RoutingPanel()),
+		SWITCHING("Switching", new SwitchingPanel()),
+		SPECIFIC("Spezifisch", new SpecificPanel()),
+		CONSOLE("Konsole", new ConsolePanel());
 		
 		public static JComponent getComponent(int index) {
 			return values()[index].component;
