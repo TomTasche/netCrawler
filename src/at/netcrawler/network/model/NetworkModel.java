@@ -1,5 +1,7 @@
 package at.netcrawler.network.model;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,18 +10,21 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class NetworkModel {
+// TODO: fix type issue
+public abstract class NetworkModel implements Serializable {
 	
-	private final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
+	private static final long serialVersionUID = -5895614487866391126L;
 	
-	private final Map<String, Class<?>> initialTypeMap;
-	private Map<String, Class<?>> typeMap;
+	private transient final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
+	
+	private transient final Map<String, Type> initialTypeMap;
+	private Map<String, Type> typeMap;
 	private final Map<String, Object> valueMap = new HashMap<String, Object>();
 	private final Set<NetworkModelExtension> extensions = new HashSet<NetworkModelExtension>();
 	
-	public NetworkModel(Map<String, Class<?>> initialTypeMap) {
+	public NetworkModel(Map<String, Type> initialTypeMap) {
 		this.initialTypeMap = initialTypeMap;
-		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
+		typeMap = new HashMap<String, Type>(initialTypeMap);
 	}
 	
 	@Override
@@ -28,7 +33,15 @@ public abstract class NetworkModel {
 	}
 	
 	@Override
-	public abstract boolean equals(Object obj);
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		
+		if (!(obj instanceof NetworkModel)) return false;
+		NetworkModel model = (NetworkModel) obj;
+		
+		return valueMap.equals(model.valueMap);
+	}
 	
 	@Override
 	public int hashCode() {
@@ -39,8 +52,8 @@ public abstract class NetworkModel {
 		return valueMap.get(key);
 	}
 	
-	public final Map<String, Class<?>> getTypeMap() {
-		return new HashMap<String, Class<?>>(typeMap);
+	public final Map<String, Type> getTypeMap() {
+		return new HashMap<String, Type>(typeMap);
 	}
 	
 	public final Map<String, Object> getValueMap() {
@@ -51,44 +64,53 @@ public abstract class NetworkModel {
 		return new HashSet<NetworkModelExtension>(extensions);
 	}
 	
-	public final boolean hasExtension(NetworkModelExtension extension) {
-		return extensions.contains(extension);
+	public final boolean isExtensionSupported(NetworkModelExtension extension) {
+		if (!getClass().equals(extension.getExtendedModelClass()))
+			return false;
+		
+		return true;
 	}
 	
-	public final boolean hasExtension(
+	public final boolean isExtensionSupported(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		try {
-			NetworkModelExtension extension = extensionClass.newInstance();
-			
-			return hasExtension(extension);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		return isExtensionSupported(extension);
 	}
 	
 	public final void setValue(String key, Object value) {
-		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
-				"Unknown key!");
+		if (!typeMap.containsKey(key))
+			throw new IllegalArgumentException("Unknown key!");
+		// TODO: fix
+//		Type type = typeMap.get(key);
+//		if (!type.equals(value.getClass()))
+//			throw new IllegalArgumentException("Illegal type!");
+		Object oldValue = valueMap.put(key, value);
 		
-		valueMap.put(
-				key, value);
+		if (value == oldValue) return;
+		if ((value == null) || (value.equals(oldValue))) return;
+		fireValueChanged(key, value, oldValue);
+	}
+	
+	public final boolean containsExtension(NetworkModelExtension extension) {
+		return extensions.contains(extension);
+	}
+	
+	public final boolean containsExtension(
+			Class<? extends NetworkModelExtension> extensionClass) {
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		return containsExtension(extension);
 	}
 	
 	public final void clear() {
 		valueMap.clear();
-		typeMap = new HashMap<String, Class<?>>(initialTypeMap);
+		typeMap = new HashMap<String, Type>(initialTypeMap);
 		extensions.clear();
 	}
 	
 	public final void clearExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		try {
-			NetworkModelExtension extension = extensionClass.newInstance();
-			
-			clearExtension(extension);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		clearExtension(extension);
 	}
 	
 	public final void clearExtension(NetworkModelExtension extension) {
@@ -97,36 +119,37 @@ public abstract class NetworkModel {
 		}
 	}
 	
-	public final boolean addModelListener(NetworkModelListener listener) {
-		return listeners.add(listener);
+	public final void addListener(NetworkModelListener listener) {
+		listeners.add(listener);
 	}
 	
 	public final boolean addExtension(
 			Class<? extends NetworkModelExtension> extensionClass) {
-		try {
-			NetworkModelExtension extension = extensionClass.newInstance();
-			
-			return addExtension(extension);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		return addExtension(extension);
 	}
 	
 	public final boolean addExtension(NetworkModelExtension extension) {
-		if (!getClass().equals(
-				extension.getExtendedModelClass())) throw new IllegalArgumentException(
-				"Illegal model class extension!");
+		if (!getClass().equals(extension.getExtendedModelClass()))
+			throw new IllegalArgumentException("Illegal model class extension!");
 		if (extensions.contains(extension)) return false;
-		if (extension.isExtensionSupported(this)) return false;
+		if (!isExtensionSupported(extension)) return false;
 		
 		extensions.add(extension);
 		typeMap.putAll(extension.getExtensionTypeMap());
 		
+		fireExtensionAdded(extension);
 		return true;
 	}
 	
-	public final boolean removeModelListener(NetworkModelListener listener) {
-		return listeners.remove(listener);
+	public final void removeListener(NetworkModelListener listener) {
+		listeners.remove(listener);
+	}
+	
+	public final boolean removeExtension(
+			Class<? extends NetworkModelExtension> extensionClass) {
+		NetworkModelExtension extension = NetworkModelExtension.getInstance(extensionClass);
+		return removeExtension(extension);
 	}
 	
 	public final boolean removeExtension(NetworkModelExtension extension) {
@@ -137,23 +160,26 @@ public abstract class NetworkModel {
 			typeMap.remove(key);
 		}
 		
-		return extensions.remove(extension);
+		if (!extensions.remove(extension)) return false;
+		
+		fireExtensionRemoved(extension);
+		return true;
 	}
 	
-	public final void fireValueChanged(String key, String value) {
+	private final void fireValueChanged(String key, Object value,
+			Object oldValue) {
 		for (NetworkModelListener listener : listeners) {
-			listener.valueChanged(
-					key, value);
+			listener.valueChanged(key, value, oldValue);
 		}
 	}
 	
-	public final void fireExtensionAdded(NetworkModelExtension extension) {
+	private final void fireExtensionAdded(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionAdded(extension);
 		}
 	}
 	
-	public final void fireExtensionRemoved(NetworkModelExtension extension) {
+	private final void fireExtensionRemoved(NetworkModelExtension extension) {
 		for (NetworkModelListener listener : listeners) {
 			listener.extensionRemoved(extension);
 		}

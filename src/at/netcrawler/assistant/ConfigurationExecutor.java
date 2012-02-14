@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -27,16 +28,17 @@ import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import at.andiwand.library.cli.CommandLine;
-import at.andiwand.library.util.JFrameUtil;
-import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
-import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
-import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
+import at.andiwand.library.cli.CommandLineInterface;
+import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.StreamUtil;
+import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.network.accessor.DeviceAccessor;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ConnectionBuilder;
+import at.netcrawler.network.connection.ConnectionSettings;
+import at.netcrawler.network.connection.ssh.LocalSSHGateway;
+import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -56,6 +58,9 @@ public class ConfigurationExecutor extends JFrame {
 	private JFileChooser fileChooser = new JFileChooser();
 	
 	private Configuration configuration;
+	
+	private ConnectionBuilder connectionFactory = new ConnectionBuilder(
+			new LocalTelnetGateway(), new LocalSSHGateway());
 	
 	public ConfigurationExecutor() {
 		setTitle(TITLE);
@@ -78,8 +83,8 @@ public class ConfigurationExecutor extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory() || f.getName().endsWith(
-						Configuration.FILE_SUFFIX);
+				return f.isDirectory()
+						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -177,7 +182,8 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		try {
 			open(fileChooser.getSelectedFile());
@@ -185,8 +191,7 @@ public class ConfigurationExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -195,20 +200,17 @@ public class ConfigurationExecutor extends JFrame {
 			execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(
-				file, new EncryptionCallback() {
-					public String getPassword(Encryption encryption) {
-						return ConfigurationDialog
-								.showDecryptionDialog(ConfigurationExecutor.this);
-					}
-				});
+		configuration.readFromJsonFile(file, new EncryptionCallback() {
+			public String getPassword(Encryption encryption) {
+				return ConfigurationDialog.showDecryptionDialog(ConfigurationExecutor.this);
+			}
+		});
 		
 		setConfiguration(configuration);
 		
@@ -216,40 +218,17 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	private void execute() throws IOException {
-		CommandLine commandLine;
-		
-		IPDeviceAccessor accessor = new IPDeviceAccessor(
+		DeviceAccessor accessor = new IPDeviceAccessor(
 				configuration.getAddress());
+		ConnectionSettings settings = configuration.generateSettings();
 		
-		Connection connection = configuration.getConnection();
-		switch (connection) {
-		case TELNET:
-			TelnetConnectionSettings telnetSettings = new TelnetConnectionSettings();
-			telnetSettings.setPort(configuration.getPort());
-			
-			commandLine = new LocalTelnetConnection(accessor, telnetSettings);
-			break;
-		case SSH1:
-		case SSH2:
-			SSHConnectionSettings sshSettings = new SSHConnectionSettings();
-			sshSettings
-					.setVersion((connection == Connection.SSH1) ? SSHVersion.VERSION1
-							: SSHVersion.VERSION2);
-			sshSettings.setPort(configuration.getPort());
-			sshSettings.setUsername(configuration.getUsername());
-			sshSettings.setPassword(configuration.getPassword());
-			
-			commandLine = new LocalSSHConnection(accessor, sshSettings);
-			break;
+		CommandLineInterface cli = (CommandLineInterface) connectionFactory.openConnection(
+				accessor, settings);
 		
-		default:
-			throw new IllegalStateException("Unreachable section!");
-		}
+		InputStream inputStream = cli.getInputStream();
+		OutputStream outputStream = cli.getOutputStream();
 		
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
-		
-		if (configuration.getConnection() == Connection.TELNET) {
+		if (configuration.getConnection() == ConnectionType.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
 			
@@ -258,23 +237,26 @@ public class ConfigurationExecutor extends JFrame {
 				outputStream.write("\n".getBytes());
 				outputStream.write(password.getBytes());
 				outputStream.write("\n".getBytes());
+				outputStream.flush();
 			} else if (!password.isEmpty()) {
 				outputStream.write(password.getBytes());
 				outputStream.write("\n".getBytes());
+				outputStream.flush();
 			}
 		}
 		
-		Pattern endPattern = Pattern.compile(".*" + BATCH_SUFFIX);
-		String batch = configuration.getBatch((String) batches
-				.getSelectedItem());
+		Pattern endPattern = Pattern.compile(".+" + BATCH_SUFFIX);
+		String batch = configuration.getBatch((String) batches.getSelectedItem());
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
-		inputStream = new IgnoreLastLineInputStream(inputStream);
+		Reader reader = new FluidInputStreamReader(inputStream);
+		reader = new UntilLineMatchReader(reader, endPattern);
 		
-		commandLine.close();
+		StreamUtil.flush(reader);
+		
+		cli.close();
 	}
 	
 	public void setConfiguration(Configuration configuration) {

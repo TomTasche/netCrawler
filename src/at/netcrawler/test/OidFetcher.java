@@ -1,19 +1,10 @@
 package at.netcrawler.test;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
-import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
-import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;
-import at.netcrawler.network.connection.snmp.SNMPVersion;
 
 
 public class OidFetcher {
 	
+	/*
 	@SuppressWarnings("serial")
 	public static void main(String[] args) throws IOException {
 		Map<String, String> namesForOid = new HashMap<String, String>() {
@@ -67,4 +58,5 @@ public class OidFetcher {
 			System.out.println("----");
 		}
 	}
+	*/
 }

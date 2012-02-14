@@ -16,6 +16,10 @@ import java.util.Map;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.netcrawler.network.connection.ConnectionSettings;
+import at.netcrawler.network.connection.ssh.SSHSettings;
+import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -30,12 +34,12 @@ public class Configuration {
 	
 	private static void validateJsonName(JsonReader reader, String name)
 			throws IOException {
-		if (!reader.nextName().equals(
-				name)) throw new IOException("Illegal JSON format!");
+		if (!reader.nextName().equals(name))
+			throw new IOException("Illegal JSON format!");
 	}
 	
 	private IPv4Address address;
-	private Connection connection;
+	private ConnectionType connection;
 	private int port;
 	private String username;
 	private String password;
@@ -45,7 +49,7 @@ public class Configuration {
 		return address;
 	}
 	
-	public Connection getConnection() {
+	public ConnectionType getConnection() {
 		return connection;
 	}
 	
@@ -73,7 +77,7 @@ public class Configuration {
 		this.address = address;
 	}
 	
-	public void setConnection(Connection connection) {
+	public void setConnection(ConnectionType connection) {
 		this.connection = connection;
 	}
 	
@@ -94,8 +98,7 @@ public class Configuration {
 	}
 	
 	public void putBatch(String name, String batch) {
-		batches.put(
-				name, batch);
+		batches.put(name, batch);
 	}
 	
 	public void removeBatch(String name) {
@@ -103,8 +106,7 @@ public class Configuration {
 	}
 	
 	public void readFromJsonFile(File file) throws IOException {
-		readFromJsonFile(
-				file, null);
+		readFromJsonFile(file, null);
 	}
 	
 	public void readFromJsonFile(File file,
@@ -115,11 +117,9 @@ public class Configuration {
 		Encryption encryption;
 		
 		reader.beginObject();
-		validateJsonName(
-				reader, "encryption");
+		validateJsonName(reader, "encryption");
 		encryption = Encryption.getEncryptionByName(reader.nextString());
-		validateJsonName(
-				reader, "data");
+		validateJsonName(reader, "data");
 		
 		if (encryption == Encryption.PLAIN) {
 			readData(reader);
@@ -131,9 +131,8 @@ public class Configuration {
 				byte[] dataArray = new BASE64Decoder().decodeBuffer(data);
 				ByteArrayInputStream dataArrayInputStream = new ByteArrayInputStream(
 						dataArray);
-				InputStream dataCipherInputStream = encryption
-						.getCipherInputStream(
-								dataArrayInputStream, password);
+				InputStream dataCipherInputStream = encryption.getCipherInputStream(
+						dataArrayInputStream, password);
 				InputStreamReader dataInputStreamReader = new InputStreamReader(
 						dataCipherInputStream);
 				JsonReader dataReader = new JsonReader(dataInputStreamReader);
@@ -159,44 +158,34 @@ public class Configuration {
 	
 	private void readData(JsonReader reader) throws IOException {
 		reader.beginObject();
-		validateJsonName(
-				reader, "ip");
+		validateJsonName(reader, "ip");
 		address = IPv4Address.getByAddress(reader.nextString());
-		validateJsonName(
-				reader, "connection");
-		connection = Connection.getConnectionByName(reader.nextString());
-		validateJsonName(
-				reader, "port");
+		validateJsonName(reader, "connection");
+		connection = ConnectionType.getConnectionByName(reader.nextString());
+		validateJsonName(reader, "port");
 		port = reader.nextInt();
-		validateJsonName(
-				reader, "username");
+		validateJsonName(reader, "username");
 		username = reader.nextString();
-		validateJsonName(
-				reader, "password");
+		validateJsonName(reader, "password");
 		password = reader.nextString();
-		validateJsonName(
-				reader, "batches");
+		validateJsonName(reader, "batches");
 		reader.beginArray();
 		batches.clear();
 		while (reader.hasNext()) {
 			reader.beginObject();
-			validateJsonName(
-					reader, "name");
+			validateJsonName(reader, "name");
 			String name = reader.nextString();
-			validateJsonName(
-					reader, "batch");
+			validateJsonName(reader, "batch");
 			String batch = reader.nextString();
 			reader.endObject();
-			batches.put(
-					name, batch);
+			batches.put(name, batch);
 		}
 		reader.endArray();
 		reader.endObject();
 	}
 	
 	public void writeToJsonFile(File file) throws IOException {
-		writeToJsonFile(
-				file, Encryption.PLAIN, null);
+		writeToJsonFile(file, Encryption.PLAIN, null);
 	}
 	
 	public void writeToJsonFile(File file, Encryption encryption,
@@ -206,9 +195,7 @@ public class Configuration {
 		writer.setIndent(JSON_INDENT);
 		
 		writer.beginObject();
-		writer.name(
-				"encryption").value(
-				encryption.getName());
+		writer.name("encryption").value(encryption.getName());
 		writer.name("data");
 		
 		if (encryption == Encryption.PLAIN) {
@@ -216,9 +203,8 @@ public class Configuration {
 		} else {
 			try {
 				ByteArrayOutputStream dataArrayOutputStream = new ByteArrayOutputStream();
-				OutputStream dataCipherOutputStream = encryption
-						.getCipherOutputStream(
-								dataArrayOutputStream, password);
+				OutputStream dataCipherOutputStream = encryption.getCipherOutputStream(
+						dataArrayOutputStream, password);
 				OutputStreamWriter dataOutputStreamWriter = new OutputStreamWriter(
 						dataCipherOutputStream);
 				JsonWriter dataWriter = new JsonWriter(dataOutputStreamWriter);
@@ -230,8 +216,7 @@ public class Configuration {
 				dataCipherOutputStream.close();
 				dataArrayOutputStream.close();
 				
-				String data = new BASE64Encoder().encode(dataArrayOutputStream
-						.toByteArray());
+				String data = new BASE64Encoder().encode(dataArrayOutputStream.toByteArray());
 				writer.value(data);
 			} catch (Exception e) {
 				throw new IOException(e);
@@ -246,35 +231,50 @@ public class Configuration {
 	
 	private void writeData(JsonWriter writer) throws IOException {
 		writer.beginObject();
-		writer.name(
-				"ip").value(
-				address.toString());
-		writer.name(
-				"connection").value(
-				connection.getName());
-		writer.name(
-				"port").value(
-				port);
-		writer.name(
-				"username").value(
-				username);
-		writer.name(
-				"password").value(
-				password);
+		writer.name("ip").value(address.toString());
+		writer.name("connection").value(connection.getName());
+		writer.name("port").value(port);
+		writer.name("username").value(username);
+		writer.name("password").value(password);
 		writer.name("batches");
 		writer.beginArray();
 		for (Map.Entry<String, String> batch : batches.entrySet()) {
 			writer.beginObject();
-			writer.name(
-					"name").value(
-					batch.getKey());
-			writer.name(
-					"batch").value(
-					batch.getValue());
+			writer.name("name").value(batch.getKey());
+			writer.name("batch").value(batch.getValue());
 			writer.endObject();
 		}
 		writer.endArray();
 		writer.endObject();
+	}
+	
+	public ConnectionSettings generateSettings() {
+		ConnectionSettings settings;
+		
+		switch (connection) {
+		case TELNET:
+			TelnetSettings telnetSettings = new TelnetSettings();
+			telnetSettings.setPort(port);
+			
+			settings = telnetSettings;
+			break;
+		case SSH1:
+		case SSH2:
+			SSHSettings sshSettings = new SSHSettings();
+			sshSettings.setVersion((connection == ConnectionType.SSH1) ? SSHVersion.VERSION1
+					: SSHVersion.VERSION2);
+			sshSettings.setPort(port);
+			sshSettings.setUsername(username);
+			sshSettings.setPassword(password);
+			
+			settings = sshSettings;
+			break;
+		
+		default:
+			throw new IllegalStateException("Unreachable section!");
+		}
+		
+		return settings;
 	}
 	
 }

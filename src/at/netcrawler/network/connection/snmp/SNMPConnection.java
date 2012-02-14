@@ -4,29 +4,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.IPDeviceConnection;
-import at.netcrawler.network.connection.snmp.SNMPObject.Type;
+import at.andiwand.library.util.ObjectIdentifier;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
-public abstract class SNMPConnection extends IPDeviceConnection implements
+public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 		SNMPManager {
 	
 	public static final int DEFAULT_MAX_REPETITIONS = 10;
 	
-	protected final SNMPConnectionSettings settings;
-	protected final SNMPVersion version;
+	protected SNMPVersion version;
 	
-	public SNMPConnection(IPDeviceAccessor accessor,
-			SNMPConnectionSettings settings) {
+	public SNMPConnection(IPDeviceAccessor accessor, SNMPSettings settings) {
 		super(accessor, settings);
 		
-		this.settings = new SNMPConnectionSettings(settings);
 		version = settings.getVersion();
-	}
-	
-	public SNMPConnectionSettings getSettings() {
-		return settings;
 	}
 	
 	@Override
@@ -35,87 +28,84 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public SNMPObject get(String oid) throws IOException {
-		List<SNMPObject> result = get(new String[] {oid});
+	public SNMPEntry get(ObjectIdentifier oid) throws IOException {
+		List<SNMPEntry> result = get(new ObjectIdentifier[] {oid});
 		if (result == null) return null;
 		return result.get(0);
 	}
 	
 	@Override
-	public SNMPObject getNext(String oid) throws IOException {
-		List<SNMPObject> result = getNext(new String[] {oid});
+	public SNMPEntry getNext(ObjectIdentifier oid) throws IOException {
+		List<SNMPEntry> result = getNext(new ObjectIdentifier[] {oid});
 		if (result == null) return null;
 		return result.get(0);
 	}
 	
 	@Override
-	public List<SNMPObject> getBulk(String oid) throws IOException {
-		return getBulk(
-				DEFAULT_MAX_REPETITIONS, oid);
+	public List<SNMPEntry> getBulk(ObjectIdentifier oid) throws IOException {
+		return getBulk(DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
-	public List<SNMPObject> getBulk(int maxRepetitions, String... oids)
+	public List<SNMPEntry> getBulk(int maxRepetitions, ObjectIdentifier... oids)
 			throws IOException {
-		return getBulk(
-				0, maxRepetitions, oids);
+		return getBulk(0, maxRepetitions, oids);
 	}
 	
 	@Override
-	public final List<SNMPObject> getBulk(int nonRepeaters, int maxRepetitions,
-			String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+	public final List<SNMPEntry> getBulk(int nonRepeaters, int maxRepetitions,
+			ObjectIdentifier... oids) throws IOException {
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request!");
 		
-		return getBulkImpl(
-				nonRepeaters, maxRepetitions, oids);
+		return getBulkImpl(nonRepeaters, maxRepetitions, oids);
 	}
 	
-	protected abstract List<SNMPObject> getBulkImpl(int nonRepeaters,
-			int maxRepetitions, String... oids) throws IOException;
+	protected abstract List<SNMPEntry> getBulkImpl(int nonRepeaters,
+			int maxRepetitions, ObjectIdentifier... oids) throws IOException;
 	
 	@Override
-	public SNMPObject set(String oid, Type type, String value)
-			throws IOException {
-		return set(new SNMPObject(oid, type, value));
+	public SNMPEntry set(ObjectIdentifier oid, Object value) throws IOException {
+		return set(new SNMPEntry(oid, value));
 	}
 	
 	@Override
-	public SNMPObject set(SNMPObject object) throws IOException {
-		List<SNMPObject> result = set(new SNMPObject[] {object});
+	public SNMPEntry set(SNMPEntry entry) throws IOException {
+		List<SNMPEntry> result = set(new SNMPEntry[] {entry});
 		if (result == null) return null;
 		return result.get(0);
 	}
 	
 	@Override
-	public boolean setAndVerify(String oid, Type type, String value)
+	public boolean setAndVerify(ObjectIdentifier oid, Object value)
 			throws IOException {
-		return setAndVerify(new SNMPObject(oid, type, value));
+		return setAndVerify(new SNMPEntry(oid, value));
 	}
 	
 	@Override
-	public boolean setAndVerify(SNMPObject... objects) throws IOException {
-		List<SNMPObject> responses = set(objects);
+	public boolean setAndVerify(SNMPEntry... entries) throws IOException {
+		List<SNMPEntry> responses = set(entries);
 		
-		for (SNMPObject object : objects) {
-			if (!responses.contains(object)) return false;
+		for (SNMPEntry entry : entries) {
+			if (!responses.contains(entry)) return false;
 		}
 		
 		return true;
 	}
 	
 	@Override
-	public List<SNMPObject> walkNext(String oid) throws IOException {
-		List<SNMPObject> result = new ArrayList<SNMPObject>();
-		String lastOid = oid;
+	public List<SNMPEntry> walkNext(ObjectIdentifier oid) throws IOException {
+		List<SNMPEntry> result = new ArrayList<SNMPEntry>();
+		ObjectIdentifier lastOid = oid;
 		
 		while (true) {
-			SNMPObject nextObject = getNext(lastOid);
-			String nextOid = nextObject.getOid();
+			SNMPEntry nextEntry = getNext(lastOid);
+			ObjectIdentifier nextOid = nextEntry.getObjectIdentifier();
 			
 			if (!nextOid.startsWith(oid)) break;
 			
-			result.add(nextObject);
+			result.add(nextEntry);
 			lastOid = nextOid;
 		}
 		
@@ -123,41 +113,39 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public final List<SNMPObject> walkBulk(String oid) throws IOException {
-		return walkBulk(
-				DEFAULT_MAX_REPETITIONS, oid);
+	public final List<SNMPEntry> walkBulk(ObjectIdentifier oid)
+			throws IOException {
+		return walkBulk(DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
-	public final List<SNMPObject> walkBulk(int maxRepetitions, String oid)
-			throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+	public final List<SNMPEntry> walkBulk(int maxRepetitions,
+			ObjectIdentifier oid) throws IOException {
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request!");
 		
-		return walkBulkImpl(
-				maxRepetitions, oid);
+		return walkBulkImpl(maxRepetitions, oid);
 	}
 	
-	protected List<SNMPObject> walkBulkImpl(int maxRepetitions, String oid)
-			throws IOException {
-		List<SNMPObject> result = new ArrayList<SNMPObject>();
-		String lastOid = oid;
+	protected List<SNMPEntry> walkBulkImpl(int maxRepetitions,
+			ObjectIdentifier oid) throws IOException {
+		List<SNMPEntry> result = new ArrayList<SNMPEntry>();
+		ObjectIdentifier lastOid = oid;
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(
-					maxRepetitions, lastOid);
-			String nextOid = nextBulk.get(
-					nextBulk.size() - 1).getOid();
+			List<SNMPEntry> nextBulk = getBulk(maxRepetitions, lastOid);
+			ObjectIdentifier nextOid = nextBulk.get(nextBulk.size() - 1).getObjectIdentifier();
 			
 			if (!nextOid.startsWith(oid)) {
 				for (int i = 0; i < nextBulk.size() - 1; i++) {
-					SNMPObject object = nextBulk.get(i);
+					SNMPEntry entry = nextBulk.get(i);
 					
-					if (!object.getOid().startsWith(
-							oid)) break mainLoop;
+					if (!entry.getObjectIdentifier().startsWith(oid))
+						break mainLoop;
 					
-					result.add(object);
+					result.add(entry);
 				}
 			}
 			
@@ -169,7 +157,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public List<SNMPObject> walk(String oid) throws IOException {
+	public List<SNMPEntry> walk(ObjectIdentifier oid) throws IOException {
 		switch (version) {
 		case VERSION1:
 			return walkNext(oid);
@@ -178,31 +166,31 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 			return walkBulk(oid);
 		}
 		
-		throw new IllegalStateException("Unimplemented version");
+		throw new IllegalStateException("Unimplemented version!");
 	}
 	
 	@Override
-	public List<SNMPObject[]> walkNextTable(String... oids) throws IOException {
-		List<SNMPObject[]> result = new ArrayList<SNMPObject[]>();
+	public List<SNMPEntry[]> walkNextTable(ObjectIdentifier... oids)
+			throws IOException {
+		List<SNMPEntry[]> result = new ArrayList<SNMPEntry[]>();
 		
 		int columns = oids.length;
-		String[] lastOids = oids;
+		ObjectIdentifier[] lastOids = oids;
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextObjects = getNext(lastOids);
-			if (nextObjects.size() != columns) break;
+			List<SNMPEntry> nextEntries = getNext(lastOids);
+			if (nextEntries.size() != columns) break;
 			
-			String[] nextOids = new String[columns];
+			ObjectIdentifier[] nextOids = new ObjectIdentifier[columns];
 			for (int i = 0; i < columns; i++) {
-				String oid = nextObjects.get(
-						i).getOid();
+				ObjectIdentifier oid = nextEntries.get(i).getObjectIdentifier();
 				if (!oid.startsWith(oids[i])) break mainLoop;
 				
 				nextOids[i] = oid;
 			}
 			
-			result.add(nextObjects.toArray(new SNMPObject[columns]));
+			result.add(nextEntries.toArray(new SNMPEntry[columns]));
 			lastOids = nextOids;
 		}
 		
@@ -210,42 +198,40 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public final List<SNMPObject[]> walkBulkTable(String... oids)
+	public final List<SNMPEntry[]> walkBulkTable(ObjectIdentifier... oids)
 			throws IOException {
-		return walkBulkTable(
-				DEFAULT_MAX_REPETITIONS, oids);
+		return walkBulkTable(DEFAULT_MAX_REPETITIONS, oids);
 	}
 	
 	@Override
-	public final List<SNMPObject[]> walkBulkTable(int maxRepetitions,
-			String... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
-				"Version 1 doesn't support the GETBULK request");
+	public final List<SNMPEntry[]> walkBulkTable(int maxRepetitions,
+			ObjectIdentifier... oids) throws IOException {
+		if (version == SNMPVersion.VERSION1)
+			throw new UnsupportedOperationException(
+					"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkTableImpl(
-				maxRepetitions, oids);
+		return walkBulkTableImpl(maxRepetitions, oids);
 	}
 	
-	protected List<SNMPObject[]> walkBulkTableImpl(int maxRepetitions,
-			String... oids) throws IOException {
-		List<SNMPObject[]> result = new ArrayList<SNMPObject[]>();
+	protected List<SNMPEntry[]> walkBulkTableImpl(int maxRepetitions,
+			ObjectIdentifier... oids) throws IOException {
+		List<SNMPEntry[]> result = new ArrayList<SNMPEntry[]>();
 		
 		int columns = oids.length;
-		String[] lastOids = oids;
+		ObjectIdentifier[] lastOids = oids;
 		
 		mainLoop:
 		while (true) {
-			List<SNMPObject> nextBulk = getBulk(
-					maxRepetitions, lastOids);
-			String[] nextOids = new String[columns];
+			List<SNMPEntry> nextBulk = getBulk(maxRepetitions, lastOids);
+			ObjectIdentifier[] nextOids = new ObjectIdentifier[columns];
 			
 			int newRows = 0;
 			for (int k = 0; k < nextBulk.size(); newRows++) {
-				SNMPObject[] row = new SNMPObject[columns];
+				SNMPEntry[] row = new SNMPEntry[columns];
 				
 				for (int j = 0; j < columns; j++, k++) {
-					SNMPObject object = nextBulk.get(k);
-					String oid = object.getOid();
+					SNMPEntry object = nextBulk.get(k);
+					ObjectIdentifier oid = object.getObjectIdentifier();
 					
 					if (!oid.startsWith(oids[j])) break mainLoop;
 					
@@ -264,7 +250,8 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 	}
 	
 	@Override
-	public List<SNMPObject[]> walkTable(String... oids) throws IOException {
+	public List<SNMPEntry[]> walkTable(ObjectIdentifier... oids)
+			throws IOException {
 		switch (version) {
 		case VERSION1:
 			return walkNextTable(oids);
@@ -273,7 +260,7 @@ public abstract class SNMPConnection extends IPDeviceConnection implements
 			return walkBulkTable(oids);
 		}
 		
-		throw new IllegalStateException("Unimplemented version");
+		throw new IllegalStateException("Unimplemented version!");
 	}
 	
 }

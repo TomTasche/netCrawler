@@ -33,8 +33,8 @@ public class ConfigurationDialog {
 		final JPasswordField passwordRepeatField = new JPasswordField();
 		
 		encryptionComboBox.setSelectedItem(Encryption.DES);
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150,
+				passwordField.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -93,18 +93,18 @@ public class ConfigurationDialog {
 		};
 		
 		while (true) {
-			JDialog dialog = optionPane.createDialog(
-					parent, "Encryption settings");
+			JDialog dialog = optionPane.createDialog(parent,
+					"Encryption settings");
 			dialog.setVisible(true);
+			dialog.dispose();
 			
-			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION) return null;
+			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION)
+				return null;
 			
-			if (Arrays.equals(
-					passwordField.getPassword(),
+			if (Arrays.equals(passwordField.getPassword(),
 					passwordRepeatField.getPassword())) break;
 			
-			showErrorDialog(
-					parent, "The passwords don't match!");
+			showErrorDialog(parent, "The passwords don't match!");
 			passwordField.setText("");
 			passwordRepeatField.setText("");
 		}
@@ -125,8 +125,8 @@ public class ConfigurationDialog {
 		JLabel passwordLabel = new JLabel("Password:");
 		final JPasswordField passwordField = new JPasswordField();
 		
-		passwordField.setPreferredSize(new Dimension(150, passwordField
-				.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150,
+				passwordField.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -156,27 +156,25 @@ public class ConfigurationDialog {
 			}
 		};
 		
-		JDialog dialog = optionPane.createDialog(
-				parent, "Decryption password");
+		JDialog dialog = optionPane.createDialog(parent, "Decryption password");
 		dialog.setVisible(true);
+		dialog.dispose();
 		
 		return new String(passwordField.getPassword());
 	}
 	
 	public static void showErrorDialog(Component parent, Throwable t) {
-		showErrorDialog(
-				parent, t.getMessage());
+		showErrorDialog(parent, t.getMessage());
 	}
 	
 	public static void showErrorDialog(Component parent, String message) {
-		showErrorDialog(
-				parent, "Error", message);
+		showErrorDialog(parent, "Error", message);
 	}
 	
 	public static void showErrorDialog(Component parent, String title,
 			String message) {
-		JOptionPane.showMessageDialog(
-				parent, message, title, JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(parent, message, title,
+				JOptionPane.ERROR_MESSAGE);
 	}
 	
 }

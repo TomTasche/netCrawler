@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -24,19 +25,21 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import at.andiwand.library.cli.CommandLine;
+import at.andiwand.library.cli.CommandLineInterface;
+import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.andiwand.library.util.JFrameUtil;
-import at.andiwand.library.util.PatternUtil;
-import at.andiwand.library.util.StreamUtil;
-import at.netcrawler.io.deprecated.IgnoreLastLineInputStream;
-import at.netcrawler.io.deprecated.ReadUntilMatchInputStream;
-import at.netcrawler.network.IPDeviceAccessor;
+import at.netcrawler.io.AfterLineMatchReader;
+import at.netcrawler.io.FilterFirstLineReader;
+import at.netcrawler.io.FilterLastLineReader;
+import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHConnectionSettings;
+import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetConnectionSettings;
+import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 
 public class BatchExecutor extends JFrame {
@@ -56,11 +59,11 @@ public class BatchExecutor extends JFrame {
 	JLabel passwordLabel = new JLabel("Password:");
 	JLabel batchLabel = new JLabel("Batch:");
 	
-	JTextField ipField = new JTextField("192.168.0.254");
+	JTextField ipField = new JTextField("127.0.0.1");
 	JComboBox connectionBox = new JComboBox(new String[] {SSH_2, SSH_1, TELNET});
 	JTextField portField = new JTextField("22");
-	JTextField usernameField = new JTextField("cisco");
-	JPasswordField passwordField = new JPasswordField("cisco");
+	JTextField usernameField = new JTextField("andreas");
+	JPasswordField passwordField = new JPasswordField("");
 	JTextArea responseArea = new JTextArea();
 	JTextArea batchArea = new JTextArea();
 	
@@ -156,7 +159,7 @@ public class BatchExecutor extends JFrame {
 				try {
 					FileInputStream inputStream = new FileInputStream(batchFile);
 					
-					String batch = StreamUtil.readStream(inputStream);
+					String batch = StreamUtil.read(inputStream);
 					batchArea.setText(batch);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -169,8 +172,7 @@ public class BatchExecutor extends JFrame {
 				try {
 					responseArea.setText("");
 					
-					String output = openConnection(
-							usernameField.getText(),
+					String output = openConnection(usernameField.getText(),
 							new String(passwordField.getPassword()),
 							ipField.getText(), batchArea.getText(),
 							connectionBox.getSelectedItem().toString(),
@@ -204,34 +206,32 @@ public class BatchExecutor extends JFrame {
 	
 	private String openConnection(String username, String password, String ip,
 			String batch, String connection, int port) throws IOException {
-		CommandLine commandLine;
+		CommandLineInterface cli;
 		
 		IPv4Address ipAddress = IPv4Address.getByAddress(ip);
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		if (connection.equals(SSH_2)) {
-			SSHConnectionSettings settings = new SSHConnectionSettings();
+		if (connection.equals(SSH_1) || connection.equals(SSH_2)) {
+			SSHSettings settings = new SSHSettings();
 			settings.setVersion(SSHVersion.VERSION2);
+			settings.setVersion(connection.equals(SSH_1) ? SSHVersion.VERSION1
+					: SSHVersion.VERSION2);
 			settings.setPort(port);
 			settings.setUsername(username);
 			settings.setPassword(password);
 			
-			commandLine = new LocalSSHConnection(accessor, settings);
-		} else if (connection.equals(SSH_1)) {
-			SSHConnectionSettings settings = new SSHConnectionSettings();
-			settings.setVersion(SSHVersion.VERSION1);
-			settings.setPort(port);
-			settings.setUsername(username);
-			settings.setPassword(password);
-			
-			commandLine = new LocalSSHConnection(accessor, settings);
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
+					accessor, settings);
+			cli = sshConsoleConnection;
 		} else if (connection.equals(TELNET)) {
-			TelnetConnectionSettings settings = new TelnetConnectionSettings();
+			TelnetSettings settings = new TelnetSettings();
 			settings.setPort(port);
 			
-			commandLine = new LocalTelnetConnection(accessor, settings);
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
+					accessor, settings);
+			cli = telnetConnection;
 			
-			OutputStream outputStream = commandLine.getOutputStream();
+			OutputStream outputStream = cli.getOutputStream();
 			
 			if (!username.isEmpty()) {
 				outputStream.write(username.getBytes());
@@ -246,22 +246,27 @@ public class BatchExecutor extends JFrame {
 			throw new IllegalStateException();
 		}
 		
-		InputStream inputStream = commandLine.getInputStream();
-		OutputStream outputStream = commandLine.getOutputStream();
+		InputStream inputStream = cli.getInputStream();
+		OutputStream outputStream = cli.getOutputStream();
 		
-		String end = "!asdf1234asdf";
-		Pattern endPattern = Pattern.compile(".+"
-				+ PatternUtil.escapeString(end));
+		String start = "!-start-";
+		Pattern startPattern = Pattern.compile(".+" + Pattern.quote(start));
 		
-		outputStream.write((batch + "\n" + end + "\n").getBytes());
+		String end = "!-end-";
+		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
+		
+		outputStream.write((start + "\n" + batch + "\n" + end + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new ReadUntilMatchInputStream(inputStream, endPattern);
-		inputStream = new IgnoreLastLineInputStream(inputStream);
+		Reader reader = new FluidInputStreamReader(inputStream);
+		reader = new AfterLineMatchReader(reader, startPattern);
+		reader = new UntilLineMatchReader(reader, endPattern);
+		reader = new FilterFirstLineReader(reader);
+		reader = new FilterLastLineReader(reader);
 		
-		String result = StreamUtil.readStream(inputStream);
+		String result = StreamUtil.read(reader);
 		
-		commandLine.close();
+		cli.close();
 		
 		return result;
 	}

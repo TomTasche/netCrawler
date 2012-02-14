@@ -1,13 +1,9 @@
 package at.netcrawler.http;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletHandler;
-
-import at.netcrawler.network.model.NetworkTopology;
 
 
 public class NetSurfer {
-	
+	/*
 	private static Server server;
 	private static NetworkTopology topology;
 	
@@ -38,4 +34,5 @@ public class NetSurfer {
 		startServer(topology);
 		stop();
 	}
+	*/
 }

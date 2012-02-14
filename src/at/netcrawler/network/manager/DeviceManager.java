@@ -1,68 +1,70 @@
 package at.netcrawler.network.manager;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
+import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.Capability;
-import at.netcrawler.network.connection.DeviceConnection;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
-import at.netcrawler.network.model.NetworkModelExtension;
 
 
-public abstract class DeviceManager<C extends DeviceConnection> {
+public abstract class DeviceManager {
 	
 	private final NetworkDevice device;
-	protected final C connection;
 	
-	private final Map<NetworkDeviceExtension, DeviceExtensionManager<C>> extensionManagerMap = new LinkedHashMap<NetworkDeviceExtension, DeviceExtensionManager<C>>();
+	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
 	
-	public DeviceManager(NetworkDevice device, C connection) {
+	private double progress;
+	// TODO: or polling?
+	private List<ManagerProgressListener> progressListeners = new ArrayList<ManagerProgressListener>();
+	
+	public DeviceManager(NetworkDevice device) {
 		this.device = device;
-		this.connection = connection;
 	}
 	
 	public final NetworkDevice getDevice() {
 		return device;
 	}
 	
-	public final C getConnection() {
-		return connection;
+	public final double getProgress() {
+		return progress;
 	}
 	
-	public final boolean hasExtensionManager(
-			Class<? extends NetworkDeviceExtension> extensionClass) {
-		try {
-			NetworkDeviceExtension extension = extensionClass.newInstance();
-			
-			return hasExtensionManager(extension);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	public final Object getValue(String key) throws IOException {
+		if (key.equals(NetworkDevice.HOSTNAME)) {
+			return getHostname();
+		} else if (key.equals(NetworkDevice.SYSTEM)) {
+			return getSystem();
+		} else if (key.equals(NetworkDevice.UPTIME)) {
+			return getUptime();
+		} else if (key.equals(NetworkDevice.CAPABILITIES)) {
+			return getCapabilities();
+		} else if (key.equals(NetworkDevice.MAJOR_CAPABILITY)) {
+			return getMajorCapability();
+		} else if (key.equals(NetworkDevice.INTERFACES)) {
+			return getInterfaces();
+		} else if (key.equals(NetworkDevice.MANAGEMENT_ADDRESSES)) {
+			return getManagementAddresses();
 		}
-	}
-	
-	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
-		return extensionManagerMap.containsKey(extension);
-	}
-	
-	public final DeviceExtensionManager<C> getExtensionManager(
-			Class<? extends NetworkDeviceExtension> extensionClass) {
-		try {
-			NetworkDeviceExtension extension = extensionClass.newInstance();
-			
-			return getExtensionManager(extension);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		
+		// TODO: optimize (string->extensionManager map)
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				try {
+					return extensionManager.getValue(key);
+				} catch (RuntimeException e) {}
+			}
 		}
-	}
-	
-	public final DeviceExtensionManager<C> getExtensionManager(
-			NetworkDeviceExtension extension) {
-		return extensionManagerMap.get(extension);
+		
+		throw new IllegalArgumentException("Unsupported key!");
 	}
 	
 	public abstract String getIdentication() throws IOException;
@@ -75,88 +77,147 @@ public abstract class DeviceManager<C extends DeviceConnection> {
 	
 	public abstract Set<Capability> getCapabilities() throws IOException;
 	
+	public abstract Capability getMajorCapability() throws IOException;
+	
 	public abstract Set<NetworkInterface> getInterfaces() throws IOException;
 	
 	public abstract Set<IPAddress> getManagementAddresses() throws IOException;
 	
-	// TODO: add generic methods
-	
-	public abstract boolean setHostname(String hostname) throws IOException;
-	
-	// TODO: add generic methods
-	
-	public final boolean addExtensionManager(NetworkDeviceExtension extension,
-			DeviceExtensionManager<C> extensionManager) {
-		DeviceManager<C> deviceManager = extensionManager.getDeviceManager();
-		
-		if (deviceManager == this) {
-			return false;
-		} else if (deviceManager != null) {
-			throw new IllegalArgumentException(
-					"The extension manager is already in use!");
+	public final boolean setValue(String key, Object value) throws IOException {
+		if (key.equals(NetworkDevice.HOSTNAME)) {
+			return setHostname((String) value);
 		}
 		
-		for (NetworkModelExtension requiredExtension : extension
-				.getRequiredExtensions()) {
-			if (!extensionManagerMap.containsKey(requiredExtension)) {
-				throw new IllegalArgumentException(
-						"Does not contain required extension managers!");
+		// TODO: optimize (string->extensionManager map)
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				try {
+					return extensionManager.setValue(key, value);
+				} catch (IllegalArgumentException e) {}
 			}
 		}
 		
+		throw new IllegalArgumentException("Unsupported key!");
+	}
+	
+	public abstract boolean setHostname(String hostname) throws IOException;
+	
+	public final boolean hasExtensionManager(NetworkDeviceExtension extension) {
+		return hasExtensionManager(extension.getClass());
+	}
+	
+	public final boolean hasExtensionManager(
+			Class<? extends NetworkDeviceExtension> extensionClass) {
+		for (DeviceExtensionManager extensionManager : extensionManagers) {
+			if (extensionManager.getExtensionClass().equals(extensionClass))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public final boolean hasExtensionManager(
+			DeviceExtensionManager extensionManager) {
+		synchronized (extensionManagers) {
+			return extensionManagers.contains(extensionManager);
+		}
+	}
+	
+	public final boolean addExtensionManager(
+			DeviceExtensionManager extensionManager) {
+		if (hasExtensionManager(extensionManager)) return false;
+		
+		DeviceManager deviceManager = extensionManager.getDeviceManager();
+		
+		if (deviceManager == this) return false;
+		if (deviceManager != null)
+			throw new IllegalArgumentException(
+					"The extension manager is already in use!");
+		
 		extensionManager.setDeviceManager(this);
-		extensionManagerMap.put(
-				extension, extensionManager);
+		
+		synchronized (extensionManagers) {
+			extensionManagers.add(extensionManager);
+		}
 		
 		return true;
 	}
 	
-	public final boolean removeExtensionManager(NetworkDeviceExtension extension) {
-		DeviceExtensionManager<C> extensionManager = extensionManagerMap
-				.get(extension);
-		DeviceManager<C> deviceManager = extensionManager.getDeviceManager();
+	// TODO: or polling?
+	public void addProgressListener(ManagerProgressListener listener) {
+		synchronized (progressListeners) {
+			progressListeners.add(listener);
+		}
+	}
+	
+	public final boolean removeExtensionManager(
+			DeviceExtensionManager extensionManager) {
+		if (!hasExtensionManager(extensionManager)) return false;
 		
+		DeviceManager deviceManager = extensionManager.getDeviceManager();
 		if (deviceManager != this) return false;
 		
-		extensionManagerMap.remove(extension);
+		synchronized (extensionManagers) {
+			extensionManagers.remove(extensionManager);
+		}
+		
 		extensionManager.setDeviceManager(null);
 		
 		return true;
 	}
 	
-	public final void readDevice() throws IOException {
-		device.setValue(
-				NetworkDevice.IDENTICATION, getIdentication());
-		device.setValue(
-				NetworkDevice.HOSTNAME, getHostname());
-		device.setValue(
-				NetworkDevice.SYSTEM, getSystem());
-		device.setValue(
-				NetworkDevice.UPTIME, getUptime());
-		device.setValue(
-				NetworkDevice.CAPABILITIES, getCapabilities());
-		device.setValue(
-				NetworkDevice.INTERFACES, getInterfaces());
-		device.setValue(
-				NetworkDevice.MANAGEMENT_ADDRESSES, getManagementAddresses());
-		// TODO: use generic information
+	// TODO: or polling?
+	public void removeProgressListener(ManagerProgressListener listener) {
+		synchronized (progressListeners) {
+			progressListeners.remove(listener);
+		}
+	}
+	
+	public abstract Map<IPv4Address, NetworkInterface> discoverNeighbors();
+	
+	public final void updateDevice() throws IOException {
+		progress = 0;
 		
-		for (Map.Entry<NetworkDeviceExtension, DeviceExtensionManager<C>> entry : extensionManagerMap
-				.entrySet()) {
-			NetworkDeviceExtension deviceExtension = entry.getKey();
-			DeviceExtensionManager<C> extensionManager = entry.getValue();
-			
-			if (extensionManager.hasExtension()) {
-				device.addExtension(deviceExtension);
-				extensionManager.readDeviceExtension();
+		Set<String> keySet = new HashSet<String>();
+		keySet.addAll(NetworkDevice.TYPE_MAP.keySet());
+		
+		synchronized (extensionManagers) {
+			for (DeviceExtensionManager extensionManager : extensionManagers) {
+				if (!extensionManager.hasExtension()) continue;
+				
+				NetworkDeviceExtension extension = extensionManager.getExtension();
+				Set<String> extensionKexSet = extension.getExtensionTypeMap().keySet();
+				keySet.addAll(extensionKexSet);
 			}
+		}
+		
+		int keyCount = keySet.size();
+		int fetchCount = 0;
+		
+		for (String key : keySet) {
+			Object value = getValue(key);
+			device.setValue(key, value);
+			
+			fetchCount++;
+			progress = (double) fetchCount / keyCount;
+			// TODO: or polling?
+			fireProgress(progress);
 		}
 	}
 	
 	public final void fetchDevice() throws IOException {
 		device.clear();
 		
-		readDevice();
+		updateDevice();
+	}
+	
+	// TODO: or polling?
+	private void fireProgress(double progress) {
+		synchronized (progressListeners) {
+			for (ManagerProgressListener progressListener : progressListeners) {
+				progressListener.updateOccured(progress);
+			}
+		}
 	}
 	
 }

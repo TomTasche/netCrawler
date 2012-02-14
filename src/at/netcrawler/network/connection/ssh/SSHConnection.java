@@ -1,24 +1,28 @@
 package at.netcrawler.network.connection.ssh;
 
-import at.netcrawler.network.IPDeviceAccessor;
-import at.netcrawler.network.connection.IPDeviceConnection;
+import java.io.IOException;
+
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
-public abstract class SSHConnection extends IPDeviceConnection implements
+public abstract class SSHConnection extends TCPIPDeviceConnection implements
 		SSHClient {
 	
-	protected final SSHVersion version;
+	private SSHVersion version;
 	
-	public SSHConnection(IPDeviceAccessor accessor,
-			SSHConnectionSettings settings) {
+	public SSHConnection(IPDeviceAccessor accessor, SSHSettings settings) {
 		super(accessor, settings);
-		
-		version = settings.getVersion();
 	}
 	
 	@Override
 	public SSHVersion getVersion() {
 		return version;
+	}
+	
+	protected void connectGenericImpl(IPDeviceAccessor accessor,
+			SSHSettings settings) throws IOException {
+		version = settings.getVersion();
 	}
 	
 }

@@ -1,29 +1,42 @@
 package at.netcrawler.test;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.IPDeviceAccessor;
+import at.andiwand.library.network.ip.SubnetMask;
+import at.andiwand.library.network.mac.MACAddress;
+import at.netcrawler.io.gson.JsonClassAdapter;
+import at.netcrawler.io.gson.JsonIPv4AddressAdapter;
+import at.netcrawler.io.gson.JsonMACAddressAdapter;
+import at.netcrawler.io.gson.JsonNetworkModelAdapter;
+import at.netcrawler.io.gson.JsonSubnetMaskAdapter;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
-import at.netcrawler.network.connection.snmp.SNMPConnectionSettings;
-import at.netcrawler.network.connection.snmp.SNMPSecurityLevel;
+import at.netcrawler.network.connection.snmp.SNMPSettings;
+import at.netcrawler.network.connection.snmp.SNMPVersion;
 import at.netcrawler.network.manager.snmp.SNMPDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.model.NetworkModel;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class SNMPDeviceManagerTest {
 	
 	public static void main(String[] args) throws Throwable {
-		String address = "192.168.1.5";
+		String address = "192.168.15.4";
 		IPv4Address ipAddress = IPv4Address.getByAddress(address);
 		int port = 161;
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
-		SNMPConnectionSettings settings = new SNMPConnectionSettings();
+		SNMPSettings settings = new SNMPSettings();
+		settings.setVersion(SNMPVersion.VERSION2C);
 		settings.setPort(port);
-		settings.setSecurityLevel(SNMPSecurityLevel.AUTH_PRIV);
-		settings.setUsername("ciscocisco");
-		settings.setPassword("ciscocisco");
-		settings.setCryptoKey("ciscocisco");
+		settings.setCommunity("netCrawler");
+		// settings.setSecurityLevel(SNMPSecurityLevel.AUTH_PRIV);
+		// settings.setUsername("ciscocisco");
+		// settings.setPassword("ciscocisco");
+		// settings.setCryptoKey("ciscocisco");
 		
 		LocalSNMPConnection connection = new LocalSNMPConnection(accessor,
 				settings);
@@ -34,11 +47,25 @@ public class SNMPDeviceManagerTest {
 		
 		deviceManager.fetchDevice();
 		System.out.println(device);
+		System.out.println(device.getValue(NetworkDevice.INTERFACES));
+		System.out.println(device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));
 		
-		deviceManager.setHostname("HAHA");
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		gsonBuilder.registerTypeAdapter(Class.class, new JsonClassAdapter());
+		gsonBuilder.registerTypeAdapter(MACAddress.class,
+				new JsonMACAddressAdapter());
+		gsonBuilder.registerTypeAdapter(IPv4Address.class,
+				new JsonIPv4AddressAdapter());
+		gsonBuilder.registerTypeAdapter(SubnetMask.class,
+				new JsonSubnetMaskAdapter());
+		gsonBuilder.registerTypeHierarchyAdapter(NetworkModel.class,
+				new JsonNetworkModelAdapter());
 		
-		deviceManager.fetchDevice();
-		System.out.println(device);
+		Gson gson = gsonBuilder.create();
+		String gsonString = gson.toJson(device);
+		System.out.println(gsonString);
+		System.out.println(gson.fromJson(gsonString, NetworkDevice.class));
 	}
 	
 }
