@@ -19,7 +19,7 @@ public abstract class SSHGateway extends TCPIPConnectionGateway<SSHSettings> {
 	}
 	
 	@Override
-	public abstract SSHConnection openConnectionGenericImpl(
+	protected abstract SSHConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, SSHSettings settings) throws IOException;
 	
 }

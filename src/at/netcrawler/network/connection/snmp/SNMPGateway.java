@@ -19,7 +19,7 @@ public abstract class SNMPGateway extends TCPIPConnectionGateway<SNMPSettings> {
 	}
 	
 	@Override
-	public abstract SNMPConnection openConnectionGenericImpl(
+	protected abstract SNMPConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, SNMPSettings settings)
 			throws IOException;
 	

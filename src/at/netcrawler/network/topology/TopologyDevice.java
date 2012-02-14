@@ -17,7 +17,7 @@ public class TopologyDevice {
 		public void valueChanged(String key, Object value, Object oldValue) {
 			if (!key.equals(NetworkDevice.INTERFACES)) return;
 			
-			setNetworkInterface(value);
+			setNetworkInterfaces(value);
 		}
 	}
 	
@@ -37,10 +37,10 @@ public class TopologyDevice {
 	@Override
 	public String toString() {
 		String hostname = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
-		
 		return hostname;
 	}
 	
+	// TODO: fix
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
@@ -49,19 +49,20 @@ public class TopologyDevice {
 		if (!(obj instanceof TopologyDevice)) return false;
 		TopologyDevice device = (TopologyDevice) obj;
 		
-		String identicationA = (String) networkDevice.getValue(NetworkDevice.IDENTICATION);
-		String identicationB = (String) device.networkDevice.getValue(NetworkDevice.IDENTICATION);
+		String hostnameA = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
+		String hostnameB = (String) device.networkDevice.getValue(NetworkDevice.HOSTNAME);
 		
-		if (identicationA == identicationB) return true;
-		if (identicationA == null) return false;
-		return identicationA.equals(identicationB);
+		if (hostnameA == hostnameB) return true;
+		if (hostnameA == null) return false;
+		return hostnameA.equals(hostnameB);
 	}
 	
+	// TODO: fix
 	@Override
 	public int hashCode() {
-		String identication = (String) networkDevice.getValue(NetworkDevice.IDENTICATION);
-		if (identication == null) return 0;
-		return identication.hashCode();
+		String hostname = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
+		if (hostname == null) return 0;
+		return hostname.hashCode();
 	}
 	
 	public NetworkDevice getNetworkDevice() {
@@ -91,7 +92,7 @@ public class TopologyDevice {
 		fireInterfacesChange(oldInterfaces, newInterfaces);
 	}
 	
-	private void setNetworkInterface(Set<NetworkInterface> networkInterfaces) {
+	private void setNetworkInterfaces(Set<NetworkInterface> networkInterfaces) {
 		Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
 		
 		for (NetworkInterface networkInterface : networkInterfaces) {
@@ -104,13 +105,13 @@ public class TopologyDevice {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void setNetworkInterface(Object value) {
-		setNetworkInterface((Set<NetworkInterface>) value);
+	private void setNetworkInterfaces(Object value) {
+		setNetworkInterfaces((Set<NetworkInterface>) value);
 	}
 	
 	private void setDeviceInterfaces() {
 		Object value = networkDevice.getValue(NetworkDevice.INTERFACES);
-		setNetworkInterface(value);
+		setNetworkInterfaces(value);
 	}
 	
 	public void addListener(TopologyDeviceListener listener) {

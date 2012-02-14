@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
+import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
@@ -37,9 +39,7 @@ public abstract class DeviceManager {
 	}
 	
 	public final Object getValue(String key) throws IOException {
-		if (key.equals(NetworkDevice.IDENTICATION)) {
-			return getIdentication();
-		} else if (key.equals(NetworkDevice.HOSTNAME)) {
+		if (key.equals(NetworkDevice.HOSTNAME)) {
 			return getHostname();
 		} else if (key.equals(NetworkDevice.SYSTEM)) {
 			return getSystem();
@@ -173,7 +173,7 @@ public abstract class DeviceManager {
 		}
 	}
 	
-	public abstract Set<IPAddress> discoverNeighbors();
+	public abstract Map<IPv4Address, NetworkInterface> discoverNeighbors();
 	
 	public final void updateDevice() throws IOException {
 		progress = 0;

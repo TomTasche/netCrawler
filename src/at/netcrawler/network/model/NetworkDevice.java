@@ -17,9 +17,6 @@ public class NetworkDevice extends NetworkModel {
 	
 	public static final Map<String, Type> TYPE_MAP;
 	
-	public static final String IDENTICATION = "device.identication";
-	public static final Type IDENTICATION_TYPE = String.class;
-	
 	public static final String HOSTNAME = "device.hostname";
 	public static final Type HOSTNAME_TYPE = String.class;
 	
@@ -44,7 +41,6 @@ public class NetworkDevice extends NetworkModel {
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
 		
-		map.put(IDENTICATION, IDENTICATION_TYPE);
 		map.put(HOSTNAME, HOSTNAME_TYPE);
 		map.put(SYSTEM, SYSTEM_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);

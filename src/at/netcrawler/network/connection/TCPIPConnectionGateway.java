@@ -12,7 +12,7 @@ public abstract class TCPIPConnectionGateway<S extends TCPIPConnectionSettings> 
 	public abstract Class<? extends TCPIPDeviceConnection> getConnectionClass();
 	
 	@Override
-	public abstract TCPIPDeviceConnection openConnectionGenericImpl(
+	protected abstract TCPIPDeviceConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, S settings) throws IOException;
 	
 }

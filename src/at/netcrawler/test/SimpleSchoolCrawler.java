@@ -180,8 +180,6 @@ public class SimpleSchoolCrawler {
 				+ device.getValue(CiscoDeviceExtension.SYSTEM_SERIAL_NUMBER));
 		System.out.println("processor:		"
 				+ device.getValue(CiscoDeviceExtension.PROCESSOR_STRING));
-		System.out.println("processor board id:	"
-				+ device.getValue(NetworkDevice.IDENTICATION));
 		
 		usedIDs.add(id);
 		

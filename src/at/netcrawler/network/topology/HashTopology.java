@@ -70,11 +70,11 @@ public class HashTopology extends Topology {
 	}
 	
 	@Override
-	public synchronized Set<TopologyCable> getConnectedCables(
-			TopologyDevice device) {
+	public synchronized Set<TopologyCable> getConnectedEdges(
+			TopologyDevice vertex) {
 		Set<TopologyCable> result = new HashSet<TopologyCable>();
 		
-		for (TopologyInterface interfaze : device.getInterfaces()) {
+		for (TopologyInterface interfaze : vertex.getInterfaces()) {
 			TopologyCable cable = connectionMap.get(interfaze);
 			result.add(cable);
 		}

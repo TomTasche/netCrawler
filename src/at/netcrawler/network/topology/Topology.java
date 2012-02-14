@@ -19,11 +19,12 @@ public abstract class Topology extends
 	
 	public abstract Map<TopologyInterface, TopologyCable> getConnectionMap();
 	
-	public Set<TopologyCable> getConnectedCables(TopologyDevice device) {
+	@Override
+	public Set<TopologyCable> getConnectedEdges(TopologyDevice vertex) {
 		Set<TopologyCable> result = new HashSet<TopologyCable>();
 		Map<TopologyInterface, TopologyCable> connectionMap = getConnectionMap();
 		
-		for (TopologyInterface interfaze : device.getInterfaces()) {
+		for (TopologyInterface interfaze : vertex.getInterfaces()) {
 			TopologyCable cable = connectionMap.get(interfaze);
 			result.add(cable);
 		}

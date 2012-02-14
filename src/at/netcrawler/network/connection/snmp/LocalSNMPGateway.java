@@ -8,7 +8,7 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 public class LocalSNMPGateway extends SNMPGateway {
 	
 	@Override
-	public LocalSNMPConnection openConnectionGenericImpl(
+	protected LocalSNMPConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, SNMPSettings settings)
 			throws IOException {
 		return new LocalSNMPConnection(accessor, settings);

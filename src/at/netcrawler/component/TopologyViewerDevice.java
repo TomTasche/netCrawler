@@ -19,7 +19,8 @@ import at.netcrawler.network.topology.TopologyDevice;
 public class TopologyViewerDevice extends GraphViewerVertex {
 	
 	private static enum DeviceImage {
-		UNKNOWN(null, "unknown.png"), ROUTER(Capability.ROUTER, "router.png"),
+		UNKNOWN(null, "unknown.png"),
+		ROUTER(Capability.ROUTER, "router.png"),
 		SWITCH(Capability.SWITCH, "switch.png");
 		
 		private static final Map<Capability, DevicePainter> PAINTER_MAP = new HashMap<Capability, DevicePainter>();

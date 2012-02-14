@@ -45,7 +45,6 @@ public class TopologyViewerTest {
 		NetworkDevice deviceA = new NetworkDevice();
 		NetworkInterface interfaceA = new NetworkInterface();
 		interfaceA.setValue(NetworkInterface.NAME, "eth0");
-		deviceA.setValue(NetworkDevice.IDENTICATION, "a");
 		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
 		deviceA.setValue(NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
@@ -53,7 +52,6 @@ public class TopologyViewerTest {
 		NetworkDevice deviceB = new NetworkDevice();
 		NetworkInterface interfaceB = new NetworkInterface();
 		interfaceB.setValue(NetworkInterface.NAME, "eth0");
-		deviceB.setValue(NetworkDevice.IDENTICATION, "b");
 		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
 		deviceB.setValue(NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));

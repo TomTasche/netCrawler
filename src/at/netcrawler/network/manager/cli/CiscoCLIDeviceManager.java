@@ -1,10 +1,12 @@
 package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPAddress;
+import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.cli.agent.PromtPatternCLIAgent;
 import at.netcrawler.network.Capability;
@@ -79,7 +81,7 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	@Override
-	public Set<IPAddress> discoverNeighbors() {
+	public Map<IPv4Address, NetworkInterface> discoverNeighbors() {
 		// TODO: implement
 		return null;
 	}

@@ -17,7 +17,7 @@ public abstract class IPConnectionGateway<S extends ConnectionSettings> extends
 	}
 	
 	@Override
-	public abstract IPDeviceConnection openConnectionGenericImpl(
+	protected abstract IPDeviceConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, S settings) throws IOException;
 	
 }

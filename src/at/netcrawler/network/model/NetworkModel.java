@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+// TODO: fix type issue
 public abstract class NetworkModel implements Serializable {
 	
 	private static final long serialVersionUID = -5895614487866391126L;

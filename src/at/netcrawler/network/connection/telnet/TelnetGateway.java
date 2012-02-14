@@ -20,7 +20,7 @@ public abstract class TelnetGateway extends
 	}
 	
 	@Override
-	public abstract TelnetConnection openConnectionGenericImpl(
+	protected abstract TelnetConnection openConnectionGenericImpl(
 			IPDeviceAccessor accessor, TelnetSettings settings)
 			throws IOException;
 	

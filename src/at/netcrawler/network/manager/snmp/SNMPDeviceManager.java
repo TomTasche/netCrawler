@@ -200,7 +200,7 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
-	public Set<IPAddress> discoverNeighbors() {
+	public Map<IPv4Address, NetworkInterface> discoverNeighbors() {
 		// TODO implement
 		return null;
 	}
