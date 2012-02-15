@@ -1,5 +1,6 @@
 package at.netcrawler.gui.main;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
@@ -12,7 +13,12 @@ import java.util.Set;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkCable;
@@ -34,7 +40,9 @@ public class DeviceList extends JList {
 	public DeviceList() {
 		model = new DeviceListModel();
 		
+		// setCellRenderer(new DeviceCellRenderer());
 		setModel(model);
+//		setPreferredSize(new Dimension(100, 20));
 	}
 	
 	
@@ -59,18 +67,12 @@ public class DeviceList extends JList {
 		}
 		
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public Object getElementAt(int index) {
 			NetworkDevice device = devices.get(index).getNetworkDevice();
 			
-			String name = (String) device.getValue(NetworkDevice.HOSTNAME);
-			String caps = "";
-			
-			Set<Capability> capabilities = (Set<Capability>) device.getValue(NetworkDevice.CAPABILITIES);
-			for (Capability capability : capabilities) {
-				caps += capability.name().substring(0, 1);
-			}
+			String name = NetworkDeviceHelper.getHostname(device);
+			String caps = NetworkDeviceHelper.concatCapabilities(device);
 			
 			return name + "(" + caps + ")";
 		}
@@ -80,11 +82,22 @@ public class DeviceList extends JList {
 		}
 	}
 	
+	private class DeviceCellRenderer implements ListCellRenderer {
+		
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			return new JLabel((String) value);
+		}
+	}
 	
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		
 		JFrame frame = new JFrame();
 		frame.setLayout(new FlowLayout());
-		frame.setSize(new Dimension(500, 500));
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		Topology topology = new HashTopology();
 		
@@ -123,10 +136,11 @@ public class DeviceList extends JList {
 		deviceB.setValue(NetworkDevice.CAPABILITIES, new HashSet<Capability>() {{add(Capability.SWITCH);}});
 		
 		DeviceList list = new DeviceList();
-		frame.add(list);
+		frame.add(new JScrollPane(list));
 		
 		list.setTopology(topology);
 		
+		frame.pack();
 		frame.setVisible(true);
 	}
 }
