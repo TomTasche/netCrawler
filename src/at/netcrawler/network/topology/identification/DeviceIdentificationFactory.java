@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology;
+package at.netcrawler.network.topology.identification;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology;
+package at.netcrawler.network.topology.identification;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +32,16 @@ public final class DeviceIdentificationSet {
 	
 	public void removeIdentification(DeviceIdentification identification) {
 		identificationMap.remove(identification.getClass());
+	}
+	
+	public boolean contains(DeviceIdentification identification) {
+		Class<? extends DeviceIdentification> identificationClass = identification
+				.getClass();
+		DeviceIdentification deviceIdentificationB = identificationMap
+				.get(identificationClass);
+		
+		if (deviceIdentificationB == null) return false;
+		return deviceIdentificationB.equals(identification);
 	}
 	
 	public boolean collides(DeviceIdentificationSet identificationSet) {

@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import at.andiwand.library.util.GenericsUtil;
-import at.andiwand.library.util.StringLengthComperator;
+import at.andiwand.library.util.comparator.StringLengthComperator;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
 

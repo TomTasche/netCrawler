@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology;
+package at.netcrawler.network.topology.identification;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,12 @@ import at.netcrawler.network.model.NetworkDevice;
 public final class DeviceIdentificationSetFactory {
 	
 	private final Set<DeviceIdentificationFactory> identificationFactories = new HashSet<DeviceIdentificationFactory>();
+	
+	public DeviceIdentificationSetFactory() {
+		addIdenticationFactory(new CiscoSwitchIdentificationFactory());
+		addIdenticationFactory(new CiscoRouterIdentificationFactory());
+		addIdenticationFactory(new SNMPDeviceIdentificationFactory());
+	}
 	
 	public void addIdenticationFactory(
 			DeviceIdentificationFactory identificationFactory) {

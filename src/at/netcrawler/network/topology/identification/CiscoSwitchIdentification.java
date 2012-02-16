@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology;
+package at.netcrawler.network.topology.identification;
 
 public class CiscoSwitchIdentification extends DeviceIdentification {
 	

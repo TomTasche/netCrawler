@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.andiwand.library.util.CollectionUtil;
+import at.andiwand.library.util.collections.CollectionUtil;
 
 
 public abstract class NetworkModelExtension implements Serializable {

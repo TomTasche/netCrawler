@@ -1,9 +1,9 @@
-package at.netcrawler.network.topology;
+package at.netcrawler.network.topology.identification;
 
 import java.util.Collections;
 import java.util.Set;
 
-import at.andiwand.library.util.CollectionUtil;
+import at.andiwand.library.util.collections.CollectionUtil;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.extension.SNMPDeviceExtension;
