@@ -7,8 +7,8 @@ import java.util.HashSet;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-import at.andiwand.library.component.GridGraphLayout;
 import at.andiwand.library.component.JFrameUtil;
+import at.netcrawler.component.CrapGraphLayout;
 import at.netcrawler.component.TopologyViewer;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkCable;
@@ -27,7 +27,7 @@ public class TopologyViewerTest {
 		Topology topology = new HashTopology();
 		
 		TopologyViewer topologyViewer = new TopologyViewer();
-		topologyViewer.setGraphLayout(new GridGraphLayout(topologyViewer));
+		topologyViewer.setGraphLayout(new CrapGraphLayout(topologyViewer));
 		topologyViewer.setModel(topology);
 		topologyViewer.addRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
@@ -35,7 +35,7 @@ public class TopologyViewerTest {
 				RenderingHints.VALUE_RENDER_QUALITY);
 		JScrollPane scrollPane = new JScrollPane(topologyViewer);
 		
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame("netCrawler");
 		frame.add(scrollPane);
 		frame.setSize(400, 400);
 		JFrameUtil.centerFrame(frame);
@@ -69,11 +69,13 @@ public class TopologyViewerTest {
 						topologyInterfaceA, topologyInterfaceB)));
 		
 		topology.addVertex(topologyDeviceA);
-		topology.addVertex(topologyDeviceB);
-		topology.addEdge(topologyCable);
 		
 		Thread.sleep(2000);
 		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
+		
+		Thread.sleep(2000);
+		topology.addVertex(topologyDeviceB);
+		topology.addEdge(topologyCable);
 		
 		Thread.sleep(2000);
 		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);

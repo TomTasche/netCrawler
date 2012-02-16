@@ -11,6 +11,7 @@ import java.util.Set;
 
 
 // TODO: fix type issue
+// TODO: implement value path
 public abstract class NetworkModel implements Serializable {
 	
 	private static final long serialVersionUID = -5895614487866391126L;
@@ -71,13 +72,6 @@ public abstract class NetworkModel implements Serializable {
 		return true;
 	}
 	
-	public final boolean isExtensionSupported(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension
-				.getInstance(extensionClass);
-		return isExtensionSupported(extension);
-	}
-	
 	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key))
 			throw new IllegalArgumentException("Unknown key!");
@@ -96,24 +90,10 @@ public abstract class NetworkModel implements Serializable {
 		return extensions.contains(extension);
 	}
 	
-	public final boolean containsExtension(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension
-				.getInstance(extensionClass);
-		return containsExtension(extension);
-	}
-	
 	public final void clear() {
 		valueMap.clear();
 		typeMap = new HashMap<String, Type>(initialTypeMap);
 		extensions.clear();
-	}
-	
-	public final void clearExtension(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension
-				.getInstance(extensionClass);
-		clearExtension(extension);
 	}
 	
 	public final void clearExtension(NetworkModelExtension extension) {
@@ -124,13 +104,6 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final void addListener(NetworkModelListener listener) {
 		listeners.add(listener);
-	}
-	
-	public final boolean addExtension(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension
-				.getInstance(extensionClass);
-		return addExtension(extension);
 	}
 	
 	public final boolean addExtension(NetworkModelExtension extension) {
@@ -148,13 +121,6 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final void removeListener(NetworkModelListener listener) {
 		listeners.remove(listener);
-	}
-	
-	public final boolean removeExtension(
-			Class<? extends NetworkModelExtension> extensionClass) {
-		NetworkModelExtension extension = NetworkModelExtension
-				.getInstance(extensionClass);
-		return removeExtension(extension);
 	}
 	
 	public final boolean removeExtension(NetworkModelExtension extension) {

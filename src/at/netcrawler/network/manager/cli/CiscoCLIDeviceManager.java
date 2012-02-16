@@ -1,6 +1,7 @@
 package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -31,11 +32,19 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 0);
 	
+	// TODO: implement
+	private static final String UPTIME_COMMAND = "show version";
+	private static final QuickPattern UPTIME_PATTERN = new QuickPattern(
+			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE, 0);
+	
 	public CiscoCLIDeviceManager(NetworkDevice device,
 			PromtPatternCLIAgent agent) {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoCLIDeviceExtensionManager());
+		addExtensionManager(new CiscoCLISwitchExtensionManager());
+		addExtensionManager(new CiscoCLIRouterExtensionManager());
 	}
 	
 	protected String getIdentication() throws IOException {
@@ -46,9 +55,8 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN);
 	}
 	
-	// TODO: implement
 	protected DeviceSystem getSystem() throws IOException {
-		return null;
+		return DeviceSystem.CISCO;
 	}
 	
 	protected String getSystemString() throws IOException {
@@ -56,13 +64,13 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected long getUptime() throws IOException {
-		// TODO: implement
-		return -1;
+		String uptime = executeAndFind(UPTIME_COMMAND, UPTIME_PATTERN);
+		return Long.parseLong(uptime);
 	}
 	
 	protected Set<Capability> getCapabilities() throws IOException {
 		// TODO: implement
-		return null;
+		return new HashSet<Capability>();
 	}
 	
 	@Override

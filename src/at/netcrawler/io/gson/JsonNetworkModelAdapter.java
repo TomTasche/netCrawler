@@ -32,15 +32,15 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 			JsonSerializationContext context) {
 		Map<String, Object> valueMap = new TreeMap<String, Object>(src
 				.getValueMap());
-		Set<Class<?>> extensions = new TreeSet<Class<?>>(
+		Set<Class<?>> extensionClasses = new TreeSet<Class<?>>(
 				new StringLengthComperator());
 		
 		for (NetworkModelExtension extension : src.getExtensions()) {
-			extensions.add(extension.getClass());
+			extensionClasses.add(extension.getClass());
 		}
 		
 		JsonObject result = new JsonObject();
-		result.add(EXTENSIONS_PROPERTY, context.serialize(extensions));
+		result.add(EXTENSIONS_PROPERTY, context.serialize(extensionClasses));
 		result.add(VALUES_PROPERTY, context.serialize(valueMap));
 		
 		return result;
@@ -56,11 +56,13 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 		try {
 			NetworkModel result = modelClass.newInstance();
 			
-			Set<Class<? extends NetworkModelExtension>> extensions = context
+			Set<Class<? extends NetworkModelExtension>> extensionClasses = context
 					.deserialize(object.get(EXTENSIONS_PROPERTY),
 							EXTENSION_TYPE);
 			
-			for (Class<? extends NetworkModelExtension> extension : extensions) {
+			for (Class<? extends NetworkModelExtension> extensionClass : extensionClasses) {
+				NetworkModelExtension extension = NetworkModelExtension
+						.getInstance(extensionClass);
 				result.addExtension(extension);
 			}
 			

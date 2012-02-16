@@ -164,7 +164,8 @@ public class SNMPDeviceManager extends DeviceManager {
 				try {
 					MACAddress address = MACAddress.getByAddress(addressString);
 					
-					interfaze.addExtension(EthernetInterfaceExtension.class);
+					interfaze
+							.addExtension(EthernetInterfaceExtension.EXTENSION);
 					interfaze.setValue(EthernetInterfaceExtension.ADDRESS,
 							address);
 				} catch (Exception e) {}
@@ -179,7 +180,7 @@ public class SNMPDeviceManager extends DeviceManager {
 			SubnetMask netmask = new SubnetMask((IPv4Address) row[2].getValue());
 			
 			NetworkInterface interfaze = interfaces.get(id);
-			interfaze.addExtension(IPInterfaceExtension.class);
+			interfaze.addExtension(IPInterfaceExtension.EXTENSION);
 			interfaze.setValue(IPInterfaceExtension.ADDRESS, address);
 			interfaze.setValue(IPInterfaceExtension.NETMASK, netmask);
 		}

@@ -13,7 +13,7 @@ public class CiscoDeviceExtension extends NetworkDeviceExtension {
 	
 	private static final long serialVersionUID = 4682653937036391103L;
 	
-	public static final CiscoDeviceExtension EXTENSION = new CiscoDeviceExtension();
+	public static final CiscoDeviceExtension EXTENSION;
 	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
@@ -22,13 +22,13 @@ public class CiscoDeviceExtension extends NetworkDeviceExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(CDP_NEIGHBORS, CDP_NEIGHBORS_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new CiscoDeviceExtension();
 	}
 	
-	public CiscoDeviceExtension() {
+	private CiscoDeviceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

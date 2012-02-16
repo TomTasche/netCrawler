@@ -12,7 +12,7 @@ public class SNMPDeviceExtension extends NetworkDeviceExtension {
 	
 	private static final long serialVersionUID = -5036615619413508399L;
 	
-	public static final SNMPDeviceExtension EXTENSION = new SNMPDeviceExtension();
+	public static final SNMPDeviceExtension EXTENSION;
 	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
@@ -21,13 +21,13 @@ public class SNMPDeviceExtension extends NetworkDeviceExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(ENGINE_ID, ENGINE_ID_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new SNMPDeviceExtension();
 	}
 	
-	public SNMPDeviceExtension() {
+	private SNMPDeviceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

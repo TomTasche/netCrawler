@@ -12,7 +12,7 @@ public class CiscoSwitchExtension extends NetworkDeviceExtension {
 	
 	private static final long serialVersionUID = -2174701981241129411L;
 	
-	public static final CiscoSwitchExtension EXTENSION = new CiscoSwitchExtension();
+	public static final CiscoSwitchExtension EXTENSION;
 	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
@@ -24,14 +24,14 @@ public class CiscoSwitchExtension extends NetworkDeviceExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(MODEL_NUMBER, MODEL_NUMBER_TYPE);
 		map.put(SYSTEM_SERIAL_NUMBER, SYSTEM_SERIAL_NUMBER_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new CiscoSwitchExtension();
 	}
 	
-	public CiscoSwitchExtension() {
+	private CiscoSwitchExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

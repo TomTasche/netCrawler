@@ -14,7 +14,7 @@ public class IPInterfaceExtension extends NetworkInterfaceExtension {
 	
 	private static final long serialVersionUID = -9085694799945685464L;
 	
-	public static final IPInterfaceExtension EXTENSION = new IPInterfaceExtension();
+	public static final IPInterfaceExtension EXTENSION;
 	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
@@ -25,14 +25,14 @@ public class IPInterfaceExtension extends NetworkInterfaceExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(ADDRESS, ADDRESS_TYPE);
 		map.put(NETMASK, NETMASK_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new IPInterfaceExtension();
 	}
 	
-	public IPInterfaceExtension() {
+	private IPInterfaceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	
