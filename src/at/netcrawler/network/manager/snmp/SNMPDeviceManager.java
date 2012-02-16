@@ -14,6 +14,7 @@ import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
 import at.andiwand.library.util.ObjectIdentifier;
 import at.andiwand.library.util.Timeticks;
+import at.netcrawler.DeviceSystem;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.InterfaceType;
 import at.netcrawler.network.connection.snmp.SNMPConnection;
@@ -95,22 +96,28 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
-	public String getIdentication() throws IOException {
+	protected String getIdentication() throws IOException {
 		return connection.get(IDENTICATION_OID).getValue();
 	}
 	
 	@Override
-	public String getHostname() throws IOException {
+	protected String getHostname() throws IOException {
+		return connection.get(SYSTEM_OID).getValue();
+	}
+	
+	// TODO: implement
+	@Override
+	protected DeviceSystem getSystem() throws IOException {
+		return null;
+	}
+	
+	@Override
+	protected String getSystemString() throws IOException {
 		return connection.get(SYSTEM_OID).getValue();
 	}
 	
 	@Override
-	public String getSystem() throws IOException {
-		return connection.get(SYSTEM_OID).getValue();
-	}
-	
-	@Override
-	public Set<Capability> getCapabilities() throws IOException {
+	protected Set<Capability> getCapabilities() throws IOException {
 		Integer servicesInteger = connection.get(CAPABILITIES_OID).getValue();
 		if (servicesInteger == null) return null;
 		int services = servicesInteger;
@@ -121,19 +128,19 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
-	public Capability getMajorCapability() throws IOException {
+	protected Capability getMajorCapability() throws IOException {
 		// TODO implement
 		return null;
 	}
 	
 	@Override
-	public long getUptime() throws IOException {
+	protected long getUptime() throws IOException {
 		Timeticks timeticks = connection.get(UPTIME_OID).getValue();
 		return timeticks.getMillis();
 	}
 	
 	@Override
-	public Set<NetworkInterface> getInterfaces() throws IOException {
+	protected Set<NetworkInterface> getInterfaces() throws IOException {
 		List<SNMPEntry[]> table = connection.walkTable(INTERFACES_NAMES_OID,
 				INTERFACES_DESCRIPTIONS_OID, INTERFACES_TYPE_OID,
 				INTERFACES_PHYSICAL_ADDRESSES_OID);
@@ -149,14 +156,16 @@ public class SNMPDeviceManager extends DeviceManager {
 			
 			interfaze.setValue(NetworkInterface.NAME, row[0].getValue());
 			interfaze.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
-			InterfaceType interfaceType = SupportedInterfaceType.getType((Integer) row[2].getValue());
+			InterfaceType interfaceType = SupportedInterfaceType
+					.getType((Integer) row[2].getValue());
 			interfaze.setValue(NetworkInterface.TYPE, interfaceType);
 			String addressString = row[3].getValue();
 			if (!addressString.isEmpty()) {
 				try {
 					MACAddress address = MACAddress.getByAddress(addressString);
 					
-					interfaze.addExtension(EthernetInterfaceExtension.class);
+					interfaze
+							.addExtension(EthernetInterfaceExtension.EXTENSION);
 					interfaze.setValue(EthernetInterfaceExtension.ADDRESS,
 							address);
 				} catch (Exception e) {}
@@ -171,7 +180,7 @@ public class SNMPDeviceManager extends DeviceManager {
 			SubnetMask netmask = new SubnetMask((IPv4Address) row[2].getValue());
 			
 			NetworkInterface interfaze = interfaces.get(id);
-			interfaze.addExtension(IPInterfaceExtension.class);
+			interfaze.addExtension(IPInterfaceExtension.EXTENSION);
 			interfaze.setValue(IPInterfaceExtension.ADDRESS, address);
 			interfaze.setValue(IPInterfaceExtension.NETMASK, netmask);
 		}
@@ -180,7 +189,7 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
-	public Set<IPAddress> getManagementAddresses() throws IOException {
+	protected Set<IPAddress> getManagementAddresses() throws IOException {
 		List<SNMPEntry> addresses = connection.walk(MANAGEMENT_ADDRESSES_OID);
 		Set<IPAddress> result = new HashSet<IPAddress>();
 		
@@ -195,7 +204,7 @@ public class SNMPDeviceManager extends DeviceManager {
 	}
 	
 	@Override
-	public boolean setHostname(String hostname) throws IOException {
+	protected boolean setHostname(String hostname) throws IOException {
 		return connection.setAndVerify(HOSTNAME_OID, hostname);
 	}
 	

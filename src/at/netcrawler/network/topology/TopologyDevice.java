@@ -36,8 +36,7 @@ public class TopologyDevice {
 	
 	@Override
 	public String toString() {
-		String hostname = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
-		return hostname;
+		return getHostname();
 	}
 	
 	// TODO: fix
@@ -49,24 +48,24 @@ public class TopologyDevice {
 		if (!(obj instanceof TopologyDevice)) return false;
 		TopologyDevice device = (TopologyDevice) obj;
 		
-		String hostnameA = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
-		String hostnameB = (String) device.networkDevice.getValue(NetworkDevice.HOSTNAME);
-		
-		if (hostnameA == hostnameB) return true;
-		if (hostnameA == null) return false;
-		return hostnameA.equals(hostnameB);
+		return getHostname().equals(device.getHostname());
 	}
 	
 	// TODO: fix
 	@Override
 	public int hashCode() {
-		String hostname = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
+		String hostname = (String) networkDevice
+				.getValue(NetworkDevice.HOSTNAME);
 		if (hostname == null) return 0;
 		return hostname.hashCode();
 	}
 	
 	public NetworkDevice getNetworkDevice() {
 		return networkDevice;
+	}
+	
+	public String getHostname() {
+		return (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
 	}
 	
 	public Set<TopologyInterface> getInterfaces() {

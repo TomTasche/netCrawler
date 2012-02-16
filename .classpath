@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="at/netcrawler/cli/agent/deprecated/|at/netcrawler/network/topology/old/|at/netcrawler/network/connection/snmpOld/|at/netcrawler/gson/JsonNetworkCableAdapter.java|at/netcrawler/gson/JsonNetworkDeviceAdapter.java|at/netcrawler/gson/JsonNetworkInterfaceAdapter.java" kind="src" path="src"/>
+	<classpathentry excluding="at/netcrawler/cli/agent/deprecated/|at/netcrawler/network/topology/old/|at/netcrawler/network/connection/snmpOld/|at/netcrawler/gson/JsonNetworkCableAdapter.java|at/netcrawler/gson/JsonNetworkDeviceAdapter.java|at/netcrawler/gson/JsonNetworkInterfaceAdapter.java|at/netcrawler/network/model/DeviceIdenticationBuilder.java|at/netcrawler/network/topology/TopologyDevice2.java" kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/common.jar"/>
 	<classpathentry kind="lib" path="lib/jetty/jetty-continuation-8.0.4.v20111024.jar"/>
 	<classpathentry kind="lib" path="lib/jetty/jetty-http-8.0.4.v20111024.jar"/>

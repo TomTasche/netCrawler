@@ -22,7 +22,8 @@ public class JsonIPv4AddressAdapter extends JsonAdapter<IPv4Address> {
 	@Override
 	public IPv4Address deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
-		return IPv4Address.getByAddress(json.getAsJsonPrimitive().getAsString());
+		return IPv4Address
+				.getByAddress(json.getAsJsonPrimitive().getAsString());
 	}
 	
 }

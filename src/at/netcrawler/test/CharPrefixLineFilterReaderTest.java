@@ -11,7 +11,8 @@ import at.netcrawler.io.CharPrefixLineFilterReader;
 public class CharPrefixLineFilterReaderTest {
 	
 	public static void main(String[] args) throws IOException {
-		byte[] buffer = "%asdfasdfasdf\n$asdfasdf\nhallo welt!\n%asdf".getBytes();
+		byte[] buffer = "%asdfasdfasdf\n$asdfasdf\nhallo welt!\n%asdf"
+				.getBytes();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
 		FluidInputStreamReader inputStreamReader = new FluidInputStreamReader(
 				inputStream);

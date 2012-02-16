@@ -48,9 +48,10 @@ public class CiscoCommandLineDeviceManagerTest {
 		
 		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
 				agent);
-		deviceManager.updateDevice();
+		deviceManager.complete();
 		
-		CDPNeighbors neighbors = (CDPNeighbors) device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
+		CDPNeighbors neighbors = (CDPNeighbors) device
+				.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
 		for (CDPNeighbors.Neighbor neighbor : neighbors) {
 			System.out.println(neighbor);
 		}

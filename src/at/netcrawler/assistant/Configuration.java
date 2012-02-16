@@ -131,8 +131,8 @@ public class Configuration {
 				byte[] dataArray = new BASE64Decoder().decodeBuffer(data);
 				ByteArrayInputStream dataArrayInputStream = new ByteArrayInputStream(
 						dataArray);
-				InputStream dataCipherInputStream = encryption.getCipherInputStream(
-						dataArrayInputStream, password);
+				InputStream dataCipherInputStream = encryption
+						.getCipherInputStream(dataArrayInputStream, password);
 				InputStreamReader dataInputStreamReader = new InputStreamReader(
 						dataCipherInputStream);
 				JsonReader dataReader = new JsonReader(dataInputStreamReader);
@@ -203,8 +203,8 @@ public class Configuration {
 		} else {
 			try {
 				ByteArrayOutputStream dataArrayOutputStream = new ByteArrayOutputStream();
-				OutputStream dataCipherOutputStream = encryption.getCipherOutputStream(
-						dataArrayOutputStream, password);
+				OutputStream dataCipherOutputStream = encryption
+						.getCipherOutputStream(dataArrayOutputStream, password);
 				OutputStreamWriter dataOutputStreamWriter = new OutputStreamWriter(
 						dataCipherOutputStream);
 				JsonWriter dataWriter = new JsonWriter(dataOutputStreamWriter);
@@ -216,7 +216,8 @@ public class Configuration {
 				dataCipherOutputStream.close();
 				dataArrayOutputStream.close();
 				
-				String data = new BASE64Encoder().encode(dataArrayOutputStream.toByteArray());
+				String data = new BASE64Encoder().encode(dataArrayOutputStream
+						.toByteArray());
 				writer.value(data);
 			} catch (Exception e) {
 				throw new IOException(e);
@@ -261,8 +262,9 @@ public class Configuration {
 		case SSH1:
 		case SSH2:
 			SSHSettings sshSettings = new SSHSettings();
-			sshSettings.setVersion((connection == ConnectionType.SSH1) ? SSHVersion.VERSION1
-					: SSHVersion.VERSION2);
+			sshSettings
+					.setVersion((connection == ConnectionType.SSH1) ? SSHVersion.VERSION1
+							: SSHVersion.VERSION2);
 			sshSettings.setPort(port);
 			sshSettings.setUsername(username);
 			sshSettings.setPassword(password);

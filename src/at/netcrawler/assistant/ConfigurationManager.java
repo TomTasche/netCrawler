@@ -146,7 +146,8 @@ public class ConfigurationManager extends JFrame {
 		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConnectionType connection = (ConnectionType) connections.getSelectedItem();
+				ConnectionType connection = (ConnectionType) connections
+						.getSelectedItem();
 				
 				port.setText("" + connection.getDefaultPort());
 			}
@@ -300,7 +301,8 @@ public class ConfigurationManager extends JFrame {
 				builder.append((char) tmp);
 			}
 			
-			((JTextArea) ((JScrollPane) batchTabbedPane.getSelectedComponent()).getViewport().getView()).setText(builder.toString());
+			((JTextArea) ((JScrollPane) batchTabbedPane.getSelectedComponent())
+					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
@@ -319,7 +321,8 @@ public class ConfigurationManager extends JFrame {
 			Configuration configuration = new Configuration();
 			configuration.readFromJsonFile(file, new EncryptionCallback() {
 				public String getPassword(Encryption encryption) {
-					String password = ConfigurationDialog.showDecryptionDialog(ConfigurationManager.this);
+					String password = ConfigurationDialog
+							.showDecryptionDialog(ConfigurationManager.this);
 					encryptionBag.setEncryption(encryption);
 					encryptionBag.setPassword(password);
 					return password;
@@ -364,8 +367,8 @@ public class ConfigurationManager extends JFrame {
 			}
 			
 			Configuration configuration = getConfiguration();
-			configuration.writeToJsonFile(activeFile,
-					encryptionBag.getEncryption(), encryptionBag.getPassword());
+			configuration.writeToJsonFile(activeFile, encryptionBag
+					.getEncryption(), encryptionBag.getPassword());
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);
@@ -387,15 +390,17 @@ public class ConfigurationManager extends JFrame {
 		Configuration configuration = new Configuration();
 		
 		configuration.setAddress(IPv4Address.getByAddress(address.getText()));
-		configuration.setConnection((ConnectionType) connections.getSelectedItem());
+		configuration.setConnection((ConnectionType) connections
+				.getSelectedItem());
 		configuration.setPort(Integer.parseInt(port.getText()));
 		configuration.setUsername(username.getText());
 		configuration.setPassword(new String(password.getPassword()));
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
-			configuration.putBatch(
-					batchTabbedPane.getTitleAt(i),
-					((JTextArea) ((JScrollPane) batchTabbedPane.getComponentAt(i)).getViewport().getView()).getText());
+			configuration.putBatch(batchTabbedPane.getTitleAt(i),
+					((JTextArea) ((JScrollPane) batchTabbedPane
+							.getComponentAt(i)).getViewport().getView())
+							.getText());
 		}
 		
 		return configuration;
@@ -409,7 +414,8 @@ public class ConfigurationManager extends JFrame {
 		password.setText(configuration.getPassword());
 		
 		batchTabbedPane.removeAll();
-		for (Map.Entry<String, String> entry : configuration.getBatches().entrySet()) {
+		for (Map.Entry<String, String> entry : configuration.getBatches()
+				.entrySet()) {
 			addBatch(entry.getKey(), entry.getValue());
 		}
 	}

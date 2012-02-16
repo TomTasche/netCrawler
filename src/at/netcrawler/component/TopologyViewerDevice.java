@@ -3,6 +3,8 @@ package at.netcrawler.component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import at.andiwand.library.component.GraphViewerVertex;
+import at.andiwand.library.graphics.GraphicsUtil;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkModelAdapter;
@@ -37,7 +40,8 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		
 		private static Image loadImage(String imageName) {
 			try {
-				return ImageIO.read(TopologyViewerDevice.class.getResource(imageName));
+				return ImageIO.read(TopologyViewerDevice.class
+						.getResource(imageName));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -60,6 +64,15 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		}
 	}
 	
+	private static final int HOSTNAME_GAP_Y = 5;
+	
+	private class HostnameAdapter extends NetworkModelAdapter {
+		public void valueChanged(String key, Object value, Object oldValue) {
+			if (!key.equals(NetworkDevice.HOSTNAME)) return;
+			hostname = (String) value;
+		}
+	}
+	
 	private class CapabilityAdapter extends NetworkModelAdapter {
 		public void valueChanged(String key, Object value, Object oldValue) {
 			if (!key.equals(NetworkDevice.MAJOR_CAPABILITY)) return;
@@ -71,14 +84,19 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 			DeviceImage.getPainterMap());
 	
 	private final NetworkDevice networkDevice;
+	private String hostname;
 	private Capability capability;
 	private DevicePainter painter;
 	
 	public TopologyViewerDevice(TopologyDevice device) {
 		super(device);
 		
-		networkDevice = device.getNetworkDevice();
-		setCapability((Capability) networkDevice.getValue(NetworkDevice.MAJOR_CAPABILITY));
+		this.networkDevice = device.getNetworkDevice();
+		this.hostname = (String) networkDevice.getValue(NetworkDevice.HOSTNAME);
+		setCapability((Capability) networkDevice
+				.getValue(NetworkDevice.MAJOR_CAPABILITY));
+		
+		networkDevice.addListener(new HostnameAdapter());
 		networkDevice.addListener(new CapabilityAdapter());
 	}
 	
@@ -117,6 +135,13 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 	@Override
 	public void paint(Graphics g) {
 		painter.paint(g, this);
+		
+		Rectangle bounds = getBounds();
+		Point xCenter = new Point(getMiddle().x, bounds.y + bounds.height
+				+ HOSTNAME_GAP_Y);
+		
+		GraphicsUtil graphicsUtil = new GraphicsUtil(g);
+		graphicsUtil.drawXCenterString(xCenter, hostname);
 	}
 	
 }

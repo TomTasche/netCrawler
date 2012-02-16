@@ -13,6 +13,8 @@ public class EthernetInterfaceExtension extends NetworkInterfaceExtension {
 	
 	private static final long serialVersionUID = 5181624711651457667L;
 	
+	public static final EthernetInterfaceExtension EXTENSION;
+	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String ADDRESS = "interface.ethernet.address";
@@ -20,13 +22,13 @@ public class EthernetInterfaceExtension extends NetworkInterfaceExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(ADDRESS, ADDRESS_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new EthernetInterfaceExtension();
 	}
 	
-	public EthernetInterfaceExtension() {
+	private EthernetInterfaceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

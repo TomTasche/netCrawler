@@ -12,6 +12,8 @@ public class EthernetCableExtension extends NetworkCableExtension {
 	
 	private static final long serialVersionUID = -491483133714519504L;
 	
+	public static final EthernetCableExtension EXTENSION;
+	
 	public static final Map<String, Type> EXTENSION_TYPE_MAP;
 	
 	public static final String CROSSOVER = "cable.ethernet.crossover";
@@ -19,13 +21,13 @@ public class EthernetCableExtension extends NetworkCableExtension {
 	
 	static {
 		Map<String, Type> map = new HashMap<String, Type>();
-		
 		map.put(CROSSOVER, CROSSOVER_TYPE);
-		
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
+		
+		EXTENSION = new EthernetCableExtension();
 	}
 	
-	public EthernetCableExtension() {
+	private EthernetCableExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

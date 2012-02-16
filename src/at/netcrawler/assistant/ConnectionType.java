@@ -7,8 +7,10 @@ import java.util.Map;
 
 public enum ConnectionType {
 	
-	NOTHING("- Choose connection -", -1), TELNET("Telnet", 23), SSH1("SSH v1",
-			22), SSH2("SSH v2", 22);
+	NOTHING("- Choose connection -", -1),
+	TELNET("Telnet", 23),
+	SSH1("SSH v1", 22),
+	SSH2("SSH v2", 22);
 	
 	private static final Map<String, ConnectionType> NAME_MAP;
 	

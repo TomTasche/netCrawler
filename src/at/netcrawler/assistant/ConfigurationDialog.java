@@ -33,8 +33,8 @@ public class ConfigurationDialog {
 		final JPasswordField passwordRepeatField = new JPasswordField();
 		
 		encryptionComboBox.setSelectedItem(Encryption.DES);
-		passwordField.setPreferredSize(new Dimension(150,
-				passwordField.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150, passwordField
+				.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -101,17 +101,16 @@ public class ConfigurationDialog {
 			if ((Integer) optionPane.getValue() != JOptionPane.OK_OPTION)
 				return null;
 			
-			if (Arrays.equals(passwordField.getPassword(),
-					passwordRepeatField.getPassword())) break;
+			if (Arrays.equals(passwordField.getPassword(), passwordRepeatField
+					.getPassword())) break;
 			
 			showErrorDialog(parent, "The passwords don't match!");
 			passwordField.setText("");
 			passwordRepeatField.setText("");
 		}
 		
-		return new EncryptionBag(
-				(Encryption) encryptionComboBox.getSelectedItem(), new String(
-						passwordField.getPassword()));
+		return new EncryptionBag((Encryption) encryptionComboBox
+				.getSelectedItem(), new String(passwordField.getPassword()));
 	}
 	
 	public static String showDecryptionDialog(Component parent) {
@@ -125,8 +124,8 @@ public class ConfigurationDialog {
 		JLabel passwordLabel = new JLabel("Password:");
 		final JPasswordField passwordField = new JPasswordField();
 		
-		passwordField.setPreferredSize(new Dimension(150,
-				passwordField.getPreferredSize().height));
+		passwordField.setPreferredSize(new Dimension(150, passwordField
+				.getPreferredSize().height));
 		
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
