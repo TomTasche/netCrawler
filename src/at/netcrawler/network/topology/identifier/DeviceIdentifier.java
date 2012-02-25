@@ -1,6 +1,6 @@
-package at.netcrawler.network.topology.identification;
+package at.netcrawler.network.topology.identifier;
 
-public abstract class DeviceIdentification {
+public abstract class DeviceIdentifier {
 	
 	@Override
 	public abstract boolean equals(Object obj);

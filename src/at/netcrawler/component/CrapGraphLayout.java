@@ -10,8 +10,8 @@ import at.andiwand.library.component.GraphViewerVertex;
 
 public class CrapGraphLayout extends AbstractGraphLayout {
 	
-	private Point nextSpawn = new Point(10, 10);
-	private Dimension spawnDistance = new Dimension(100, 100);
+	private GraphViewerVertex last;
+	private Dimension spawnDistance = new Dimension(50, 50);
 	
 	public CrapGraphLayout(GraphViewer viewer) {
 		super(viewer);
@@ -19,9 +19,16 @@ public class CrapGraphLayout extends AbstractGraphLayout {
 	
 	@Override
 	protected void addViewerVertexImpl(GraphViewerVertex vertex) {
-		vertex.setPosition(nextSpawn);
-		nextSpawn.x += spawnDistance.width;
-		nextSpawn.y += spawnDistance.height;
+		Point point;
+		if (last == null) {
+			point = new Point(10, 10);
+		} else {
+			point = last.getPosition();
+			point.x += spawnDistance.width;
+			point.y += spawnDistance.height;
+		}
+		vertex.setPosition(point);
+		last = vertex;
 	}
 	
 }
