@@ -35,9 +35,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 		Set<Class<?>> extensionClasses = new TreeSet<Class<?>>(
 				new StringLengthComperator());
 		
-		for (NetworkModelExtension extension : src.getExtensions()) {
+		for (NetworkModelExtension extension : src.getExtensions())
 			extensionClasses.add(extension.getClass());
-		}
 		
 		JsonObject result = new JsonObject();
 		result.add(EXTENSIONS_PROPERTY, context.serialize(extensionClasses));

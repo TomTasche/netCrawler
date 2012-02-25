@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identification;
+package at.netcrawler.network.topology.identifier;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,12 +8,12 @@ import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 
-public abstract class DeviceIdentificationFactory {
+public abstract class DeviceIdentifierFactory {
 	
 	private final Set<NetworkDeviceExtension> requiredExtensions;
 	private final Set<String> requiredValues;
 	
-	public DeviceIdentificationFactory(
+	public DeviceIdentifierFactory(
 			Set<NetworkDeviceExtension> requiredExtensions,
 			Set<String> requiredValues) {
 		this.requiredExtensions = Collections
@@ -31,16 +31,15 @@ public abstract class DeviceIdentificationFactory {
 		return requiredValues;
 	}
 	
-	public final DeviceIdentification buildIdentication(NetworkDevice device) {
+	public final DeviceIdentifier buildIdentifier(NetworkDevice device) {
 		if (!device.getExtensions().containsAll(requiredExtensions))
 			return null;
 		if (!device.getValueMap().keySet().containsAll(requiredValues))
 			return null;
 		
-		return buildIdenticationImpl(device);
+		return buildIdentifierImpl(device);
 	}
 	
-	protected abstract DeviceIdentification buildIdenticationImpl(
-			NetworkDevice device);
+	protected abstract DeviceIdentifier buildIdentifierImpl(NetworkDevice device);
 	
 }

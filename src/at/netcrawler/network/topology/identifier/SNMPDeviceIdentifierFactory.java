@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identification;
+package at.netcrawler.network.topology.identifier;
 
 import java.util.Collections;
 import java.util.Set;
@@ -9,8 +9,7 @@ import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.extension.SNMPDeviceExtension;
 
 
-public class SNMPDeviceIdentificationFactory extends
-		DeviceIdentificationFactory {
+public class SNMPDeviceIdentifierFactory extends DeviceIdentifierFactory {
 	
 	public static final Set<NetworkDeviceExtension> REQUIRED_EXTENSIONS = Collections
 			.unmodifiableSet(CollectionUtil
@@ -19,16 +18,15 @@ public class SNMPDeviceIdentificationFactory extends
 			.unmodifiableSet(CollectionUtil
 					.arrayToHashSet(new String[] {SNMPDeviceExtension.ENGINE_ID}));
 	
-	public SNMPDeviceIdentificationFactory() {
+	public SNMPDeviceIdentifierFactory() {
 		super(REQUIRED_EXTENSIONS, REQUIRED_VALUES);
 	}
 	
 	@Override
-	protected SNMPDeviceIdentification buildIdenticationImpl(
-			NetworkDevice device) {
+	protected SNMPDeviceIdentifier buildIdentifierImpl(NetworkDevice device) {
 		String engineId = (String) device
 				.getValue(SNMPDeviceExtension.ENGINE_ID);
-		return new SNMPDeviceIdentification(engineId);
+		return new SNMPDeviceIdentifier(engineId);
 	}
 	
 }

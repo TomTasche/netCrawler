@@ -87,11 +87,7 @@ public class HashTopology extends Topology {
 		if (vertices.contains(vertex)) return false;
 		
 		vertex.addListener(new InterfaceAdapter());
-		
-		for (TopologyInterface interfaze : vertex.getInterfaces()) {
-			interfaces.add(interfaze);
-		}
-		
+		interfaces.addAll(vertex.getInterfaces());
 		vertices.add(vertex);
 		
 		return true;

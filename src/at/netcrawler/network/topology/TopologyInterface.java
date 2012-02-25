@@ -6,17 +6,15 @@ import at.netcrawler.network.model.NetworkInterface;
 public class TopologyInterface {
 	
 	private final NetworkInterface networkInterface;
+	private TopologyDevice device;
 	
-	private final TopologyDevice device;
-	
-	public TopologyInterface(NetworkInterface networkInterface,
-			TopologyDevice device) {
+	public TopologyInterface(NetworkInterface networkInterface) {
 		this.networkInterface = networkInterface;
-		this.device = device;
 	}
 	
 	@Override
 	public String toString() {
+		if (device == null) return getName();
 		return device.toString() + ": " + getName();
 	}
 	
@@ -28,19 +26,15 @@ public class TopologyInterface {
 		if (!(obj instanceof TopologyInterface)) return false;
 		TopologyInterface interfaze = (TopologyInterface) obj;
 		
-		String nameA = getName();
-		String nameB = interfaze.getName();
-		
-		return device.equals(interfaze.device) && nameA.equals(nameB);
+		if (device == null) return getName().equals(interfaze.getName());
+		return device.equals(interfaze.device)
+				&& getName().equals(interfaze.getName());
 	}
 	
 	@Override
 	public int hashCode() {
-		String name = (String) networkInterface.getValue(NetworkInterface.NAME);
-		if (name == null) return 0;
-		
-		if (device == null) return name.hashCode();
-		return device.hashCode() ^ name.hashCode();
+		if (device == null) return getName().hashCode();
+		return device.hashCode() ^ getName().hashCode();
 	}
 	
 	public NetworkInterface getNetworkInterface() {
@@ -53,6 +47,10 @@ public class TopologyInterface {
 	
 	public String getName() {
 		return (String) networkInterface.getValue(NetworkInterface.NAME);
+	}
+	
+	void setDevice(TopologyDevice device) {
+		this.device = device;
 	}
 	
 }

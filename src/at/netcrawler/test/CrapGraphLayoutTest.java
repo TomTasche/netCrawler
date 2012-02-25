@@ -19,6 +19,7 @@ import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
+import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
 
 
 public class CrapGraphLayoutTest {
@@ -58,12 +59,12 @@ public class CrapGraphLayoutTest {
 		
 		NetworkCable cable = new NetworkCable();
 		
-		TopologyDevice topologyDeviceA = new TopologyDevice(deviceA);
-		TopologyInterface topologyInterfaceA = topologyDeviceA
-				.getInterfaceByName("eth0");
-		TopologyDevice topologyDeviceB = new TopologyDevice(deviceB);
-		TopologyInterface topologyInterfaceB = topologyDeviceB
-				.getInterfaceByName("eth0");
+		TopologyDevice topologyDeviceA = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceA);
+		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
+		TopologyDevice topologyDeviceB = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceB);
+		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
 		TopologyCable topologyCable = new TopologyCable(cable,
 				new HashSet<TopologyInterface>(Arrays.asList(
 						topologyInterfaceA, topologyInterfaceB)));
