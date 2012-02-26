@@ -220,7 +220,7 @@ public class ConfigurationManager extends JFrame {
 	
 	private void validateIP() {
 		try {
-			IPv4Address.getByAddress(address.getText());
+			new IPv4Address(address.getText());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Illegal IP address!");
 		}
@@ -389,7 +389,7 @@ public class ConfigurationManager extends JFrame {
 	private Configuration getConfiguration() {
 		Configuration configuration = new Configuration();
 		
-		configuration.setAddress(IPv4Address.getByAddress(address.getText()));
+		configuration.setAddress(new IPv4Address(address.getText()));
 		configuration.setConnection((ConnectionType) connections
 				.getSelectedItem());
 		configuration.setPort(Integer.parseInt(port.getText()));

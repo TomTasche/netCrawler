@@ -126,7 +126,7 @@ public class SimpleSchoolCrawler {
 		dialog.setVisible(true);
 		dialog.dispose();
 		
-		return IPv4Address.getByAddress(rootAddress.getText());
+		return new IPv4Address(rootAddress.getText());
 	}
 	
 	public static void main(String[] args) throws Throwable {

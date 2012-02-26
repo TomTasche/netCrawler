@@ -208,7 +208,7 @@ public class BatchExecutor extends JFrame {
 			String batch, String connection, int port) throws IOException {
 		CommandLineInterface cli;
 		
-		IPv4Address ipAddress = IPv4Address.getByAddress(ip);
+		IPv4Address ipAddress = new IPv4Address(ip);
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
 		if (connection.equals(SSH_1) || connection.equals(SSH_2)) {

@@ -24,7 +24,7 @@ public class ConfigurationDialog {
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		JLabel label = new JLabel("Choose your encrytion settings:");
+		JLabel label = new JLabel("Choose your encryption settings:");
 		JLabel encryptionLabel = new JLabel("Method:");
 		JLabel passwordLabel = new JLabel("Password:");
 		JLabel passwordRepeatLabel = new JLabel("Repeat Password:");

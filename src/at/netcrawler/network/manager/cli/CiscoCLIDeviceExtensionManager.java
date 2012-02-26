@@ -100,8 +100,8 @@ public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager 
 			List<String> managementAddressStrings = CDP_NEIGHBORS_MANAGEMENT_ADDRESS_PATTERN
 					.findGroupAll(neighborString);
 			for (String managementAddressString : managementAddressStrings) {
-				IPv4Address managementAddress = IPv4Address
-						.getByAddress(managementAddressString);
+				IPv4Address managementAddress = new IPv4Address(
+						managementAddressString);
 				managementAddresses.add(managementAddress);
 			}
 			

@@ -24,7 +24,7 @@ public class SNMPDeviceManagerTest {
 	
 	public static void main(String[] args) throws Throwable {
 		String address = "192.168.15.4";
-		IPv4Address ipAddress = IPv4Address.getByAddress(address);
+		IPv4Address ipAddress = new IPv4Address(address);
 		int port = 161;
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);

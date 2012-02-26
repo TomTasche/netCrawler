@@ -20,7 +20,7 @@ public class CiscoCommandLineDeviceManagerTest {
 	
 	public static void main(String[] args) throws IOException {
 		String addressString = "192.168.13.3";
-		IPv4Address address = IPv4Address.getByAddress(addressString);
+		IPv4Address address = new IPv4Address(addressString);
 		int port = 22;
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
