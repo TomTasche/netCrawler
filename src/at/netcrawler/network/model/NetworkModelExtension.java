@@ -1,11 +1,11 @@
 package at.netcrawler.network.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import at.andiwand.library.util.TypeToken;
 import at.andiwand.library.util.collections.CollectionUtil;
 
 
@@ -23,21 +23,21 @@ public abstract class NetworkModelExtension implements Serializable {
 	}
 	
 	private Class<? extends NetworkModel> extendedModelClass;
-	private Map<String, Type> extensionTypeMap;
+	private Map<String, TypeToken<?>> extensionTypeMap;
 	
 	private boolean finalized;
 	
 	protected NetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass) {
 		setExtendedModelClass(extendedModelClass);
-		setExtensionTypeMap(new HashMap<String, Type>());
+		setExtensionTypeMap(new HashMap<String, TypeToken<?>>());
 	}
 	
 	protected NetworkModelExtension(
 			Class<? extends NetworkModel> extendedModelClass,
-			Map<String, Type> extendedTypeMap) {
+			Map<String, TypeToken<?>> extendedTypeMap) {
 		setExtendedModelClass(extendedModelClass);
-		setExtensionTypeMap(new HashMap<String, Type>(extendedTypeMap));
+		setExtensionTypeMap(new HashMap<String, TypeToken<?>>(extendedTypeMap));
 		
 		finalize();
 	}
@@ -60,7 +60,7 @@ public abstract class NetworkModelExtension implements Serializable {
 		return extendedModelClass;
 	}
 	
-	public final Map<String, Type> getExtensionTypeMap() {
+	public final Map<String, TypeToken<?>> getExtensionTypeMap() {
 		checkFinalized();
 		
 		return extensionTypeMap;
@@ -74,7 +74,7 @@ public abstract class NetworkModelExtension implements Serializable {
 		this.extendedModelClass = extendedModelClass;
 	}
 	
-	private void setExtensionTypeMap(Map<String, Type> extensionTypeMap) {
+	private void setExtensionTypeMap(Map<String, TypeToken<?>> extensionTypeMap) {
 		this.extensionTypeMap = extensionTypeMap;
 	}
 	
@@ -99,7 +99,7 @@ public abstract class NetworkModelExtension implements Serializable {
 		throw new IllegalStateException("The extension is finalized!");
 	}
 	
-	protected final void addExtensionType(String key, Class<?> type) {
+	protected final void addExtensionType(String key, TypeToken<?> type) {
 		checkNotFinalized();
 		
 		extensionTypeMap.put(key, type);

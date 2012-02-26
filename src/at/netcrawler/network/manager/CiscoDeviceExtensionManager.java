@@ -1,8 +1,9 @@
 package at.netcrawler.network.manager;
 
 import java.io.IOException;
+import java.util.List;
 
-import at.netcrawler.network.CDPNeighbors;
+import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
@@ -24,7 +25,7 @@ public abstract class CiscoDeviceExtensionManager extends
 		throw new IllegalArgumentException("Unsupported key!");
 	}
 	
-	protected abstract CDPNeighbors getCDPNeighbors() throws IOException;
+	protected abstract List<CDPNeighbor> getCDPNeighbors() throws IOException;
 	
 	@Override
 	public final boolean setValue(String key, Object value) throws IOException {

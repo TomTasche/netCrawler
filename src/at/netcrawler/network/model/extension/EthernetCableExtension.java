@@ -1,10 +1,10 @@
 package at.netcrawler.network.model.extension;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import at.andiwand.library.util.TypeToken;
 import at.netcrawler.network.model.NetworkCableExtension;
 
 
@@ -14,13 +14,14 @@ public class EthernetCableExtension extends NetworkCableExtension {
 	
 	public static final EthernetCableExtension EXTENSION;
 	
-	public static final Map<String, Type> EXTENSION_TYPE_MAP;
+	public static final Map<String, TypeToken<?>> EXTENSION_TYPE_MAP;
 	
 	public static final String CROSSOVER = "cable.ethernet.crossover";
-	public static final Type CROSSOVER_TYPE = Boolean.class;
+	public static final TypeToken<?> CROSSOVER_TYPE = TypeToken
+			.get(Boolean.class);
 	
 	static {
-		Map<String, Type> map = new HashMap<String, Type>();
+		Map<String, TypeToken<?>> map = new HashMap<String, TypeToken<?>>();
 		map.put(CROSSOVER, CROSSOVER_TYPE);
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
 		

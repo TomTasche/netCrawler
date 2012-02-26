@@ -1,7 +1,6 @@
 package at.netcrawler.network.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,23 +8,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import at.andiwand.library.util.TypeToken;
+
 
 // TODO: fix type issue
-// TODO: implement value path
+// TODO: implement value path?
 public abstract class NetworkModel implements Serializable {
 	
 	private static final long serialVersionUID = -5895614487866391126L;
 	
-	private transient final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
-	
-	private transient final Map<String, Type> initialTypeMap;
-	private Map<String, Type> typeMap;
+	private transient final Map<String, TypeToken<?>> initialTypeMap;
+	private Map<String, TypeToken<?>> typeMap;
 	private final Map<String, Object> valueMap = new HashMap<String, Object>();
 	private final Set<NetworkModelExtension> extensions = new HashSet<NetworkModelExtension>();
 	
-	public NetworkModel(Map<String, Type> initialTypeMap) {
-		this.initialTypeMap = initialTypeMap;
-		typeMap = new HashMap<String, Type>(initialTypeMap);
+	private transient final List<NetworkModelListener> listeners = new ArrayList<NetworkModelListener>();
+	
+	public NetworkModel(Map<String, TypeToken<?>> initialTypeMap) {
+		this.initialTypeMap = new HashMap<String, TypeToken<?>>(initialTypeMap);
+		this.typeMap = new HashMap<String, TypeToken<?>>(initialTypeMap);
 	}
 	
 	@Override
@@ -53,8 +54,8 @@ public abstract class NetworkModel implements Serializable {
 		return valueMap.get(key);
 	}
 	
-	public final Map<String, Type> getTypeMap() {
-		return new HashMap<String, Type>(typeMap);
+	public final Map<String, TypeToken<?>> getTypeMap() {
+		return new HashMap<String, TypeToken<?>>(typeMap);
 	}
 	
 	public final Map<String, Object> getValueMap() {
@@ -75,10 +76,10 @@ public abstract class NetworkModel implements Serializable {
 	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key))
 			throw new IllegalArgumentException("Unknown key!");
-		// TODO: fix
-		// Type type = typeMap.get(key);
-		// if (!type.equals(value.getClass()))
-		// throw new IllegalArgumentException("Illegal type!");
+		
+		Class<?> rawType = typeMap.get(key).getRawType();
+		if (!rawType.isAssignableFrom(value.getClass()))
+			throw new IllegalArgumentException("Illegal argument type!");
 		Object oldValue = valueMap.put(key, value);
 		
 		if (value == oldValue) return;
@@ -92,7 +93,7 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final void clear() {
 		valueMap.clear();
-		typeMap = new HashMap<String, Type>(initialTypeMap);
+		typeMap = new HashMap<String, TypeToken<?>>(initialTypeMap);
 		extensions.clear();
 	}
 	

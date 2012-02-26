@@ -1,11 +1,12 @@
 package at.netcrawler.network.manager;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import at.andiwand.library.util.GenericsUtil;
 import at.netcrawler.network.Capability;
-import at.netcrawler.network.RoutingTable;
+import at.netcrawler.network.Route;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.RouterExtension;
 
@@ -27,7 +28,7 @@ public abstract class RouterExtensionManager extends DeviceExtensionManager {
 		throw new IllegalArgumentException("Unsupported key!");
 	}
 	
-	protected abstract RoutingTable getRoutingTable() throws IOException;
+	protected abstract List<Route> getRoutingTable() throws IOException;
 	
 	@Override
 	public final boolean setValue(String key, Object value) throws IOException {

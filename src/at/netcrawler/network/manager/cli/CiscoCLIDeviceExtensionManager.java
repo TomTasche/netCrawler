@@ -1,6 +1,7 @@
 package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,8 +11,7 @@ import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
-import at.netcrawler.network.CDPNeighbors;
-import at.netcrawler.network.CDPNeighbors.Neighbor;
+import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.manager.CiscoDeviceExtensionManager;
 import at.netcrawler.network.manager.DeviceManager;
@@ -58,8 +58,8 @@ public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager 
 	private CiscoCLIDeviceManager deviceManager;
 	
 	@Override
-	protected CDPNeighbors getCDPNeighbors() throws IOException {
-		CDPNeighbors result = new CDPNeighbors();
+	protected List<CDPNeighbor> getCDPNeighbors() throws IOException {
+		List<CDPNeighbor> result = new ArrayList<CDPNeighbor>();
 		
 		String output = deviceManager.execute(CDP_NEIGHBORS_COMMAND);
 		String[] neighborStrings = CDP_NEIGHBORS_SEPARATOR.split(output);
@@ -105,10 +105,15 @@ public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager 
 				managementAddresses.add(managementAddress);
 			}
 			
-			Neighbor newNeighbor = new Neighbor(name, localInterface, holdTime,
-					capabilities, platform, remoteInterface,
-					managementAddresses);
-			result.addNeighbor(newNeighbor);
+			CDPNeighbor neighbor = new CDPNeighbor();
+			neighbor.setName(name);
+			neighbor.setLocalInterface(localInterface);
+			neighbor.setHoldTime(holdTime);
+			neighbor.setCapabilities(capabilities);
+			neighbor.setPlatform(platform);
+			neighbor.setRemoteInterface(remoteInterface);
+			neighbor.setManagementAddresses(managementAddresses);
+			result.add(neighbor);
 		}
 		
 		return result;

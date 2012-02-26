@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
@@ -18,7 +19,7 @@ import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.cli.agent.CiscoCLIAgent;
 import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
-import at.netcrawler.network.CDPNeighbors;
+import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ConnectionSettings;
@@ -186,9 +187,10 @@ public class SimpleSchoolCrawler {
 		
 		usedHostnames.add(hostname);
 		
-		CDPNeighbors neighbors = (CDPNeighbors) device
+		@SuppressWarnings("unchecked")
+		List<CDPNeighbor> neighbors = (List<CDPNeighbor>) device
 				.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
-		for (CDPNeighbors.Neighbor neighbor : neighbors) {
+		for (CDPNeighbor neighbor : neighbors) {
 			Iterator<IPv4Address> neighborAddressIterator = neighbor
 					.getManagementAddresses().iterator();
 			if (!neighborAddressIterator.hasNext()) continue;
