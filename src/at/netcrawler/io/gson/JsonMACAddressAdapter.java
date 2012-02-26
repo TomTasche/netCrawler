@@ -22,7 +22,7 @@ public class JsonMACAddressAdapter extends JsonAdapter<MACAddress> {
 	@Override
 	public MACAddress deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
-		return MACAddress.getByAddress(json.getAsJsonPrimitive().getAsString());
+		return new MACAddress(json.getAsJsonPrimitive().getAsString());
 	}
 	
 }
