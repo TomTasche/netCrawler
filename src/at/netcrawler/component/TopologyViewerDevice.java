@@ -139,7 +139,7 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		Rectangle bounds = getBounds();
 		Point xCenter = new Point(getMiddle().x, bounds.y + bounds.height
 				+ HOSTNAME_GAP_Y);
-
+		
 		if (hostname == null) hostname = "Loading...";
 		GraphicsUtil graphicsUtil = new GraphicsUtil(g);
 		graphicsUtil.drawXCenterString(xCenter, hostname);
