@@ -10,18 +10,17 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
 public class CategoryBuilder {
 	
 	JPanel jPanel;
 	
 	int rows;
 	
-	
 	public CategoryBuilder() {
 		jPanel = new JPanel();
 		jPanel.setLayout(new java.awt.GridBagLayout());
 	}
-	
 	
 	public void addTextRow(String name, Object data) {
 		if (data == null) return;
@@ -33,7 +32,8 @@ public class CategoryBuilder {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(jLabel, gridBagConstraints);
+		jPanel.add(
+				jLabel, gridBagConstraints);
 		
 		jTextField.setText(data.toString());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -41,7 +41,8 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(jTextField, gridBagConstraints);
+		jPanel.add(
+				jTextField, gridBagConstraints);
 		
 		rows++;
 	}
@@ -57,14 +58,16 @@ public class CategoryBuilder {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(jLabel, gridBagConstraints);
+		jPanel.add(
+				jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(jList, gridBagConstraints);
+		jPanel.add(
+				jList, gridBagConstraints);
 		
 		rows++;
 	}
@@ -78,14 +81,16 @@ public class CategoryBuilder {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(jLabel, gridBagConstraints);
+		jPanel.add(
+				jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(data, gridBagConstraints);
+		jPanel.add(
+				data, gridBagConstraints);
 		
 		rows++;
 	}
@@ -93,8 +98,8 @@ public class CategoryBuilder {
 	public JPanel build() {
 		if (rows == 0) return jPanel;
 		
-//		Border border = BorderFactory.createLineBorder(Color.DARK_GRAY);
-//		jPanel.setBorder(border);
+		// Border border = BorderFactory.createLineBorder(Color.DARK_GRAY);
+		// jPanel.setBorder(border);
 		
 		return jPanel;
 	}
@@ -103,7 +108,8 @@ public class CategoryBuilder {
 	private static <T> T[] collectionToArray(Collection<T> collection) {
 		Class<T> clazz = (Class<T>) collection.iterator().next().getClass();
 		
-		T[] array = (T[]) Array.newInstance(clazz, collection.size());
+		T[] array = (T[]) Array.newInstance(
+				clazz, collection.size());
 		
 		int i = 0;
 		for (T item : collection) {

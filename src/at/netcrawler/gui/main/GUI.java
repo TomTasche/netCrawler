@@ -1,122 +1,205 @@
 package at.netcrawler.gui.main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.HashSet;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JList;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import at.andiwand.library.component.JFrameUtil;
+import at.netcrawler.component.CrapGraphLayout;
+import at.netcrawler.component.TopologyViewer;
+import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.NetworkCable;
+import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.topology.HashTopology;
+import at.netcrawler.network.topology.Topology;
+import at.netcrawler.network.topology.TopologyCable;
+import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.network.topology.TopologyInterface;
+import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
 
 
+@SuppressWarnings("serial")
 public class GUI extends JFrame {
 	
-	private static final long serialVersionUID = 4564331951103104451L;
-	
-	String[] list = {"Router 1", "Router 2", "Router 3"};
-	
-	JList deviceList = new JList(list);
-	
-	JPanel all = new JPanel(new BorderLayout());
-	JPanel content = new JPanel(new BorderLayout());
-	JPanel overview = new JPanel(new BorderLayout());
-	JPanel overviewNorth = new JPanel(new GridLayout());
-	JPanel overviewCenter = new JPanel();
-	JPanel buttonOverviewCenter = new JPanel();
-	
-	JButton refresh = new JButton(new ImageIcon("refresh.png"));
-	JButton stop = new JButton(new ImageIcon("stop.png"));
-	JButton plus = new JButton(new ImageIcon("plus.png"));
-	
-	JToolBar toolbar = new JToolBar("Toolbar");
-	
-	JMenuBar menu = new JMenuBar();
-	JMenu data = new JMenu("Datei");
-	JMenu help = new JMenu("Hilfe");
-	JMenuItem search = new JMenuItem("Neuen Suchlauf starten");
-	
-	JScrollPane contentscroll = new JScrollPane(content);
-	JScrollPane overviewscroll = new JScrollPane(overview);
-	
-	JTextField info = new JTextField("Suche l�uft...");
-	
-	JFileChooser chooser = new JFileChooser();
-	
-	WindowAdapter adapter = new WindowAdapter() {
-		
-		public void windowClosing(WindowEvent e) {
-			Object[] options = {"OK", "Abbruch"};
-			if (JOptionPane.showOptionDialog(null,
-					"Wollen Sie das Programm wirklich beenden?", "",
-					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-					null, options, options[0]) == JOptionPane.OK_OPTION) {
-				System.exit(0);
-			}
-		}
-	};
+	JScrollPane scrollPane;
+	TopologyViewer viewer;
+	DeviceTable table;
+	JLabel statusLabel;
+	boolean dontClose;
+	boolean tableVisible;
 	
 	public GUI() {
 		setTitle("netCrawler");
-		setMinimumSize(new Dimension(800, 600));
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(adapter);
+		setLayout(new BorderLayout());
+		addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent e) {
+				if (dontClose
+						&& JOptionPane.showOptionDialog(
+								GUI.this,
+								"Do you really want to close netCrawler?", "",
+								JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
+					dispose();
+				} else if (!dontClose) {
+					dispose();
+				}
+			}
+		});
 		
-		toolbar.add(refresh);
-		toolbar.add(stop);
-		toolbar.add(plus);
+		JMenuBar menu = new JMenuBar();
+		JMenu file = new JMenu("File");
+		JMenu view = new JMenu("View");
+		JMenu help = new JMenu("Help");
+		JMenuItem crawl = new JMenuItem("Crawl...");
+		JMenuItem toggleView = new JMenuItem("Toggle table / topology view");
+		
+		crawl.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				crawl();
+			}
+		});
+		toggleView.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toggleView();
+			}
+		});
+		
+		file.add(crawl);
+		view.add(toggleView);
+		
+		menu.add(file);
+		menu.add(view);
+		menu.add(help);
 		
 		setJMenuBar(menu);
-		menu.add(data);
-		menu.add(help);
-		data.add(search);
 		
-		overviewNorth.add(deviceList);
+		// TODO: remove
+		Topology topology = new HashTopology();
 		
-		overview.add(overviewNorth, BorderLayout.NORTH);
-		overview.add(overviewCenter, BorderLayout.CENTER);
-		overview.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		overviewscroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		NetworkDevice deviceA = new NetworkDevice();
+		NetworkInterface interfaceA = new NetworkInterface();
+		interfaceA.setValue(
+				NetworkInterface.NAME, "eth0");
+		deviceA.setValue(
+				NetworkDevice.HOSTNAME, "RouterA");
+		deviceA.setValue(
+				NetworkDevice.INTERFACES,
+				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
 		
-		content.add(toolbar, BorderLayout.WEST);
-		content.add(buttonOverviewCenter, BorderLayout.CENTER);
-		content.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		contentscroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		NetworkDevice deviceB = new NetworkDevice();
+		NetworkInterface interfaceB = new NetworkInterface();
+		interfaceB.setValue(
+				NetworkInterface.NAME, "eth0");
+		deviceB.setValue(
+				NetworkDevice.HOSTNAME, "RouterB");
+		deviceB.setValue(
+				NetworkDevice.INTERFACES,
+				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
 		
-		all.add(contentscroll, BorderLayout.NORTH);
-		all.add(overviewscroll, BorderLayout.EAST);
-		all.add(info, BorderLayout.SOUTH);
-		add(all);
+		NetworkCable cable = new NetworkCable();
 		
-		info.setEditable(false);
+		TopologyDevice topologyDeviceA = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceA);
+		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
+		TopologyDevice topologyDeviceB = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceB);
+		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
+		TopologyCable topologyCable = new TopologyCable(cable,
+				new HashSet<TopologyInterface>(Arrays.asList(
+						topologyInterfaceA, topologyInterfaceB)));
 		
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screen.width - getWidth()) / 2;
-		int y = (screen.height - getHeight()) / 2;
-		setLocation(x, y);
+		topology.addVertex(topologyDeviceA);
+		topology.addVertex(topologyDeviceB);
+		topology.addEdge(topologyCable);
+		
+		deviceA.setValue(
+				NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
+		deviceB.setValue(
+				NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
+		
+		table = new DeviceTable();
+		table.setTopology(topology);
+		
+		viewer = new TopologyViewer();
+		viewer.setPreferredSize(new Dimension(200, 200));
+		viewer.setGraphLayout(new CrapGraphLayout(viewer));
+		viewer.setModel(topology);
+		viewer.addRenderingHint(
+				RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		viewer.addRenderingHint(
+				RenderingHints.KEY_RENDERING,
+				RenderingHints.VALUE_RENDER_QUALITY);
+		
+		scrollPane = new JScrollPane(viewer);
+		
+		statusLabel = new JLabel();
+		statusLabel
+				.setText("Start a new crawl or load an old one using the menu above...");
+		
+		add(scrollPane, BorderLayout.CENTER);
+		add(statusLabel, BorderLayout.SOUTH);
+		
+		pack();
+		setMinimumSize(getSize());
+		
+		JFrameUtil.centerFrame(this);
 		
 		setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {}
+	private void crawl() {
+		dontClose = true;
+		
+		statusLabel.setText("Crawling your net...");
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
+		// TODO: do
+		
+		setCursor(Cursor.getDefaultCursor());
+		
+		dontClose = false;
+	}
+	
+	private void toggleView() {
+		if (tableVisible) {
+			scrollPane.setViewportView(viewer);
+		} else {
+			scrollPane.setViewportView(table);
+		}
+		
+		tableVisible = !tableVisible;
+	}
+	
+	public static void main(String[] args) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException,
+			UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		
 		new GUI();
 	}
 }

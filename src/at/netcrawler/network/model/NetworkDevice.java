@@ -8,7 +8,6 @@ import java.util.Set;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.GenericsUtil;
-import at.netcrawler.DeviceSystem;
 import at.netcrawler.network.Capability;
 
 
@@ -20,9 +19,6 @@ public class NetworkDevice extends NetworkModel {
 	
 	public static final String HOSTNAME = "device.hostname";
 	public static final Type HOSTNAME_TYPE = String.class;
-	
-	public static final String SYSTEM = "device.system";
-	public static final Type SYSTEM_TYPE = DeviceSystem.class;
 	
 	public static final String SYSTEM_STRING = "device.systemString";
 	public static final Type SYSTEM_STRING_TYPE = String.class;
@@ -49,7 +45,6 @@ public class NetworkDevice extends NetworkModel {
 		Map<String, Type> map = new HashMap<String, Type>();
 		
 		map.put(HOSTNAME, HOSTNAME_TYPE);
-		map.put(SYSTEM, SYSTEM_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);
 		map.put(CAPABILITIES, CAPABILITIES_TYPE);
 		map.put(MAJOR_CAPABILITY, MAJOR_CAPABILITY_TYPE);
