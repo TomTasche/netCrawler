@@ -1,4 +1,4 @@
-package at.netcrawler.gui.device.category;
+package at.netcrawler.ui.graphical.device.category;
 
 import java.awt.Component;
 

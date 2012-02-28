@@ -1,10 +1,10 @@
 package at.netcrawler.network.model.extension;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import at.andiwand.library.util.TypeToken;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 
@@ -14,10 +14,10 @@ public class SwitchExtension extends NetworkDeviceExtension {
 	
 	public static final SwitchExtension EXTENSION;
 	
-	public static final Map<String, Type> EXTENSION_TYPE_MAP;
+	public static final Map<String, TypeToken<?>> EXTENSION_TYPE_MAP;
 	
 	static {
-		Map<String, Type> map = new HashMap<String, Type>();
+		Map<String, TypeToken<?>> map = new HashMap<String, TypeToken<?>>();
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
 		
 		EXTENSION = new SwitchExtension();

@@ -159,7 +159,7 @@ public class Configuration {
 	private void readData(JsonReader reader) throws IOException {
 		reader.beginObject();
 		validateJsonName(reader, "ip");
-		address = IPv4Address.getByAddress(reader.nextString());
+		address = new IPv4Address(reader.nextString());
 		validateJsonName(reader, "connection");
 		connection = ConnectionType.getConnectionByName(reader.nextString());
 		validateJsonName(reader, "port");

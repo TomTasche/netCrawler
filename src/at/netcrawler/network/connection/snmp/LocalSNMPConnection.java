@@ -130,12 +130,11 @@ public class LocalSNMPConnection extends SNMPConnection {
 		},
 		IPADDRESS(SNMPObjectType.IPADDRESS, IpAddress.class) {
 			public Variable convertFromObject(Object value) {
-				return new IpAddress(((IPv4Address) value).getBytes());
+				return new IpAddress(((IPv4Address) value).toByteArray());
 			}
 			
 			public Object convertFromVariable(Variable value) {
-				return IPv4Address.getByAddress(((IpAddress) value)
-						.toByteArray());
+				return new IPv4Address(((IpAddress) value).toByteArray());
 			}
 		};
 		

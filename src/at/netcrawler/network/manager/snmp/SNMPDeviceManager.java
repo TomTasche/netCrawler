@@ -162,7 +162,7 @@ public class SNMPDeviceManager extends DeviceManager {
 			String addressString = row[3].getValue();
 			if (!addressString.isEmpty()) {
 				try {
-					MACAddress address = MACAddress.getByAddress(addressString);
+					MACAddress address = new MACAddress(addressString);
 					
 					interfaze
 							.addExtension(EthernetInterfaceExtension.EXTENSION);

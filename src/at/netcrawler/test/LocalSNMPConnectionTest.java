@@ -21,7 +21,7 @@ public class LocalSNMPConnectionTest {
 		int port = 161;
 		String community = "netCrawler";
 		
-		IPAddress ipAddress = IPv4Address.getByAddress(address);
+		IPAddress ipAddress = new IPv4Address(address);
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		

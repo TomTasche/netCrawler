@@ -1,11 +1,11 @@
 package at.netcrawler.network.model.extension;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import at.andiwand.library.network.mac.MACAddress;
+import at.andiwand.library.util.TypeToken;
 import at.netcrawler.network.model.NetworkInterfaceExtension;
 
 
@@ -15,13 +15,14 @@ public class EthernetInterfaceExtension extends NetworkInterfaceExtension {
 	
 	public static final EthernetInterfaceExtension EXTENSION;
 	
-	public static final Map<String, Type> EXTENSION_TYPE_MAP;
+	public static final Map<String, TypeToken<?>> EXTENSION_TYPE_MAP;
 	
 	public static final String ADDRESS = "interface.ethernet.address";
-	public static final Type ADDRESS_TYPE = MACAddress.class;
+	public static final TypeToken<?> ADDRESS_TYPE = TypeToken
+			.get(MACAddress.class);
 	
 	static {
-		Map<String, Type> map = new HashMap<String, Type>();
+		Map<String, TypeToken<?>> map = new HashMap<String, TypeToken<?>>();
 		map.put(ADDRESS, ADDRESS_TYPE);
 		EXTENSION_TYPE_MAP = Collections.unmodifiableMap(map);
 		

@@ -1,4 +1,4 @@
-package at.netcrawler.gui.main;
+package at.netcrawler.ui.graphical.main;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
 import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
+import at.netcrawler.ui.graphical.device.DeviceView;
 
 
 @SuppressWarnings("serial")
@@ -46,7 +49,7 @@ public class GUI extends JFrame {
 	boolean dontClose;
 	boolean tableVisible;
 	
-	public GUI() {
+	public GUI(Topology topology) {
 		setTitle("netCrawler");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLayout(new BorderLayout());
@@ -97,7 +100,76 @@ public class GUI extends JFrame {
 		
 		setJMenuBar(menu);
 		
-		// TODO: remove
+		table = new DeviceTable();
+		table.setTopology(topology);
+		
+		viewer = new TopologyViewer();
+		viewer.setPreferredSize(new Dimension(200, 200));
+		viewer.setGraphLayout(new CrapGraphLayout(viewer));
+		viewer.setModel(topology);
+		viewer.addRenderingHint(
+				RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		viewer.addRenderingHint(
+				RenderingHints.KEY_RENDERING,
+				RenderingHints.VALUE_RENDER_QUALITY);
+		viewer.addVertexMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() != MouseEvent.BUTTON1) return;
+				
+				new DeviceView(((TopologyDevice) e.getSource())
+						.getNetworkDevice());
+			}
+		});
+		
+		scrollPane = new JScrollPane(viewer);
+		
+		statusLabel = new JLabel();
+		statusLabel
+				.setText("Start a new crawl or load an old one using the menu above...");
+		
+		add(scrollPane, BorderLayout.CENTER);
+		add(statusLabel, BorderLayout.SOUTH);
+		
+		pack();
+		setMinimumSize(getSize());
+		
+		JFrameUtil.centerFrame(this);
+		
+		setVisible(true);
+	}
+	
+	private void crawl() {
+		dontClose = true;
+		
+		statusLabel.setText("Crawling your net...");
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
+		// TODO: do
+		
+		setCursor(Cursor.getDefaultCursor());
+		statusLabel.setText("Crawl completed.");
+		
+		dontClose = false;
+	}
+	
+	private void toggleView() {
+		if (tableVisible) {
+			scrollPane.setViewportView(viewer);
+		} else {
+			scrollPane.setViewportView(table);
+		}
+		
+		tableVisible = !tableVisible;
+	}
+	
+	public static void main(String[] args) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException,
+			UnsupportedLookAndFeelException {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		
 		Topology topology = new HashTopology();
 		
 		NetworkDevice deviceA = new NetworkDevice();
@@ -141,65 +213,6 @@ public class GUI extends JFrame {
 		deviceB.setValue(
 				NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
 		
-		table = new DeviceTable();
-		table.setTopology(topology);
-		
-		viewer = new TopologyViewer();
-		viewer.setPreferredSize(new Dimension(200, 200));
-		viewer.setGraphLayout(new CrapGraphLayout(viewer));
-		viewer.setModel(topology);
-		viewer.addRenderingHint(
-				RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		viewer.addRenderingHint(
-				RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_QUALITY);
-		
-		scrollPane = new JScrollPane(viewer);
-		
-		statusLabel = new JLabel();
-		statusLabel
-				.setText("Start a new crawl or load an old one using the menu above...");
-		
-		add(scrollPane, BorderLayout.CENTER);
-		add(statusLabel, BorderLayout.SOUTH);
-		
-		pack();
-		setMinimumSize(getSize());
-		
-		JFrameUtil.centerFrame(this);
-		
-		setVisible(true);
-	}
-	
-	private void crawl() {
-		dontClose = true;
-		
-		statusLabel.setText("Crawling your net...");
-		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
-		// TODO: do
-		
-		setCursor(Cursor.getDefaultCursor());
-		
-		dontClose = false;
-	}
-	
-	private void toggleView() {
-		if (tableVisible) {
-			scrollPane.setViewportView(viewer);
-		} else {
-			scrollPane.setViewportView(table);
-		}
-		
-		tableVisible = !tableVisible;
-	}
-	
-	public static void main(String[] args) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException,
-			UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		
-		new GUI();
+		new GUI(topology);
 	}
 }

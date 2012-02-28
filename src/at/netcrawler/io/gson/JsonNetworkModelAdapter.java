@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import at.andiwand.library.util.GenericsUtil;
+import at.andiwand.library.util.TypeToken;
 import at.andiwand.library.util.comparator.StringLengthComperator;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
@@ -23,7 +23,7 @@ import com.google.gson.JsonSerializationContext;
 public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 	
 	private static final String EXTENSIONS_PROPERTY = "extensions";
-	private static final Type EXTENSION_TYPE = new GenericsUtil.TypeToken<Set<Class<? extends NetworkModelExtension>>>() {}
+	private static final Type EXTENSION_TYPE = new TypeToken<Set<Class<? extends NetworkModelExtension>>>() {}
 			.getType();
 	private static final String VALUES_PROPERTY = "values";
 	
@@ -68,14 +68,14 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 			JsonObject valueMapObject = object.get(VALUES_PROPERTY)
 					.getAsJsonObject();
 			
-			Map<String, Type> typeMap = result.getTypeMap();
+			Map<String, TypeToken<?>> typeMap = result.getTypeMap();
 			
 			for (Entry<String, JsonElement> entry : valueMapObject.entrySet()) {
 				String key = entry.getKey();
 				JsonElement valueElement = entry.getValue();
 				
-				Object value = context.deserialize(valueElement, typeMap
-						.get(key));
+				Object value = context.deserialize(valueElement, typeMap.get(
+						key).getType());
 				result.setValue(key, value);
 			}
 			

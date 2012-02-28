@@ -1,7 +1,8 @@
 package at.netcrawler.network.model;
 
-import java.lang.reflect.Type;
 import java.util.Map;
+
+import at.andiwand.library.util.TypeToken;
 
 
 public abstract class NetworkInterfaceExtension extends NetworkModelExtension {
@@ -14,7 +15,8 @@ public abstract class NetworkInterfaceExtension extends NetworkModelExtension {
 		super(EXTENDED_MODEL_CLASS);
 	}
 	
-	protected NetworkInterfaceExtension(Map<String, Type> extendedTypeMap) {
+	protected NetworkInterfaceExtension(
+			Map<String, TypeToken<?>> extendedTypeMap) {
 		super(EXTENDED_MODEL_CLASS, extendedTypeMap);
 	}
 	

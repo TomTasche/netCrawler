@@ -1,4 +1,4 @@
-package at.netcrawler.gui.device;
+package at.netcrawler.ui.graphical.device;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,20 +14,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import at.netcrawler.gui.device.category.Category;
-import at.netcrawler.gui.device.category.CiscoCategory;
-import at.netcrawler.gui.device.category.CiscoRouterCategory;
-import at.netcrawler.gui.device.category.CiscoSwitchCategory;
-import at.netcrawler.gui.device.category.DeviceCategory;
-import at.netcrawler.gui.device.category.RouterCategory;
-import at.netcrawler.gui.device.category.SNMPCategory;
-import at.netcrawler.gui.main.NetworkDeviceHelper;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
-import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 import at.netcrawler.network.model.extension.CiscoRouterExtension;
@@ -39,6 +30,15 @@ import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
+import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
+import at.netcrawler.ui.graphical.device.category.Category;
+import at.netcrawler.ui.graphical.device.category.CiscoCategory;
+import at.netcrawler.ui.graphical.device.category.CiscoRouterCategory;
+import at.netcrawler.ui.graphical.device.category.CiscoSwitchCategory;
+import at.netcrawler.ui.graphical.device.category.DeviceCategory;
+import at.netcrawler.ui.graphical.device.category.RouterCategory;
+import at.netcrawler.ui.graphical.device.category.SNMPCategory;
+import at.netcrawler.ui.graphical.main.NetworkDeviceHelper;
 
 
 @SuppressWarnings("serial")
@@ -61,9 +61,10 @@ public class DeviceView extends JFrame {
 				CiscoSwitchExtension.class, new CiscoSwitchCategory());
 	}
 	
-	private final NetworkModel device;
+	private final NetworkDevice device;
 	
-	public DeviceView(NetworkModel device) {
+	// TODO: textfield disabled, click, textfield enabled, change via manager instantly
+	public DeviceView(NetworkDevice device) {
 		this.device = device;
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -144,12 +145,12 @@ public class DeviceView extends JFrame {
 		
 		NetworkCable cable = new NetworkCable();
 		
-		TopologyDevice topologyDeviceA = new TopologyDevice(deviceA);
-		TopologyInterface topologyInterfaceA = topologyDeviceA
-				.getInterfaceByName("eth0");
-		TopologyDevice topologyDeviceB = new TopologyDevice(deviceB);
-		TopologyInterface topologyInterfaceB = topologyDeviceB
-				.getInterfaceByName("eth0");
+		TopologyDevice topologyDeviceA = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceA);
+		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
+		TopologyDevice topologyDeviceB = new TopologyDevice(
+				new UniqueDeviceIdentifier(), deviceB);
+		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
 		TopologyCable topologyCable = new TopologyCable(cable,
 				new HashSet<TopologyInterface>(Arrays.asList(
 						topologyInterfaceA, topologyInterfaceB)));

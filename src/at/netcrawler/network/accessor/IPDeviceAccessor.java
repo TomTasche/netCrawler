@@ -18,7 +18,7 @@ public class IPDeviceAccessor extends DeviceAccessor {
 	
 	public IPDeviceAccessor(InetAddress inetAddress) {
 		if (inetAddress instanceof Inet4Address) {
-			ipAddress = IPv4Address.getByAddress(inetAddress);
+			ipAddress = new IPv4Address(inetAddress);
 		} else if (inetAddress instanceof Inet6Address) {
 			throw new UnsupportedOperationException(
 					"Inet6Address is not supported");

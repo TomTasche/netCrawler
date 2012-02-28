@@ -38,7 +38,7 @@ public class LocalSSHConnectionTest {
 	public static void main(String[] args) throws Throwable {
 		SSHVersion version = SSHVersion.VERSION2;
 		String address = "127.0.0.1";
-		IPv4Address ipAddress = IPv4Address.getByAddress(address);
+		IPv4Address ipAddress = new IPv4Address(address);
 		int port = 22;
 		String username = "andreas";
 		String password = getPassword(username);
