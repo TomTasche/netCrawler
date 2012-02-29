@@ -105,6 +105,7 @@ public class GUI extends JFrame {
 		
 		viewer = new TopologyViewer();
 		viewer.setPreferredSize(new Dimension(200, 200));
+		// TODO: use another GraphLayout
 		viewer.setGraphLayout(new CrapGraphLayout(viewer));
 		viewer.setModel(topology);
 		viewer.addRenderingHint(
