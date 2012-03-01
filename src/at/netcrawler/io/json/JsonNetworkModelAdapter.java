@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import at.andiwand.library.util.TypeToken;
-import at.andiwand.library.util.comparator.StringLengthComperator;
+import at.andiwand.library.util.comparator.ObjectStringComperator;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
 
@@ -33,7 +33,7 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 		Map<String, Object> valueMap = new TreeMap<String, Object>(src
 				.getValueMap());
 		Set<Class<?>> extensionClasses = new TreeSet<Class<?>>(
-				new StringLengthComperator());
+				new ObjectStringComperator());
 		
 		for (NetworkModelExtension extension : src.getExtensions())
 			extensionClasses.add(extension.getClass());
