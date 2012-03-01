@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -19,12 +18,12 @@ import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
 
 @SuppressWarnings("serial")
-public class DeviceModel extends AbstractTableModel implements GraphListener {
+public class DeviceTableModel extends AbstractTableModel implements GraphListener {
 	
 	private static final Map<String, NetworkDeviceDataAccessor> ACCESSOR_FOR_NAME;
 	
 	static {
-		ACCESSOR_FOR_NAME = new HashMap<String, DeviceModel.NetworkDeviceDataAccessor>();
+		ACCESSOR_FOR_NAME = new HashMap<String, DeviceTableModel.NetworkDeviceDataAccessor>();
 		
 		ACCESSOR_FOR_NAME.put("Hostname", new NetworkDeviceDataAccessor() {
 			
@@ -83,10 +82,8 @@ public class DeviceModel extends AbstractTableModel implements GraphListener {
 	
 	private final TableColumnModel columnModel;
 	private List<TopologyDevice> devices;
-	private final JTable table;
 	
-	public DeviceModel(JTable table, TableColumnModel columnModel) {
-		this.table = table;
+	public DeviceTableModel(TableColumnModel columnModel) {
 		this.columnModel = columnModel;
 		this.devices = new ArrayList<TopologyDevice>();
 	}
@@ -134,12 +131,12 @@ public class DeviceModel extends AbstractTableModel implements GraphListener {
 	
 	@Override
 	public synchronized Object getValueAt(int arg0, int arg1) {
+//		NetworkDevice device = devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
 		NetworkDevice device = devices.get(arg0).getNetworkDevice();
 		
-		String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
+//		String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
+		String column = (String) columnModel.getColumn(arg1).getHeaderValue();
 		if (ACCESSOR_FOR_NAME.containsKey(column)) {
-			System.out.println(ACCESSOR_FOR_NAME.get(column).get(device));
-			
 			return ACCESSOR_FOR_NAME.get(column).get(device);
 		} else {
 			return "Not crawled.";

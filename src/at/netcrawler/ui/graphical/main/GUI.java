@@ -6,13 +6,17 @@ import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,10 +26,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.JFrameUtil;
 import at.netcrawler.component.CrapGraphLayout;
 import at.netcrawler.component.TopologyViewer;
+import at.netcrawler.io.json.JsonHelper;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
@@ -37,53 +43,105 @@ import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
 import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
 import at.netcrawler.ui.graphical.device.DeviceView;
+import at.netcrawler.util.Settings;
 
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
 	
-	JScrollPane scrollPane;
-	TopologyViewer viewer;
-	DeviceTable table;
-	JLabel statusLabel;
-	boolean dontClose;
-	boolean tableVisible;
+	private JScrollPane scrollPane;
+	private TopologyViewer viewer;
+	private DeviceTable table;
+	private JLabel statusLabel;
+	private JMenuItem saveItem;
+	private JFileChooser fileChooser;
+	private Topology topology;
+	private boolean dontClose;
+	private boolean tableVisible;
 	
 	public GUI(Topology topology) {
+		this.topology = topology;
+		
 		setTitle("netCrawler");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLayout(new BorderLayout());
 		addWindowListener(new WindowAdapter() {
 			
 			public void windowClosing(WindowEvent e) {
-				if (dontClose
-						&& JOptionPane.showOptionDialog(
-								GUI.this,
-								"Do you really want to close netCrawler?", "",
-								JOptionPane.OK_CANCEL_OPTION,
-								JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
-					dispose();
-				} else if (!dontClose) {
-					dispose();
-				}
+				close();
+			}
+		});
+		
+		addComponentListener(new ComponentAdapter() {
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				super.componentResized(e);
+				
+				Settings.setLastWindowSize(getSize());
+			}
+		});
+		
+		fileChooser = new JFileChooser(Settings.getLastCrawl());
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "*.crawl - Saved netCrawler Crawls";
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return f.getName().endsWith(".crawl");
 			}
 		});
 		
 		JMenuBar menu = new JMenuBar();
-		JMenu file = new JMenu("File");
-		JMenu view = new JMenu("View");
-		JMenu help = new JMenu("Help");
-		JMenuItem crawl = new JMenuItem("Crawl...");
-		JMenuItem toggleView = new JMenuItem("Toggle table / topology view");
+		JMenu fileMenu = new JMenu("File");
+		JMenu viewMenu = new JMenu("View");
+		JMenu helpMenu = new JMenu("Help");
+		JMenuItem crawlItem = new JMenuItem("Crawl...");
+		JMenuItem loadItem = new JMenuItem("Load");
+		saveItem = new JMenuItem("Save");
+		JMenuItem closeItem = new JMenuItem("Close");
+		JMenuItem toggleViewItem = new JMenuItem("Toggle view");
 		
-		crawl.addActionListener(new ActionListener() {
+		saveItem.setEnabled(false);
+		
+		loadItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if (fileChooser.showOpenDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
+					fileChooser.getSelectedFile();
+				}
+			}
+		});
+		saveItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println(JsonHelper.getGson().toJson(GUI.this.topology));
+			}
+		});
+		closeItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				close();
+			}
+		});
+		crawlItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				crawl();
 			}
 		});
-		toggleView.addActionListener(new ActionListener() {
+		toggleViewItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -91,12 +149,15 @@ public class GUI extends JFrame {
 			}
 		});
 		
-		file.add(crawl);
-		view.add(toggleView);
+		fileMenu.add(crawlItem);
+		fileMenu.add(loadItem);
+		fileMenu.add(saveItem);
+		fileMenu.add(closeItem);
+		viewMenu.add(toggleViewItem);
 		
-		menu.add(file);
-		menu.add(view);
-		menu.add(help);
+		menu.add(fileMenu);
+		menu.add(viewMenu);
+		menu.add(helpMenu);
 		
 		setJMenuBar(menu);
 		
@@ -125,21 +186,48 @@ public class GUI extends JFrame {
 			}
 		});
 		
-		scrollPane = new JScrollPane(viewer);
+		scrollPane = new JScrollPane();
+		if (Settings.getLastView() == 1) {
+			scrollPane.setViewportView(table);
+			
+			tableVisible = true;
+		} else {
+			scrollPane.setViewportView(viewer);
+		}
 		
 		statusLabel = new JLabel();
 		statusLabel
-				.setText("Start a new crawl or load an old one using the menu above...");
+		.setText("Start a new crawl or load an old one using the menu above...");
 		
 		add(scrollPane, BorderLayout.CENTER);
 		add(statusLabel, BorderLayout.SOUTH);
 		
-		pack();
-		setMinimumSize(getSize());
+		Dimension lastSize = Settings.getLastWindowSize();
+		if (lastSize == null) {
+			pack();
+			setMinimumSize(getSize());
+		} else {
+			setSize(lastSize);
+		}
 		
 		JFrameUtil.centerFrame(this);
 		
 		setVisible(true);
+	}
+	
+	private void close() {
+		if (dontClose
+				&& JOptionPane.showOptionDialog(
+						GUI.this,
+						"Do you really want to close netCrawler?", "",
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
+			dispose();
+		} else if (!dontClose) {
+			dispose();
+		}
+		
+		Settings.write();
 	}
 	
 	private void crawl() {
@@ -150,6 +238,8 @@ public class GUI extends JFrame {
 		
 		// TODO: do
 		
+		saveItem.setEnabled(true);
+		
 		setCursor(Cursor.getDefaultCursor());
 		statusLabel.setText("Crawl completed.");
 		
@@ -157,18 +247,23 @@ public class GUI extends JFrame {
 	}
 	
 	private void toggleView() {
+		int newView = 0;
 		if (tableVisible) {
 			scrollPane.setViewportView(viewer);
 		} else {
 			scrollPane.setViewportView(table);
+			
+			newView = 1;
 		}
+		
+		Settings.setLastView(newView);
 		
 		tableVisible = !tableVisible;
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException,
-			UnsupportedLookAndFeelException {
+	InstantiationException, IllegalAccessException,
+	UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
 		Topology topology = new HashTopology();

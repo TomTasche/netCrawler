@@ -120,7 +120,7 @@ public class ConfigurationDialog {
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		JLabel label = new JLabel("Choose your decrytion password:");
+		JLabel label = new JLabel("Choose your decryption password:");
 		JLabel passwordLabel = new JLabel("Password:");
 		final JPasswordField passwordField = new JPasswordField();
 		

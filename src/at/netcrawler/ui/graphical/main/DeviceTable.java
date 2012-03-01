@@ -19,25 +19,26 @@ public class DeviceTable extends JTable {
 	private static final Collection<String> COLUMNS;
 	
 	static {
-		COLUMNS = DeviceModel.getColumnNames();
+		COLUMNS = DeviceTableModel.getColumnNames();
 	}
 	
-	private final DeviceModel model;
+	private final DeviceTableModel model;
 	
 	public DeviceTable() {
-		model = new DeviceModel(this, getColumnModel());
+		model = new DeviceTableModel(getColumnModel());
 		
 		setModel(model);
 		setAutoCreateRowSorter(true);
 		
 		TableColumnModel columnModel = getColumnModel();
 		for (String column : COLUMNS) {
-			TableColumn tableColumn = new TableColumn();
+			TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
 			tableColumn.setHeaderValue(column);
 			
 			columnModel.addColumn(tableColumn);
 		}
 		
+		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().addMouseListener(new MouseAdapter() {
 			
 			@Override

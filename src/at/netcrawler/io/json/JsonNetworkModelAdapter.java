@@ -1,4 +1,4 @@
-package at.netcrawler.io.gson;
+package at.netcrawler.io.json;
 
 import java.lang.reflect.Type;
 import java.util.Map;

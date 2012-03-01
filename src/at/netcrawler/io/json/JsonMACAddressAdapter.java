@@ -1,4 +1,4 @@
-package at.netcrawler.io.gson;
+package at.netcrawler.io.json;
 
 import java.lang.reflect.Type;
 
@@ -8,21 +8,21 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-import at.andiwand.library.network.ip.SubnetMask;
+import at.andiwand.library.network.mac.MACAddress;
 
 
-public class JsonSubnetMaskAdapter extends JsonAdapter<SubnetMask> {
+public class JsonMACAddressAdapter extends JsonAdapter<MACAddress> {
 	
 	@Override
-	public JsonElement serialize(SubnetMask src, Type typeOfSrc,
+	public JsonElement serialize(MACAddress src, Type typeOfSrc,
 			JsonSerializationContext context) {
-		return new JsonPrimitive(src.toDottedString());
+		return new JsonPrimitive(src.toColonedString());
 	}
 	
 	@Override
-	public SubnetMask deserialize(JsonElement json, Type typeOfT,
+	public MACAddress deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
-		return new SubnetMask(json.getAsJsonPrimitive().getAsString());
+		return new MACAddress(json.getAsJsonPrimitive().getAsString());
 	}
 	
 }

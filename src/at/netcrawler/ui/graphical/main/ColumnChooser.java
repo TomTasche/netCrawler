@@ -61,7 +61,7 @@ public class ColumnChooser extends JPopupMenu {
 				try {
 					columnModel.removeColumn(columnModel.getColumn(columnModel.getColumnIndex(column)));
 				} catch (IllegalArgumentException e) {
-					TableColumn tableColumn = new TableColumn();
+					TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
 					tableColumn.setHeaderValue(column);
 					columnModel.addColumn(tableColumn);
 				}

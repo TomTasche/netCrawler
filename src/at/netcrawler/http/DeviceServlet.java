@@ -17,21 +17,21 @@ public class DeviceServlet extends AbstractServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 		
-		boolean parseRegex = false;
-		if (request.getParameter("regex") != null) {
-			parseRegex = Boolean.parseBoolean(request.getParameter("regex"));
-		}
+//		boolean parseRegex = false;
+//		if (request.getParameter("regex") != null) {
+//			parseRegex = Boolean.parseBoolean(request.getParameter("regex"));
+//		}
 		
 		// TODO: felder der geräte iterieren und matchen
 		
 		// TODO: only return devices containing the given fields?
 		
-		String[] fields = new String[0];
-		if (request.getParameter("fields") != null) {
-			fields = request.getParameter(
-					"fields").split(
-					";");
-		}
+//		String[] fields = new String[0];
+//		if (request.getParameter("fields") != null) {
+//			fields = request.getParameter(
+//					"fields").split(
+//					";");
+//		}
 		
 		Map<String, String[]> query = request.getParameterMap();
 		query.remove("fields");
