@@ -10,7 +10,6 @@ import javax.swing.table.TableColumnModel;
 
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.ui.graphical.device.DeviceView;
 
 
 @SuppressWarnings("serial")
@@ -23,8 +22,11 @@ public class DeviceTable extends JTable {
 	}
 	
 	private final DeviceTableModel model;
+	private final GUI gui;
 	
-	public DeviceTable() {
+	public DeviceTable(GUI gui) {
+		this.gui = gui;
+		
 		model = new DeviceTableModel(getColumnModel());
 		
 		setModel(model);
@@ -53,13 +55,13 @@ public class DeviceTable extends JTable {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					int selected = getSelectedRow();
-					selected = getRowSorter().convertRowIndexToModel(selected);
-					
-					TopologyDevice device = model.getDevices().get(selected);
-					new DeviceView(device.getNetworkDevice());
-				}
+				int selected = getSelectedRow();
+				if (selected < 0) return;
+				
+				selected = getRowSorter().convertRowIndexToModel(selected);
+				
+				TopologyDevice device = model.getDevices().get(selected);
+				DeviceTable.this.gui.handleMouse(e, device);
 			}
 		});
 	}

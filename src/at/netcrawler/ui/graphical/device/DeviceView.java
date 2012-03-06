@@ -19,6 +19,7 @@ import at.netcrawler.network.model.extension.CiscoRouterExtension;
 import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 import at.netcrawler.network.model.extension.RouterExtension;
 import at.netcrawler.network.model.extension.SNMPDeviceExtension;
+import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.ui.graphical.device.category.Category;
 import at.netcrawler.ui.graphical.device.category.CiscoCategory;
 import at.netcrawler.ui.graphical.device.category.CiscoRouterCategory;
@@ -52,17 +53,15 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	private final NetworkDevice device;
 	
 	// TODO: textfield disabled, click, textfield enabled, change via manager instantly
-	public DeviceView(NetworkDevice device) {
-		this.device = device;
+	public DeviceView(TopologyDevice device) {
+		this.device = device.getNetworkDevice();
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle("Device View - " + NetworkDeviceHelper.getHostname(device));
+		setTitle("Device View - " + NetworkDeviceHelper.getHostname(this.device));
 		
 		build();
 		
-		setVisible(true);
-		
-		device.addListener(this);
+		this.device.addListener(this);
 	}
 	
 	@Override

@@ -161,7 +161,7 @@ public class GUI extends JFrame {
 		
 		setJMenuBar(menu);
 		
-		table = new DeviceTable();
+		table = new DeviceTable(this);
 		table.setTopology(topology);
 		
 		viewer = new TopologyViewer();
@@ -179,10 +179,7 @@ public class GUI extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() != MouseEvent.BUTTON1) return;
-				
-				new DeviceView(((TopologyDevice) e.getSource())
-						.getNetworkDevice());
+				handleMouse(e, (TopologyDevice) e.getSource());
 			}
 		});
 		
@@ -213,6 +210,20 @@ public class GUI extends JFrame {
 		JFrameUtil.centerFrame(this);
 		
 		setVisible(true);
+	}
+	
+	protected void handleMouse(MouseEvent event, TopologyDevice device) {
+		JFrame frame = null;
+		if (event.getButton() == MouseEvent.BUTTON1) {
+			frame = new DeviceView(device);
+		} else if (event.getButton() == MouseEvent.BUTTON3) {
+			frame = new BatchManager(device);
+		}
+		
+		if (frame != null) {
+			JFrameUtil.centerFrame(frame);
+			frame.setVisible(true);
+		}
 	}
 	
 	private void close() {

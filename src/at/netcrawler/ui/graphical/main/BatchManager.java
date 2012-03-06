@@ -1,4 +1,4 @@
-package at.netcrawler.assistant;
+package at.netcrawler.ui.graphical.main;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,8 +7,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Locale;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -20,32 +24,50 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
+import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.CloseableTabbedPane;
-import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.io.FluidInputStreamReader;
+import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.netcrawler.assistant.Configuration;
+import at.netcrawler.assistant.ConfigurationDialog;
+import at.netcrawler.assistant.ConnectionType;
+import at.netcrawler.assistant.Encryption;
+import at.netcrawler.assistant.EncryptionBag;
+import at.netcrawler.assistant.EncryptionCallback;
+import at.netcrawler.io.AfterLineMatchReader;
+import at.netcrawler.io.FilterFirstLineReader;
+import at.netcrawler.io.FilterLastLineReader;
+import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ssh.LocalSSHConnection;
+import at.netcrawler.network.connection.ssh.SSHSettings;
+import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
+import at.netcrawler.network.connection.telnet.TelnetSettings;
+import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.topology.TopologyDevice;
 
 
-public class ConfigurationManager extends JFrame {
+public class BatchManager extends JFrame {
 	
 	private static final long serialVersionUID = 4174046294656269705L;
 	
-	private static final String TITLE = "Configuration Manager";
+	private static final String TITLE = "BatchMan";
 	
-	private JTextField address = new JTextField();
-	private JComboBox connections = new JComboBox(ConnectionType.values());
-	private JTextField port = new JTextField();
-	private JTextField username = new JTextField();
-	private JPasswordField password = new JPasswordField();
-	private JTextField batchNewName = new JTextField();
+	private JTextField addressField = new JTextField();
+	private JComboBox connectionsCombo = new JComboBox(ConnectionType.values());
+	private JTextField portField = new JTextField();
+	private JTextField usernameField = new JTextField();
+	private JPasswordField passwordField = new JPasswordField();
+	private JTextField batchNewNameField = new JTextField();
 	private CloseableTabbedPane batchTabbedPane = new CloseableTabbedPane();
 	
 	private JFileChooser batchFileChooser = new JFileChooser();
@@ -54,8 +76,27 @@ public class ConfigurationManager extends JFrame {
 	
 	private EncryptionBag encryptionBag;
 	
-	public ConfigurationManager() {
+	@SuppressWarnings("unchecked")
+	public BatchManager(TopologyDevice device) {
+		this();
+		
+		NetworkDevice networkDevice = device.getNetworkDevice();
+		Set<String> addresses = (Set<String>) networkDevice.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
+		if (addresses != null) {
+			String address = addresses.iterator().next();
+			addressField.setText(address);
+		}
+		
+		// TODO:
+		// connectionsCombo.setSelectedIndex();
+		// portField.setText();
+		// usernameField.setText();
+		// passwordField.setText();
+	}
+	
+	public BatchManager() {
 		setTitle(TITLE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		batchTabbedPane.setPreferredSize(new Dimension(300, 200));
 		
@@ -74,6 +115,7 @@ public class ConfigurationManager extends JFrame {
 		JPanel panel = new JPanel();
 		JButton batchAdd = new JButton("Add");
 		JButton choose = new JButton("Choose batch");
+		JButton execute = new JButton("Execute");
 		
 		GroupLayout layout = new GroupLayout(panel);
 		panel.setLayout(layout);
@@ -99,63 +141,79 @@ public class ConfigurationManager extends JFrame {
 							.addComponent(batchLabel)
 					)
 					.addGroup(layout.createParallelGroup()
-							.addComponent(address)
-							.addComponent(connections)
-							.addComponent(port)
-							.addComponent(username)
-							.addComponent(password)
+							.addComponent(addressField)
+							.addComponent(connectionsCombo)
+							.addComponent(portField)
+							.addComponent(usernameField)
+							.addComponent(passwordField)
 							.addGroup(layout.createSequentialGroup()
-									.addComponent(batchNewName)
+									.addComponent(batchNewNameField)
 									.addComponent(batchAdd)
 							)
 					)
 				)
 				.addComponent(batchTabbedPane)
-				.addComponent(choose, Alignment.TRAILING)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+						.addComponent(execute)
+						.addComponent(choose)
+				)
 		);
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ipLabel)
-						.addComponent(address)
+						.addComponent(addressField)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(connectionLabel)
-						.addComponent(connections)
+						.addComponent(connectionsCombo)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(portLabel)
-						.addComponent(port)
+						.addComponent(portField)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(usernameLabel)
-						.addComponent(username)
+						.addComponent(usernameField)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(passwordLabel)
-						.addComponent(password)
+						.addComponent(passwordField)
 				)
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(batchLabel)
-						.addComponent(batchNewName)
+						.addComponent(batchNewNameField)
 						.addComponent(batchAdd)
 				)
 				.addComponent(batchTabbedPane)
-				.addComponent(choose)
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(execute)
+						.addComponent(choose)
+				)
 		);
 		//@formatter:on
 		
-		connections.addActionListener(new ActionListener() {
+		connectionsCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConnectionType connection = (ConnectionType) connections
+				ConnectionType connection = (ConnectionType) connectionsCombo
 						.getSelectedItem();
 				
-				port.setText("" + connection.getDefaultPort());
+				portField.setText("" + connection.getDefaultPort());
 			}
 		});
 		
 		batchAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doAddBatch();
+			}
+		});
+		
+		execute.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					doExecute();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -202,7 +260,7 @@ public class ConfigurationManager extends JFrame {
 		
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConfigurationManager.this.dispose();
+				BatchManager.this.dispose();
 			}
 		});
 		
@@ -220,14 +278,14 @@ public class ConfigurationManager extends JFrame {
 	
 	private void validateIP() {
 		try {
-			new IPv4Address(address.getText());
+			new IPv4Address(addressField.getText());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Illegal IP address!");
 		}
 	}
 	
 	private void validateConnection() {
-		if (((ConnectionType) connections.getSelectedItem()).legalConnection())
+		if (((ConnectionType) connectionsCombo.getSelectedItem()).legalConnection())
 			return;
 		
 		throw new IllegalArgumentException("Choose connection!");
@@ -235,7 +293,7 @@ public class ConfigurationManager extends JFrame {
 	
 	private void validatePort() {
 		try {
-			Integer.parseInt(port.getText());
+			Integer.parseInt(portField.getText());
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Illegal port!");
 		}
@@ -254,11 +312,11 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void doAddBatch() {
-		String batchName = batchNewName.getText();
+		String batchName = batchNewNameField.getText();
 		batchName = batchName.trim();
 		
 		if (batchName.isEmpty()) {
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+			ConfigurationDialog.showErrorDialog(BatchManager.this,
 					"Batch name is empty!");
 			
 			return;
@@ -266,7 +324,7 @@ public class ConfigurationManager extends JFrame {
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-				ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+				ConfigurationDialog.showErrorDialog(BatchManager.this,
 						"Batch name already exists!");
 				
 				return;
@@ -275,17 +333,17 @@ public class ConfigurationManager extends JFrame {
 		
 		addBatch(batchName, "");
 		batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
-		batchNewName.setText("");
+		batchNewNameField.setText("");
 	}
 	
 	private void doChoose() {
 		if (batchTabbedPane.getTabCount() <= 0) {
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+			ConfigurationDialog.showErrorDialog(BatchManager.this,
 					"Add batch name first!");
 			return;
 		}
 		
-		if (batchFileChooser.showOpenDialog(ConfigurationManager.this) == JFileChooser.CANCEL_OPTION)
+		if (batchFileChooser.showOpenDialog(BatchManager.this) == JFileChooser.CANCEL_OPTION)
 			return;
 		
 		File file = batchFileChooser.getSelectedFile();
@@ -305,7 +363,7 @@ public class ConfigurationManager extends JFrame {
 					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
+			ConfigurationDialog.showErrorDialog(BatchManager.this, e);
 		}
 	}
 	
@@ -322,7 +380,7 @@ public class ConfigurationManager extends JFrame {
 			configuration.readFromJsonFile(file, new EncryptionCallback() {
 				public String getPassword(Encryption encryption) {
 					String password = ConfigurationDialog
-							.showDecryptionDialog(ConfigurationManager.this);
+							.showDecryptionDialog(BatchManager.this);
 					encryptionBag.setEncryption(encryption);
 					encryptionBag.setPassword(password);
 					return password;
@@ -386,15 +444,86 @@ public class ConfigurationManager extends JFrame {
 		if (activeFile == null) activeFile = tmp;
 	}
 	
+	private void doExecute() throws IOException {
+		CommandLineInterface cli;
+		
+		IPv4Address ipAddress = new IPv4Address(addressField.getText());
+		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
+
+		String batch = ((JTextField) ((JScrollPane) batchTabbedPane.getSelectedComponent()).getViewport().getView()).getText();;
+		int port = Integer.parseInt(portField.getText());
+		String username = usernameField.getText();
+		String password = new String(passwordField.getPassword());
+		if (connectionsCombo.getSelectedIndex() == 1 || connectionsCombo.getSelectedIndex() == 2) {
+			SSHSettings settings = new SSHSettings();
+			settings.setVersion(SSHVersion.VERSION2);
+			settings.setVersion(connectionsCombo.getSelectedIndex() == 1 ? SSHVersion.VERSION1
+					: SSHVersion.VERSION2);
+			settings.setPort(port);
+			settings.setUsername(username);
+			settings.setPassword(password);
+			
+			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
+					accessor, settings);
+			cli = sshConsoleConnection;
+		} else if (connectionsCombo.getSelectedIndex() == 0) {
+			TelnetSettings settings = new TelnetSettings();
+			settings.setPort(port);
+			
+			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
+					accessor, settings);
+			cli = telnetConnection;
+			
+			OutputStream outputStream = cli.getOutputStream();
+			
+			if (!username.isEmpty()) {
+				outputStream.write(username.getBytes());
+				outputStream.write("\n".getBytes());
+				outputStream.write(password.getBytes());
+				outputStream.write("\n".getBytes());
+			} else if (!password.isEmpty()) {
+				outputStream.write(password.getBytes());
+				outputStream.write("\n".getBytes());
+			}
+		} else {
+			throw new IllegalStateException();
+		}
+		
+		InputStream inputStream = cli.getInputStream();
+		OutputStream outputStream = cli.getOutputStream();
+		
+		String start = "!-start-";
+		Pattern startPattern = Pattern.compile(".+" + Pattern.quote(start));
+		
+		String end = "!-end-";
+		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
+		
+		outputStream.write((start + "\n" + batch + "\n" + end + "\n")
+				.getBytes());
+		outputStream.flush();
+		
+		Reader reader = new FluidInputStreamReader(inputStream);
+		reader = new AfterLineMatchReader(reader, startPattern);
+		reader = new UntilLineMatchReader(reader, endPattern);
+		reader = new FilterFirstLineReader(reader);
+		reader = new FilterLastLineReader(reader);
+		
+		String result = StreamUtil.read(reader);
+		
+		cli.close();
+		
+		System.out.println(result);
+	}
+	
 	private Configuration getConfiguration() {
 		Configuration configuration = new Configuration();
 		
-		configuration.setAddress(new IPv4Address(address.getText()));
-		configuration.setConnection((ConnectionType) connections
+		configuration.setAddress(new IPv4Address(addressField.getText()));
+		configuration.setConnection((ConnectionType) connectionsCombo
 				.getSelectedItem());
-		configuration.setPort(Integer.parseInt(port.getText()));
-		configuration.setUsername(username.getText());
-		configuration.setPassword(new String(password.getPassword()));
+		configuration.setPort(Integer.parseInt(portField.getText()));
+		configuration.setUsername(usernameField.getText());
+		configuration.setPassword(new String(passwordField.getPassword()));
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			configuration.putBatch(batchTabbedPane.getTitleAt(i),
@@ -407,11 +536,11 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void setConfiguration(Configuration configuration) {
-		address.setText(configuration.getAddress().toString());
-		connections.setSelectedItem(configuration.getConnection());
-		port.setText("" + configuration.getPort());
-		username.setText(configuration.getUsername());
-		password.setText(configuration.getPassword());
+		addressField.setText(configuration.getAddress().toString());
+		connectionsCombo.setSelectedItem(configuration.getConnection());
+		portField.setText("" + configuration.getPort());
+		usernameField.setText(configuration.getUsername());
+		passwordField.setText(configuration.getPassword());
 		
 		batchTabbedPane.removeAll();
 		for (Map.Entry<String, String> entry : configuration.getBatches()
@@ -419,15 +548,4 @@ public class ConfigurationManager extends JFrame {
 			addBatch(entry.getKey(), entry.getValue());
 		}
 	}
-	
-	public static void main(String[] args) throws Throwable {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		JOptionPane.setDefaultLocale(Locale.US);
-		
-		ConfigurationManager configurationManager = new ConfigurationManager();
-		JFrameUtil.centerFrame(configurationManager);
-		configurationManager.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		configurationManager.setVisible(true);
-	}
-	
 }

@@ -12,7 +12,7 @@ import javax.swing.table.TableColumnModel;
 
 import at.andiwand.library.math.graph.Edge;
 import at.andiwand.library.math.graph.GraphListener;
-import at.andiwand.library.util.comparator.StringLengthComperator;
+import at.andiwand.library.util.comparator.ObjectStringComperator;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
@@ -91,7 +91,7 @@ public class DeviceTableModel extends AbstractTableModel implements GraphListene
 	public synchronized void setTopology(Topology topology) {
 		List<TopologyDevice> temp = new ArrayList<TopologyDevice>(
 				topology.getVertices());
-		Collections.sort(temp, new StringLengthComperator());
+		Collections.sort(temp, new ObjectStringComperator());
 		devices = Collections.unmodifiableList(temp);
 		
 		fireTableDataChanged();
@@ -131,10 +131,10 @@ public class DeviceTableModel extends AbstractTableModel implements GraphListene
 	
 	@Override
 	public synchronized Object getValueAt(int arg0, int arg1) {
-//		NetworkDevice device = devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
+		//		NetworkDevice device = devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
 		NetworkDevice device = devices.get(arg0).getNetworkDevice();
 		
-//		String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
+		//		String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
 		String column = (String) columnModel.getColumn(arg1).getHeaderValue();
 		if (ACCESSOR_FOR_NAME.containsKey(column)) {
 			return ACCESSOR_FOR_NAME.get(column).get(device);
