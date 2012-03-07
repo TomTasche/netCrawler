@@ -27,7 +27,7 @@ public class DeviceTable extends JTable {
 	public DeviceTable(GUI gui) {
 		this.gui = gui;
 		
-		model = new DeviceTableModel(getColumnModel());
+		model = new DeviceTableModel(this);
 		
 		setModel(model);
 		setAutoCreateRowSorter(true);
@@ -46,7 +46,8 @@ public class DeviceTable extends JTable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
-					new ColumnChooser(DeviceTable.this, COLUMNS, getColumnModel(), e);
+					// TODO:
+					// new ColumnChooser(DeviceTable.this, COLUMNS, e);
 				}
 			}
 		});

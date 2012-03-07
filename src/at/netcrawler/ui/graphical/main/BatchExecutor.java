@@ -1,4 +1,4 @@
-package at.netcrawler.assistant;
+package at.netcrawler.ui.graphical.main;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -21,17 +20,21 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
-import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
+import at.netcrawler.assistant.Configuration;
+import at.netcrawler.assistant.ConfigurationDialog;
+import at.netcrawler.assistant.ConnectionType;
+import at.netcrawler.assistant.Encryption;
+import at.netcrawler.assistant.EncryptionCallback;
 import at.netcrawler.io.UntilLineMatchReader;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -41,11 +44,11 @@ import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
 
 
-public class ConfigurationExecutor extends JFrame {
+public class BatchExecutor extends JFrame {
 	
 	private static final long serialVersionUID = 7767764252271031663L;
 	
-	private static final String TITLE = "Configuration Executor";
+	private static final String TITLE = "Batch Executor";
 	
 	private static final String BATCH_SUFFIX = "!executorEnd";
 	
@@ -54,6 +57,8 @@ public class ConfigurationExecutor extends JFrame {
 	private JLabel port = new JLabel();
 	private JComboBox batches = new JComboBox();
 	private JButton execute = new JButton("Execute");
+	private JToggleButton resultButton = new JToggleButton("Show result");
+	private JTextField result = new JTextField();
 	
 	private JFileChooser fileChooser = new JFileChooser();
 	
@@ -62,7 +67,15 @@ public class ConfigurationExecutor extends JFrame {
 	private ConnectionBuilder connectionFactory = new ConnectionBuilder(
 			new LocalTelnetGateway(), new LocalSSHGateway());
 	
-	public ConfigurationExecutor() {
+	public BatchExecutor(Configuration configuration) {
+		this();
+
+		setEnabledAll(true);
+
+		setConfiguration(configuration);
+	}
+	
+	public BatchExecutor() {
 		setTitle(TITLE);
 		
 		JPanel panel = new JPanel();
@@ -71,6 +84,9 @@ public class ConfigurationExecutor extends JFrame {
 		JLabel portLabel = new JLabel("Port:");
 		JLabel batchLabel = new JLabel("Batch:");
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+		
+		result.setEnabled(false);
+		result.setVisible(false);
 		
 		batches.setPreferredSize(new Dimension(150,
 				batches.getPreferredSize().height));
@@ -111,7 +127,11 @@ public class ConfigurationExecutor extends JFrame {
 						)
 				)
 				.addComponent(separator)
-				.addComponent(execute, Alignment.TRAILING)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+						.addComponent(resultButton)
+						.addComponent(execute)
+				)
+				.addComponent(result, Alignment.TRAILING)
 		);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -136,7 +156,11 @@ public class ConfigurationExecutor extends JFrame {
 				.addComponent(separator, GroupLayout.PREFERRED_SIZE,
 						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addGap(10)
-				.addComponent(execute)
+				.addGroup(layout.createParallelGroup()
+						.addComponent(resultButton)
+						.addComponent(execute)
+				)
+				.addComponent(result)
 		);
 		//@formatter:on
 		
@@ -158,6 +182,15 @@ public class ConfigurationExecutor extends JFrame {
 		file.addSeparator();
 		file.add(exit);
 		
+		resultButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				result.setVisible(resultButton.isSelected());
+				
+				validate();
+				pack();
+			}
+		});
+		
 		open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doOpen();
@@ -166,7 +199,7 @@ public class ConfigurationExecutor extends JFrame {
 		
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConfigurationExecutor.this.dispose();
+				BatchExecutor.this.dispose();
 			}
 		});
 		
@@ -209,13 +242,11 @@ public class ConfigurationExecutor extends JFrame {
 		configuration.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
 				return ConfigurationDialog
-						.showDecryptionDialog(ConfigurationExecutor.this);
+						.showDecryptionDialog(BatchExecutor.this);
 			}
 		});
 		
 		setConfiguration(configuration);
-		
-		setEnabled(true);
 	}
 	
 	private void execute() throws IOException {
@@ -256,7 +287,8 @@ public class ConfigurationExecutor extends JFrame {
 		Reader reader = new FluidInputStreamReader(inputStream);
 		reader = new UntilLineMatchReader(reader, endPattern);
 		
-		StreamUtil.flush(reader);
+		String output = StreamUtil.read(reader);
+		result.setText(output);
 		
 		cli.close();
 	}
@@ -273,15 +305,4 @@ public class ConfigurationExecutor extends JFrame {
 			batches.addItem(batchName);
 		}
 	}
-	
-	public static void main(String[] args) throws Throwable {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		JOptionPane.setDefaultLocale(Locale.US);
-		
-		ConfigurationExecutor configurationExecutor = new ConfigurationExecutor();
-		JFrameUtil.centerFrame(configurationExecutor);
-		configurationExecutor.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		configurationExecutor.setVisible(true);
-	}
-	
 }

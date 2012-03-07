@@ -104,7 +104,7 @@ public class GUI extends JFrame {
 		JMenuItem crawlItem = new JMenuItem("Crawl...");
 		JMenuItem loadItem = new JMenuItem("Load");
 		saveItem = new JMenuItem("Save");
-		JMenuItem closeItem = new JMenuItem("Close");
+		JMenuItem closeItem = new JMenuItem("Exit");
 		JMenuItem toggleViewItem = new JMenuItem("Toggle view");
 		
 		saveItem.setEnabled(false);

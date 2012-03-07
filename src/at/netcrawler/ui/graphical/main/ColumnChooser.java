@@ -1,6 +1,5 @@
 package at.netcrawler.ui.graphical.main;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -13,19 +12,20 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 @SuppressWarnings("serial")
 public class ColumnChooser extends JPopupMenu {
 	
-	private final TableColumnModel columnModel;
+	private final JTable table;
 
-	public ColumnChooser(Component parent, Collection<String> columns, TableColumnModel columnModel, MouseEvent event) {
-		this.columnModel = columnModel;
+	public ColumnChooser(JTable table, Collection<String> columns, MouseEvent event) {
+		this.table = table;
 		
 		List<String> visibleColumns = new LinkedList<String>();
-		Enumeration<TableColumn> temp = columnModel.getColumns();
+		Enumeration<TableColumn> temp = table.getColumnModel().getColumns();
 		while (temp.hasMoreElements()) {
 			visibleColumns.add((String) temp.nextElement().getHeaderValue());
 		}
@@ -43,7 +43,7 @@ public class ColumnChooser extends JPopupMenu {
 			}
 		});
 		
-		show(parent, event.getX(), event.getY());
+		show(table, event.getX(), event.getY());
 	}
 	
 	private void hideMenu() {
@@ -58,12 +58,15 @@ public class ColumnChooser extends JPopupMenu {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					columnModel.removeColumn(columnModel.getColumn(columnModel.getColumnIndex(column)));
-				} catch (IllegalArgumentException e) {
-					TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
-					tableColumn.setHeaderValue(column);
-					columnModel.addColumn(tableColumn);
+				TableColumnModel columnModel = table.getColumnModel();
+				synchronized (columnModel) {
+					try {
+						columnModel.removeColumn(columnModel.getColumn(columnModel.getColumnIndex(column)));
+					} catch (IllegalArgumentException e) {
+						TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
+						tableColumn.setHeaderValue(column);
+						columnModel.addColumn(tableColumn);
+					}
 				}
 				
 				hideMenu();

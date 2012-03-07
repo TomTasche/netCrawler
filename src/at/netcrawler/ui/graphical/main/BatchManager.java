@@ -7,12 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -31,10 +26,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.CloseableTabbedPane;
-import at.andiwand.library.io.FluidInputStreamReader;
-import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.assistant.Configuration;
 import at.netcrawler.assistant.ConfigurationDialog;
@@ -42,17 +35,6 @@ import at.netcrawler.assistant.ConnectionType;
 import at.netcrawler.assistant.Encryption;
 import at.netcrawler.assistant.EncryptionBag;
 import at.netcrawler.assistant.EncryptionCallback;
-import at.netcrawler.io.AfterLineMatchReader;
-import at.netcrawler.io.FilterFirstLineReader;
-import at.netcrawler.io.FilterLastLineReader;
-import at.netcrawler.io.UntilLineMatchReader;
-import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.ssh.LocalSSHConnection;
-import at.netcrawler.network.connection.ssh.SSHSettings;
-import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetSettings;
-import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.TopologyDevice;
 
 
@@ -60,7 +42,7 @@ public class BatchManager extends JFrame {
 	
 	private static final long serialVersionUID = 4174046294656269705L;
 	
-	private static final String TITLE = "BatchMan";
+	private static final String TITLE = "Batch Manager";
 	
 	private JTextField addressField = new JTextField();
 	private JComboBox connectionsCombo = new JComboBox(ConnectionType.values());
@@ -76,22 +58,19 @@ public class BatchManager extends JFrame {
 	
 	private EncryptionBag encryptionBag;
 	
-	@SuppressWarnings("unchecked")
 	public BatchManager(TopologyDevice device) {
 		this();
 		
-		NetworkDevice networkDevice = device.getNetworkDevice();
-		Set<String> addresses = (Set<String>) networkDevice.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
-		if (addresses != null) {
-			String address = addresses.iterator().next();
-			addressField.setText(address);
-		}
-		
-		// TODO:
-		// connectionsCombo.setSelectedIndex();
-		// portField.setText();
-		// usernameField.setText();
-		// passwordField.setText();
+//		NetworkDevice networkDevice = device.getNetworkDevice();
+//
+//		Configuration configuration = new Configuration();
+//		configuration.setAddress();
+//		configuration.setConnection();
+//		configuration.setPort();
+//		configuration.setUsername();
+//		configuration.setPassword();
+//		
+//		setConfiguration(configuration);
 	}
 	
 	public BatchManager() {
@@ -114,7 +93,7 @@ public class BatchManager extends JFrame {
 		
 		JPanel panel = new JPanel();
 		JButton batchAdd = new JButton("Add");
-		JButton choose = new JButton("Choose batch");
+		JButton choose = new JButton("Choose file...");
 		JButton execute = new JButton("Execute");
 		
 		GroupLayout layout = new GroupLayout(panel);
@@ -209,11 +188,7 @@ public class BatchManager extends JFrame {
 		
 		execute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					doExecute();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				doExecute();
 			}
 		});
 		
@@ -444,75 +419,11 @@ public class BatchManager extends JFrame {
 		if (activeFile == null) activeFile = tmp;
 	}
 	
-	private void doExecute() throws IOException {
-		CommandLineInterface cli;
-		
-		IPv4Address ipAddress = new IPv4Address(addressField.getText());
-		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
-
-		String batch = ((JTextField) ((JScrollPane) batchTabbedPane.getSelectedComponent()).getViewport().getView()).getText();;
-		int port = Integer.parseInt(portField.getText());
-		String username = usernameField.getText();
-		String password = new String(passwordField.getPassword());
-		if (connectionsCombo.getSelectedIndex() == 1 || connectionsCombo.getSelectedIndex() == 2) {
-			SSHSettings settings = new SSHSettings();
-			settings.setVersion(SSHVersion.VERSION2);
-			settings.setVersion(connectionsCombo.getSelectedIndex() == 1 ? SSHVersion.VERSION1
-					: SSHVersion.VERSION2);
-			settings.setPort(port);
-			settings.setUsername(username);
-			settings.setPassword(password);
-			
-			LocalSSHConnection sshConsoleConnection = new LocalSSHConnection(
-					accessor, settings);
-			cli = sshConsoleConnection;
-		} else if (connectionsCombo.getSelectedIndex() == 0) {
-			TelnetSettings settings = new TelnetSettings();
-			settings.setPort(port);
-			
-			LocalTelnetConnection telnetConnection = new LocalTelnetConnection(
-					accessor, settings);
-			cli = telnetConnection;
-			
-			OutputStream outputStream = cli.getOutputStream();
-			
-			if (!username.isEmpty()) {
-				outputStream.write(username.getBytes());
-				outputStream.write("\n".getBytes());
-				outputStream.write(password.getBytes());
-				outputStream.write("\n".getBytes());
-			} else if (!password.isEmpty()) {
-				outputStream.write(password.getBytes());
-				outputStream.write("\n".getBytes());
-			}
-		} else {
-			throw new IllegalStateException();
-		}
-		
-		InputStream inputStream = cli.getInputStream();
-		OutputStream outputStream = cli.getOutputStream();
-		
-		String start = "!-start-";
-		Pattern startPattern = Pattern.compile(".+" + Pattern.quote(start));
-		
-		String end = "!-end-";
-		Pattern endPattern = Pattern.compile(".+" + Pattern.quote(end));
-		
-		outputStream.write((start + "\n" + batch + "\n" + end + "\n")
-				.getBytes());
-		outputStream.flush();
-		
-		Reader reader = new FluidInputStreamReader(inputStream);
-		reader = new AfterLineMatchReader(reader, startPattern);
-		reader = new UntilLineMatchReader(reader, endPattern);
-		reader = new FilterFirstLineReader(reader);
-		reader = new FilterLastLineReader(reader);
-		
-		String result = StreamUtil.read(reader);
-		
-		cli.close();
-		
-		System.out.println(result);
+	private void doExecute() {
+		BatchExecutor executor = new BatchExecutor(getConfiguration());
+		JFrameUtil.centerFrame(executor);
+		executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		executor.setVisible(true);
 	}
 	
 	private Configuration getConfiguration() {

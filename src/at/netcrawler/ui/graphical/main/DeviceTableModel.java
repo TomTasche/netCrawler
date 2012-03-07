@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -80,11 +81,13 @@ public class DeviceTableModel extends AbstractTableModel implements GraphListene
 		return Collections.unmodifiableCollection(ACCESSOR_FOR_NAME.keySet());
 	}
 	
+	private final JTable table;
 	private final TableColumnModel columnModel;
 	private List<TopologyDevice> devices;
 	
-	public DeviceTableModel(TableColumnModel columnModel) {
-		this.columnModel = columnModel;
+	public DeviceTableModel(JTable table) {
+		this.table = table;
+		this.columnModel = table.getColumnModel();
 		this.devices = new ArrayList<TopologyDevice>();
 	}
 	
@@ -101,7 +104,9 @@ public class DeviceTableModel extends AbstractTableModel implements GraphListene
 	
 	@Override
 	public int getColumnCount() {
-		return columnModel.getColumnCount();
+		synchronized (columnModel) {
+			return columnModel.getColumnCount();
+		}
 	}
 	
 	@Override
@@ -131,11 +136,15 @@ public class DeviceTableModel extends AbstractTableModel implements GraphListene
 	
 	@Override
 	public synchronized Object getValueAt(int arg0, int arg1) {
-		//		NetworkDevice device = devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
+		// NetworkDevice device = devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
 		NetworkDevice device = devices.get(arg0).getNetworkDevice();
 		
-		//		String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
-		String column = (String) columnModel.getColumn(arg1).getHeaderValue();
+		// String column = (String) columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
+		String column;
+		synchronized (columnModel) {
+			column = (String) columnModel.getColumn(arg1).getHeaderValue();
+		}
+		
 		if (ACCESSOR_FOR_NAME.containsKey(column)) {
 			return ACCESSOR_FOR_NAME.get(column).get(device);
 		} else {
