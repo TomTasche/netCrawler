@@ -2,12 +2,15 @@ package at.netcrawler.ui.graphical.main;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import at.andiwand.library.util.comparator.ObjectStringComperator;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
 
@@ -15,10 +18,12 @@ import at.netcrawler.network.topology.TopologyDevice;
 @SuppressWarnings("serial")
 public class DeviceTable extends JTable {
 	
-	private static final Collection<String> COLUMNS;
+	private static final List<String> COLUMNS;
 	
 	static {
-		COLUMNS = DeviceTableModel.getColumnNames();
+		List<String> columns = new ArrayList<String>(DeviceTableModel.getColumnNames());
+		Collections.sort(columns, new ObjectStringComperator());
+		COLUMNS = Collections.unmodifiableList(columns);
 	}
 	
 	private final DeviceTableModel model;
