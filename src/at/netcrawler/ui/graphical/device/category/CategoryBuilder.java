@@ -2,9 +2,13 @@ package at.netcrawler.ui.graphical.device.category;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -13,36 +17,67 @@ import javax.swing.JTextField;
 
 public class CategoryBuilder {
 	
-	JPanel jPanel;
+	private static final Insets DEFAULT_INSETS = new Insets(15, 5, 5, 5);
 	
+	JPanel panel;
 	int rows;
 	
 	public CategoryBuilder() {
-		jPanel = new JPanel();
-		jPanel.setLayout(new java.awt.GridBagLayout());
+		panel = new JPanel();
+		panel.setLayout(new java.awt.GridBagLayout());
 	}
 	
 	public void addTextRow(String name, Object data) {
+		addTextRow(name, data, false, null);
+	}
+	
+	public void addTextRow(String name, Object data, boolean editable, final CategoryCallback callback) {
 		if (data == null) return;
 		
-		JLabel jLabel = new javax.swing.JLabel();
-		JTextField jTextField = new javax.swing.JTextField();
+		JLabel label = new JLabel();
+		final JTextField textField = new JTextField();
+		final JButton editButton = new JButton();
 		
-		jLabel.setText(name + ":");
+		label.setText(name + ":");
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
-				jLabel, gridBagConstraints);
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
+				label, gridBagConstraints);
 		
-		jTextField.setText(data.toString());
+		textField.setText(data.toString());
+		textField.setEnabled(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
-				jTextField, gridBagConstraints);
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
+				textField, gridBagConstraints);
+		
+		if (editable) {
+			editButton.setText("E");
+			gridBagConstraints = new java.awt.GridBagConstraints();
+			gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+			gridBagConstraints.gridy = rows;
+			gridBagConstraints.insets = DEFAULT_INSETS;
+			panel.add(
+					editButton, gridBagConstraints);
+			editButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					boolean enabled = textField.isEnabled();
+					
+					editButton.setText(enabled ? "S" : "E");
+					textField.setEnabled(!enabled);
+					
+					if (enabled) callback.save(textField.getText());
+				}
+			});
+		}
 		
 		rows++;
 	}
@@ -58,7 +93,8 @@ public class CategoryBuilder {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
 				jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -66,7 +102,8 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
 				jList, gridBagConstraints);
 		
 		rows++;
@@ -81,7 +118,8 @@ public class CategoryBuilder {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
 				jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -89,19 +127,24 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
-		jPanel.add(
+		gridBagConstraints.insets = DEFAULT_INSETS;
+		panel.add(
 				data, gridBagConstraints);
 		
 		rows++;
 	}
 	
 	public JPanel build() {
-		if (rows == 0) return jPanel;
+		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.1;
+		gridBagConstraints.weighty = 0.1;
+		gridBagConstraints.gridy = rows;
+		gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+		panel.add(
+				new JPanel(), gridBagConstraints);
 		
-		// Border border = BorderFactory.createLineBorder(Color.DARK_GRAY);
-		// jPanel.setBorder(border);
-		
-		return jPanel;
+		return panel;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -119,5 +162,10 @@ public class CategoryBuilder {
 		}
 		
 		return array;
+	}
+	
+	public static interface CategoryCallback {
+		
+		public void save(Object value);
 	}
 }

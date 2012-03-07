@@ -6,7 +6,8 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.util.collections.CollectionUtil;
 import at.netcrawler.network.topology.HashTopology;
-import at.netcrawler.ui.graphical.main.GUI;
+import at.netcrawler.ui.graphical.GUI;
+
 
 public class Launcher {
 	
@@ -14,10 +15,12 @@ public class Launcher {
 		Set<String> arguments = CollectionUtil.arrayToHashSet(args);
 		
 		if (arguments.contains("nogui")) {
-			// TODO: start cmd-interface and http-server for third-party interaction and automation
+			// TODO: start cmd-interface and http-server for third-party
+			// interaction and automation
 		} else {
 			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				UIManager.setLookAndFeel(UIManager
+						.getSystemLookAndFeelClassName());
 			} catch (Exception e) {
 				System.out.println("Couldn't apply system look and feel");
 			}

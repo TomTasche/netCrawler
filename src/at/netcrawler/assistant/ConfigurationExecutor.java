@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import at.andiwand.library.component.JFrameUtil;
-import at.netcrawler.ui.graphical.main.BatchExecutor;
+import at.netcrawler.ui.graphical.BatchExecutor;
 
 public class ConfigurationExecutor {
 	
