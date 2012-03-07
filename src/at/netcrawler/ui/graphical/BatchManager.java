@@ -61,16 +61,16 @@ public class BatchManager extends JFrame {
 	public BatchManager(TopologyDevice device) {
 		this();
 		
-//		NetworkDevice networkDevice = device.getNetworkDevice();
-//
-//		Configuration configuration = new Configuration();
-//		configuration.setAddress();
-//		configuration.setConnection();
-//		configuration.setPort();
-//		configuration.setUsername();
-//		configuration.setPassword();
-//		
-//		setConfiguration(configuration);
+		//		NetworkDevice networkDevice = device.getNetworkDevice();
+		//
+		//		Configuration configuration = new Configuration();
+		//		configuration.setAddress();
+		//		configuration.setConnection();
+		//		configuration.setPort();
+		//		configuration.setUsername();
+		//		configuration.setPassword();
+		//		
+		//		setConfiguration(configuration);
 	}
 	
 	public BatchManager() {
@@ -111,64 +111,64 @@ public class BatchManager extends JFrame {
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup()
-							.addComponent(ipLabel)
-							.addComponent(connectionLabel)
-							.addComponent(portLabel)
-							.addComponent(usernameLabel)
-							.addComponent(passwordLabel)
-							.addComponent(batchLabel)
-					)
-					.addGroup(layout.createParallelGroup()
-							.addComponent(addressField)
-							.addComponent(connectionsCombo)
-							.addComponent(portField)
-							.addComponent(usernameField)
-							.addComponent(passwordField)
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(batchNewNameField)
-									.addComponent(batchAdd)
-							)
-					)
-				)
-				.addComponent(batchTabbedPane)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-						.addComponent(execute)
-						.addComponent(choose)
-				)
-		);
+						.addGroup(layout.createParallelGroup()
+								.addComponent(ipLabel)
+								.addComponent(connectionLabel)
+								.addComponent(portLabel)
+								.addComponent(usernameLabel)
+								.addComponent(passwordLabel)
+								.addComponent(batchLabel)
+								)
+								.addGroup(layout.createParallelGroup()
+										.addComponent(addressField)
+										.addComponent(connectionsCombo)
+										.addComponent(portField)
+										.addComponent(usernameField)
+										.addComponent(passwordField)
+										.addGroup(layout.createSequentialGroup()
+												.addComponent(batchNewNameField)
+												.addComponent(batchAdd)
+												)
+										)
+						)
+						.addComponent(batchTabbedPane)
+						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+								.addComponent(execute)
+								.addComponent(choose)
+								)
+				);
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ipLabel)
 						.addComponent(addressField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(connectionLabel)
-						.addComponent(connectionsCombo)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(portLabel)
-						.addComponent(portField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(usernameLabel)
-						.addComponent(usernameField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(passwordLabel)
-						.addComponent(passwordField)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(batchLabel)
-						.addComponent(batchNewNameField)
-						.addComponent(batchAdd)
-				)
-				.addComponent(batchTabbedPane)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(execute)
-						.addComponent(choose)
-				)
-		);
+						)
+						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(connectionLabel)
+								.addComponent(connectionsCombo)
+								)
+								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(portLabel)
+										.addComponent(portField)
+										)
+										.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(usernameLabel)
+												.addComponent(usernameField)
+												)
+												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+														.addComponent(passwordLabel)
+														.addComponent(passwordField)
+														)
+														.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+																.addComponent(batchLabel)
+																.addComponent(batchNewNameField)
+																.addComponent(batchAdd)
+																)
+																.addComponent(batchTabbedPane)
+																.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+																		.addComponent(execute)
+																		.addComponent(choose)
+																		)
+				);
 		//@formatter:on
 		
 		connectionsCombo.addActionListener(new ActionListener() {
@@ -399,9 +399,17 @@ public class BatchManager extends JFrame {
 				if (encryptionBag == null) return;
 			}
 			
-			Configuration configuration = getConfiguration();
-			configuration.writeToJsonFile(activeFile, encryptionBag
-					.getEncryption(), encryptionBag.getPassword());
+			Configuration[] configurations = getConfigurations();
+			if (configurations.length == 0) {
+				configurations[0].writeToJsonFile(activeFile, encryptionBag
+						.getEncryption(), encryptionBag.getPassword());
+			} else {
+				for (int i = 0; i < configurations.length; i++) {
+					File file = new File(activeFile.getParent() + File.separatorChar + i + "_" + activeFile.getName());
+					configurations[0].writeToJsonFile(file, encryptionBag
+							.getEncryption(), encryptionBag.getPassword());
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);
@@ -420,30 +428,38 @@ public class BatchManager extends JFrame {
 	}
 	
 	private void doExecute() {
-		BatchExecutor executor = new BatchExecutor(getConfiguration());
-		JFrameUtil.centerFrame(executor);
-		executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		executor.setVisible(true);
+		for (Configuration configuration : getConfigurations()) {
+			BatchExecutor executor = new BatchExecutor(configuration);
+			JFrameUtil.centerFrame(executor);
+			executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			executor.setVisible(true);
+		}
 	}
 	
-	private Configuration getConfiguration() {
-		Configuration configuration = new Configuration();
-		
-		configuration.setAddress(new IPv4Address(addressField.getText()));
-		configuration.setConnection((ConnectionType) connectionsCombo
-				.getSelectedItem());
-		configuration.setPort(Integer.parseInt(portField.getText()));
-		configuration.setUsername(usernameField.getText());
-		configuration.setPassword(new String(passwordField.getPassword()));
-		
-		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
-			configuration.putBatch(batchTabbedPane.getTitleAt(i),
-					((JTextArea) ((JScrollPane) batchTabbedPane
-							.getComponentAt(i)).getViewport().getView())
-							.getText());
+	private Configuration[] getConfigurations() {
+		String[] addresses = addressField.getText().split(";");
+		Configuration[] configurations = new Configuration[addresses.length];
+		for (int i = 0; i < addresses.length; i++) {
+			Configuration configuration = new Configuration();
+			
+			configuration.setAddress(new IPv4Address(addresses[i]));
+			configuration.setConnection((ConnectionType) connectionsCombo
+					.getSelectedItem());
+			configuration.setPort(Integer.parseInt(portField.getText()));
+			configuration.setUsername(usernameField.getText());
+			configuration.setPassword(new String(passwordField.getPassword()));
+			
+			for (int j = 0; j < batchTabbedPane.getTabCount(); j++) {
+				configuration.putBatch(batchTabbedPane.getTitleAt(j),
+						((JTextArea) ((JScrollPane) batchTabbedPane
+								.getComponentAt(j)).getViewport().getView())
+								.getText());
+			}
+			
+			configurations[i] = configuration;
 		}
 		
-		return configuration;
+		return configurations;
 	}
 	
 	private void setConfiguration(Configuration configuration) {
