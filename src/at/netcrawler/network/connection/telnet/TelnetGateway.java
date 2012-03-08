@@ -7,7 +7,7 @@ import at.netcrawler.network.connection.TCPIPConnectionGateway;
 
 
 public abstract class TelnetGateway extends
-		TCPIPConnectionGateway<TelnetSettings> {
+		TCPIPConnectionGateway<TelnetConnection, TelnetSettings> {
 	
 	@Override
 	public final Class<TelnetConnection> getConnectionClass() {

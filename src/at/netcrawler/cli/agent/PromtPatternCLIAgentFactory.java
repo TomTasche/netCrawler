@@ -5,17 +5,13 @@ import java.io.IOException;
 import at.andiwand.library.cli.CommandLineInterface;
 
 
-public abstract class PromtPatternCLIAgentFactory<S extends PromtPatternCLIAgentSettings> extends
-		GenericCLIAgentFactory<S> {
+public abstract class PromtPatternCLIAgentFactory<A extends PromtPatternCLIAgent, S extends PromtPatternCLIAgentSettings> extends
+		GenericCLIAgentFactory<A, S> {
 	
-	public PromtPatternCLIAgentFactory(Class<S> settingsClass) {
-		super(settingsClass);
-	}
+	protected abstract A createAgentGenericImpl(CommandLineInterface cli,
+			S settings) throws IOException;
 	
-	protected abstract PromtPatternCLIAgent createAgentGenericImpl(
-			CommandLineInterface cli, S settings) throws IOException;
-	
-	protected abstract PromtPatternCLIAgent createAgentGenericImpl(
-			CLISocket socket, S settings) throws IOException;
+	protected abstract A createAgentGenericImpl(CLISocket socket, S settings)
+			throws IOException;
 	
 }

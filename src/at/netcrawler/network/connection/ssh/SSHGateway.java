@@ -6,7 +6,8 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.TCPIPConnectionGateway;
 
 
-public abstract class SSHGateway extends TCPIPConnectionGateway<SSHSettings> {
+public abstract class SSHGateway extends
+		TCPIPConnectionGateway<SSHConnection, SSHSettings> {
 	
 	@Override
 	public final Class<SSHConnection> getConnectionClass() {

@@ -6,15 +6,16 @@ import at.andiwand.library.cli.CommandLineInterface;
 
 
 public class CiscoCLIAgentFactory extends
-		PromtPatternCLIAgentFactory<CiscoCLIAgentSettings> {
-	
-	public CiscoCLIAgentFactory() {
-		super(CiscoCLIAgentSettings.class);
-	}
+		PromtPatternCLIAgentFactory<CiscoCLIAgent, CiscoCLIAgentSettings> {
 	
 	@Override
 	public Class<CiscoCLIAgent> getAgentClass() {
 		return CiscoCLIAgent.class;
+	}
+	
+	@Override
+	public Class<CiscoCLIAgentSettings> getSettingsClass() {
+		return CiscoCLIAgentSettings.class;
 	}
 	
 	@Override

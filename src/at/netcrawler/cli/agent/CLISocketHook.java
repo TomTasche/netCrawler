@@ -4,7 +4,8 @@ import java.io.Reader;
 import java.io.Writer;
 
 
-public class CLISocketHook {
+// TODO filter
+public abstract class CLISocketHook {
 	
 	public CLISocket hookSocket(CLISocket socket) {
 		Reader reader = hookReader(socket.getReader());

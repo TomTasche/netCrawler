@@ -6,7 +6,8 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.TCPIPConnectionGateway;
 
 
-public abstract class SNMPGateway extends TCPIPConnectionGateway<SNMPSettings> {
+public abstract class SNMPGateway extends
+		TCPIPConnectionGateway<SNMPConnection, SNMPSettings> {
 	
 	@Override
 	public final Class<SNMPConnection> getConnectionClass() {

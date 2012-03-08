@@ -6,15 +6,16 @@ import at.andiwand.library.cli.CommandLineInterface;
 
 
 public class LinuxCLIAgentFactory extends
-		PromtPatternCLIAgentFactory<LinuxCLIAgentSettings> {
-	
-	public LinuxCLIAgentFactory() {
-		super(LinuxCLIAgentSettings.class);
-	}
+		PromtPatternCLIAgentFactory<LinuxCLIAgent, LinuxCLIAgentSettings> {
 	
 	@Override
 	public Class<LinuxCLIAgent> getAgentClass() {
 		return LinuxCLIAgent.class;
+	}
+	
+	@Override
+	public Class<LinuxCLIAgentSettings> getSettingsClass() {
+		return LinuxCLIAgentSettings.class;
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import at.andiwand.library.util.TypeToken;
-import at.andiwand.library.util.comparator.ObjectStringComperator;
+import at.andiwand.library.util.comparator.ObjectStringComparator;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.model.NetworkModelExtension;
 
@@ -19,7 +19,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 
 
-// TODO: fix generics
 public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 	
 	private static final String EXTENSIONS_PROPERTY = "extensions";
@@ -33,7 +32,7 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 		Map<String, Object> valueMap = new TreeMap<String, Object>(src
 				.getValueMap());
 		Set<Class<?>> extensionClasses = new TreeSet<Class<?>>(
-				new ObjectStringComperator());
+				new ObjectStringComparator());
 		
 		for (NetworkModelExtension extension : src.getExtensions())
 			extensionClasses.add(extension.getClass());
