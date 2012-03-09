@@ -43,23 +43,25 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	
 	@Override
 	public List<SNMPEntry> getBulk(ObjectIdentifier oid) throws IOException {
-		return getBulk(DEFAULT_MAX_REPETITIONS, oid);
+		return getBulk(
+				DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
 	public List<SNMPEntry> getBulk(int maxRepetitions, ObjectIdentifier... oids)
 			throws IOException {
-		return getBulk(0, maxRepetitions, oids);
+		return getBulk(
+				0, maxRepetitions, oids);
 	}
 	
 	@Override
 	public final List<SNMPEntry> getBulk(int nonRepeaters, int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException(
-					"Version 1 doesn't support the GETBULK request!");
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request!");
 		
-		return getBulkImpl(nonRepeaters, maxRepetitions, oids);
+		return getBulkImpl(
+				nonRepeaters, maxRepetitions, oids);
 	}
 	
 	protected abstract List<SNMPEntry> getBulkImpl(int nonRepeaters,
@@ -115,17 +117,18 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	@Override
 	public final List<SNMPEntry> walkBulk(ObjectIdentifier oid)
 			throws IOException {
-		return walkBulk(DEFAULT_MAX_REPETITIONS, oid);
+		return walkBulk(
+				DEFAULT_MAX_REPETITIONS, oid);
 	}
 	
 	@Override
 	public final List<SNMPEntry> walkBulk(int maxRepetitions,
 			ObjectIdentifier oid) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException(
-					"Version 1 doesn't support the GETBULK request!");
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request!");
 		
-		return walkBulkImpl(maxRepetitions, oid);
+		return walkBulkImpl(
+				maxRepetitions, oid);
 	}
 	
 	protected List<SNMPEntry> walkBulkImpl(int maxRepetitions,
@@ -135,16 +138,17 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 		
 		mainLoop:
 		while (true) {
-			List<SNMPEntry> nextBulk = getBulk(maxRepetitions, lastOid);
-			ObjectIdentifier nextOid = nextBulk.get(nextBulk.size() - 1)
-					.getObjectIdentifier();
+			List<SNMPEntry> nextBulk = getBulk(
+					maxRepetitions, lastOid);
+			ObjectIdentifier nextOid = nextBulk.get(
+					nextBulk.size() - 1).getObjectIdentifier();
 			
 			if (!nextOid.startsWith(oid)) {
 				for (int i = 0; i < nextBulk.size() - 1; i++) {
 					SNMPEntry entry = nextBulk.get(i);
 					
-					if (!entry.getObjectIdentifier().startsWith(oid))
-						break mainLoop;
+					if (!entry.getObjectIdentifier().startsWith(
+							oid)) break mainLoop;
 					
 					result.add(entry);
 				}
@@ -185,7 +189,8 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 			
 			ObjectIdentifier[] nextOids = new ObjectIdentifier[columns];
 			for (int i = 0; i < columns; i++) {
-				ObjectIdentifier oid = nextEntries.get(i).getObjectIdentifier();
+				ObjectIdentifier oid = nextEntries.get(
+						i).getObjectIdentifier();
 				if (!oid.startsWith(oids[i])) break mainLoop;
 				
 				nextOids[i] = oid;
@@ -201,17 +206,18 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 	@Override
 	public final List<SNMPEntry[]> walkBulkTable(ObjectIdentifier... oids)
 			throws IOException {
-		return walkBulkTable(DEFAULT_MAX_REPETITIONS, oids);
+		return walkBulkTable(
+				DEFAULT_MAX_REPETITIONS, oids);
 	}
 	
 	@Override
 	public final List<SNMPEntry[]> walkBulkTable(int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
-			throw new UnsupportedOperationException(
-					"Version 1 doesn't support the GETBULK request");
+		if (version == SNMPVersion.VERSION1) throw new UnsupportedOperationException(
+				"Version 1 doesn't support the GETBULK request");
 		
-		return walkBulkTableImpl(maxRepetitions, oids);
+		return walkBulkTableImpl(
+				maxRepetitions, oids);
 	}
 	
 	protected List<SNMPEntry[]> walkBulkTableImpl(int maxRepetitions,
@@ -223,7 +229,8 @@ public abstract class SNMPConnection extends TCPIPDeviceConnection implements
 		
 		mainLoop:
 		while (true) {
-			List<SNMPEntry> nextBulk = getBulk(maxRepetitions, lastOids);
+			List<SNMPEntry> nextBulk = getBulk(
+					maxRepetitions, lastOids);
 			ObjectIdentifier[] nextOids = new ObjectIdentifier[columns];
 			
 			int newRows = 0;

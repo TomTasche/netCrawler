@@ -48,11 +48,13 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected String getIdentication() throws IOException {
-		return executeAndFind(IDENTICATION_COMMAND, IDENTICATION_PATTERN);
+		return executeAndFind(
+				IDENTICATION_COMMAND, IDENTICATION_PATTERN);
 	}
 	
 	protected String getHostname() throws IOException {
-		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN);
+		return executeAndFind(
+				HOSTNAME_COMMAND, HOSTNAME_PATTERN);
 	}
 	
 	protected DeviceSystem getSystem() throws IOException {
@@ -60,11 +62,13 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected String getSystemString() throws IOException {
-		return executeAndFind(SYSTEM_COMMAND, SYSTEM_PATTERN);
+		return executeAndFind(
+				SYSTEM_COMMAND, SYSTEM_PATTERN);
 	}
 	
 	protected long getUptime() throws IOException {
-		String uptime = executeAndFind(UPTIME_COMMAND, UPTIME_PATTERN);
+		String uptime = executeAndFind(
+				UPTIME_COMMAND, UPTIME_PATTERN);
 		return Long.parseLong(uptime);
 	}
 	

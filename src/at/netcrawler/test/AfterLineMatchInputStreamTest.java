@@ -14,7 +14,8 @@ public class AfterLineMatchInputStreamTest {
 		byte[] buffer = "hallo\nwelt!\n:D".getBytes();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
 		AfterLineMatchInputStream reader = new AfterLineMatchInputStream(
-				inputStream, Pattern.compile("welt!", Pattern.LITERAL));
+				inputStream, Pattern.compile(
+						"welt!", Pattern.LITERAL));
 		
 		System.out.println(StreamUtil.readAsString(reader));
 	}

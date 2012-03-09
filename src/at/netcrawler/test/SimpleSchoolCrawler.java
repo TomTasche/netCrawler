@@ -134,7 +134,8 @@ public class SimpleSchoolCrawler {
 		Logon logon = getLogon();
 		Set<String> usedIDs = new HashSet<String>();
 		
-		crawlDevice(rootAddress, logon, usedIDs);
+		crawlDevice(
+				rootAddress, logon, usedIDs);
 	}
 	
 	public static void crawlDevice(IPv4Address address, Logon logon,
@@ -144,10 +145,12 @@ public class SimpleSchoolCrawler {
 		CommandLineInterface cli = null;
 		
 		for (int i = 0; i < 3; i++) {
-			settings = generateSettings(i, logon);
+			settings = generateSettings(
+					i, logon);
 			
 			try {
-				cli = openConnection(accessor, settings);
+				cli = openConnection(
+						accessor, settings);
 				break;
 			} catch (IOException e) {}
 		}
@@ -197,7 +200,8 @@ public class SimpleSchoolCrawler {
 			
 			IPv4Address neighborAddress = neighborAddressIterator.next();
 			
-			crawlDevice(neighborAddress, logon, usedHostnames);
+			crawlDevice(
+					neighborAddress, logon, usedHostnames);
 		}
 	}
 	
@@ -225,11 +229,13 @@ public class SimpleSchoolCrawler {
 	
 	public static CommandLineInterface openConnection(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
-		if (settings.getClass().equals(SSHSettings.class)) {
+		if (settings.getClass().equals(
+				SSHSettings.class)) {
 			LocalSSHConnection connection = new LocalSSHConnection(
 					(IPDeviceAccessor) accessor, (SSHSettings) settings);
 			return connection;
-		} else if (settings.getClass().equals(TelnetSettings.class)) {
+		} else if (settings.getClass().equals(
+				TelnetSettings.class)) {
 			LocalTelnetConnection connection = new LocalTelnetConnection(
 					(IPDeviceAccessor) accessor, (TelnetSettings) settings);
 			return connection;

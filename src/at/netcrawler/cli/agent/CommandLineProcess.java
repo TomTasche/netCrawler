@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import at.andiwand.library.cli.CommandLineInterface;
 
 
-
 public class CommandLineProcess implements CommandLineInterface {
 	
 	private boolean closed;

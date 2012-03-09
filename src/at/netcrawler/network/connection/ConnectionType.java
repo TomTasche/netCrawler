@@ -10,9 +10,9 @@ import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 public enum ConnectionType {
 	
-	TELNET(TelnetConnection.class, new TelnetSettings()),
-	SSH(SSHConnection.class, new SSHSettings()),
-	SNMP(SNMPConnection.class, new SNMPSettings());
+	TELNET(TelnetConnection.class, new TelnetSettings()), SSH(
+			SSHConnection.class, new SSHSettings()), SNMP(SNMPConnection.class,
+			new SNMPSettings());
 	
 	private final Class<? extends Connection> connectionClass;
 	private final ConnectionSettings settings;

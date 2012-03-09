@@ -48,7 +48,8 @@ public abstract class CommandLineAgent implements CommandLineExecutor {
 	public String executeAndRead(String command) throws IOException {
 		CommandLineInterface process = execute(command);
 		InputStream in = process.getInputStream();
-		return StreamUtil.readAsString(in, charset);
+		return StreamUtil.readAsString(
+				in, charset);
 	}
 	
 }

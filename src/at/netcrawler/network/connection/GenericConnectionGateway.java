@@ -5,8 +5,8 @@ import java.io.IOException;
 import at.netcrawler.network.accessor.DeviceAccessor;
 
 
-public abstract class GenericConnectionGateway<C extends Connection, A extends DeviceAccessor, S extends ConnectionSettings> extends
-		ConnectionGateway {
+public abstract class GenericConnectionGateway<C extends Connection, A extends DeviceAccessor, S extends ConnectionSettings>
+		extends ConnectionGateway {
 	
 	@Override
 	public abstract Class<C> getConnectionClass();
@@ -21,7 +21,8 @@ public abstract class GenericConnectionGateway<C extends Connection, A extends D
 	@SuppressWarnings("unchecked")
 	protected final C openConnectionImpl(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
-		return openConnectionGenericImpl((A) accessor, (S) settings);
+		return openConnectionGenericImpl(
+				(A) accessor, (S) settings);
 	}
 	
 	protected abstract C openConnectionGenericImpl(A accessor, S settings)

@@ -35,7 +35,8 @@ public class Snmp4jTest {
 		pdu.setMaxRepetitions(100);
 		pdu.setNonRepeaters(0);
 		
-		ResponseEvent responseEvent = snmp.send(pdu, target);
+		ResponseEvent responseEvent = snmp.send(
+				pdu, target);
 		PDU response = responseEvent.getResponse();
 		System.out.println(response.size());
 		

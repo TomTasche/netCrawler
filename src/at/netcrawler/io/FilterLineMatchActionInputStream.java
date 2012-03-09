@@ -56,7 +56,8 @@ public abstract class FilterLineMatchActionInputStream extends
 					break;
 				}
 				
-				if (pattern.matcher(buffer).matches()) {
+				if (pattern.matcher(
+						buffer).matches()) {
 					match();
 					buffer = new StringBuilder();
 				}

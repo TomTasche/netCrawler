@@ -3,7 +3,8 @@ package at.netcrawler.cli.agent;
 import java.util.regex.Pattern;
 
 
-public abstract class PromtCommandLineAgentSettings extends CommandLineAgentSettings {
+public abstract class PromtCommandLineAgentSettings extends
+		CommandLineAgentSettings {
 	
 	public static final String DEFAULT_NEW_LINE = "\n";
 	

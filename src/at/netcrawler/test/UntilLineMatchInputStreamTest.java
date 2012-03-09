@@ -14,7 +14,8 @@ public class UntilLineMatchInputStreamTest {
 		byte[] buffer = "hallo\nwelt!\n:D".getBytes();
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
 		UntilLineMatchInputStream reader = new UntilLineMatchInputStream(
-				inputStream, Pattern.compile("welt!", Pattern.LITERAL));
+				inputStream, Pattern.compile(
+						"welt!", Pattern.LITERAL));
 		
 		System.out.println(StreamUtil.readAsString(reader));
 	}

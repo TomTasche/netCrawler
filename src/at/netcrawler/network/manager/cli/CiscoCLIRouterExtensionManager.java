@@ -19,8 +19,8 @@ public class CiscoCLIRouterExtensionManager extends CiscoRouterExtensionManager 
 	
 	@Override
 	protected String getProcessorBoardId() throws IOException {
-		return deviceManager.executeAndFind(PROCESSOR_BOARD_ID_COMMAND,
-				PROCESSOR_BOARD_ID_PATTERN);
+		return deviceManager.executeAndFind(
+				PROCESSOR_BOARD_ID_COMMAND, PROCESSOR_BOARD_ID_PATTERN);
 	}
 	
 	@Override

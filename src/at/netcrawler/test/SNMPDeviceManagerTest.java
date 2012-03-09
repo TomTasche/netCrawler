@@ -3,11 +3,11 @@ package at.netcrawler.test;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
-import at.netcrawler.io.gson.JsonClassAdapter;
-import at.netcrawler.io.gson.JsonIPv4AddressAdapter;
-import at.netcrawler.io.gson.JsonMACAddressAdapter;
-import at.netcrawler.io.gson.JsonNetworkModelAdapter;
-import at.netcrawler.io.gson.JsonSubnetMaskAdapter;
+import at.netcrawler.io.json.JsonClassAdapter;
+import at.netcrawler.io.json.JsonIPv4AddressAdapter;
+import at.netcrawler.io.json.JsonMACAddressAdapter;
+import at.netcrawler.io.json.JsonNetworkModelAdapter;
+import at.netcrawler.io.json.JsonSubnetMaskAdapter;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.snmp.LocalSNMPConnection;
 import at.netcrawler.network.connection.snmp.SNMPSettings;
@@ -52,20 +52,22 @@ public class SNMPDeviceManagerTest {
 		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
-		gsonBuilder.registerTypeAdapter(Class.class, new JsonClassAdapter());
-		gsonBuilder.registerTypeAdapter(MACAddress.class,
-				new JsonMACAddressAdapter());
-		gsonBuilder.registerTypeAdapter(IPv4Address.class,
-				new JsonIPv4AddressAdapter());
-		gsonBuilder.registerTypeAdapter(SubnetMask.class,
-				new JsonSubnetMaskAdapter());
-		gsonBuilder.registerTypeHierarchyAdapter(NetworkModel.class,
-				new JsonNetworkModelAdapter());
+		gsonBuilder.registerTypeAdapter(
+				Class.class, new JsonClassAdapter());
+		gsonBuilder.registerTypeAdapter(
+				MACAddress.class, new JsonMACAddressAdapter());
+		gsonBuilder.registerTypeAdapter(
+				IPv4Address.class, new JsonIPv4AddressAdapter());
+		gsonBuilder.registerTypeAdapter(
+				SubnetMask.class, new JsonSubnetMaskAdapter());
+		gsonBuilder.registerTypeHierarchyAdapter(
+				NetworkModel.class, new JsonNetworkModelAdapter());
 		
 		Gson gson = gsonBuilder.create();
 		String gsonString = gson.toJson(device);
 		System.out.println(gsonString);
-		System.out.println(gson.fromJson(gsonString, NetworkDevice.class));
+		System.out.println(gson.fromJson(
+				gsonString, NetworkDevice.class));
 	}
 	
 }

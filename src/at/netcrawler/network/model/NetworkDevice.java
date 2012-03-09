@@ -60,7 +60,6 @@ public class NetworkDevice extends NetworkModel {
 	static {
 		Map<String, TypeToken<?>> map = new HashMap<String, TypeToken<?>>();
 		map.put(HOSTNAME, HOSTNAME_TYPE);
-		map.put(SYSTEM, SYSTEM_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);
 		map.put(CAPABILITIES, CAPABILITIES_TYPE);
 		map.put(MAJOR_CAPABILITY, MAJOR_CAPABILITY_TYPE);
