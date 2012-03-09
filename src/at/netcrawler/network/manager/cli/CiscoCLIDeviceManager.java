@@ -10,7 +10,7 @@ import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.DeviceSystem;
-import at.netcrawler.cli.agent.PromtPatternCLIAgent;
+import at.netcrawler.cli.agent.PromtCommandLineAgent;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
@@ -39,7 +39,7 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 					| Pattern.CASE_INSENSITIVE, 0);
 	
 	public CiscoCLIDeviceManager(NetworkDevice device,
-			PromtPatternCLIAgent agent) {
+			PromtCommandLineAgent agent) {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoCLIDeviceExtensionManager());

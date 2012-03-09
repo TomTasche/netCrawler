@@ -20,9 +20,4 @@ public class TelnetSettings extends TCPIPConnectionSettings {
 		return new TelnetSettings(this);
 	}
 	
-	@Override
-	public final Class<TelnetConnection> getConnectionClass() {
-		return TelnetConnection.class;
-	}
-	
 }

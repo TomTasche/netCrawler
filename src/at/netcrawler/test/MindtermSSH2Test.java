@@ -53,12 +53,12 @@ public class MindtermSSH2Test {
 		
 		System.out.println(console.command("pwd"));
 		System.out.println(console.waitForExitStatus());
-		System.out.println(StreamUtil.read(console.getStdOut()));
+		System.out.println(StreamUtil.readAsString(console.getStdOut()));
 		System.out.println();
 		
 		System.out.println(console.command("ssh andreas@localhost"));
 		System.out.println(console.waitForExitStatus());
-		System.out.println(StreamUtil.read(console.getStdOut()));
+		System.out.println(StreamUtil.readAsString(console.getStdOut()));
 		System.out.println();
 		
 		console.close();

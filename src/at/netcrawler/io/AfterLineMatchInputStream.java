@@ -1,20 +1,19 @@
 package at.netcrawler.io;
 
-import java.io.FilterReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
-import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.BytewiseFilterInputStream;
 
 
-public class AfterLineMatchReader extends FilterReader {
+public class AfterLineMatchInputStream extends BytewiseFilterInputStream {
 	
 	private final Pattern pattern;
 	private boolean match;
 	private StringBuilder line = new StringBuilder();
 	
-	public AfterLineMatchReader(Reader in, Pattern pattern) {
+	public AfterLineMatchInputStream(InputStream in, Pattern pattern) {
 		super(in);
 		
 		this.pattern = pattern;
@@ -38,11 +37,6 @@ public class AfterLineMatchReader extends FilterReader {
 		}
 		
 		return in.read();
-	}
-	
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return StreamUtil.readCharwise(this, cbuf, off, len);
 	}
 	
 }

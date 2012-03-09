@@ -3,24 +3,24 @@ package at.netcrawler.cli.agent;
 import java.nio.charset.Charset;
 
 
-public abstract class CLIAgentSettings implements Cloneable {
+public abstract class CommandLineAgentSettings implements Cloneable {
 	
 	public static final Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
 	
 	private Charset charset;
 	
-	public CLIAgentSettings() {
+	public CommandLineAgentSettings() {
 		setCharset(DEFAULT_CHARSET);
 	}
 	
-	public CLIAgentSettings(CLIAgentSettings settings) {
+	public CommandLineAgentSettings(CommandLineAgentSettings settings) {
 		charset = settings.charset;
 	}
 	
 	@Override
-	public abstract CLIAgentSettings clone();
+	public abstract CommandLineAgentSettings clone();
 	
-	public abstract Class<? extends CLIAgent> getAgentClass();
+	public abstract Class<? extends CommandLineAgent> getAgentClass();
 	
 	public Charset getCharset() {
 		return charset;

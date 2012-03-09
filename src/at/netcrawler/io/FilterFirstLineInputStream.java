@@ -1,17 +1,16 @@
 package at.netcrawler.io;
 
-import java.io.FilterReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 
-import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.BytewiseFilterInputStream;
 
 
-public class FilterFirstLineReader extends FilterReader {
+public class FilterFirstLineInputStream extends BytewiseFilterInputStream {
 	
 	private boolean filtered;
 	
-	public FilterFirstLineReader(Reader in) {
+	public FilterFirstLineInputStream(InputStream in) {
 		super(in);
 	}
 	
@@ -37,11 +36,6 @@ public class FilterFirstLineReader extends FilterReader {
 		}
 		
 		return read;
-	}
-	
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return StreamUtil.readCharwise(this, cbuf, off, len);
 	}
 	
 }

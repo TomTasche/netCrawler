@@ -9,8 +9,8 @@ import at.netcrawler.network.accessor.DeviceAccessor;
 
 public class ConnectionBuilder {
 	
-	private Map<Class<? extends Connection>, ConnectionGateway> gatewayMap = new HashMap<Class<? extends Connection>, ConnectionGateway>();
-	private Map<Class<? extends Connection>, ConnectionSettings> settingsMap = new HashMap<Class<? extends Connection>, ConnectionSettings>();
+	private Map<ConnectionType, ConnectionGateway> gatewayMap = new HashMap<ConnectionType, ConnectionGateway>();
+	private Map<ConnectionType, ConnectionSettings> settingsMap = new HashMap<ConnectionType, ConnectionSettings>();
 	
 	public ConnectionBuilder() {}
 	
@@ -21,52 +21,44 @@ public class ConnectionBuilder {
 	}
 	
 	public void addGateway(ConnectionGateway gateway) {
-		gatewayMap.put(gateway.getConnectionClass(), gateway);
+		gatewayMap.put(gateway.getConnectionType(), gateway);
 	}
 	
-	public void removeGateway(Class<? extends Connection> connectionClass) {
-		gatewayMap.remove(connectionClass);
+	public void removeGateway(ConnectionType connectionType) {
+		gatewayMap.remove(connectionType);
 	}
 	
 	public void removeGateway(ConnectionGateway gateway) {
-		removeGateway(gateway.getConnectionClass());
+		removeGateway(gateway.getConnectionType());
 	}
 	
-	public void addConnectionSettings(ConnectionSettings settings) {
-		settingsMap.put(settings.getConnectionClass(), settings.clone());
+	public void addConnectionSettings(ConnectionType connectionType,
+			ConnectionSettings settings) {
+		settingsMap.put(connectionType, settings.clone());
 	}
 	
-	public void removeConnectionSettings(
-			Class<? extends Connection> connectionClass) {
-		settingsMap.remove(connectionClass);
-	}
-	
-	public void removeConnectionSettings(ConnectionSettings settings) {
-		removeConnectionSettings(settings.getConnectionClass());
-	}
-	
-	public Connection openConnection(DeviceAccessor accessor,
-			ConnectionSettings settings) throws IOException {
-		return openConnection(accessor, settings, settings.getConnectionClass());
+	public void removeConnectionSettings(ConnectionType connectionType) {
+		settingsMap.remove(connectionType);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <C extends Connection> C openConnection(DeviceAccessor accessor,
-			ConnectionSettings settings, Class<C> connectionClass)
-			throws IOException {
-		ConnectionGateway gateway = gatewayMap.get(connectionClass);
+	public <C extends Connection> C openConnection(
+			ConnectionType connectionType, DeviceAccessor accessor,
+			ConnectionSettings settings) throws IOException {
+		ConnectionGateway gateway = gatewayMap.get(connectionType);
 		if (gateway == null) return null;
 		
 		return (C) gateway.openConnection(accessor, settings);
 	}
 	
-	public <C extends Connection> C openConnection(DeviceAccessor accessor,
-			Class<C> connectionClass) throws IOException {
-		ConnectionSettings settings = settingsMap.get(connectionClass);
+	public <C extends Connection> C openConnection(
+			ConnectionType connectionType, DeviceAccessor accessor)
+			throws IOException {
+		ConnectionSettings settings = settingsMap.get(connectionType);
 		if (settings == null)
-			throw new IllegalArgumentException("No default settings found!");
+			throw new IllegalArgumentException("No default settings found");
 		
-		return openConnection(accessor, settings, connectionClass);
+		return openConnection(connectionType, accessor, settings);
 	}
 	
 }

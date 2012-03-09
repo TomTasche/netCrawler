@@ -5,9 +5,7 @@ public class EncryptionBag {
 	private Encryption encryption;
 	private String password;
 	
-	public EncryptionBag() {
-		
-	}
+	public EncryptionBag() {}
 	
 	public EncryptionBag(Encryption encryption, String password) {
 		this.encryption = encryption;

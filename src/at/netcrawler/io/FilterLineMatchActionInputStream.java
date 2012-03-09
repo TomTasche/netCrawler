@@ -1,27 +1,27 @@
 package at.netcrawler.io;
 
-import java.io.FilterReader;
 import java.io.IOException;
-import java.io.PushbackReader;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.util.regex.Pattern;
 
-import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.BytewiseFilterInputStream;
 
 
-public abstract class FilterLineMatchActionReader extends FilterReader {
+public abstract class FilterLineMatchActionInputStream extends
+		BytewiseFilterInputStream {
 	
-	private final PushbackReader in;
+	private final PushbackInputStream in;
 	private final Pattern pattern;
 	
 	private StringBuilder buffer;
 	private int index;
 	private boolean nextClose;
 	
-	public FilterLineMatchActionReader(Reader in, Pattern pattern) {
-		super(new PushbackReader(in));
+	public FilterLineMatchActionInputStream(InputStream in, Pattern pattern) {
+		super(new PushbackInputStream(in));
 		
-		this.in = (PushbackReader) super.in;
+		this.in = (PushbackInputStream) super.in;
 		this.pattern = pattern;
 	}
 	
@@ -66,11 +66,6 @@ public abstract class FilterLineMatchActionReader extends FilterReader {
 		int read = buffer.charAt(index++);
 		if (index >= buffer.length()) buffer = null;
 		return read;
-	}
-	
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return StreamUtil.readCharwise(this, cbuf, off, len);
 	}
 	
 }

@@ -15,6 +15,12 @@ public class SSHSettings extends TCPIPConnectionSettings {
 		setPort(DEFAULT_PORT);
 	}
 	
+	public SSHSettings(SSHVersion version) {
+		this();
+		
+		this.version = version;
+	}
+	
 	public SSHSettings(SSHSettings settings) {
 		super(settings);
 	}
@@ -22,11 +28,6 @@ public class SSHSettings extends TCPIPConnectionSettings {
 	@Override
 	public SSHSettings clone() {
 		return new SSHSettings(this);
-	}
-	
-	@Override
-	public Class<SSHConnection> getConnectionClass() {
-		return SSHConnection.class;
 	}
 	
 	public SSHVersion getVersion() {

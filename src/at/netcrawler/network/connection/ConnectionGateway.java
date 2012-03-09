@@ -7,6 +7,8 @@ import at.netcrawler.network.accessor.DeviceAccessor;
 
 public abstract class ConnectionGateway {
 	
+	public abstract ConnectionType getConnectionType();
+	
 	public abstract Class<? extends Connection> getConnectionClass();
 	
 	public abstract Class<? extends DeviceAccessor> getAccessorClass();

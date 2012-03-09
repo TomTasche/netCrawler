@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="at/netcrawler/cli/agent/deprecated/|at/netcrawler/network/topology/old/|at/netcrawler/network/connection/snmpOld/|at/netcrawler/gson/JsonNetworkCableAdapter.java|at/netcrawler/gson/JsonNetworkDeviceAdapter.java|at/netcrawler/gson/JsonNetworkInterfaceAdapter.java|at/netcrawler/network/model/DeviceIdenticationBuilder.java|at/netcrawler/network/topology/TopologyDevice2.java" kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/common.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
+	<classpathentry kind="lib" path="lib/common.jar" sourcepath="/common"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gson-1.7.1.jar" sourcepath="lib/gson-1.7.1.zip"/>
 	<classpathentry kind="lib" path="lib/snmp4j-2.0.2.jar" sourcepath="lib/snmp4j-2.0.2.zip"/>

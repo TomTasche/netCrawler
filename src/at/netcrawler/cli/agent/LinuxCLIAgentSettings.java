@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 
-public class LinuxCLIAgentSettings extends PromtPatternCLIAgentSettings {
+public class LinuxCLIAgentSettings extends PromtCommandLineAgentSettings {
 	
 	public static final String DEFAULT_COMMENT_PREFIX = "#";
 	public static final Pattern DEFAULT_PROMT_PATTERN = Pattern.compile(

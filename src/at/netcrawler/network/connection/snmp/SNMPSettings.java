@@ -39,11 +39,6 @@ public class SNMPSettings extends TCPIPConnectionSettings {
 		return new SNMPSettings(this);
 	}
 	
-	@Override
-	public Class<SNMPConnection> getConnectionClass() {
-		return SNMPConnection.class;
-	}
-	
 	public SNMPVersion getVersion() {
 		return version;
 	}

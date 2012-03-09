@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -30,9 +29,8 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
-import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ConnectionBuilder;
@@ -221,7 +219,7 @@ public class ConfigurationExecutor extends JFrame {
 	private void execute() throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(configuration
 				.getAddress());
-		ConnectionSettings settings = configuration.generateSettings();
+		ConnectionSettings settings = ConnectionContainer.getSettings(configuration);
 		
 		CommandLineInterface cli = (CommandLineInterface) connectionFactory
 				.openConnection(accessor, settings);
@@ -229,7 +227,7 @@ public class ConfigurationExecutor extends JFrame {
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();
 		
-		if (configuration.getConnection() == ConnectionType.TELNET) {
+		if (configuration.getConnection() == ConnectionContainer.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
 			
@@ -253,10 +251,9 @@ public class ConfigurationExecutor extends JFrame {
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
 		
-		Reader reader = new FluidInputStreamReader(inputStream);
-		reader = new UntilLineMatchReader(reader, endPattern);
+		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
 		
-		StreamUtil.flush(reader);
+		StreamUtil.flushStream(inputStream);
 		
 		cli.close();
 	}

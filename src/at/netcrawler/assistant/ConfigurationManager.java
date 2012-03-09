@@ -41,7 +41,7 @@ public class ConfigurationManager extends JFrame {
 	private static final String TITLE = "Configuration Manager";
 	
 	private JTextField address = new JTextField();
-	private JComboBox connections = new JComboBox(ConnectionType.values());
+	private JComboBox connections = new JComboBox(ConnectionContainer.values());
 	private JTextField port = new JTextField();
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
@@ -146,7 +146,7 @@ public class ConfigurationManager extends JFrame {
 		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConnectionType connection = (ConnectionType) connections
+				ConnectionContainer connection = (ConnectionContainer) connections
 						.getSelectedItem();
 				
 				port.setText("" + connection.getDefaultPort());
@@ -227,7 +227,7 @@ public class ConfigurationManager extends JFrame {
 	}
 	
 	private void validateConnection() {
-		if (((ConnectionType) connections.getSelectedItem()).legalConnection())
+		if (((ConnectionContainer) connections.getSelectedItem()).legalConnection())
 			return;
 		
 		throw new IllegalArgumentException("Choose connection!");
@@ -390,7 +390,7 @@ public class ConfigurationManager extends JFrame {
 		Configuration configuration = new Configuration();
 		
 		configuration.setAddress(new IPv4Address(address.getText()));
-		configuration.setConnection((ConnectionType) connections
+		configuration.setConnection((ConnectionContainer) connections
 				.getSelectedItem());
 		configuration.setPort(Integer.parseInt(port.getText()));
 		configuration.setUsername(username.getText());

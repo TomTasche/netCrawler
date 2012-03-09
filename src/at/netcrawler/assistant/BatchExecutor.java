@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -27,13 +26,12 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.io.AfterLineMatchReader;
-import at.netcrawler.io.FilterFirstLineReader;
-import at.netcrawler.io.FilterLastLineReader;
-import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.io.AfterLineMatchInputStream;
+import at.netcrawler.io.FilterFirstLineInputStream;
+import at.netcrawler.io.FilterLastLineInputStream;
+import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
@@ -159,7 +157,7 @@ public class BatchExecutor extends JFrame {
 				try {
 					FileInputStream inputStream = new FileInputStream(batchFile);
 					
-					String batch = StreamUtil.read(inputStream);
+					String batch = StreamUtil.readAsString(inputStream);
 					batchArea.setText(batch);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -259,13 +257,12 @@ public class BatchExecutor extends JFrame {
 				.getBytes());
 		outputStream.flush();
 		
-		Reader reader = new FluidInputStreamReader(inputStream);
-		reader = new AfterLineMatchReader(reader, startPattern);
-		reader = new UntilLineMatchReader(reader, endPattern);
-		reader = new FilterFirstLineReader(reader);
-		reader = new FilterLastLineReader(reader);
+		inputStream = new AfterLineMatchInputStream(inputStream, startPattern);
+		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
+		inputStream = new FilterFirstLineInputStream(inputStream);
+		inputStream = new FilterLastLineInputStream(inputStream);
 		
-		String result = StreamUtil.read(reader);
+		String result = StreamUtil.readAsString(inputStream);
 		
 		cli.close();
 		

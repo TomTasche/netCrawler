@@ -16,16 +16,13 @@ import java.util.Map;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.connection.ConnectionSettings;
-import at.netcrawler.network.connection.ssh.SSHSettings;
-import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.connection.telnet.TelnetSettings;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.MalformedJsonException;
 
 
+// TODO: accessor, connection class, connection settings
 public class Configuration {
 	
 	public static final String FILE_SUFFIX = ".conf";
@@ -39,7 +36,7 @@ public class Configuration {
 	}
 	
 	private IPv4Address address;
-	private ConnectionType connection;
+	private ConnectionContainer connection;
 	private int port;
 	private String username;
 	private String password;
@@ -49,7 +46,7 @@ public class Configuration {
 		return address;
 	}
 	
-	public ConnectionType getConnection() {
+	public ConnectionContainer getConnection() {
 		return connection;
 	}
 	
@@ -77,7 +74,7 @@ public class Configuration {
 		this.address = address;
 	}
 	
-	public void setConnection(ConnectionType connection) {
+	public void setConnection(ConnectionContainer connection) {
 		this.connection = connection;
 	}
 	
@@ -161,7 +158,8 @@ public class Configuration {
 		validateJsonName(reader, "ip");
 		address = new IPv4Address(reader.nextString());
 		validateJsonName(reader, "connection");
-		connection = ConnectionType.getConnectionByName(reader.nextString());
+		connection = ConnectionContainer.getContainerByName(reader
+				.nextString());
 		validateJsonName(reader, "port");
 		port = reader.nextInt();
 		validateJsonName(reader, "username");
@@ -247,36 +245,6 @@ public class Configuration {
 		}
 		writer.endArray();
 		writer.endObject();
-	}
-	
-	public ConnectionSettings generateSettings() {
-		ConnectionSettings settings;
-		
-		switch (connection) {
-		case TELNET:
-			TelnetSettings telnetSettings = new TelnetSettings();
-			telnetSettings.setPort(port);
-			
-			settings = telnetSettings;
-			break;
-		case SSH1:
-		case SSH2:
-			SSHSettings sshSettings = new SSHSettings();
-			sshSettings
-					.setVersion((connection == ConnectionType.SSH1) ? SSHVersion.VERSION1
-							: SSHVersion.VERSION2);
-			sshSettings.setPort(port);
-			sshSettings.setUsername(username);
-			sshSettings.setPassword(password);
-			
-			settings = sshSettings;
-			break;
-		
-		default:
-			throw new IllegalStateException("Unreachable section!");
-		}
-		
-		return settings;
 	}
 	
 }

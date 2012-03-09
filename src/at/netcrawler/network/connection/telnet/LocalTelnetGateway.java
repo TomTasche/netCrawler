@@ -5,7 +5,12 @@ import java.io.IOException;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 
 
-public class LocalTelnetGateway extends TelnetGateway {
+public class LocalTelnetGateway extends TelnetGateway<LocalTelnetConnection> {
+	
+	@Override
+	public Class<LocalTelnetConnection> getConnectionClass() {
+		return LocalTelnetConnection.class;
+	}
 	
 	@Override
 	protected LocalTelnetConnection openConnectionGenericImpl(

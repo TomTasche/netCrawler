@@ -50,11 +50,11 @@ public class MindtermSSH1Test {
 				new SSHInteractorAdapter());
 		
 		System.out.println(client.command("pwd", Integer.MAX_VALUE));
-		System.out.println(StreamUtil.read(client.getStdOut()));
+		System.out.println(StreamUtil.readAsString(client.getStdOut()));
 		System.out.println();
 		
 		System.out.println(client.command("ps -ef", Integer.MAX_VALUE));
-		System.out.println(StreamUtil.read(client.getStdOut()));
+		System.out.println(StreamUtil.readAsString(client.getStdOut()));
 		System.out.println();
 		
 		client.close();
