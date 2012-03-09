@@ -6,11 +6,11 @@ import at.andiwand.library.cli.CommandLineInterface;
 
 
 public class LinuxCLIAgentFactory extends
-		PromtCommandLineAgentFactory<LinuxCLIAgent, LinuxCLIAgentSettings> {
+		PromtCommandLineAgentFactory<LinuxCommandLineAgent, LinuxCLIAgentSettings> {
 	
 	@Override
-	public Class<LinuxCLIAgent> getAgentClass() {
-		return LinuxCLIAgent.class;
+	public Class<LinuxCommandLineAgent> getAgentClass() {
+		return LinuxCommandLineAgent.class;
 	}
 	
 	@Override
@@ -19,9 +19,9 @@ public class LinuxCLIAgentFactory extends
 	}
 	
 	@Override
-	protected LinuxCLIAgent createAgentGenericImpl(CommandLineInterface cli,
+	protected LinuxCommandLineAgent createAgentGenericImpl(CommandLineInterface cli,
 			LinuxCLIAgentSettings settings) throws IOException {
-		return new LinuxCLIAgent(cli, settings);
+		return new LinuxCommandLineAgent(cli, settings);
 	}
 	
 }

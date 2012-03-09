@@ -35,7 +35,6 @@ import at.netcrawler.assistant.ConnectionContainer;
 import at.netcrawler.assistant.Encryption;
 import at.netcrawler.assistant.EncryptionBag;
 import at.netcrawler.assistant.EncryptionCallback;
-import at.netcrawler.network.connection.ConnectionType;
 import at.netcrawler.network.topology.TopologyDevice;
 
 
@@ -118,65 +117,51 @@ public class BatchManager extends JFrame {
 								.addComponent(portLabel)
 								.addComponent(usernameLabel)
 								.addComponent(passwordLabel)
-								.addComponent(batchLabel)
-								)
-								.addGroup(layout.createParallelGroup()
-										.addComponent(addressField)
-										.addComponent(connections)
-										.addComponent(portField)
-										.addComponent(usernameField)
-										.addComponent(passwordField)
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(batchNewNameField)
-												.addComponent(batchAdd)
-												)
-										)
-						)
-						.addComponent(batchTabbedPane)
-						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-								.addComponent(execute)
-								.addComponent(choose)
-								)
-				);
+								.addComponent(batchLabel))
+						.addGroup(layout.createParallelGroup()
+								.addComponent(addressField)
+								.addComponent(connections)
+								.addComponent(portField)
+								.addComponent(usernameField)
+								.addComponent(passwordField)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(batchNewNameField)
+										.addComponent(batchAdd))))
+				.addComponent(batchTabbedPane)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+						.addComponent(execute)
+						.addComponent(choose)));
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ipLabel)
-						.addComponent(addressField)
-						)
-						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(connectionLabel)
-								.addComponent(connections)
-								)
-								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(portLabel)
-										.addComponent(portField)
-										)
-										.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-												.addComponent(usernameLabel)
-												.addComponent(usernameField)
-												)
-												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-														.addComponent(passwordLabel)
-														.addComponent(passwordField)
-														)
-														.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-																.addComponent(batchLabel)
-																.addComponent(batchNewNameField)
-																.addComponent(batchAdd)
-																)
-																.addComponent(batchTabbedPane)
-																.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-																		.addComponent(execute)
-																		.addComponent(choose)
-																		)
-				);
+						.addComponent(addressField))
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(connectionLabel)
+						.addComponent(connections))
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(portLabel)
+						.addComponent(portField))
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(usernameLabel)
+						.addComponent(usernameField))
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(passwordLabel)
+						.addComponent(passwordField))
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(batchLabel)
+						.addComponent(batchNewNameField)
+						.addComponent(batchAdd))
+				.addComponent(batchTabbedPane)
+				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(execute)
+						.addComponent(choose)));
 		//@formatter:on
 		
 		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConnectionContainer connection = (ConnectionContainer) connections
 						.getSelectedItem();
-
+				
 				portField.setText("" + connection.getDefaultPort());
 			}
 		});
@@ -262,8 +247,8 @@ public class BatchManager extends JFrame {
 	}
 	
 	private void validateConnection() {
-		if (((ConnectionContainer) connections.getSelectedItem()).legalConnection())
-			return;
+		if (((ConnectionContainer) connections.getSelectedItem())
+				.legalConnection()) return;
 		
 		throw new IllegalArgumentException("Choose connection!");
 	}
@@ -475,7 +460,7 @@ public class BatchManager extends JFrame {
 	
 	private void setConfiguration(Configuration configuration) {
 		addressField.setText(configuration.getAddress().toString());
-		connections.setSelectedItem(configuration.getConnection());
+		connections.setSelectedItem(configuration.getConnectionContainer());
 		portField.setText("" + configuration.getPort());
 		usernameField.setText(configuration.getUsername());
 		passwordField.setText(configuration.getPassword());

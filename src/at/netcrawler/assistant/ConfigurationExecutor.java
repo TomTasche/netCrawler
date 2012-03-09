@@ -6,6 +6,7 @@ import javax.swing.UIManager;
 import at.andiwand.library.component.JFrameUtil;
 import at.netcrawler.ui.graphical.BatchExecutor;
 
+
 public class ConfigurationExecutor {
 	
 	public static void main(String[] args) {
@@ -20,4 +21,5 @@ public class ConfigurationExecutor {
 		JFrameUtil.centerFrame(executor);
 		executor.setVisible(true);
 	}
+	
 }

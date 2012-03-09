@@ -17,8 +17,8 @@ import javax.swing.JTextField;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.CiscoCLIAgent;
-import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
+import at.netcrawler.cli.agent.CiscoCommandLineAgent;
+import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
 import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -157,11 +157,11 @@ public class SimpleSchoolCrawler {
 		
 		if (cli == null) throw new IOException("not able to connect!");
 		
-		CiscoCLIAgentSettings agentSettings = new CiscoCLIAgentSettings();
+		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
 		agentSettings.setLogonUsername(logon.username);
 		agentSettings.setLogonPassword(logon.password);
 		
-		CiscoCLIAgent agent = new CiscoCLIAgent(cli, agentSettings);
+		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(cli, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,

@@ -46,7 +46,7 @@ public class Configuration {
 		return address;
 	}
 	
-	public ConnectionContainer getConnection() {
+	public ConnectionContainer getConnectionContainer() {
 		return connection;
 	}
 	

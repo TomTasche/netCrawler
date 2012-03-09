@@ -31,8 +31,8 @@ public class LinuxCLIAgentSettings extends PromtCommandLineAgentSettings {
 	}
 	
 	@Override
-	public Class<LinuxCLIAgent> getAgentClass() {
-		return LinuxCLIAgent.class;
+	public Class<LinuxCommandLineAgent> getAgentClass() {
+		return LinuxCommandLineAgent.class;
 	}
 	
 	public String getUserPassword() {

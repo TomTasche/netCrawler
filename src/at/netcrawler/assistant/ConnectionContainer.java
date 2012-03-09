@@ -5,6 +5,7 @@ import java.util.Map;
 
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ConnectionType;
+import at.netcrawler.network.connection.TCPIPConnectionSettings;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.TelnetSettings;
@@ -32,7 +33,8 @@ public enum ConnectionContainer {
 	}
 	
 	public static ConnectionSettings getSettings(Configuration configuration) {
-		ConnectionContainer connectionType = configuration.getConnection();
+		ConnectionContainer connectionType = configuration
+				.getConnectionContainer();
 		
 		switch (connectionType) {
 		case TELNET:
@@ -80,6 +82,10 @@ public enum ConnectionContainer {
 	
 	public ConnectionSettings getDefaultSettings() {
 		return defaultSettings;
+	}
+	
+	public int getDefaultPort() {
+		return ((TCPIPConnectionSettings) defaultSettings).getPort();
 	}
 	
 	public boolean legalConnection() {

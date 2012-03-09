@@ -33,13 +33,21 @@ public abstract class CommandLineAgent implements CommandLineExecutor {
 		this.writer = getFilterWriter(new OutputStreamWriter(out, charset));
 	}
 	
-	protected abstract InputStream getFilterInputStream(InputStream in);
+	protected InputStream getFilterInputStream(InputStream in) {
+		return in;
+	}
 	
-	protected abstract OutputStream getFilterOutputStream(OutputStream out);
+	protected OutputStream getFilterOutputStream(OutputStream out) {
+		return out;
+	}
 	
-	protected abstract Reader getFilterReader(Reader reader);
+	protected Reader getFilterReader(Reader reader) {
+		return reader;
+	}
 	
-	protected abstract Writer getFilterWriter(Writer writer);
+	protected Writer getFilterWriter(Writer writer) {
+		return writer;
+	}
 	
 	@Override
 	public abstract CommandLineInterface execute(String command)

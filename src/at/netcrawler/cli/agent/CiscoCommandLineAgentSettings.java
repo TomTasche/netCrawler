@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 
-public class CiscoCLIAgentSettings extends PromtCommandLineAgentSettings {
+public class CiscoCommandLineAgentSettings extends PromtCommandLineAgentSettings {
 	
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 	public static final String DEFAULT_COMMENT_PREFIX = "!";
@@ -32,7 +32,7 @@ public class CiscoCLIAgentSettings extends PromtCommandLineAgentSettings {
 	
 	private String enablePassword;
 	
-	public CiscoCLIAgentSettings() {
+	public CiscoCommandLineAgentSettings() {
 		setCharset(DEFAULT_CHARSET);
 		setCommentPrefix(DEFAULT_COMMENT_PREFIX);
 		setNewLine(DEFAULT_NEW_LINE);
@@ -42,7 +42,7 @@ public class CiscoCLIAgentSettings extends PromtCommandLineAgentSettings {
 		setStatusPrefixes(statusPrefixes);
 	}
 	
-	public CiscoCLIAgentSettings(CiscoCLIAgentSettings settings) {
+	public CiscoCommandLineAgentSettings(CiscoCommandLineAgentSettings settings) {
 		super(settings);
 		
 		logonUsername = settings.logonUsername;
@@ -51,13 +51,13 @@ public class CiscoCLIAgentSettings extends PromtCommandLineAgentSettings {
 	}
 	
 	@Override
-	public CiscoCLIAgentSettings clone() {
-		return new CiscoCLIAgentSettings(this);
+	public CiscoCommandLineAgentSettings clone() {
+		return new CiscoCommandLineAgentSettings(this);
 	}
 	
 	@Override
-	public Class<CiscoCLIAgent> getAgentClass() {
-		return CiscoCLIAgent.class;
+	public Class<CiscoCommandLineAgent> getAgentClass() {
+		return CiscoCommandLineAgent.class;
 	}
 	
 	public String getLogonUsername() {

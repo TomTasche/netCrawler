@@ -19,7 +19,7 @@ public abstract class CLIDeviceManager extends DeviceManager {
 	}
 	
 	protected final String execute(String command) throws IOException {
-		return agent.execute(command);
+		return agent.executeAndRead(command);
 	}
 	
 	protected final String executeAndFind(String command, QuickPattern pattern)

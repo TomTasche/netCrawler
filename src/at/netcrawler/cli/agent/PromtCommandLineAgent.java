@@ -2,7 +2,6 @@ package at.netcrawler.cli.agent;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +11,8 @@ import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.io.UnlimitedPushbackInputStream;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
+import at.netcrawler.io.FilterLastLineInputStream;
+import at.netcrawler.io.UntilLineMatchInputStream;
 
 
 public abstract class PromtCommandLineAgent extends CommandLineAgent {
@@ -19,7 +20,7 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String RANDOM_SEPARATOR = " - ";
 	
-	private static class DefaultProcessFilter extends ProcessFilter {
+	private class DefaultProcessFilter extends ProcessFilter {
 		public DefaultProcessFilter(CommandLineInterface src)
 				throws IOException {
 			super(src);
@@ -27,12 +28,13 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		
 		@Override
 		protected InputStream getFilterInputStream(InputStream in) {
-			return in;
-		}
-		
-		@Override
-		protected OutputStream getFilterOutputStream(OutputStream out) {
-			return out;
+			InputStream result = new UntilLineMatchInputStream(in, promtPattern) {
+				protected void match() {
+					terminate();
+				}
+			};
+			result = new FilterLastLineInputStream(result);
+			return result;
 		}
 	}
 	
@@ -106,8 +108,10 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		flushLine();
 	}
 	
-	protected abstract ProcessFilter getProcessFilter(String command,
-			CommandLineInterface process);
+	protected ProcessFilter getProcessFilter(String command,
+			CommandLineInterface process) throws IOException {
+		return new DefaultProcessFilter(process);
+	}
 	
 	@Override
 	public CommandLineInterface execute(String command) throws IOException {

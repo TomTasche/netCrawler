@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.cli.agent.CiscoCLIAgent;
-import at.netcrawler.cli.agent.CiscoCLIAgentSettings;
+import at.netcrawler.cli.agent.CiscoCommandLineAgent;
+import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
 import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
@@ -39,11 +39,11 @@ public class CiscoCommandLineDeviceManagerTest {
 		LocalSSHConnection connection = new LocalSSHConnection(accessor,
 				settings);
 		
-		CiscoCLIAgentSettings agentSettings = new CiscoCLIAgentSettings();
+		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
 		// agentSettings.setLogonUsername("cisco");
 		// agentSettings.setLogonPassword("cisco");
 		
-		CiscoCLIAgent agent = new CiscoCLIAgent(connection, agentSettings);
+		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection, agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		

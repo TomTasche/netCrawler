@@ -252,15 +252,20 @@ public class BatchExecutor extends JFrame {
 	private void execute() throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(
 				configuration.getAddress());
-		ConnectionSettings settings = ConnectionContainer.getSettings(configuration);
+		ConnectionSettings settings = ConnectionContainer
+				.getSettings(configuration);
 		
+		ConnectionContainer connectionContainer = configuration
+				.getConnectionContainer();
 		CommandLineInterface cli = (CommandLineInterface) connectionFactory
-				.openConnection(accessor, settings);
+				.openConnection(
+						connectionContainer.getConnectionType(), accessor,
+						settings);
 		
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();
 		
-		if (configuration.getConnection() == ConnectionContainer.TELNET) {
+		if (connectionContainer == ConnectionContainer.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
 			
@@ -283,9 +288,9 @@ public class BatchExecutor extends JFrame {
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
-
+		
 		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
-
+		
 		String output = StreamUtil.readAsString(inputStream);
 		result.setText(output);
 		
@@ -296,7 +301,7 @@ public class BatchExecutor extends JFrame {
 		this.configuration = configuration;
 		
 		address.setText(configuration.getAddress().toString());
-		connection.setText(configuration.getConnection().getName());
+		connection.setText(configuration.getConnectionContainer().getName());
 		port.setText("" + configuration.getPort());
 		
 		batches.removeAllItems();
