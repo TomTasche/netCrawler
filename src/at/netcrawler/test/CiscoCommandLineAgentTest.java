@@ -34,7 +34,8 @@ public class CiscoCommandLineAgentTest {
 		
 		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection, agentSettings);
+		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection,
+				agentSettings);
 		System.out.println(agent.execute("show cdp neighbors detail"));
 		
 		connection.close();

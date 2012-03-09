@@ -43,7 +43,8 @@ public class CiscoCommandLineDeviceManagerTest {
 		// agentSettings.setLogonUsername("cisco");
 		// agentSettings.setLogonPassword("cisco");
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection, agentSettings);
+		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(connection,
+				agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		

@@ -91,12 +91,12 @@ public class DeviceTableModel extends AbstractTableModel implements
 		return Collections.unmodifiableCollection(ACCESSOR_FOR_NAME.keySet());
 	}
 	
-//	private final JTable table;
+	// private final JTable table;
 	private final TableColumnModel columnModel;
 	private List<TopologyDevice> devices;
 	
 	public DeviceTableModel(JTable table) {
-//		this.table = table;
+		// this.table = table;
 		this.columnModel = table.getColumnModel();
 		this.devices = new ArrayList<TopologyDevice>();
 	}

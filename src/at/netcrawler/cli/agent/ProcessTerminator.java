@@ -10,8 +10,7 @@ import at.andiwand.library.io.CloseableInputStream;
 import at.andiwand.library.io.CloseableOutputStream;
 
 
-public abstract class ProcessFilter extends
-		FilterCommandLineInterface {
+public abstract class ProcessTerminator extends FilterCommandLineInterface {
 	
 	private CloseableInputStream inCloser;
 	private CloseableOutputStream outCloser;
@@ -19,8 +18,7 @@ public abstract class ProcessFilter extends
 	private final Object lock = new Object();
 	private boolean terminated;
 	
-	public ProcessFilter(CommandLineInterface src)
-			throws IOException {
+	public ProcessTerminator(CommandLineInterface src) throws IOException {
 		super(src);
 		
 		this.inCloser = new CloseableInputStream(in);

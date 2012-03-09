@@ -3,10 +3,12 @@ package at.netcrawler.cli.agent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.io.Writer;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLineInterface;
+import at.andiwand.library.io.UnlimitedPushbackInputStream;
 import at.netcrawler.io.CharPrefixLineFilterInputStream;
 import at.netcrawler.io.FilterLastLineInputStream;
 import at.netcrawler.io.FilterLineMatchActionInputStream;
@@ -42,43 +44,57 @@ public class CiscoCommandLineAgent extends PromtCommandLineAgent {
 		}
 	}
 	
-	private class DefaultProcessFilter extends ProcessFilter {
-		public DefaultProcessFilter(CommandLineInterface src)
-				throws IOException {
+	private static class MoreExecutorInputStream extends
+			FilterLineMatchActionInputStream {
+		private final UnlimitedPushbackInputStream in;
+		private final Writer writer;
+		private final String moreString;
+		
+		public MoreExecutorInputStream(InputStream in, Writer writer,
+				Pattern morePattern, String moreString) {
+			super(in, morePattern);
+			
+			this.in = new UnlimitedPushbackInputStream(in);
+			this.writer = writer;
+			this.moreString = moreString;
+		}
+		
+		@Override
+		protected void match() {
+			try {
+				writer.write(moreString);
+				writer.flush();
+				
+				while (true) {
+					int read = in.read();
+					
+					switch (read) {
+					case -1:
+					case 18:
+					case '\n':
+					case '\r':
+						return;
+					case '\b':
+						in.unread(read);
+						flushBackspace(in);
+						return;
+					}
+				}
+			} catch (IOException e) {}
+		}
+	}
+	
+	private class MoreFilter extends ProcessTerminator {
+		public MoreFilter(CommandLineInterface src) throws IOException {
 			super(src);
 		}
 		
 		@Override
 		protected InputStream getFilterInputStream(InputStream in) {
-			InputStream result = new FilterLineMatchActionInputStream(in,
-					morePattern) {
-				protected void match() {
-					PushbackInputStream in = CiscoCommandLineAgent.this.in;
-					
-					try {
-						writer.write(moreString);
-						writer.flush();
-						
-						while (true) {
-							int read = in.read();
-							
-							switch (read) {
-							case -1:
-							case 18:
-							case '\n':
-							case '\r':
-								return;
-							case '\b':
-								in.unread(read);
-								flushBackspace(in);
-								return;
-							}
-						}
-					} catch (IOException e) {}
-				}
-			};
-			result = new FilterLastLineInputStream(result);
-			return result;
+			in = new MoreExecutorInputStream(in, writer, morePattern,
+					moreString);
+			in = new FilterLastLineInputStream(in);
+			return in;
 		}
 	}
 	
@@ -114,9 +130,9 @@ public class CiscoCommandLineAgent extends PromtCommandLineAgent {
 	}
 	
 	@Override
-	protected ProcessFilter getProcessFilter(String command,
+	protected ProcessTerminator getProcessFilter(String command,
 			CommandLineInterface process) throws IOException {
-		return new DefaultProcessFilter(process);
+		return new MoreFilter(process);
 	}
 	
 }

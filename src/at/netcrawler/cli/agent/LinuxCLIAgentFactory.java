@@ -5,7 +5,8 @@ import java.io.IOException;
 import at.andiwand.library.cli.CommandLineInterface;
 
 
-public class LinuxCLIAgentFactory extends
+public class LinuxCLIAgentFactory
+		extends
 		PromtCommandLineAgentFactory<LinuxCommandLineAgent, LinuxCLIAgentSettings> {
 	
 	@Override
@@ -19,8 +20,9 @@ public class LinuxCLIAgentFactory extends
 	}
 	
 	@Override
-	protected LinuxCommandLineAgent createAgentGenericImpl(CommandLineInterface cli,
-			LinuxCLIAgentSettings settings) throws IOException {
+	protected LinuxCommandLineAgent createAgentGenericImpl(
+			CommandLineInterface cli, LinuxCLIAgentSettings settings)
+			throws IOException {
 		return new LinuxCommandLineAgent(cli, settings);
 	}
 	

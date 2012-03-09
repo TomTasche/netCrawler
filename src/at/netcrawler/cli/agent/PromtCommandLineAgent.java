@@ -20,21 +20,34 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String RANDOM_SEPARATOR = " - ";
 	
-	private class DefaultProcessFilter extends ProcessFilter {
-		public DefaultProcessFilter(CommandLineInterface src)
+	private static class ProcessTerminatorInputStream extends
+			UntilLineMatchInputStream {
+		private final ProcessTerminator processFilter;
+		
+		public ProcessTerminatorInputStream(ProcessTerminator processFilter,
+				InputStream in, Pattern promtPattern) {
+			super(in, promtPattern);
+			
+			this.processFilter = processFilter;
+		}
+		
+		@Override
+		protected void match() {
+			processFilter.terminate();
+		}
+	}
+	
+	private class DefaultProcessTerminator extends ProcessTerminator {
+		public DefaultProcessTerminator(CommandLineInterface src)
 				throws IOException {
 			super(src);
 		}
 		
 		@Override
 		protected InputStream getFilterInputStream(InputStream in) {
-			InputStream result = new UntilLineMatchInputStream(in, promtPattern) {
-				protected void match() {
-					terminate();
-				}
-			};
-			result = new FilterLastLineInputStream(result);
-			return result;
+			in = new ProcessTerminatorInputStream(this, in, promtPattern);
+			in = new FilterLastLineInputStream(in);
+			return in;
 		}
 	}
 	
@@ -45,6 +58,8 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	protected final Pattern promtPattern;
 	protected final String commentPrefix;
 	protected final String newLine;
+	
+	private ProcessTerminator lastProcessFilter;
 	
 	public PromtCommandLineAgent(CommandLineInterface cli,
 			PromtCommandLineAgentSettings settings) throws IOException {
@@ -108,13 +123,26 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		flushLine();
 	}
 	
-	protected ProcessFilter getProcessFilter(String command,
+	protected CommandLineInterface getProcessFilter(String command,
 			CommandLineInterface process) throws IOException {
-		return new DefaultProcessFilter(process);
+		return process;
+	}
+	
+	protected ProcessTerminator getProcessTerminator(String command,
+			CommandLineInterface process) throws IOException {
+		return new DefaultProcessTerminator(process);
 	}
 	
 	@Override
 	public CommandLineInterface execute(String command) throws IOException {
+		if (lastProcessFilter != null) {
+			try {
+				lastProcessFilter.waitFor();
+			} catch (InterruptedException e) {
+				throw new IOException("Termination await was interrupted", e);
+			}
+		}
+		
 		writer.write(command);
 		writer.write(newLine);
 		writer.flush();
@@ -124,7 +152,9 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		CommandLineInterface process = new CommandLineProcess(in, out);
 		process = getProcessFilter(
 				command, process);
-		return process;
+		lastProcessFilter = getProcessTerminator(
+				command, process);
+		return lastProcessFilter;
 	}
 	
 }

@@ -161,7 +161,8 @@ public class SimpleSchoolCrawler {
 		agentSettings.setLogonUsername(logon.username);
 		agentSettings.setLogonPassword(logon.password);
 		
-		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(cli, agentSettings);
+		CiscoCommandLineAgent agent = new CiscoCommandLineAgent(cli,
+				agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
 		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
