@@ -30,31 +30,40 @@ public class CrapGraphLayoutTest {
 		TopologyViewer topologyViewer = new TopologyViewer();
 		topologyViewer.setGraphLayout(new CrapGraphLayout(topologyViewer));
 		topologyViewer.setModel(topology);
-		topologyViewer.addRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		topologyViewer.addRenderingHint(
+				RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		topologyViewer.addRenderingHint(RenderingHints.KEY_RENDERING,
+		topologyViewer.addRenderingHint(
+				RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
 		JScrollPane scrollPane = new JScrollPane(topologyViewer);
 		
 		JFrame frame = new JFrame();
 		frame.add(scrollPane);
-		frame.setSize(400, 400);
+		frame.setSize(
+				400, 400);
 		JFrameUtil.centerFrame(frame);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		
 		NetworkDevice deviceA = new NetworkDevice();
 		NetworkInterface interfaceA = new NetworkInterface();
-		interfaceA.setValue(NetworkInterface.NAME, "eth0");
-		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
-		deviceA.setValue(NetworkDevice.INTERFACES,
+		interfaceA.setValue(
+				NetworkInterface.NAME, "eth0");
+		deviceA.setValue(
+				NetworkDevice.HOSTNAME, "RouterA");
+		deviceA.setValue(
+				NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
 		
 		NetworkDevice deviceB = new NetworkDevice();
 		NetworkInterface interfaceB = new NetworkInterface();
-		interfaceB.setValue(NetworkInterface.NAME, "eth0");
-		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
-		deviceB.setValue(NetworkDevice.INTERFACES,
+		interfaceB.setValue(
+				NetworkInterface.NAME, "eth0");
+		deviceB.setValue(
+				NetworkDevice.HOSTNAME, "RouterB");
+		deviceB.setValue(
+				NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
 		
 		NetworkCable cable = new NetworkCable();
@@ -74,10 +83,12 @@ public class CrapGraphLayoutTest {
 		topology.addEdge(topologyCable);
 		
 		Thread.sleep(2000);
-		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
+		deviceA.setValue(
+				NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
 		
 		Thread.sleep(2000);
-		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
+		deviceB.setValue(
+				NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
 	}
 	
 }

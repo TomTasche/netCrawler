@@ -93,7 +93,8 @@ public class GUI extends JFrame {
 			
 			@Override
 			public boolean accept(File f) {
-				return f.getName().endsWith(".crawl");
+				return f.getName().endsWith(
+						".crawl");
 			}
 		});
 		
@@ -124,7 +125,8 @@ public class GUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println(JsonHelper.getGson().toJson(GUI.this.topology));
+				System.out.println(JsonHelper.getGson().toJson(
+						GUI.this.topology));
 			}
 		});
 		closeItem.addActionListener(new ActionListener() {
@@ -179,7 +181,8 @@ public class GUI extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleMouse(e, (TopologyDevice) e.getSource());
+				handleMouse(
+						e, (TopologyDevice) e.getSource());
 			}
 		});
 		
@@ -194,7 +197,7 @@ public class GUI extends JFrame {
 		
 		statusLabel = new JLabel();
 		statusLabel
-		.setText("Start a new crawl or load an old one using the menu above...");
+				.setText("Start a new crawl or load an old one using the menu above...");
 		
 		add(scrollPane, BorderLayout.CENTER);
 		add(statusLabel, BorderLayout.SOUTH);
@@ -229,9 +232,8 @@ public class GUI extends JFrame {
 	private void close() {
 		if (dontClose
 				&& JOptionPane.showOptionDialog(
-						GUI.this,
-						"Do you really want to close netCrawler?", "",
-						JOptionPane.OK_CANCEL_OPTION,
+						GUI.this, "Do you really want to close netCrawler?",
+						"", JOptionPane.OK_CANCEL_OPTION,
 						JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
 			dispose();
 		} else if (!dontClose) {
@@ -273,8 +275,8 @@ public class GUI extends JFrame {
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException,
-	InstantiationException, IllegalAccessException,
-	UnsupportedLookAndFeelException {
+			InstantiationException, IllegalAccessException,
+			UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		
 		Topology topology = new HashTopology();

@@ -7,6 +7,7 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+
 public class DeviceColumnModel implements TableColumnModel {
 	
 	@Override

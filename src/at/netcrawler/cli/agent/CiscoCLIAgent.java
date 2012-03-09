@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLineInterface;
-import at.netcrawler.io.CharPrefixLineFilterReader;
-import at.netcrawler.io.FilterLastLineReader;
-import at.netcrawler.io.FilterLineMatchActionReader;
+import at.netcrawler.io.CharPrefixLineFilterInputStream;
+import at.netcrawler.io.FilterLastLineInputStream;
+import at.netcrawler.io.FilterLineMatchActionInputStream;
 
 
-public class CiscoCLIAgent extends PromtPatternCLIAgent {
+public class CiscoCLIAgent extends PromtCommandLineAgent {
 	
 	private static void flushBackspace(PushbackReader in) throws IOException {
 		int spaces = 0;
@@ -70,16 +70,16 @@ public class CiscoCLIAgent extends PromtPatternCLIAgent {
 	
 	@Override
 	protected Reader hookReader(Reader reader) {
-		return new CharPrefixLineFilterReader(reader, statusPrefixes);
+		return new CharPrefixLineFilterInputStream(reader, statusPrefixes);
 	}
 	
 	// TODO: improve
 	private void handleLogin(CiscoCLIAgentSettings settings) throws IOException {
 		if (settings != null) {
-			if (settings.getLogonUsername() != null)
-				out.write(settings.getLogonUsername() + newLine);
-			if (settings.getLogonPassword() != null)
-				out.write(settings.getLogonPassword() + newLine);
+			if (settings.getLogonUsername() != null) out.write(settings
+					.getLogonUsername() + newLine);
+			if (settings.getLogonPassword() != null) out.write(settings
+					.getLogonPassword() + newLine);
 		}
 	}
 	
@@ -90,7 +90,8 @@ public class CiscoCLIAgent extends PromtPatternCLIAgent {
 				Reader reader = socket.getReader();
 				final Writer writer = socket.getWriter();
 				
-				reader = new FilterLineMatchActionReader(reader, morePattern) {
+				reader = new FilterLineMatchActionInputStream(reader,
+						morePattern) {
 					protected void match() {
 						try {
 							writer.write(moreString);
@@ -115,7 +116,7 @@ public class CiscoCLIAgent extends PromtPatternCLIAgent {
 					}
 				};
 				
-				reader = new FilterLastLineReader(reader);
+				reader = new FilterLastLineInputStream(reader);
 				
 				return new CLISocket(reader, writer);
 			}

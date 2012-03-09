@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -28,14 +27,13 @@ import javax.swing.LayoutStyle;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
-import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
 import at.netcrawler.assistant.Configuration;
 import at.netcrawler.assistant.ConfigurationDialog;
-import at.netcrawler.assistant.ConnectionType;
+import at.netcrawler.assistant.ConnectionContainer;
 import at.netcrawler.assistant.Encryption;
 import at.netcrawler.assistant.EncryptionCallback;
-import at.netcrawler.io.UntilLineMatchReader;
+import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ConnectionBuilder;
@@ -69,9 +67,9 @@ public class BatchExecutor extends JFrame {
 	
 	public BatchExecutor(Configuration configuration) {
 		this();
-
+		
 		setEnabledAll(true);
-
+		
 		setConfiguration(configuration);
 	}
 	
@@ -99,8 +97,8 @@ public class BatchExecutor extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory()
-						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
+				return f.isDirectory() || f.getName().endsWith(
+						Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -215,8 +213,7 @@ public class BatchExecutor extends JFrame {
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
-			return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
 		
 		try {
 			open(fileChooser.getSelectedFile());
@@ -224,7 +221,8 @@ public class BatchExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
@@ -233,26 +231,28 @@ public class BatchExecutor extends JFrame {
 			execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(file, new EncryptionCallback() {
-			public String getPassword(Encryption encryption) {
-				return ConfigurationDialog
-						.showDecryptionDialog(BatchExecutor.this);
-			}
-		});
+		configuration.readFromJsonFile(
+				file, new EncryptionCallback() {
+					public String getPassword(Encryption encryption) {
+						return ConfigurationDialog
+								.showDecryptionDialog(BatchExecutor.this);
+					}
+				});
 		
 		setConfiguration(configuration);
 	}
 	
 	private void execute() throws IOException {
-		DeviceAccessor accessor = new IPDeviceAccessor(configuration
-				.getAddress());
-		ConnectionSettings settings = configuration.generateSettings();
+		DeviceAccessor accessor = new IPDeviceAccessor(
+				configuration.getAddress());
+		ConnectionSettings settings = ConnectionContainer.getSettings(configuration);
 		
 		CommandLineInterface cli = (CommandLineInterface) connectionFactory
 				.openConnection(accessor, settings);
@@ -260,7 +260,7 @@ public class BatchExecutor extends JFrame {
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();
 		
-		if (configuration.getConnection() == ConnectionType.TELNET) {
+		if (configuration.getConnection() == ConnectionContainer.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
 			
@@ -283,11 +283,10 @@ public class BatchExecutor extends JFrame {
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
-		
-		Reader reader = new FluidInputStreamReader(inputStream);
-		reader = new UntilLineMatchReader(reader, endPattern);
-		
-		String output = StreamUtil.read(reader);
+
+		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
+
+		String output = StreamUtil.readAsString(inputStream);
 		result.setText(output);
 		
 		cli.close();

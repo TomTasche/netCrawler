@@ -48,17 +48,17 @@ public class MindtermSSH2Test {
 		SSH2Transport transport = new SSH2Transport(serverSocket, secureRandom);
 		SSH2SimpleClient client = new SSH2SimpleClient(transport, username,
 				password);
-		SSH2ConsoleRemote console = new SSH2ConsoleRemote(client
-				.getConnection(), null, null);
+		SSH2ConsoleRemote console = new SSH2ConsoleRemote(
+				client.getConnection(), null, null);
 		
 		System.out.println(console.command("pwd"));
 		System.out.println(console.waitForExitStatus());
-		System.out.println(StreamUtil.read(console.getStdOut()));
+		System.out.println(StreamUtil.readAsString(console.getStdOut()));
 		System.out.println();
 		
 		System.out.println(console.command("ssh andreas@localhost"));
 		System.out.println(console.waitForExitStatus());
-		System.out.println(StreamUtil.read(console.getStdOut()));
+		System.out.println(StreamUtil.readAsString(console.getStdOut()));
 		System.out.println();
 		
 		console.close();

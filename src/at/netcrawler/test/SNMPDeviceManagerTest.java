@@ -52,20 +52,22 @@ public class SNMPDeviceManagerTest {
 		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
-		gsonBuilder.registerTypeAdapter(Class.class, new JsonClassAdapter());
-		gsonBuilder.registerTypeAdapter(MACAddress.class,
-				new JsonMACAddressAdapter());
-		gsonBuilder.registerTypeAdapter(IPv4Address.class,
-				new JsonIPv4AddressAdapter());
-		gsonBuilder.registerTypeAdapter(SubnetMask.class,
-				new JsonSubnetMaskAdapter());
-		gsonBuilder.registerTypeHierarchyAdapter(NetworkModel.class,
-				new JsonNetworkModelAdapter());
+		gsonBuilder.registerTypeAdapter(
+				Class.class, new JsonClassAdapter());
+		gsonBuilder.registerTypeAdapter(
+				MACAddress.class, new JsonMACAddressAdapter());
+		gsonBuilder.registerTypeAdapter(
+				IPv4Address.class, new JsonIPv4AddressAdapter());
+		gsonBuilder.registerTypeAdapter(
+				SubnetMask.class, new JsonSubnetMaskAdapter());
+		gsonBuilder.registerTypeHierarchyAdapter(
+				NetworkModel.class, new JsonNetworkModelAdapter());
 		
 		Gson gson = gsonBuilder.create();
 		String gsonString = gson.toJson(device);
 		System.out.println(gsonString);
-		System.out.println(gson.fromJson(gsonString, NetworkDevice.class));
+		System.out.println(gson.fromJson(
+				gsonString, NetworkDevice.class));
 	}
 	
 }

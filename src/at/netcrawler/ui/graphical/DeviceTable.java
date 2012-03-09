@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import at.andiwand.library.util.comparator.ObjectStringComperator;
+import at.andiwand.library.util.comparator.ObjectStringComparator;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
 
@@ -21,8 +21,10 @@ public class DeviceTable extends JTable {
 	private static final List<String> COLUMNS;
 	
 	static {
-		List<String> columns = new ArrayList<String>(DeviceTableModel.getColumnNames());
-		Collections.sort(columns, new ObjectStringComperator());
+		List<String> columns = new ArrayList<String>(
+				DeviceTableModel.getColumnNames());
+		Collections.sort(
+				columns, new ObjectStringComparator());
 		COLUMNS = Collections.unmodifiableList(columns);
 	}
 	
@@ -39,23 +41,26 @@ public class DeviceTable extends JTable {
 		
 		TableColumnModel columnModel = getColumnModel();
 		for (String column : COLUMNS) {
-			TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
+			TableColumn tableColumn = new TableColumn(
+					columnModel.getColumnCount());
 			tableColumn.setHeaderValue(column);
 			
 			columnModel.addColumn(tableColumn);
 		}
 		
-		getTableHeader().setReorderingAllowed(false);
-		getTableHeader().addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					// TODO:
-					// new ColumnChooser(DeviceTable.this, COLUMNS, e);
-				}
-			}
-		});
+		getTableHeader().setReorderingAllowed(
+				false);
+		getTableHeader().addMouseListener(
+				new MouseAdapter() {
+					
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (e.getButton() == MouseEvent.BUTTON3) {
+							// TODO:
+							// new ColumnChooser(DeviceTable.this, COLUMNS, e);
+						}
+					}
+				});
 		
 		addMouseListener(new MouseAdapter() {
 			
@@ -64,10 +69,13 @@ public class DeviceTable extends JTable {
 				int selected = getSelectedRow();
 				if (selected < 0) return;
 				
-				selected = getRowSorter().convertRowIndexToModel(selected);
+				selected = getRowSorter().convertRowIndexToModel(
+						selected);
 				
-				TopologyDevice device = model.getDevices().get(selected);
-				DeviceTable.this.gui.handleMouse(e, device);
+				TopologyDevice device = model.getDevices().get(
+						selected);
+				DeviceTable.this.gui.handleMouse(
+						e, device);
 			}
 		});
 	}

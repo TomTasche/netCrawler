@@ -52,12 +52,14 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	
 	private final NetworkDevice device;
 	
-	// TODO: textfield disabled, click, textfield enabled, change via manager instantly
+	// TODO: textfield disabled, click, textfield enabled, change via manager
+	// instantly
 	public DeviceView(TopologyDevice device) {
 		this.device = device.getNetworkDevice();
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle("Device View - " + NetworkDeviceHelper.getHostname(this.device));
+		setTitle("Device View - "
+				+ NetworkDeviceHelper.getHostname(this.device));
 		
 		build();
 		

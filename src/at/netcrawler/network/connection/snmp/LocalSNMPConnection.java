@@ -146,8 +146,10 @@ public class LocalSNMPConnection extends SNMPConnection {
 			Map<SNMPObjectType, ValueConverter> objectValueConverterMap = new HashMap<SNMPObjectType, ValueConverter>();
 			
 			for (SupportedType type : values()) {
-				variableValueConverterMap.put(type.variableClass, type);
-				objectValueConverterMap.put(type.type, type);
+				variableValueConverterMap.put(
+						type.variableClass, type);
+				objectValueConverterMap.put(
+						type.type, type);
 			}
 			
 			VARIABLE_VALUE_CONVERTER_MAP = Collections
@@ -219,7 +221,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 		case VERSION3:
 			USM usm = new USM(SecurityProtocols.getInstance(), new OctetString(
 					MPv3.createLocalEngineID()), 0);
-			SecurityModels.getInstance().addSecurityModel(usm);
+			SecurityModels.getInstance().addSecurityModel(
+					usm);
 			
 			String username = settings.getUsername();
 			String password = settings.getPassword();
@@ -232,7 +235,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 			
 			UsmUser usmUser = new UsmUser(usernameOct, AuthMD5.ID, passwordOct,
 					PrivDES.ID, cryptoKeyOct);
-			usm.addUser(usernameOct, usmUser);
+			usm.addUser(
+					usernameOct, usmUser);
 			
 			UserTarget userTarget = new UserTarget();
 			userTarget.setSecurityName(usernameOct);
@@ -256,18 +260,21 @@ public class LocalSNMPConnection extends SNMPConnection {
 	
 	@Override
 	public List<SNMPEntry> get(ObjectIdentifier... oids) throws IOException {
-		return buildSendAndConvert(PDU.GET, oids);
+		return buildSendAndConvert(
+				PDU.GET, oids);
 	}
 	
 	@Override
 	public List<SNMPEntry> getNext(ObjectIdentifier... oids) throws IOException {
-		return buildSendAndConvert(PDU.GETNEXT, oids);
+		return buildSendAndConvert(
+				PDU.GETNEXT, oids);
 	}
 	
 	@Override
 	protected List<SNMPEntry> getBulkImpl(int nonRepeaters, int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		return buildSendAndConvertBulk(nonRepeaters, maxRepetitions, oids);
+		return buildSendAndConvertBulk(
+				nonRepeaters, maxRepetitions, oids);
 	}
 	
 	@Override
@@ -295,7 +302,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 	
 	private PDU buildBulk(int nonRepeaters, int maxRepetitions,
 			ObjectIdentifier... oids) {
-		PDU pdu = build(PDU.GETBULK, oids);
+		PDU pdu = build(
+				PDU.GETBULK, oids);
 		
 		pdu.setNonRepeaters(nonRepeaters);
 		pdu.setMaxRepetitions(maxRepetitions);
@@ -323,7 +331,8 @@ public class LocalSNMPConnection extends SNMPConnection {
 	}
 	
 	public PDU send(PDU pdu) throws IOException {
-		ResponseEvent responseEvent = snmp.send(pdu, target);
+		ResponseEvent responseEvent = snmp.send(
+				pdu, target);
 		PDU response = responseEvent.getResponse();
 		if (response == null) throw new IOException("Agent unreachable!");
 		return response;
@@ -331,14 +340,16 @@ public class LocalSNMPConnection extends SNMPConnection {
 	
 	private PDU buildAndSend(int type, ObjectIdentifier... oids)
 			throws IOException {
-		PDU pdu = build(type, oids);
+		PDU pdu = build(
+				type, oids);
 		
 		return send(pdu);
 	}
 	
 	private PDU buildAndSendBulk(int nonRepeaters, int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		PDU pdu = buildBulk(nonRepeaters, maxRepetitions, oids);
+		PDU pdu = buildBulk(
+				nonRepeaters, maxRepetitions, oids);
 		
 		return send(pdu);
 	}
@@ -370,14 +381,16 @@ public class LocalSNMPConnection extends SNMPConnection {
 	
 	private List<SNMPEntry> buildSendAndConvert(int type,
 			ObjectIdentifier... oids) throws IOException {
-		PDU response = buildAndSend(type, oids);
+		PDU response = buildAndSend(
+				type, oids);
 		
 		return convert(response);
 	}
 	
 	private List<SNMPEntry> buildSendAndConvertBulk(int nonRepeaters,
 			int maxRepetitions, ObjectIdentifier... oids) throws IOException {
-		PDU response = buildAndSendBulk(nonRepeaters, maxRepetitions, oids);
+		PDU response = buildAndSendBulk(
+				nonRepeaters, maxRepetitions, oids);
 		
 		return convert(response);
 	}

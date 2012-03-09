@@ -16,12 +16,14 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+
 @SuppressWarnings("serial")
 public class ColumnChooser extends JPopupMenu {
 	
 	private final JTable table;
-
-	public ColumnChooser(JTable table, Collection<String> columns, MouseEvent event) {
+	
+	public ColumnChooser(JTable table, Collection<String> columns,
+			MouseEvent event) {
 		this.table = table;
 		
 		List<String> visibleColumns = new LinkedList<String>();
@@ -31,7 +33,8 @@ public class ColumnChooser extends JPopupMenu {
 		}
 		
 		for (String column : columns) {
-			JMenuItem item = createColumnCheckbox(column, visibleColumns.contains(column));
+			JMenuItem item = createColumnCheckbox(
+					column, visibleColumns.contains(column));
 			add(item);
 		}
 		
@@ -61,9 +64,11 @@ public class ColumnChooser extends JPopupMenu {
 				TableColumnModel columnModel = table.getColumnModel();
 				synchronized (columnModel) {
 					try {
-						columnModel.removeColumn(columnModel.getColumn(columnModel.getColumnIndex(column)));
+						columnModel.removeColumn(columnModel
+								.getColumn(columnModel.getColumnIndex(column)));
 					} catch (IllegalArgumentException e) {
-						TableColumn tableColumn = new TableColumn(columnModel.getColumnCount());
+						TableColumn tableColumn = new TableColumn(columnModel
+								.getColumnCount());
 						tableColumn.setHeaderValue(column);
 						columnModel.addColumn(tableColumn);
 					}

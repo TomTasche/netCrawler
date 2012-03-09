@@ -100,7 +100,8 @@ public class HashTopology extends Topology {
 		for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
 			if (!interfaces.contains(interfaze)) return false;
 			if (connectionMap.containsKey(interfaze)) return false;
-			connectionMap.put(interfaze, cable);
+			connectionMap.put(
+					interfaze, cable);
 		}
 		
 		edges.add(cable);

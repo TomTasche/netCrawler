@@ -11,7 +11,8 @@ public class Test {
 				+ "---------------------------\n" + "\n"
 				+ "Device ID: Router\n" + "Entry address(es): ";
 		
-		Pattern pattern = Pattern.compile("^-{2,}$", Pattern.MULTILINE);
+		Pattern pattern = Pattern.compile(
+				"^-{2,}$", Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(s);
 		
 		if (!matcher.find()) return;

@@ -3,7 +3,8 @@ package at.netcrawler.cli.agent;
 import java.util.regex.Pattern;
 
 
-public abstract class PromtPatternCLIAgentSettings extends CLIAgentSettings {
+public abstract class PromtCommandLineAgentSettings extends
+		CommandLineAgentSettings {
 	
 	public static final String DEFAULT_NEW_LINE = "\n";
 	
@@ -11,11 +12,11 @@ public abstract class PromtPatternCLIAgentSettings extends CLIAgentSettings {
 	private String commentPrefix;
 	private String newLine;
 	
-	public PromtPatternCLIAgentSettings() {
+	public PromtCommandLineAgentSettings() {
 		setNewLine(DEFAULT_NEW_LINE);
 	}
 	
-	public PromtPatternCLIAgentSettings(PromtPatternCLIAgentSettings settings) {
+	public PromtCommandLineAgentSettings(PromtCommandLineAgentSettings settings) {
 		super(settings);
 		
 		promtPattern = settings.promtPattern;
@@ -24,10 +25,10 @@ public abstract class PromtPatternCLIAgentSettings extends CLIAgentSettings {
 	}
 	
 	@Override
-	public abstract PromtPatternCLIAgentSettings clone();
+	public abstract PromtCommandLineAgentSettings clone();
 	
 	@Override
-	public abstract Class<? extends PromtPatternCLIAgent> getAgentClass();
+	public abstract Class<? extends PromtCommandLineAgent> getAgentClass();
 	
 	public Pattern getPromtPattern() {
 		return promtPattern;

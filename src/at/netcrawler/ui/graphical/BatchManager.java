@@ -31,10 +31,11 @@ import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.assistant.Configuration;
 import at.netcrawler.assistant.ConfigurationDialog;
-import at.netcrawler.assistant.ConnectionType;
+import at.netcrawler.assistant.ConnectionContainer;
 import at.netcrawler.assistant.Encryption;
 import at.netcrawler.assistant.EncryptionBag;
 import at.netcrawler.assistant.EncryptionCallback;
+import at.netcrawler.network.connection.ConnectionType;
 import at.netcrawler.network.topology.TopologyDevice;
 
 
@@ -45,7 +46,7 @@ public class BatchManager extends JFrame {
 	private static final String TITLE = "Batch Manager";
 	
 	private JTextField addressField = new JTextField();
-	private JComboBox connectionsCombo = new JComboBox(ConnectionType.values());
+	private JComboBox connections = new JComboBox(ConnectionContainer.values());
 	private JTextField portField = new JTextField();
 	private JTextField usernameField = new JTextField();
 	private JPasswordField passwordField = new JPasswordField();
@@ -61,16 +62,16 @@ public class BatchManager extends JFrame {
 	public BatchManager(TopologyDevice device) {
 		this();
 		
-		//		NetworkDevice networkDevice = device.getNetworkDevice();
+		// NetworkDevice networkDevice = device.getNetworkDevice();
 		//
-		//		Configuration configuration = new Configuration();
-		//		configuration.setAddress();
-		//		configuration.setConnection();
-		//		configuration.setPort();
-		//		configuration.setUsername();
-		//		configuration.setPassword();
-		//		
-		//		setConfiguration(configuration);
+		// Configuration configuration = new Configuration();
+		// configuration.setAddress();
+		// configuration.setConnection();
+		// configuration.setPort();
+		// configuration.setUsername();
+		// configuration.setPassword();
+		//
+		// setConfiguration(configuration);
 	}
 	
 	public BatchManager() {
@@ -86,8 +87,8 @@ public class BatchManager extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory()
-						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
+				return f.isDirectory() || f.getName().endsWith(
+						Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -121,7 +122,7 @@ public class BatchManager extends JFrame {
 								)
 								.addGroup(layout.createParallelGroup()
 										.addComponent(addressField)
-										.addComponent(connectionsCombo)
+										.addComponent(connections)
 										.addComponent(portField)
 										.addComponent(usernameField)
 										.addComponent(passwordField)
@@ -144,7 +145,7 @@ public class BatchManager extends JFrame {
 						)
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(connectionLabel)
-								.addComponent(connectionsCombo)
+								.addComponent(connections)
 								)
 								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 										.addComponent(portLabel)
@@ -171,11 +172,11 @@ public class BatchManager extends JFrame {
 				);
 		//@formatter:on
 		
-		connectionsCombo.addActionListener(new ActionListener() {
+		connections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConnectionType connection = (ConnectionType) connectionsCombo
+				ConnectionContainer connection = (ConnectionContainer) connections
 						.getSelectedItem();
-				
+
 				portField.setText("" + connection.getDefaultPort());
 			}
 		});
@@ -248,7 +249,8 @@ public class BatchManager extends JFrame {
 	private void addBatch(String name, String batch) {
 		JTextArea textArea = new JTextArea(batch);
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		batchTabbedPane.add(name, scrollPane);
+		batchTabbedPane.add(
+				name, scrollPane);
 	}
 	
 	private void validateIP() {
@@ -260,7 +262,7 @@ public class BatchManager extends JFrame {
 	}
 	
 	private void validateConnection() {
-		if (((ConnectionType) connectionsCombo.getSelectedItem()).legalConnection())
+		if (((ConnectionContainer) connections.getSelectedItem()).legalConnection())
 			return;
 		
 		throw new IllegalArgumentException("Choose connection!");
@@ -275,8 +277,8 @@ public class BatchManager extends JFrame {
 	}
 	
 	private void validateBatch() {
-		if (batchTabbedPane.getTabCount() <= 0)
-			throw new IllegalArgumentException("Contains no batches!");
+		if (batchTabbedPane.getTabCount() <= 0) throw new IllegalArgumentException(
+				"Contains no batches!");
 	}
 	
 	private void validateAll() {
@@ -291,35 +293,35 @@ public class BatchManager extends JFrame {
 		batchName = batchName.trim();
 		
 		if (batchName.isEmpty()) {
-			ConfigurationDialog.showErrorDialog(BatchManager.this,
-					"Batch name is empty!");
+			ConfigurationDialog.showErrorDialog(
+					BatchManager.this, "Batch name is empty!");
 			
 			return;
 		}
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-				ConfigurationDialog.showErrorDialog(BatchManager.this,
-						"Batch name already exists!");
+				ConfigurationDialog.showErrorDialog(
+						BatchManager.this, "Batch name already exists!");
 				
 				return;
 			}
 		}
 		
-		addBatch(batchName, "");
+		addBatch(
+				batchName, "");
 		batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
 		batchNewNameField.setText("");
 	}
 	
 	private void doChoose() {
 		if (batchTabbedPane.getTabCount() <= 0) {
-			ConfigurationDialog.showErrorDialog(BatchManager.this,
-					"Add batch name first!");
+			ConfigurationDialog.showErrorDialog(
+					BatchManager.this, "Add batch name first!");
 			return;
 		}
 		
-		if (batchFileChooser.showOpenDialog(BatchManager.this) == JFileChooser.CANCEL_OPTION)
-			return;
+		if (batchFileChooser.showOpenDialog(BatchManager.this) == JFileChooser.CANCEL_OPTION) return;
 		
 		File file = batchFileChooser.getSelectedFile();
 		
@@ -338,13 +340,13 @@ public class BatchManager extends JFrame {
 					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(BatchManager.this, e);
+			ConfigurationDialog.showErrorDialog(
+					BatchManager.this, e);
 		}
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
-			return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
 		
 		try {
 			File file = fileChooser.getSelectedFile();
@@ -352,15 +354,16 @@ public class BatchManager extends JFrame {
 			encryptionBag.setEncryption(Encryption.PLAIN);
 			
 			Configuration configuration = new Configuration();
-			configuration.readFromJsonFile(file, new EncryptionCallback() {
-				public String getPassword(Encryption encryption) {
-					String password = ConfigurationDialog
-							.showDecryptionDialog(BatchManager.this);
-					encryptionBag.setEncryption(encryption);
-					encryptionBag.setPassword(password);
-					return password;
-				}
-			});
+			configuration.readFromJsonFile(
+					file, new EncryptionCallback() {
+						public String getPassword(Encryption encryption) {
+							String password = ConfigurationDialog
+									.showDecryptionDialog(BatchManager.this);
+							encryptionBag.setEncryption(encryption);
+							encryptionBag.setPassword(password);
+							return password;
+						}
+					});
 			
 			setConfiguration(configuration);
 			
@@ -368,7 +371,8 @@ public class BatchManager extends JFrame {
 			activeFile = file;
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
@@ -376,17 +380,18 @@ public class BatchManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 			return;
 		}
 		
 		if (activeFile == null) {
-			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION)
-				return;
+			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) return;
 			
 			activeFile = fileChooser.getSelectedFile();
 			
-			if (!activeFile.getName().endsWith(Configuration.FILE_SUFFIX)) {
+			if (!activeFile.getName().endsWith(
+					Configuration.FILE_SUFFIX)) {
 				activeFile = new File(activeFile.getPath()
 						+ Configuration.FILE_SUFFIX);
 			}
@@ -401,18 +406,23 @@ public class BatchManager extends JFrame {
 			
 			Configuration[] configurations = getConfigurations();
 			if (configurations.length == 0) {
-				configurations[0].writeToJsonFile(activeFile, encryptionBag
-						.getEncryption(), encryptionBag.getPassword());
+				configurations[0].writeToJsonFile(
+						activeFile, encryptionBag.getEncryption(),
+						encryptionBag.getPassword());
 			} else {
 				for (int i = 0; i < configurations.length; i++) {
-					File file = new File(activeFile.getParent() + File.separatorChar + i + "_" + activeFile.getName());
-					configurations[0].writeToJsonFile(file, encryptionBag
-							.getEncryption(), encryptionBag.getPassword());
+					File file = new File(activeFile.getParent()
+							+ File.separatorChar + i + "_"
+							+ activeFile.getName());
+					configurations[0].writeToJsonFile(
+							file, encryptionBag.getEncryption(),
+							encryptionBag.getPassword());
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			ConfigurationDialog.showErrorDialog(
+					this, e);
 		}
 	}
 	
@@ -437,13 +447,14 @@ public class BatchManager extends JFrame {
 	}
 	
 	private Configuration[] getConfigurations() {
-		String[] addresses = addressField.getText().split(";");
+		String[] addresses = addressField.getText().split(
+				";");
 		Configuration[] configurations = new Configuration[addresses.length];
 		for (int i = 0; i < addresses.length; i++) {
 			Configuration configuration = new Configuration();
 			
 			configuration.setAddress(new IPv4Address(addresses[i]));
-			configuration.setConnection((ConnectionType) connectionsCombo
+			configuration.setConnection((ConnectionContainer) connections
 					.getSelectedItem());
 			configuration.setPort(Integer.parseInt(portField.getText()));
 			configuration.setUsername(usernameField.getText());
@@ -464,7 +475,7 @@ public class BatchManager extends JFrame {
 	
 	private void setConfiguration(Configuration configuration) {
 		addressField.setText(configuration.getAddress().toString());
-		connectionsCombo.setSelectedItem(configuration.getConnection());
+		connections.setSelectedItem(configuration.getConnection());
 		portField.setText("" + configuration.getPort());
 		usernameField.setText(configuration.getUsername());
 		passwordField.setText(configuration.getPassword());
@@ -472,7 +483,8 @@ public class BatchManager extends JFrame {
 		batchTabbedPane.removeAll();
 		for (Map.Entry<String, String> entry : configuration.getBatches()
 				.entrySet()) {
-			addBatch(entry.getKey(), entry.getValue());
+			addBatch(
+					entry.getKey(), entry.getValue());
 		}
 	}
 }

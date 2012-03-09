@@ -31,14 +31,16 @@ public class LocalSNMPConnectionTest {
 		settings.setCommunity(community);
 		
 		LocalSNMPConnection snmp = new LocalSNMPConnection(accessor, settings);
-		System.out.println(snmp.get(new ObjectIdentifier("1.3.6.1.2.1.1.4.0"),
+		System.out.println(snmp.get(
+				new ObjectIdentifier("1.3.6.1.2.1.1.4.0"),
 				new ObjectIdentifier("1.3.6.1.2.1.1.5.0"),
 				new ObjectIdentifier("1.3.6.1.6.3.10.2.1.1.0")));
 		System.out.println(snmp.getBulk(new ObjectIdentifier("1.3.6.1.2.1.1")));
 		System.out.println();
 		
 		List<SNMPEntry[]> table;
-		table = snmp.walkBulkTable(new ObjectIdentifier("1.3.6.1.2.1.2.2.1.1"),
+		table = snmp.walkBulkTable(
+				new ObjectIdentifier("1.3.6.1.2.1.2.2.1.1"),
 				new ObjectIdentifier("1.3.6.1.2.1.31.1.1.1.1"),
 				new ObjectIdentifier("1.3.6.1.2.1.31.1.1.1.1"),
 				new ObjectIdentifier("1.3.6.1.2.1.2.2.1.6"),

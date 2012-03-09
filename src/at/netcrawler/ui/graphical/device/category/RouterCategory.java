@@ -19,8 +19,9 @@ public class RouterCategory extends Category {
 	public Component render(NetworkModel device) {
 		CategoryBuilder builder = new CategoryBuilder();
 		if (device.getValue(RouterExtension.ROUTING_TABLE) != null) {
-			Collection<Object> table = new ArrayList<Object>((Collection<Object>) device
-					.getValue(RouterExtension.ROUTING_TABLE));
+			Collection<Object> table = new ArrayList<Object>(
+					(Collection<Object>) device
+							.getValue(RouterExtension.ROUTING_TABLE));
 			
 			builder.addListRow(
 					"Routing Table", table);

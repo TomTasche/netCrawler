@@ -10,7 +10,7 @@ import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.DeviceSystem;
-import at.netcrawler.cli.agent.PromtPatternCLIAgent;
+import at.netcrawler.cli.agent.PromtCommandLineAgent;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
@@ -39,7 +39,7 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 					| Pattern.CASE_INSENSITIVE, 0);
 	
 	public CiscoCLIDeviceManager(NetworkDevice device,
-			PromtPatternCLIAgent agent) {
+			PromtCommandLineAgent agent) {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoCLIDeviceExtensionManager());
@@ -48,11 +48,13 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected String getIdentication() throws IOException {
-		return executeAndFind(IDENTICATION_COMMAND, IDENTICATION_PATTERN);
+		return executeAndFind(
+				IDENTICATION_COMMAND, IDENTICATION_PATTERN);
 	}
 	
 	protected String getHostname() throws IOException {
-		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN);
+		return executeAndFind(
+				HOSTNAME_COMMAND, HOSTNAME_PATTERN);
 	}
 	
 	protected DeviceSystem getSystem() throws IOException {
@@ -60,11 +62,13 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected String getSystemString() throws IOException {
-		return executeAndFind(SYSTEM_COMMAND, SYSTEM_PATTERN);
+		return executeAndFind(
+				SYSTEM_COMMAND, SYSTEM_PATTERN);
 	}
 	
 	protected long getUptime() throws IOException {
-		String uptime = executeAndFind(UPTIME_COMMAND, UPTIME_PATTERN);
+		String uptime = executeAndFind(
+				UPTIME_COMMAND, UPTIME_PATTERN);
 		return Long.parseLong(uptime);
 	}
 	

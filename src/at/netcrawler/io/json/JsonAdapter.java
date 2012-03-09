@@ -10,8 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 
-public abstract class JsonAdapter<T> implements
-		JsonSerializer<T>,
+public abstract class JsonAdapter<T> implements JsonSerializer<T>,
 		JsonDeserializer<T> {
 	
 	@Override

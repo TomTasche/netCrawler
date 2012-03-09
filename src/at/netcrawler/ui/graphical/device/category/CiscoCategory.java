@@ -19,7 +19,9 @@ public class CiscoCategory extends Category {
 	public Component render(NetworkModel device) {
 		CategoryBuilder builder = new CategoryBuilder();
 		if (device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS) != null) {
-			Collection<Object> table = new ArrayList<Object>((Collection<Object>) device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS));
+			Collection<Object> table = new ArrayList<Object>(
+					(Collection<Object>) device
+							.getValue(CiscoDeviceExtension.CDP_NEIGHBORS));
 			
 			builder.addListRow(
 					"CDP Neighbours", table);

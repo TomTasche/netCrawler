@@ -69,7 +69,8 @@ public abstract class DeviceManager {
 		if (result == null) {
 			throw new IllegalArgumentException("Unsupported key!");
 		} else {
-			device.setValue(key, result);
+			device.setValue(
+					key, result);
 			return result;
 		}
 	}
@@ -103,7 +104,8 @@ public abstract class DeviceManager {
 			synchronized (extensionManagers) {
 				for (DeviceExtensionManager extensionManager : extensionManagers) {
 					try {
-						result = extensionManager.setValue(key, value);
+						result = extensionManager.setValue(
+								key, value);
 					} catch (IllegalArgumentException e) {}
 				}
 			}
@@ -112,7 +114,8 @@ public abstract class DeviceManager {
 		if (result == null) {
 			throw new IllegalArgumentException("Unsupported key!");
 		} else {
-			if (result) device.setValue(key, value);
+			if (result) device.setValue(
+					key, value);
 			return result;
 		}
 	}
@@ -126,8 +129,8 @@ public abstract class DeviceManager {
 	public final boolean hasExtensionManager(
 			Class<? extends NetworkDeviceExtension> extensionClass) {
 		for (DeviceExtensionManager extensionManager : extensionManagers) {
-			if (extensionManager.getExtensionClass().equals(extensionClass))
-				return true;
+			if (extensionManager.getExtensionClass().equals(
+					extensionClass)) return true;
 		}
 		
 		return false;
@@ -147,9 +150,8 @@ public abstract class DeviceManager {
 		DeviceManager deviceManager = extensionManager.getDeviceManager();
 		
 		if (deviceManager == this) return false;
-		if (deviceManager != null)
-			throw new IllegalArgumentException(
-					"The extension manager is already in use!");
+		if (deviceManager != null) throw new IllegalArgumentException(
+				"The extension manager is already in use!");
 		
 		extensionManager.setDeviceManager(this);
 		
@@ -203,7 +205,8 @@ public abstract class DeviceManager {
 		
 		for (String key : keys) {
 			Object value = getValue(key);
-			device.setValue(key, value);
+			device.setValue(
+					key, value);
 			
 			fetchCount++;
 			progress = (double) fetchCount / keyCount;

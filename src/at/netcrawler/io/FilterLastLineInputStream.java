@@ -1,13 +1,12 @@
 package at.netcrawler.io;
 
-import java.io.FilterReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 
-import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.io.BytewiseFilterInputStream;
 
 
-public class FilterLastLineReader extends FilterReader {
+public class FilterLastLineInputStream extends BytewiseFilterInputStream {
 	
 	private StringBuilder buffer;
 	private StringBuilder newLineBuffer;
@@ -15,7 +14,7 @@ public class FilterLastLineReader extends FilterReader {
 	private int index;
 	private boolean closed;
 	
-	public FilterLastLineReader(Reader in) {
+	public FilterLastLineInputStream(InputStream in) {
 		super(in);
 	}
 	
@@ -68,11 +67,6 @@ public class FilterLastLineReader extends FilterReader {
 		int read = buffer.charAt(index++);
 		if (index >= buffer.length()) buffer = null;
 		return read;
-	}
-	
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return StreamUtil.readCharwise(this, cbuf, off, len);
 	}
 	
 }

@@ -74,13 +74,15 @@ public class TopologyViewerCable extends GraphViewerEdge {
 	}
 	
 	public void setPainter(CableType cableType, CablePainter painter) {
-		painterMap.put(cableType, painter);
+		painterMap.put(
+				cableType, painter);
 		setCableType(this.cableType);
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		painter.paint(g, this);
+		painter.paint(
+				g, this);
 	}
 	
 	@Override

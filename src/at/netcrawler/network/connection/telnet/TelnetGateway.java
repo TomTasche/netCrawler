@@ -1,27 +1,20 @@
 package at.netcrawler.network.connection.telnet;
 
-import java.io.IOException;
-
-import at.netcrawler.network.accessor.IPDeviceAccessor;
+import at.netcrawler.network.connection.ConnectionType;
 import at.netcrawler.network.connection.TCPIPConnectionGateway;
 
 
-public abstract class TelnetGateway extends
-		TCPIPConnectionGateway<TelnetSettings> {
+public abstract class TelnetGateway<C extends TelnetConnection> extends
+		TCPIPConnectionGateway<C, TelnetSettings> {
 	
 	@Override
-	public final Class<TelnetConnection> getConnectionClass() {
-		return TelnetConnection.class;
+	public final ConnectionType getConnectionType() {
+		return ConnectionType.TELNET;
 	}
 	
 	@Override
 	public final Class<TelnetSettings> getSettingsClass() {
 		return TelnetSettings.class;
 	}
-	
-	@Override
-	protected abstract TelnetConnection openConnectionGenericImpl(
-			IPDeviceAccessor accessor, TelnetSettings settings)
-			throws IOException;
 	
 }

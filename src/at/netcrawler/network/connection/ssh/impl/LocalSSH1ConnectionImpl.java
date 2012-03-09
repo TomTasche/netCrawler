@@ -71,11 +71,11 @@ public class LocalSSH1ConnectionImpl extends LocalSSHConnectionImpl {
 		super(accessor, settings);
 		
 		client = new SSHConsoleClient(accessor.getIpAddress().toString(),
-				settings.getPort(), new SimpleAuthenticator(settings
-						.getUsername(), settings.getPassword()),
+				settings.getPort(), new SimpleAuthenticator(
+						settings.getUsername(), settings.getPassword()),
 				new SSHInteractorAdapter());
-		if (!client.shell())
-			throw new IOException("couldn't start a shell session!");
+		if (!client.shell()) throw new IOException(
+				"couldn't start a shell session!");
 	}
 	
 	@Override

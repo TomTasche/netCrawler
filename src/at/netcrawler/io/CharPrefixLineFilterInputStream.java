@@ -1,37 +1,37 @@
 package at.netcrawler.io;
 
-import java.io.FilterReader;
 import java.io.IOException;
-import java.io.PushbackReader;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import at.andiwand.library.io.BytewiseFilterInputStream;
 import at.andiwand.library.io.StreamUtil;
 
 
-public class CharPrefixLineFilterReader extends FilterReader {
+public class CharPrefixLineFilterInputStream extends BytewiseFilterInputStream {
 	
-	private final PushbackReader in;
+	private final PushbackInputStream in;
 	private final Set<Character> prefixes;
 	
 	private boolean newLine = true;
 	
-	public CharPrefixLineFilterReader(Reader in) {
-		super(new PushbackReader(in));
-		
-		this.in = (PushbackReader) super.in;
-		prefixes = new HashSet<Character>();
+	public CharPrefixLineFilterInputStream(InputStream in) {
+		this(in, new ArrayList<Character>(0));
 	}
 	
-	public CharPrefixLineFilterReader(Reader in, Set<Character> prefixes) {
-		super(new PushbackReader(in));
+	public CharPrefixLineFilterInputStream(InputStream in,
+			Collection<Character> prefixes) {
+		super(new PushbackInputStream(in));
 		
-		this.in = (PushbackReader) super.in;
+		this.in = (PushbackInputStream) super.in;
 		this.prefixes = new HashSet<Character>(prefixes);
 	}
 	
-	public CharPrefixLineFilterReader(Reader in, char... prefixes) {
+	public CharPrefixLineFilterInputStream(InputStream in, char... prefixes) {
 		this(in);
 		
 		for (char prefix : prefixes) {
@@ -41,20 +41,11 @@ public class CharPrefixLineFilterReader extends FilterReader {
 	
 	public boolean addPrefix(char prefix) {
 		if ((prefix == '\n') || (prefix == '\r')) return false;
-		
 		return prefixes.add(prefix);
 	}
 	
 	public boolean removePrefix(char prefix) {
 		return prefixes.remove(prefix);
-	}
-	
-	private boolean matchPrefix(char c) {
-		for (char prefix : prefixes) {
-			if (c == prefix) return true;
-		}
-		
-		return false;
 	}
 	
 	@Override
@@ -65,7 +56,7 @@ public class CharPrefixLineFilterReader extends FilterReader {
 			read = in.read();
 			if (read == -1) return -1;
 			
-			if (newLine && matchPrefix((char) read)) {
+			if (newLine && prefixes.contains((char) read)) {
 				StreamUtil.flushLine(in);
 				continue;
 			}
@@ -75,13 +66,7 @@ public class CharPrefixLineFilterReader extends FilterReader {
 		}
 		
 		if ((read == '\n') || (read == '\r')) newLine = true;
-		
 		return read;
-	}
-	
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return StreamUtil.readCharwise(this, cbuf, off, len);
 	}
 	
 }

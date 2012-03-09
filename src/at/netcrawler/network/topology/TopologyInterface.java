@@ -26,9 +26,10 @@ public class TopologyInterface {
 		if (!(obj instanceof TopologyInterface)) return false;
 		TopologyInterface interfaze = (TopologyInterface) obj;
 		
-		if (device == null) return getName().equals(interfaze.getName());
-		return device.equals(interfaze.device)
-				&& getName().equals(interfaze.getName());
+		if (device == null) return getName().equals(
+				interfaze.getName());
+		return device.equals(interfaze.device) && getName().equals(
+				interfaze.getName());
 	}
 	
 	@Override

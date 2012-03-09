@@ -10,13 +10,13 @@ public class NetworkDeviceHelper {
 	
 	private static final String NEW_LINE = System.getProperty("line.separator");
 	
-	
 	public static String getHostname(NetworkDevice device) {
 		return (String) device.getValue(NetworkDevice.HOSTNAME);
 	}
 	
 	public static String getMajorCapability(NetworkDevice device) {
-		return device.getValue(NetworkDevice.MAJOR_CAPABILITY).toString();
+		return device.getValue(
+				NetworkDevice.MAJOR_CAPABILITY).toString();
 	}
 	
 	public static String getUptime(NetworkDevice device) {
@@ -32,7 +32,8 @@ public class NetworkDeviceHelper {
 	
 	@SuppressWarnings("unchecked")
 	public static String getManagementAddresses(NetworkDevice device) {
-		Set<Object> addresses = (Set<Object>) device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
+		Set<Object> addresses = (Set<Object>) device
+				.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
 		if (addresses == null) return "";
 		
 		String s = "";

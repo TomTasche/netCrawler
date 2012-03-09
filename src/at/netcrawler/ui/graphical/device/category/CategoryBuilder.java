@@ -28,10 +28,12 @@ public class CategoryBuilder {
 	}
 	
 	public void addTextRow(String name, Object data) {
-		addTextRow(name, data, false, null);
+		addTextRow(
+				name, data, false, null);
 	}
 	
-	public void addTextRow(String name, Object data, boolean editable, final CategoryCallback callback) {
+	public void addTextRow(String name, Object data, boolean editable,
+			final CategoryCallback callback) {
 		if (data == null) return;
 		
 		JLabel label = new JLabel();

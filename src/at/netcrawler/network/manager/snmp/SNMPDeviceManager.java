@@ -30,16 +30,17 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	private static enum SupportedInterfaceType {
 		
-		ETHERNET_CSMACD(6, InterfaceType.ETHERNET),
-		SOFTWARE_LOOPBACK(24, InterfaceType.LOOPBACK),
-		ETHERNET_3MBIT(26, InterfaceType.ETHERNET),
-		FRAME_RELAY(32, InterfaceType.FRAME_RELAY);
+		ETHERNET_CSMACD(6, InterfaceType.ETHERNET), SOFTWARE_LOOPBACK(24,
+				InterfaceType.LOOPBACK), ETHERNET_3MBIT(26,
+				InterfaceType.ETHERNET), FRAME_RELAY(32,
+				InterfaceType.FRAME_RELAY);
 		
 		private static final Map<Integer, InterfaceType> TYPE_MAP = new HashMap<Integer, InterfaceType>();
 		
 		static {
 			for (SupportedInterfaceType type : values()) {
-				TYPE_MAP.put(type.snmpType, type.type);
+				TYPE_MAP.put(
+						type.snmpType, type.type);
 			}
 		}
 		
@@ -97,12 +98,14 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	protected String getIdentication() throws IOException {
-		return connection.get(IDENTICATION_OID).getValue();
+		return connection.get(
+				IDENTICATION_OID).getValue();
 	}
 	
 	@Override
 	protected String getHostname() throws IOException {
-		return connection.get(SYSTEM_OID).getValue();
+		return connection.get(
+				SYSTEM_OID).getValue();
 	}
 	
 	// TODO: implement
@@ -113,12 +116,14 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	protected String getSystemString() throws IOException {
-		return connection.get(SYSTEM_OID).getValue();
+		return connection.get(
+				SYSTEM_OID).getValue();
 	}
 	
 	@Override
 	protected Set<Capability> getCapabilities() throws IOException {
-		Integer servicesInteger = connection.get(CAPABILITIES_OID).getValue();
+		Integer servicesInteger = connection.get(
+				CAPABILITIES_OID).getValue();
 		if (servicesInteger == null) return null;
 		int services = servicesInteger;
 		
@@ -135,15 +140,16 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	protected long getUptime() throws IOException {
-		Timeticks timeticks = connection.get(UPTIME_OID).getValue();
+		Timeticks timeticks = connection.get(
+				UPTIME_OID).getValue();
 		return timeticks.getMillis();
 	}
 	
 	@Override
 	protected Set<NetworkInterface> getInterfaces() throws IOException {
-		List<SNMPEntry[]> table = connection.walkTable(INTERFACES_NAMES_OID,
-				INTERFACES_DESCRIPTIONS_OID, INTERFACES_TYPE_OID,
-				INTERFACES_PHYSICAL_ADDRESSES_OID);
+		List<SNMPEntry[]> table = connection.walkTable(
+				INTERFACES_NAMES_OID, INTERFACES_DESCRIPTIONS_OID,
+				INTERFACES_TYPE_OID, INTERFACES_PHYSICAL_ADDRESSES_OID);
 		List<SNMPEntry[]> ipTable = connection.walkTable(
 				INTERFACES_IP_IFID_OID, INTERFACES_IP_ADDRESSES_OID,
 				INTERFACES_IP_NETMASK_OID);
@@ -154,11 +160,14 @@ public class SNMPDeviceManager extends DeviceManager {
 			SNMPEntry[] row = table.get(i);
 			NetworkInterface interfaze = new NetworkInterface();
 			
-			interfaze.setValue(NetworkInterface.NAME, row[0].getValue());
-			interfaze.setValue(NetworkInterface.FULL_NAME, row[1].getValue());
+			interfaze.setValue(
+					NetworkInterface.NAME, row[0].getValue());
+			interfaze.setValue(
+					NetworkInterface.FULL_NAME, row[1].getValue());
 			InterfaceType interfaceType = SupportedInterfaceType
 					.getType((Integer) row[2].getValue());
-			interfaze.setValue(NetworkInterface.TYPE, interfaceType);
+			interfaze.setValue(
+					NetworkInterface.TYPE, interfaceType);
 			String addressString = row[3].getValue();
 			if (!addressString.isEmpty()) {
 				try {
@@ -166,8 +175,8 @@ public class SNMPDeviceManager extends DeviceManager {
 					
 					interfaze
 							.addExtension(EthernetInterfaceExtension.EXTENSION);
-					interfaze.setValue(EthernetInterfaceExtension.ADDRESS,
-							address);
+					interfaze.setValue(
+							EthernetInterfaceExtension.ADDRESS, address);
 				} catch (Exception e) {}
 			}
 			
@@ -181,8 +190,10 @@ public class SNMPDeviceManager extends DeviceManager {
 			
 			NetworkInterface interfaze = interfaces.get(id);
 			interfaze.addExtension(IPInterfaceExtension.EXTENSION);
-			interfaze.setValue(IPInterfaceExtension.ADDRESS, address);
-			interfaze.setValue(IPInterfaceExtension.NETMASK, netmask);
+			interfaze.setValue(
+					IPInterfaceExtension.ADDRESS, address);
+			interfaze.setValue(
+					IPInterfaceExtension.NETMASK, netmask);
 		}
 		
 		return new HashSet<NetworkInterface>(interfaces);
@@ -205,7 +216,8 @@ public class SNMPDeviceManager extends DeviceManager {
 	
 	@Override
 	protected boolean setHostname(String hostname) throws IOException {
-		return connection.setAndVerify(HOSTNAME_OID, hostname);
+		return connection.setAndVerify(
+				HOSTNAME_OID, hostname);
 	}
 	
 	@Override

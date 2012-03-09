@@ -11,19 +11,16 @@ import at.andiwand.library.util.Timeticks;
 public enum SNMPObjectType {
 	
 	// TODO: complete
-	INTEGER(Integer.class),
-	UNSIGNED(Long.class),
-	STRING(String.class),
-	OBJID(ObjectIdentifier.class),
-	NULL_OBJ(SNMPNull.class),
-	TIMETICKS(Timeticks.class),
-	IPADDRESS(IPv4Address.class);
+	INTEGER(Integer.class), UNSIGNED(Long.class), STRING(String.class), OBJID(
+			ObjectIdentifier.class), NULL_OBJ(SNMPNull.class), TIMETICKS(
+			Timeticks.class), IPADDRESS(IPv4Address.class);
 	
 	private static final Map<Class<?>, SNMPObjectType> typeMap = new HashMap<Class<?>, SNMPObjectType>();
 	
 	static {
 		for (SNMPObjectType type : values()) {
-			typeMap.put(type.objectClass, type);
+			typeMap.put(
+					type.objectClass, type);
 		}
 	}
 	

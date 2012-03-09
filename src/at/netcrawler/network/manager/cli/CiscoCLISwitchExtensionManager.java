@@ -24,14 +24,14 @@ public class CiscoCLISwitchExtensionManager extends CiscoSwitchExtensionManager 
 	
 	@Override
 	protected String getModelNumber() throws IOException {
-		return deviceManager.executeAndFind(MODEL_NUMBER_COMMAND,
-				MODEL_NUMBER_PATTERN);
+		return deviceManager.executeAndFind(
+				MODEL_NUMBER_COMMAND, MODEL_NUMBER_PATTERN);
 	}
 	
 	@Override
 	protected String getSystemSerialNumber() throws IOException {
-		return deviceManager.executeAndFind(SYSTEM_SERIAL_NUMBER_COMMAND,
-				SYSTEM_SERIAL_NUMBER_PATTERN);
+		return deviceManager.executeAndFind(
+				SYSTEM_SERIAL_NUMBER_COMMAND, SYSTEM_SERIAL_NUMBER_PATTERN);
 	}
 	
 	@Override
