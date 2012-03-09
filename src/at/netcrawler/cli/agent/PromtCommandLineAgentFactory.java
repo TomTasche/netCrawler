@@ -11,7 +11,4 @@ public abstract class PromtCommandLineAgentFactory<A extends PromtCommandLineAge
 	protected abstract A createAgentGenericImpl(CommandLineInterface cli,
 			S settings) throws IOException;
 	
-	protected abstract A createAgentGenericImpl(CLISocket socket, S settings)
-			throws IOException;
-	
 }

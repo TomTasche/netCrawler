@@ -24,10 +24,4 @@ public class CiscoCLIAgentFactory extends
 		return new CiscoCLIAgent(cli, settings);
 	}
 	
-	@Override
-	protected CiscoCLIAgent createAgentGenericImpl(CLISocket socket,
-			CiscoCLIAgentSettings settings) throws IOException {
-		return new CiscoCLIAgent(socket, settings);
-	}
-	
 }

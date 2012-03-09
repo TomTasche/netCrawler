@@ -24,10 +24,4 @@ public class LinuxCLIAgentFactory extends
 		return new LinuxCLIAgent(cli, settings);
 	}
 	
-	@Override
-	protected LinuxCLIAgent createAgentGenericImpl(CLISocket socket,
-			LinuxCLIAgentSettings settings) throws IOException {
-		return new LinuxCLIAgent(socket, settings);
-	}
-	
 }

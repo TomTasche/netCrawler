@@ -1,6 +1,8 @@
 package at.netcrawler.cli.agent;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +18,23 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
 	private static final String RANDOM_SEPARATOR = " - ";
+	
+	private static class DefaultProcessFilter extends ProcessFilter {
+		public DefaultProcessFilter(CommandLineInterface src)
+				throws IOException {
+			super(src);
+		}
+		
+		@Override
+		protected InputStream getFilterInputStream(InputStream in) {
+			return in;
+		}
+		
+		@Override
+		protected OutputStream getFilterOutputStream(OutputStream out) {
+			return out;
+		}
+	}
 	
 	private final Random random = new Random();
 	
@@ -85,7 +104,7 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		flushLine();
 	}
 	
-	protected abstract CommandLineInterface getProcessFilter(String command,
+	protected abstract ProcessFilter getProcessFilter(String command,
 			CommandLineInterface process);
 	
 	@Override
