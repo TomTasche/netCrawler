@@ -5,14 +5,19 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.NetworkDevice;
 
 
 public class CategoryBuilder {
@@ -27,12 +32,30 @@ public class CategoryBuilder {
 		panel.setLayout(new java.awt.GridBagLayout());
 	}
 	
-	public void addTextRow(String name, Object data) {
-		addTextRow(
-				name, data, false, null);
+	public void addTextRow(String name, final DeviceManager manager, NetworkDevice device, final String identifier) {
+		String data = (String) device.getValue(identifier);
+		
+		addTextRow(name, data, new CategoryCallback() {
+			
+			@Override
+			public void save(Object value) {
+				try {
+					manager.setValue(identifier, value);
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+					JOptionPane.showMessageDialog(panel, e.getLocalizedMessage(), "Error setting value", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 	}
 	
-	public void addTextRow(String name, Object data, boolean editable,
+	public void addTextRow(String name, Object data) {
+		addTextRow(
+				name, data, null);
+	}
+	
+	public void addTextRow(String name, Object data,
 			final CategoryCallback callback) {
 		if (data == null) return;
 		
@@ -59,7 +82,7 @@ public class CategoryBuilder {
 		panel.add(
 				textField, gridBagConstraints);
 		
-		if (editable) {
+		if (callback != null) {
 			editButton.setText("E");
 			gridBagConstraints = new java.awt.GridBagConstraints();
 			gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;

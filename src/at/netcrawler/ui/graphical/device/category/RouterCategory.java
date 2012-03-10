@@ -4,7 +4,8 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import at.netcrawler.network.model.NetworkModel;
+import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.RouterExtension;
 
 
@@ -16,7 +17,7 @@ public class RouterCategory extends Category {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Component render(NetworkModel device) {
+	public Component render(DeviceManager manager, NetworkDevice device) {
 		CategoryBuilder builder = new CategoryBuilder();
 		if (device.getValue(RouterExtension.ROUTING_TABLE) != null) {
 			Collection<Object> table = new ArrayList<Object>(

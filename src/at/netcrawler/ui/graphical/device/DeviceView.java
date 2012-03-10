@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkModelExtension;
@@ -51,9 +52,11 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	}
 	
 	private final NetworkDevice device;
+	private final DeviceManager manager;
 	private final JScrollPane pane;
 	
-	public DeviceView(TopologyDevice device) {
+	public DeviceView(DeviceManager manager, TopologyDevice device) {
+		this.manager = manager;
 		this.device = device.getNetworkDevice();
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -96,7 +99,7 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 			}
 			
 			tab.addTab(
-					category.getSub(), category.render(device));
+					category.getSub(), category.render(manager, device));
 		}
 		
 		JTabbedPane leftTabs = new JTabbedPane(JTabbedPane.LEFT);
