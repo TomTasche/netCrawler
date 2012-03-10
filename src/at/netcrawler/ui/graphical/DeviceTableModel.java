@@ -66,7 +66,7 @@ public class DeviceTableModel extends AbstractTableModel implements
 					
 					@Override
 					public String get(NetworkDevice device) {
-						return "implementier das, andi!";
+						return NetworkDeviceHelper.getConnectedVia(device);
 					}
 				});
 		ACCESSOR_FOR_NAME.put(

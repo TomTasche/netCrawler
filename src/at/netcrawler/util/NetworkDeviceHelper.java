@@ -19,6 +19,30 @@ public class NetworkDeviceHelper {
 	
 	private static final String NEW_LINE = System.getProperty("line.separator");
 	
+	public static String getConnectedVia(NetworkDevice device) {
+		ConnectionType connection = (ConnectionType) device.getValue(NetworkDevice.CONNECTED_VIA);
+		if (connection == ConnectionType.SSH) {
+			SSHSettings ssh = (SSHSettings) connection.getSettings();
+			if (ssh.getVersion() == SSHVersion.VERSION1) {
+				return ConnectionContainer.SSH1.getName();
+			} else {
+				return ConnectionContainer.SSH2.getName();
+			}
+		} else if (connection == ConnectionType.TELNET) {
+			return ConnectionContainer.TELNET.getName();
+		} else if (connection == ConnectionType.SNMP) {
+			return "SNMP";
+		} else {
+			return "Unknown";
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static IPv4Address getSomeAddress(NetworkDevice device) {
+		Collection<IPv4Address> addresses = (Collection<IPv4Address>) device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
+		return addresses.iterator().next();
+	}
+	
 	public static String getHostname(NetworkDevice device) {
 		return (String) device.getValue(NetworkDevice.HOSTNAME);
 	}
@@ -70,7 +94,6 @@ public class NetworkDeviceHelper {
 		return caps;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static Configuration getConfiguration(NetworkDevice device) {
 		ConnectionType connection = (ConnectionType) device.getValue(NetworkDevice.CONNECTED_VIA);
 		ConnectionSettings settings = connection.getSettings();
@@ -91,12 +114,9 @@ public class NetworkDeviceHelper {
 			container = ConnectionContainer.TELNET;
 		}
 		
-		Collection<IPv4Address> addresses = (Collection<IPv4Address>) device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
-		IPv4Address address = addresses.iterator().next();
-		
 		Configuration configuration = new Configuration();
 		configuration.setConnection(container);
-		configuration.setAddress(address);
+		configuration.setAddress(getSomeAddress(device));
 		configuration.setPort(port);
 		configuration.setUsername(username);
 		configuration.setPassword(password);
