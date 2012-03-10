@@ -20,7 +20,6 @@ import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 import at.netcrawler.network.model.extension.RouterExtension;
 import at.netcrawler.network.model.extension.SNMPDeviceExtension;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.ui.graphical.NetworkDeviceHelper;
 import at.netcrawler.ui.graphical.device.category.Category;
 import at.netcrawler.ui.graphical.device.category.CiscoCategory;
 import at.netcrawler.ui.graphical.device.category.CiscoRouterCategory;
@@ -28,6 +27,7 @@ import at.netcrawler.ui.graphical.device.category.CiscoSwitchCategory;
 import at.netcrawler.ui.graphical.device.category.DeviceCategory;
 import at.netcrawler.ui.graphical.device.category.RouterCategory;
 import at.netcrawler.ui.graphical.device.category.SNMPCategory;
+import at.netcrawler.util.NetworkDeviceHelper;
 
 
 @SuppressWarnings("serial")
@@ -51,15 +51,17 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	}
 	
 	private final NetworkDevice device;
+	private final JScrollPane pane;
 	
-	// TODO: textfield disabled, click, textfield enabled, change via manager
-	// instantly
 	public DeviceView(TopologyDevice device) {
 		this.device = device.getNetworkDevice();
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Device View - "
 				+ NetworkDeviceHelper.getHostname(this.device));
+		
+		pane = new JScrollPane();
+		add(pane);
 		
 		build();
 		
@@ -103,7 +105,7 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 					entry.getKey(), entry.getValue());
 		}
 		
-		add(new JScrollPane(leftTabs));
+		pane.setViewportView(leftTabs);
 		
 		pack();
 		setMinimumSize(getSize());

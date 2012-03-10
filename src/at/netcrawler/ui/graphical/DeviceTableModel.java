@@ -17,6 +17,7 @@ import at.andiwand.library.util.comparator.ObjectStringComparator;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.util.NetworkDeviceHelper;
 
 
 @SuppressWarnings("serial")
