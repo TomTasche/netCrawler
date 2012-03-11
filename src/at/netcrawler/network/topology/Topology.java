@@ -33,6 +33,18 @@ public abstract class Topology extends
 		return result;
 	}
 	
+	// TODO: improve
+	public TopologyDevice getByIdentifier(DeviceIdentifier identifier) {
+		if (!containsIdentifier(identifier)) return null;
+		TopologyDevice device = new TopologyDevice(identifier, null);
+		
+		for (TopologyDevice topologyDevice : getVertices()) {
+			if (device.equals(topologyDevice)) return topologyDevice;
+		}
+		
+		throw new IllegalStateException("Unreachable section");
+	}
+	
 	public boolean containsIdentifier(DeviceIdentifier identifier) {
 		TopologyDevice device = new TopologyDevice(identifier, null);
 		return containsVertex(device);

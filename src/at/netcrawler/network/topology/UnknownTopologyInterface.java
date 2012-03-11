@@ -1,6 +1,5 @@
 package at.netcrawler.network.topology;
 
-import at.netcrawler.network.model.NetworkInterface;
 
 
 public class UnknownTopologyInterface extends TopologyInterface {
@@ -9,8 +8,8 @@ public class UnknownTopologyInterface extends TopologyInterface {
 	
 	private final Object identifier = new Object();
 	
-	public UnknownTopologyInterface(NetworkInterface networkInterface) {
-		super(networkInterface);
+	public UnknownTopologyInterface() {
+		super(null);
 	}
 	
 	@Override

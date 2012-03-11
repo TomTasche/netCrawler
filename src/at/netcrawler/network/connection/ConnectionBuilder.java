@@ -11,34 +11,13 @@ public class ConnectionBuilder {
 	
 	private Map<ConnectionType, ConnectionGateway> gatewayMap = new HashMap<ConnectionType, ConnectionGateway>();
 	
-	private ConnectionSettingsManager settingsManager;
-	
 	public ConnectionBuilder() {}
-	
-	public ConnectionBuilder(ConnectionSettingsManager settingsManager) {
-		this.settingsManager = settingsManager;
-	}
 	
 	public ConnectionBuilder(ConnectionGateway... connectionGateways) {
 		for (ConnectionGateway connectionGateway : connectionGateways) {
 			addConnectionGateway(connectionGateway.getConnectionType(),
 					connectionGateway);
 		}
-	}
-	
-	public ConnectionBuilder(ConnectionSettingsManager settingsManager,
-			ConnectionGateway... connectionGateways) {
-		this(connectionGateways);
-		
-		this.settingsManager = settingsManager;
-	}
-	
-	public ConnectionSettingsManager getSettingsManager() {
-		return settingsManager;
-	}
-	
-	public void setSettingsManager(ConnectionSettingsManager settingsManager) {
-		this.settingsManager = settingsManager;
 	}
 	
 	public void addConnectionGateway(ConnectionType connectionType,
@@ -62,21 +41,6 @@ public class ConnectionBuilder {
 		if (gateway == null) return null;
 		
 		return (C) gateway.openConnection(deviceAccessor, connectionSettings);
-	}
-	
-	public <C extends Connection> C openConnection(
-			ConnectionType connectionType, DeviceAccessor deviceAccessor)
-			throws IOException {
-		if (settingsManager == null)
-			throw new IllegalStateException("No settings manager given");
-		
-		ConnectionSettings connectionSettings = settingsManager.getSettings(
-				deviceAccessor, connectionType);
-		if (connectionSettings == null)
-			throw new IllegalStateException("No matching settings found");
-		
-		return openConnection(connectionType, deviceAccessor,
-				connectionSettings);
 	}
 	
 }
