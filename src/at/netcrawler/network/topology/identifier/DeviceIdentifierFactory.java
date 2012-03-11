@@ -32,10 +32,10 @@ public abstract class DeviceIdentifierFactory {
 	}
 	
 	public final DeviceIdentifier buildIdentifier(NetworkDevice device) {
-		if (!device.getExtensions().containsAll(
-				requiredExtensions)) return null;
-		if (!device.getValueMap().keySet().containsAll(
-				requiredValues)) return null;
+		if (!device.getExtensions().containsAll(requiredExtensions))
+			return null;
+		if (!device.getValueMap().keySet().containsAll(requiredValues))
+			return null;
 		
 		return buildIdentifierImpl(device);
 	}

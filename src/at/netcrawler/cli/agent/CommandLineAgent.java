@@ -14,6 +14,7 @@ import at.andiwand.library.io.FluidInputStreamReader;
 import at.andiwand.library.io.StreamUtil;
 
 
+// TODO: GenericCommandLineAgent
 public abstract class CommandLineAgent implements CommandLineExecutor {
 	
 	protected final InputStream in;
@@ -26,26 +27,34 @@ public abstract class CommandLineAgent implements CommandLineExecutor {
 	
 	public CommandLineAgent(CommandLineInterface cli,
 			CommandLineAgentSettings settings) throws IOException {
-		this.in = getFilterInputStream(cli.getInputStream());
-		this.out = getFilterOutputStream(cli.getOutputStream());
+		this.in = getFilterInputStream(cli.getInputStream(), settings);
+		this.out = getFilterOutputStream(cli.getOutputStream(), settings);
+		
 		this.charset = settings.getCharset();
-		this.reader = getFilterReader(new FluidInputStreamReader(in, charset));
-		this.writer = getFilterWriter(new OutputStreamWriter(out, charset));
+		
+		this.reader = getFilterReader(new FluidInputStreamReader(in, charset),
+				settings);
+		this.writer = getFilterWriter(new OutputStreamWriter(out, charset),
+				settings);
 	}
 	
-	protected InputStream getFilterInputStream(InputStream in) {
+	protected InputStream getFilterInputStream(InputStream in,
+			CommandLineAgentSettings settings) {
 		return in;
 	}
 	
-	protected OutputStream getFilterOutputStream(OutputStream out) {
+	protected OutputStream getFilterOutputStream(OutputStream out,
+			CommandLineAgentSettings settings) {
 		return out;
 	}
 	
-	protected Reader getFilterReader(Reader reader) {
+	protected Reader getFilterReader(Reader reader,
+			CommandLineAgentSettings settings) {
 		return reader;
 	}
 	
-	protected Writer getFilterWriter(Writer writer) {
+	protected Writer getFilterWriter(Writer writer,
+			CommandLineAgentSettings settings) {
 		return writer;
 	}
 	
@@ -56,8 +65,7 @@ public abstract class CommandLineAgent implements CommandLineExecutor {
 	public String executeAndRead(String command) throws IOException {
 		CommandLineInterface process = execute(command);
 		InputStream in = process.getInputStream();
-		return StreamUtil.readAsString(
-				in, charset);
+		return StreamUtil.readAsString(in, charset);
 	}
 	
 }

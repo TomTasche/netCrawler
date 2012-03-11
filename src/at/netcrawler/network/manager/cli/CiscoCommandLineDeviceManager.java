@@ -2,7 +2,6 @@ package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -16,7 +15,7 @@ import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
 
 
-public class CiscoCLIDeviceManager extends CLIDeviceManager {
+public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	
 	private static final String IDENTICATION_COMMAND = "show version";
 	private static final QuickPattern IDENTICATION_PATTERN = new QuickPattern(
@@ -38,23 +37,21 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 0);
 	
-	public CiscoCLIDeviceManager(NetworkDevice device,
+	public CiscoCommandLineDeviceManager(NetworkDevice device,
 			PromtCommandLineAgent agent) {
 		super(device, agent);
 		
-		addExtensionManager(new CiscoCLIDeviceExtensionManager());
-		addExtensionManager(new CiscoCLISwitchExtensionManager());
-		addExtensionManager(new CiscoCLIRouterExtensionManager());
+		addExtensionManager(new CiscoDeviceCommandLineExtensionManager());
+		addExtensionManager(new CiscoSwitchCommandLineExtensionManager());
+		addExtensionManager(new CiscoRouterCommandLineExtensionManager());
 	}
 	
 	protected String getIdentication() throws IOException {
-		return executeAndFind(
-				IDENTICATION_COMMAND, IDENTICATION_PATTERN);
+		return executeAndFind(IDENTICATION_COMMAND, IDENTICATION_PATTERN);
 	}
 	
 	protected String getHostname() throws IOException {
-		return executeAndFind(
-				HOSTNAME_COMMAND, HOSTNAME_PATTERN);
+		return executeAndFind(HOSTNAME_COMMAND, HOSTNAME_PATTERN);
 	}
 	
 	protected DeviceSystem getSystem() throws IOException {
@@ -62,13 +59,11 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	protected String getSystemString() throws IOException {
-		return executeAndFind(
-				SYSTEM_COMMAND, SYSTEM_PATTERN);
+		return executeAndFind(SYSTEM_COMMAND, SYSTEM_PATTERN);
 	}
 	
 	protected long getUptime() throws IOException {
-		String uptime = executeAndFind(
-				UPTIME_COMMAND, UPTIME_PATTERN);
+		String uptime = executeAndFind(UPTIME_COMMAND, UPTIME_PATTERN);
 		return Long.parseLong(uptime);
 	}
 	
@@ -99,7 +94,7 @@ public class CiscoCLIDeviceManager extends CLIDeviceManager {
 	}
 	
 	@Override
-	public Map<IPv4Address, NetworkInterface> discoverNeighbors() {
+	public Set<IPv4Address> discoverNeighbors() {
 		// TODO: implement
 		return null;
 	}

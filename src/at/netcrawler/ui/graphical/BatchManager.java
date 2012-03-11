@@ -86,8 +86,8 @@ public class BatchManager extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory() || f.getName().endsWith(
-						Configuration.FILE_SUFFIX);
+				return f.isDirectory()
+						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -234,8 +234,7 @@ public class BatchManager extends JFrame {
 	private void addBatch(String name, String batch) {
 		JTextArea textArea = new JTextArea(batch);
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		batchTabbedPane.add(
-				name, scrollPane);
+		batchTabbedPane.add(name, scrollPane);
 	}
 	
 	private void validateIP() {
@@ -262,8 +261,8 @@ public class BatchManager extends JFrame {
 	}
 	
 	private void validateBatch() {
-		if (batchTabbedPane.getTabCount() <= 0) throw new IllegalArgumentException(
-				"Contains no batches!");
+		if (batchTabbedPane.getTabCount() <= 0)
+			throw new IllegalArgumentException("Contains no batches!");
 	}
 	
 	private void validateAll() {
@@ -278,35 +277,35 @@ public class BatchManager extends JFrame {
 		batchName = batchName.trim();
 		
 		if (batchName.isEmpty()) {
-			ConfigurationDialog.showErrorDialog(
-					BatchManager.this, "Batch name is empty!");
+			ConfigurationDialog.showErrorDialog(BatchManager.this,
+					"Batch name is empty!");
 			
 			return;
 		}
 		
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-				ConfigurationDialog.showErrorDialog(
-						BatchManager.this, "Batch name already exists!");
+				ConfigurationDialog.showErrorDialog(BatchManager.this,
+						"Batch name already exists!");
 				
 				return;
 			}
 		}
 		
-		addBatch(
-				batchName, "");
+		addBatch(batchName, "");
 		batchTabbedPane.setSelectedIndex(batchTabbedPane.getTabCount() - 1);
 		batchNewNameField.setText("");
 	}
 	
 	private void doChoose() {
 		if (batchTabbedPane.getTabCount() <= 0) {
-			ConfigurationDialog.showErrorDialog(
-					BatchManager.this, "Add batch name first!");
+			ConfigurationDialog.showErrorDialog(BatchManager.this,
+					"Add batch name first!");
 			return;
 		}
 		
-		if (batchFileChooser.showOpenDialog(BatchManager.this) == JFileChooser.CANCEL_OPTION) return;
+		if (batchFileChooser.showOpenDialog(BatchManager.this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		File file = batchFileChooser.getSelectedFile();
 		
@@ -325,13 +324,13 @@ public class BatchManager extends JFrame {
 					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					BatchManager.this, e);
+			ConfigurationDialog.showErrorDialog(BatchManager.this, e);
 		}
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		try {
 			File file = fileChooser.getSelectedFile();
@@ -339,16 +338,15 @@ public class BatchManager extends JFrame {
 			encryptionBag.setEncryption(Encryption.PLAIN);
 			
 			Configuration configuration = new Configuration();
-			configuration.readFromJsonFile(
-					file, new EncryptionCallback() {
-						public String getPassword(Encryption encryption) {
-							String password = ConfigurationDialog
-									.showDecryptionDialog(BatchManager.this);
-							encryptionBag.setEncryption(encryption);
-							encryptionBag.setPassword(password);
-							return password;
-						}
-					});
+			configuration.readFromJsonFile(file, new EncryptionCallback() {
+				public String getPassword(Encryption encryption) {
+					String password = ConfigurationDialog
+							.showDecryptionDialog(BatchManager.this);
+					encryptionBag.setEncryption(encryption);
+					encryptionBag.setPassword(password);
+					return password;
+				}
+			});
 			
 			setConfiguration(configuration);
 			
@@ -356,8 +354,7 @@ public class BatchManager extends JFrame {
 			activeFile = file;
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -365,18 +362,17 @@ public class BatchManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 			return;
 		}
 		
 		if (activeFile == null) {
-			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) return;
+			if (fileChooser.showSaveDialog(this) == JFileChooser.CANCEL_OPTION)
+				return;
 			
 			activeFile = fileChooser.getSelectedFile();
 			
-			if (!activeFile.getName().endsWith(
-					Configuration.FILE_SUFFIX)) {
+			if (!activeFile.getName().endsWith(Configuration.FILE_SUFFIX)) {
 				activeFile = new File(activeFile.getPath()
 						+ Configuration.FILE_SUFFIX);
 			}
@@ -391,23 +387,20 @@ public class BatchManager extends JFrame {
 			
 			Configuration[] configurations = getConfigurations();
 			if (configurations.length == 0) {
-				configurations[0].writeToJsonFile(
-						activeFile, encryptionBag.getEncryption(),
-						encryptionBag.getPassword());
+				configurations[0].writeToJsonFile(activeFile, encryptionBag
+						.getEncryption(), encryptionBag.getPassword());
 			} else {
 				for (int i = 0; i < configurations.length; i++) {
 					File file = new File(activeFile.getParent()
 							+ File.separatorChar + i + "_"
 							+ activeFile.getName());
-					configurations[0].writeToJsonFile(
-							file, encryptionBag.getEncryption(),
-							encryptionBag.getPassword());
+					configurations[0].writeToJsonFile(file, encryptionBag
+							.getEncryption(), encryptionBag.getPassword());
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -432,8 +425,7 @@ public class BatchManager extends JFrame {
 	}
 	
 	private Configuration[] getConfigurations() {
-		String[] addresses = addressField.getText().split(
-				";");
+		String[] addresses = addressField.getText().split(";");
 		Configuration[] configurations = new Configuration[addresses.length];
 		for (int i = 0; i < addresses.length; i++) {
 			Configuration configuration = new Configuration();
@@ -468,8 +460,7 @@ public class BatchManager extends JFrame {
 		batchTabbedPane.removeAll();
 		for (Map.Entry<String, String> entry : configuration.getBatches()
 				.entrySet()) {
-			addBatch(
-					entry.getKey(), entry.getValue());
+			addBatch(entry.getKey(), entry.getValue());
 		}
 	}
 }

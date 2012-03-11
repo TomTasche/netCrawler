@@ -33,8 +33,8 @@ public class ColumnChooser extends JPopupMenu {
 		}
 		
 		for (String column : columns) {
-			JMenuItem item = createColumnCheckbox(
-					column, visibleColumns.contains(column));
+			JMenuItem item = createColumnCheckbox(column, visibleColumns
+					.contains(column));
 			add(item);
 		}
 		

@@ -10,59 +10,73 @@ import at.netcrawler.network.accessor.DeviceAccessor;
 public class ConnectionBuilder {
 	
 	private Map<ConnectionType, ConnectionGateway> gatewayMap = new HashMap<ConnectionType, ConnectionGateway>();
-	private Map<ConnectionType, ConnectionSettings> settingsMap = new HashMap<ConnectionType, ConnectionSettings>();
+	
+	private ConnectionSettingsManager settingsManager;
 	
 	public ConnectionBuilder() {}
 	
-	public ConnectionBuilder(ConnectionGateway... gateways) {
-		for (ConnectionGateway gateway : gateways) {
-			addGateway(gateway);
+	public ConnectionBuilder(ConnectionSettingsManager settingsManager) {
+		this.settingsManager = settingsManager;
+	}
+	
+	public ConnectionBuilder(ConnectionGateway... connectionGateways) {
+		for (ConnectionGateway connectionGateway : connectionGateways) {
+			addConnectionGateway(connectionGateway.getConnectionType(),
+					connectionGateway);
 		}
 	}
 	
-	public void addGateway(ConnectionGateway gateway) {
-		gatewayMap.put(
-				gateway.getConnectionType(), gateway);
+	public ConnectionBuilder(ConnectionSettingsManager settingsManager,
+			ConnectionGateway... connectionGateways) {
+		this(connectionGateways);
+		
+		this.settingsManager = settingsManager;
 	}
 	
-	public void removeGateway(ConnectionType connectionType) {
+	public ConnectionSettingsManager getSettingsManager() {
+		return settingsManager;
+	}
+	
+	public void setSettingsManager(ConnectionSettingsManager settingsManager) {
+		this.settingsManager = settingsManager;
+	}
+	
+	public void addConnectionGateway(ConnectionType connectionType,
+			ConnectionGateway connectionGateway) {
+		gatewayMap.put(connectionType, connectionGateway);
+	}
+	
+	public void removeConnectionGateway(ConnectionType connectionType) {
 		gatewayMap.remove(connectionType);
 	}
 	
-	public void removeGateway(ConnectionGateway gateway) {
-		removeGateway(gateway.getConnectionType());
-	}
-	
-	public void addConnectionSettings(ConnectionType connectionType,
-			ConnectionSettings settings) {
-		settingsMap.put(
-				connectionType, settings.clone());
-	}
-	
-	public void removeConnectionSettings(ConnectionType connectionType) {
-		settingsMap.remove(connectionType);
+	public void removeConnectionGateway(ConnectionGateway connectionGateway) {
+		removeConnectionGateway(connectionGateway.getConnectionType());
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <C extends Connection> C openConnection(
-			ConnectionType connectionType, DeviceAccessor accessor,
-			ConnectionSettings settings) throws IOException {
+			ConnectionType connectionType, DeviceAccessor deviceAccessor,
+			ConnectionSettings connectionSettings) throws IOException {
 		ConnectionGateway gateway = gatewayMap.get(connectionType);
 		if (gateway == null) return null;
 		
-		return (C) gateway.openConnection(
-				accessor, settings);
+		return (C) gateway.openConnection(deviceAccessor, connectionSettings);
 	}
 	
 	public <C extends Connection> C openConnection(
-			ConnectionType connectionType, DeviceAccessor accessor)
+			ConnectionType connectionType, DeviceAccessor deviceAccessor)
 			throws IOException {
-		ConnectionSettings settings = settingsMap.get(connectionType);
-		if (settings == null) throw new IllegalArgumentException(
-				"No default settings found");
+		if (settingsManager == null)
+			throw new IllegalStateException("No settings manager given");
 		
-		return openConnection(
-				connectionType, accessor, settings);
+		ConnectionSettings connectionSettings = settingsManager.getSettings(
+				deviceAccessor, connectionType);
+		if (connectionSettings == null)
+			throw new IllegalStateException("No matching settings found");
+		
+		return openConnection(connectionType, deviceAccessor,
+				connectionSettings);
 	}
 	
 }

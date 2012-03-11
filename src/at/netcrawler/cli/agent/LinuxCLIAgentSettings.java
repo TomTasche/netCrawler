@@ -11,8 +11,6 @@ public class LinuxCLIAgentSettings extends PromtCommandLineAgentSettings {
 			"(.*?)@(.*?):(.*?)\\$", Pattern.MULTILINE);
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 	
-	private String userPassword;
-	
 	public LinuxCLIAgentSettings() {
 		setCommentPrefix(DEFAULT_COMMENT_PREFIX);
 		setPromtPattern(DEFAULT_PROMT_PATTERN);
@@ -21,8 +19,6 @@ public class LinuxCLIAgentSettings extends PromtCommandLineAgentSettings {
 	
 	public LinuxCLIAgentSettings(LinuxCLIAgentSettings settings) {
 		super(settings);
-		
-		userPassword = settings.userPassword;
 	}
 	
 	@Override
@@ -33,14 +29,6 @@ public class LinuxCLIAgentSettings extends PromtCommandLineAgentSettings {
 	@Override
 	public Class<LinuxCommandLineAgent> getAgentClass() {
 		return LinuxCommandLineAgent.class;
-	}
-	
-	public String getUserPassword() {
-		return userPassword;
-	}
-	
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
 	}
 	
 }

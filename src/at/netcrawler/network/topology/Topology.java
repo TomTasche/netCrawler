@@ -9,6 +9,7 @@ import java.util.Set;
 import at.andiwand.library.math.graph.AbstractHypergraph;
 import at.andiwand.library.math.graph.GraphListener;
 import at.andiwand.library.math.graph.ListenableGraph;
+import at.netcrawler.network.topology.identifier.DeviceIdentifier;
 
 
 public abstract class Topology extends
@@ -30,6 +31,11 @@ public abstract class Topology extends
 		}
 		
 		return result;
+	}
+	
+	public boolean containsIdentifier(DeviceIdentifier identifier) {
+		TopologyDevice device = new TopologyDevice(identifier, null);
+		return containsVertex(device);
 	}
 	
 	@Override

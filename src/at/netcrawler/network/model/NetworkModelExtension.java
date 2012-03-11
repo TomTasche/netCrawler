@@ -46,8 +46,7 @@ public abstract class NetworkModelExtension implements Serializable {
 	public final boolean equals(Object obj) {
 		if (obj == null) return false;
 		
-		return getClass().equals(
-				obj.getClass());
+		return getClass().equals(obj.getClass());
 	}
 	
 	@Override
@@ -69,8 +68,8 @@ public abstract class NetworkModelExtension implements Serializable {
 	
 	private void setExtendedModelClass(
 			Class<? extends NetworkModel> extendedModelClass) {
-		if (extendedModelClass == null) throw new IllegalArgumentException(
-				"Passing null is illigal!");
+		if (extendedModelClass == null)
+			throw new IllegalArgumentException("Passing null is illigal!");
 		
 		this.extendedModelClass = extendedModelClass;
 	}
@@ -82,8 +81,8 @@ public abstract class NetworkModelExtension implements Serializable {
 	protected final void finalize() {
 		if (finalized) return;
 		
-		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap)) extensionTypeMap = Collections
-				.unmodifiableMap(extensionTypeMap);
+		if (!CollectionUtil.isUnmodifiableMap(extensionTypeMap))
+			extensionTypeMap = Collections.unmodifiableMap(extensionTypeMap);
 		
 		finalized = true;
 	}
@@ -103,8 +102,7 @@ public abstract class NetworkModelExtension implements Serializable {
 	protected final void addExtensionType(String key, TypeToken<?> type) {
 		checkNotFinalized();
 		
-		extensionTypeMap.put(
-				key, type);
+		extensionTypeMap.put(key, type);
 	}
 	
 	protected final void removeExtensionType(String key) {

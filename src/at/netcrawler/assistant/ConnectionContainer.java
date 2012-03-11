@@ -14,17 +14,16 @@ import at.netcrawler.network.connection.telnet.TelnetSettings;
 // TODO: container for connection class
 public enum ConnectionContainer {
 	
-	NOTHING("- Choose connection -", null, null), TELNET("Telnet",
-			ConnectionType.TELNET, new TelnetSettings()), SSH1("SSH v1",
-			ConnectionType.SSH, new SSHSettings(SSHVersion.VERSION1)), SSH2(
-			"SSH v2", ConnectionType.SSH, new SSHSettings(SSHVersion.VERSION2));
+	NOTHING("- Choose connection -", null, null),
+	TELNET("Telnet", ConnectionType.TELNET, new TelnetSettings()),
+	SSH1("SSH v1", ConnectionType.SSH, new SSHSettings(SSHVersion.VERSION1)),
+	SSH2("SSH v2", ConnectionType.SSH, new SSHSettings(SSHVersion.VERSION2));
 	
 	private static final Map<String, ConnectionContainer> NAME_MAP = new HashMap<String, ConnectionContainer>();
 	
 	static {
 		for (ConnectionContainer container : values()) {
-			NAME_MAP.put(
-					container.name, container);
+			NAME_MAP.put(container.name, container);
 		}
 	}
 	

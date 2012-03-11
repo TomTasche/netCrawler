@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.Writer;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLineInterface;
+import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.io.UnlimitedPushbackInputStream;
 import at.netcrawler.io.CharPrefixLineFilterInputStream;
 import at.netcrawler.io.FilterLastLineInputStream;
@@ -100,7 +100,6 @@ public class CiscoCommandLineAgent extends PromtCommandLineAgent {
 	
 	protected final Pattern morePattern;
 	protected final String moreString;
-	private final Set<Character> statusPrefixes;
 	
 	public CiscoCommandLineAgent(CommandLineInterface cli,
 			CiscoCommandLineAgentSettings settings) throws IOException {
@@ -108,25 +107,35 @@ public class CiscoCommandLineAgent extends PromtCommandLineAgent {
 		
 		morePattern = settings.getMorePattern();
 		moreString = settings.getMoreString();
-		statusPrefixes = settings.getStatusPrefixes();
 		
 		handleLogin(settings);
+		synchronizeStreams();
 	}
 	
 	@Override
-	protected InputStream getFilterInputStream(InputStream in) {
-		return new CharPrefixLineFilterInputStream(in, statusPrefixes);
+	protected InputStream getFilterInputStream(InputStream in,
+			CommandLineAgentSettings settings) {
+		in = new TeeInputStream(in, System.out);
+		return new CharPrefixLineFilterInputStream(in,
+				((CiscoCommandLineAgentSettings) settings).getStatusPrefixes());
 	}
 	
 	// TODO: improve
 	private void handleLogin(CiscoCommandLineAgentSettings settings)
 			throws IOException {
-		if (settings != null) {
-			if (settings.getLogonUsername() != null) writer.write(settings
-					.getLogonUsername() + newLine);
-			if (settings.getLogonPassword() != null) writer.write(settings
-					.getLogonPassword() + newLine);
-		}
+		if (settings == null) return;
+		
+		// if (settings.getLogonUsername() != null) {
+		// writer.write(settings.getLogonUsername());
+		// writer.write(newLine);
+		// writer.flush();
+		// }
+		//
+		// if (settings.getLogonPassword() != null) {
+		// writer.write(settings.getLogonPassword());
+		// writer.write(newLine);
+		// writer.flush();
+		// }
 	}
 	
 	@Override

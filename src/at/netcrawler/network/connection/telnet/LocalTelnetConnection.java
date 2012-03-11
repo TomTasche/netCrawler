@@ -17,12 +17,11 @@ public class LocalTelnetConnection extends TelnetConnection {
 			TelnetSettings settings) throws IOException {
 		super(accessor, settings);
 		
-		InetSocketAddress endpoint = new InetSocketAddress(
-				accessor.getInetAddress(), settings.getPort());
+		InetSocketAddress endpoint = new InetSocketAddress(accessor
+				.getInetAddress(), settings.getPort());
 		
 		socket = new Socket();
-		socket.connect(
-				endpoint, settings.getTimeout());
+		socket.connect(endpoint, settings.getTimeout());
 	}
 	
 	@Override

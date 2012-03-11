@@ -5,22 +5,16 @@ import java.io.IOException;
 import at.netcrawler.network.accessor.DeviceAccessor;
 
 
-public abstract class Connection {
+public interface Connection {
 	
-	private boolean closed;
+	public ConnectionType getConnectionType();
 	
-	public Connection(DeviceAccessor accessor, ConnectionSettings settings) {}
+	public DeviceAccessor getDeviceAccessor();
 	
-	public final boolean isClosed() {
-		return closed;
-	}
+	public ConnectionSettings getConnectionSettings();
 	
-	public final void close() throws IOException {
-		closed = true;
-		
-		closeImpl();
-	}
+	public boolean isClosed();
 	
-	protected abstract void closeImpl() throws IOException;
+	public void close() throws IOException;
 	
 }

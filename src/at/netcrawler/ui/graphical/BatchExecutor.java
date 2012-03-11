@@ -97,8 +97,8 @@ public class BatchExecutor extends JFrame {
 			}
 			
 			public boolean accept(File f) {
-				return f.isDirectory() || f.getName().endsWith(
-						Configuration.FILE_SUFFIX);
+				return f.isDirectory()
+						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
 		
@@ -213,7 +213,8 @@ public class BatchExecutor extends JFrame {
 	}
 	
 	private void doOpen() {
-		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) return;
+		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
+			return;
 		
 		try {
 			open(fileChooser.getSelectedFile());
@@ -221,8 +222,7 @@ public class BatchExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
@@ -231,36 +231,33 @@ public class BatchExecutor extends JFrame {
 			execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(
-					this, e);
+			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
 	
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(
-				file, new EncryptionCallback() {
-					public String getPassword(Encryption encryption) {
-						return ConfigurationDialog
-								.showDecryptionDialog(BatchExecutor.this);
-					}
-				});
+		configuration.readFromJsonFile(file, new EncryptionCallback() {
+			public String getPassword(Encryption encryption) {
+				return ConfigurationDialog
+						.showDecryptionDialog(BatchExecutor.this);
+			}
+		});
 		
 		setConfiguration(configuration);
 	}
 	
 	private void execute() throws IOException {
-		DeviceAccessor accessor = new IPDeviceAccessor(
-				configuration.getAddress());
+		DeviceAccessor accessor = new IPDeviceAccessor(configuration
+				.getAddress());
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
 		
 		ConnectionContainer connectionContainer = configuration
 				.getConnectionContainer();
 		CommandLineInterface cli = (CommandLineInterface) connectionFactory
-				.openConnection(
-						connectionContainer.getConnectionType(), accessor,
-						settings);
+				.openConnection(connectionContainer.getConnectionType(),
+						accessor, settings);
 		
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();

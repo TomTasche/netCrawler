@@ -36,18 +36,18 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	private final static Map<Class<? extends NetworkModelExtension>, Category> EXTENSION_CATEGORY_MAPPING = new HashMap<Class<? extends NetworkModelExtension>, Category>();
 	
 	static {
-		EXTENSION_CATEGORY_MAPPING.put(
-				RouterExtension.class, new RouterCategory());
-		EXTENSION_CATEGORY_MAPPING.put(
-				CiscoDeviceExtension.class, new CiscoCategory());
-		EXTENSION_CATEGORY_MAPPING.put(
-				SNMPDeviceExtension.class, new SNMPCategory());
-		EXTENSION_CATEGORY_MAPPING.put(
-				NetworkDeviceExtension.class, new DeviceCategory());
-		EXTENSION_CATEGORY_MAPPING.put(
-				CiscoRouterExtension.class, new CiscoRouterCategory());
-		EXTENSION_CATEGORY_MAPPING.put(
-				CiscoSwitchExtension.class, new CiscoSwitchCategory());
+		EXTENSION_CATEGORY_MAPPING.put(RouterExtension.class,
+				new RouterCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoDeviceExtension.class,
+				new CiscoCategory());
+		EXTENSION_CATEGORY_MAPPING.put(SNMPDeviceExtension.class,
+				new SNMPCategory());
+		EXTENSION_CATEGORY_MAPPING.put(NetworkDeviceExtension.class,
+				new DeviceCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoRouterExtension.class,
+				new CiscoRouterCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoSwitchExtension.class,
+				new CiscoSwitchCategory());
 	}
 	
 	private final NetworkDevice device;
@@ -89,18 +89,15 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 			if (tab == null) {
 				tab = new JTabbedPane(JTabbedPane.TOP);
 				
-				tabs.put(
-						category.getCategory(), tab);
+				tabs.put(category.getCategory(), tab);
 			}
 			
-			tab.addTab(
-					category.getSub(), category.render(device));
+			tab.addTab(category.getSub(), category.render(device));
 		}
 		
 		JTabbedPane leftTabs = new JTabbedPane(JTabbedPane.LEFT);
 		for (Entry<String, JTabbedPane> entry : tabs.entrySet()) {
-			leftTabs.addTab(
-					entry.getKey(), entry.getValue());
+			leftTabs.addTab(entry.getKey(), entry.getValue());
 		}
 		
 		add(new JScrollPane(leftTabs));

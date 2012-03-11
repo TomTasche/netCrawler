@@ -1,25 +1,34 @@
 package at.netcrawler.test;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 
 public class Test {
 	
-	public static void main(String[] args) {
-		String s = "advertisement version: 2\n" + "Duplex: full\n"
-				+ "---------------------------\n" + "\n"
-				+ "Device ID: Router\n" + "Entry address(es): ";
+	public static void main(String[] args) throws Throwable {
+		String host = "192.168.15.101";
+		int port = 23;
 		
-		Pattern pattern = Pattern.compile(
-				"^-{2,}$", Pattern.MULTILINE);
-		Matcher matcher = pattern.matcher(s);
+		Socket socket = new Socket(host, port);
+		InputStream in = socket.getInputStream();
+		OutputStream out = socket.getOutputStream();
 		
-		if (!matcher.find()) return;
+		out.write("cisco\r".getBytes());
+		out.flush();
+		Thread.sleep(500);
+		out.write("cisco\r".getBytes());
+		out.flush();
+		Thread.sleep(500);
+		out.write("show version\r".getBytes());
+		out.flush();
 		
-		System.out.println(matcher.group());
-		
-		System.out.println(s.split("^-{2,}$").length);
+		int read;
+		while ((read = in.read()) != -1) {
+			System.out.write(read);
+			System.out.flush();
+		}
 	}
 	
 }

@@ -23,8 +23,7 @@ public class RouterCategory extends Category {
 					(Collection<Object>) device
 							.getValue(RouterExtension.ROUTING_TABLE));
 			
-			builder.addListRow(
-					"Routing Table", table);
+			builder.addListRow("Routing Table", table);
 		}
 		
 		return builder.build();

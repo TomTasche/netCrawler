@@ -24,8 +24,7 @@ public class ImageDevicePainter implements DevicePainter {
 	@Override
 	public void paint(Graphics g, GraphViewerVertex vertex) {
 		Point p = vertex.getPosition();
-		g.drawImage(
-				image, p.x, p.y, null);
+		g.drawImage(image, p.x, p.y, null);
 	}
 	
 }

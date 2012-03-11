@@ -23,8 +23,7 @@ public class CiscoCategory extends Category {
 					(Collection<Object>) device
 							.getValue(CiscoDeviceExtension.CDP_NEIGHBORS));
 			
-			builder.addListRow(
-					"CDP Neighbours", table);
+			builder.addListRow("CDP Neighbours", table);
 		}
 		
 		return builder.build();

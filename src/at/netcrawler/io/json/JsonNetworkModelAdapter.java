@@ -29,8 +29,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 	@Override
 	public JsonElement serialize(NetworkModel src, Type typeOfSrc,
 			JsonSerializationContext context) {
-		Map<String, Object> valueMap = new TreeMap<String, Object>(
-				src.getValueMap());
+		Map<String, Object> valueMap = new TreeMap<String, Object>(src
+				.getValueMap());
 		Set<Class<?>> extensionClasses = new TreeSet<Class<?>>(
 				new ObjectStringComparator());
 		
@@ -38,10 +38,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 			extensionClasses.add(extension.getClass());
 		
 		JsonObject result = new JsonObject();
-		result.add(
-				EXTENSIONS_PROPERTY, context.serialize(extensionClasses));
-		result.add(
-				VALUES_PROPERTY, context.serialize(valueMap));
+		result.add(EXTENSIONS_PROPERTY, context.serialize(extensionClasses));
+		result.add(VALUES_PROPERTY, context.serialize(valueMap));
 		
 		return result;
 	}
@@ -57,8 +55,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 			NetworkModel result = modelClass.newInstance();
 			
 			Set<Class<? extends NetworkModelExtension>> extensionClasses = context
-					.deserialize(
-							object.get(EXTENSIONS_PROPERTY), EXTENSION_TYPE);
+					.deserialize(object.get(EXTENSIONS_PROPERTY),
+							EXTENSION_TYPE);
 			
 			for (Class<? extends NetworkModelExtension> extensionClass : extensionClasses) {
 				NetworkModelExtension extension = NetworkModelExtension
@@ -66,8 +64,8 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 				result.addExtension(extension);
 			}
 			
-			JsonObject valueMapObject = object.get(
-					VALUES_PROPERTY).getAsJsonObject();
+			JsonObject valueMapObject = object.get(VALUES_PROPERTY)
+					.getAsJsonObject();
 			
 			Map<String, TypeToken<?>> typeMap = result.getTypeMap();
 			
@@ -75,11 +73,9 @@ public class JsonNetworkModelAdapter extends JsonAdapter<NetworkModel> {
 				String key = entry.getKey();
 				JsonElement valueElement = entry.getValue();
 				
-				Object value = context.deserialize(
-						valueElement, typeMap.get(
-								key).getType());
-				result.setValue(
-						key, value);
+				Object value = context.deserialize(valueElement, typeMap.get(
+						key).getType());
+				result.setValue(key, value);
 			}
 			
 			return result;

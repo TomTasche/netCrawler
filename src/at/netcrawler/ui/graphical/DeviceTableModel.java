@@ -28,48 +28,44 @@ public class DeviceTableModel extends AbstractTableModel implements
 	static {
 		ACCESSOR_FOR_NAME = new HashMap<String, DeviceTableModel.NetworkDeviceDataAccessor>();
 		
-		ACCESSOR_FOR_NAME.put(
-				"Hostname", new NetworkDeviceDataAccessor() {
-					
-					@Override
-					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper.getHostname(device);
-					}
-				});
-		ACCESSOR_FOR_NAME.put(
-				"Major Capability", new NetworkDeviceDataAccessor() {
+		ACCESSOR_FOR_NAME.put("Hostname", new NetworkDeviceDataAccessor() {
+			
+			@Override
+			public String get(NetworkDevice device) {
+				return NetworkDeviceHelper.getHostname(device);
+			}
+		});
+		ACCESSOR_FOR_NAME.put("Major Capability",
+				new NetworkDeviceDataAccessor() {
 					
 					@Override
 					public String get(NetworkDevice device) {
 						return NetworkDeviceHelper.getMajorCapability(device);
 					}
 				});
-		ACCESSOR_FOR_NAME.put(
-				"Capabilities", new NetworkDeviceDataAccessor() {
-					
-					@Override
-					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper.concatCapabilities(device);
-					}
-				});
-		ACCESSOR_FOR_NAME.put(
-				"System", new NetworkDeviceDataAccessor() {
-					
-					@Override
-					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper.getSystem(device);
-					}
-				});
-		ACCESSOR_FOR_NAME.put(
-				"Connected via", new NetworkDeviceDataAccessor() {
-					
-					@Override
-					public String get(NetworkDevice device) {
-						return "implementier das, andi!";
-					}
-				});
-		ACCESSOR_FOR_NAME.put(
-				"Management Addresses", new NetworkDeviceDataAccessor() {
+		ACCESSOR_FOR_NAME.put("Capabilities", new NetworkDeviceDataAccessor() {
+			
+			@Override
+			public String get(NetworkDevice device) {
+				return NetworkDeviceHelper.concatCapabilities(device);
+			}
+		});
+		ACCESSOR_FOR_NAME.put("System", new NetworkDeviceDataAccessor() {
+			
+			@Override
+			public String get(NetworkDevice device) {
+				return NetworkDeviceHelper.getSystem(device);
+			}
+		});
+		ACCESSOR_FOR_NAME.put("Connected via", new NetworkDeviceDataAccessor() {
+			
+			@Override
+			public String get(NetworkDevice device) {
+				return "implementier das, andi!";
+			}
+		});
+		ACCESSOR_FOR_NAME.put("Management Addresses",
+				new NetworkDeviceDataAccessor() {
 					
 					@Override
 					public String get(NetworkDevice device) {
@@ -77,14 +73,13 @@ public class DeviceTableModel extends AbstractTableModel implements
 								.getManagementAddresses(device);
 					}
 				});
-		ACCESSOR_FOR_NAME.put(
-				"Uptime", new NetworkDeviceDataAccessor() {
-					
-					@Override
-					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper.getUptime(device);
-					}
-				});
+		ACCESSOR_FOR_NAME.put("Uptime", new NetworkDeviceDataAccessor() {
+			
+			@Override
+			public String get(NetworkDevice device) {
+				return NetworkDeviceHelper.getUptime(device);
+			}
+		});
 	}
 	
 	public static Collection<String> getColumnNames() {
@@ -102,10 +97,9 @@ public class DeviceTableModel extends AbstractTableModel implements
 	}
 	
 	public synchronized void setTopology(Topology topology) {
-		List<TopologyDevice> temp = new ArrayList<TopologyDevice>(
-				topology.getVertices());
-		Collections.sort(
-				temp, new ObjectStringComparator());
+		List<TopologyDevice> temp = new ArrayList<TopologyDevice>(topology
+				.getVertices());
+		Collections.sort(temp, new ObjectStringComparator());
 		devices = Collections.unmodifiableList(temp);
 		
 		fireTableDataChanged();
@@ -149,21 +143,17 @@ public class DeviceTableModel extends AbstractTableModel implements
 	public synchronized Object getValueAt(int arg0, int arg1) {
 		// NetworkDevice device =
 		// devices.get(table.convertRowIndexToModel(arg0)).getNetworkDevice();
-		NetworkDevice device = devices.get(
-				arg0).getNetworkDevice();
+		NetworkDevice device = devices.get(arg0).getNetworkDevice();
 		
 		// String column = (String)
 		// columnModel.getColumn(table.convertColumnIndexToModel(arg1)).getHeaderValue();
 		String column;
 		synchronized (columnModel) {
-			column = (String) columnModel.getColumn(
-					arg1).getHeaderValue();
+			column = (String) columnModel.getColumn(arg1).getHeaderValue();
 		}
 		
 		if (ACCESSOR_FOR_NAME.containsKey(column)) {
-			return ACCESSOR_FOR_NAME.get(
-					column).get(
-					device);
+			return ACCESSOR_FOR_NAME.get(column).get(device);
 		} else {
 			return "Not crawled.";
 		}

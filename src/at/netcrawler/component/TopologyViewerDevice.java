@@ -22,15 +22,15 @@ import at.netcrawler.network.topology.TopologyDevice;
 public class TopologyViewerDevice extends GraphViewerVertex {
 	
 	private static enum DeviceImage {
-		UNKNOWN(null, "unknown.png"), ROUTER(Capability.ROUTER, "router.png"),
+		UNKNOWN(null, "unknown.png"),
+		ROUTER(Capability.ROUTER, "router.png"),
 		SWITCH(Capability.SWITCH, "switch.png");
 		
 		private static final Map<Capability, DevicePainter> PAINTER_MAP = new HashMap<Capability, DevicePainter>();
 		
 		static {
 			for (DeviceImage deviceImage : values()) {
-				PAINTER_MAP.put(
-						deviceImage.capability, deviceImage.painter);
+				PAINTER_MAP.put(deviceImage.capability, deviceImage.painter);
 			}
 		}
 		
@@ -128,15 +128,13 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 	}
 	
 	public void setPainter(Capability capability, DevicePainter painter) {
-		painterMap.put(
-				capability, painter);
+		painterMap.put(capability, painter);
 		setCapability(this.capability);
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		painter.paint(
-				g, this);
+		painter.paint(g, this);
 		
 		Rectangle bounds = getBounds();
 		Point xCenter = new Point(getMiddle().x, bounds.y + bounds.height
@@ -144,8 +142,7 @@ public class TopologyViewerDevice extends GraphViewerVertex {
 		
 		if (hostname == null) hostname = "Loading...";
 		GraphicsUtil graphicsUtil = new GraphicsUtil(g);
-		graphicsUtil.drawXCenterString(
-				xCenter, hostname);
+		graphicsUtil.drawXCenterString(xCenter, hostname);
 	}
 	
 }

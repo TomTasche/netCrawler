@@ -15,8 +15,7 @@ public class NetworkDeviceHelper {
 	}
 	
 	public static String getMajorCapability(NetworkDevice device) {
-		return device.getValue(
-				NetworkDevice.MAJOR_CAPABILITY).toString();
+		return device.getValue(NetworkDevice.MAJOR_CAPABILITY).toString();
 	}
 	
 	public static String getUptime(NetworkDevice device) {
@@ -54,8 +53,7 @@ public class NetworkDeviceHelper {
 		if (capabilities == null) return "";
 		
 		for (Capability capability : capabilities) {
-			caps += capability.name().substring(
-					0, 1);
+			caps += capability.name().substring(0, 1);
 		}
 		
 		return caps;

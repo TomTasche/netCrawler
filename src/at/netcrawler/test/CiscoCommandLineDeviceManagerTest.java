@@ -11,7 +11,7 @@ import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
+import at.netcrawler.network.manager.cli.CiscoCommandLineDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
@@ -48,8 +48,8 @@ public class CiscoCommandLineDeviceManagerTest {
 		
 		NetworkDevice device = new NetworkDevice();
 		
-		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
-				agent);
+		CiscoCommandLineDeviceManager deviceManager = new CiscoCommandLineDeviceManager(
+				device, agent);
 		deviceManager.complete();
 		
 		@SuppressWarnings("unchecked")
