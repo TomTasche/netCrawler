@@ -23,6 +23,10 @@ public class SSHSettings extends TCPIPConnectionSettings {
 	
 	public SSHSettings(SSHSettings settings) {
 		super(settings);
+		
+		this.version = settings.version;
+		this.username = settings.username;
+		this.password = settings.password;
 	}
 	
 	@Override

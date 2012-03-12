@@ -2,6 +2,10 @@ package at.netcrawler.network.manager;
 
 import java.io.IOException;
 
+import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.model.extension.CiscoDeviceExtension;
+import at.netcrawler.network.model.extension.CiscoRouterExtension;
 import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 
 
@@ -37,7 +41,9 @@ public abstract class CiscoSwitchExtensionManager extends
 	// TODO: implement
 	@Override
 	public boolean hasExtension() throws IOException {
-		return false;
+		return device.containsExtension(CiscoDeviceExtension.EXTENSION)
+				&& device.getValue(NetworkDevice.MAJOR_CAPABILITY).equals(
+						Capability.SWITCH);
 	}
 	
 }

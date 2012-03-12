@@ -57,11 +57,13 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 				.getIdentification(networkDevice);
 		TopologyDevice topologyDevice = new TopologyDevice(identifier,
 				networkDevice);
-		boolean contains = topology.addVertex(topologyDevice);
+		System.out.println(topologyDevice.getHostname());
+		
+		boolean success = topology.addVertex(topologyDevice);
 		if (lastDevice != null) {
 			TopologyInterface interfaceA = new UnknownTopologyInterface();
 			TopologyInterface interfaceB = new UnknownTopologyInterface();
-			topologyDevice.addInterface(interfaceA);
+			lastDevice.addInterface(interfaceA);
 			topologyDevice.addInterface(interfaceB);
 			NetworkCable networkCable = new NetworkCable();
 			Set<TopologyInterface> connectedInterfaces = new HashSet<TopologyInterface>();
@@ -71,13 +73,16 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 					connectedInterfaces);
 			topology.addEdge(topologyCable);
 		}
-		if (contains) return;
 		
-		Set<IPv4Address> neighbors = deviceManager.discoverNeighbors();
-		
-		for (IPv4Address neighbor : neighbors) {
-			crawlImpl(topology, neighbor, topologyDevice);
+		if (success) {
+			Set<IPv4Address> neighbors = deviceManager.discoverNeighbors();
+			
+			for (IPv4Address neighbor : neighbors) {
+				crawlImpl(topology, neighbor, topologyDevice);
+			}
 		}
+		
+		connection.close();
 	}
 	
 }

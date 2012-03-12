@@ -28,7 +28,7 @@ public class SNMPDeviceExtension extends NetworkDeviceExtension {
 		EXTENSION = new SNMPDeviceExtension();
 	}
 	
-	private SNMPDeviceExtension() {
+	public SNMPDeviceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

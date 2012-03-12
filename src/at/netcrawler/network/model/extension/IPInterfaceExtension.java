@@ -34,7 +34,7 @@ public class IPInterfaceExtension extends NetworkInterfaceExtension {
 		EXTENSION = new IPInterfaceExtension();
 	}
 	
-	private IPInterfaceExtension() {
+	public IPInterfaceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

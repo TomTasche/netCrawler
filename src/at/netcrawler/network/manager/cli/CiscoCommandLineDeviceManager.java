@@ -2,6 +2,7 @@ package at.netcrawler.network.manager.cli;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -9,10 +10,12 @@ import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
 import at.netcrawler.DeviceSystem;
-import at.netcrawler.cli.agent.PromtCommandLineAgent;
+import at.netcrawler.cli.agent.PromptCommandLineAgent;
+import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
 public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
@@ -28,17 +31,29 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	
 	private static final String SYSTEM_COMMAND = "show version";
 	private static final QuickPattern SYSTEM_PATTERN = new QuickPattern(
-			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
+			".*? (C?\\d+) software \\((.+?)\\).*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 0);
 	
 	// TODO: implement
 	private static final String UPTIME_COMMAND = "show version";
 	private static final QuickPattern UPTIME_PATTERN = new QuickPattern(
-			".*?, (.+?) software \\((.+?)\\).*", Pattern.MULTILINE
-					| Pattern.CASE_INSENSITIVE, 0);
+			".*uptime is (.*)", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, 1);
+	
+	private static final String SOFTWARE_COMMAND = "show version";
+	private static final QuickPattern SOFTWARE_PATTERN = new QuickPattern(
+			".*? (C?\\d+) software \\((.+?)\\).*", Pattern.MULTILINE
+					| Pattern.CASE_INSENSITIVE, 1);
+	
+	private static final String INTERFACES_COMMAND = "show ip interfaces";
+	
+	private static final String MANAGEMENT_ADDRESSES_COMMAND = "show ip interface brief";
+	private static final Pattern MANAGEMENT_ADDRESSES_SEPARATOR = Pattern
+			.compile("\n", Pattern.MULTILINE);
+	private static final QuickPattern MANAGEMENT_ADDRESSES_PATTERN = new QuickPattern(
+			"((\\d{0,3}\\.){3}\\d{0,3})", 0);
 	
 	public CiscoCommandLineDeviceManager(NetworkDevice device,
-			PromtCommandLineAgent agent) {
+			PromptCommandLineAgent agent) {
 		super(device, agent);
 		
 		addExtensionManager(new CiscoDeviceCommandLineExtensionManager());
@@ -63,8 +78,8 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	}
 	
 	protected long getUptime() throws IOException {
-		String uptime = executeAndFind(UPTIME_COMMAND, UPTIME_PATTERN);
-		return Long.parseLong(uptime);
+		// TODO: implement
+		return 0;
 	}
 	
 	protected Set<Capability> getCapabilities() throws IOException {
@@ -74,7 +89,15 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	
 	@Override
 	protected Capability getMajorCapability() throws IOException {
-		// TODO: implement
+		String software = executeAndFind(SOFTWARE_COMMAND, SOFTWARE_PATTERN);
+		software = software.toUpperCase();
+		
+		if (software.startsWith("28")) {
+			return Capability.ROUTER;
+		} else if (software.startsWith("C35")) {
+			return Capability.SWITCH;
+		}
+		
 		return null;
 	}
 	
@@ -84,19 +107,47 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 	}
 	
 	protected Set<IPAddress> getManagementAddresses() throws IOException {
-		// TODO: implement
-		return null;
+		Set<IPAddress> result = new HashSet<IPAddress>();
+		
+		String output = execute(MANAGEMENT_ADDRESSES_COMMAND);
+		String[] interfaces = MANAGEMENT_ADDRESSES_SEPARATOR.split(output);
+		
+		for (String interfaze : interfaces) {
+			String addressString = MANAGEMENT_ADDRESSES_PATTERN
+					.findGroup(interfaze);
+			if (addressString == null) continue;
+			IPv4Address address = new IPv4Address(addressString);
+			result.add(address);
+		}
+		
+		return result;
 	}
 	
+	// TODO: improve
 	protected boolean setHostname(String hostname) throws IOException {
-		// TODO: implement
-		return false;
+		execute("configure terminal");
+		execute("hostname " + hostname);
+		execute("end");
+		return hostname.equals(getHostname());
 	}
 	
+	// TODO: implement
 	@Override
+	@SuppressWarnings("unchecked")
 	public Set<IPv4Address> discoverNeighbors() {
-		// TODO: implement
-		return null;
+		Set<IPv4Address> result = new HashSet<IPv4Address>();
+		List<CDPNeighbor> neighbors = (List<CDPNeighbor>) device
+				.getValue(CiscoDeviceExtension.CDP_NEIGHBORS);
+		
+		for (CDPNeighbor neighbor : neighbors) {
+			Set<IPv4Address> managementAddresses = neighbor
+					.getManagementAddresses();
+			if (managementAddresses.isEmpty()) continue;
+			
+			result.add(managementAddresses.iterator().next());
+		}
+		
+		return result;
 	}
 	
 }

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 
 public class CiscoCommandLineAgentSettings extends
-		PromtCommandLineAgentSettings {
+		PromptCommandLineAgentSettings {
 	
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 	public static final String DEFAULT_COMMENT_PREFIX = "!";

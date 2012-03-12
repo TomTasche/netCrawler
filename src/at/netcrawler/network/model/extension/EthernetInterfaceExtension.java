@@ -29,7 +29,7 @@ public class EthernetInterfaceExtension extends NetworkInterfaceExtension {
 		EXTENSION = new EthernetInterfaceExtension();
 	}
 	
-	private EthernetInterfaceExtension() {
+	public EthernetInterfaceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

@@ -19,11 +19,9 @@ import at.netcrawler.network.model.NetworkInterface;
 // TODO: progress?
 public abstract class DeviceManager {
 	
-	private final NetworkDevice device;
+	protected final NetworkDevice device;
 	
 	private final Set<DeviceExtensionManager> extensionManagers = new LinkedHashSet<DeviceExtensionManager>();
-	
-	private double progress;
 	
 	public DeviceManager(NetworkDevice device) {
 		this.device = device;
@@ -31,10 +29,6 @@ public abstract class DeviceManager {
 	
 	public final NetworkDevice getDevice() {
 		return device;
-	}
-	
-	public final double getProgress() {
-		return progress;
 	}
 	
 	public final Object getValue(String key) throws IOException {
@@ -65,10 +59,11 @@ public abstract class DeviceManager {
 					} catch (RuntimeException e) {}
 				}
 			}
+			
+			if (result == null)
+				throw new IllegalArgumentException("Unsupported key " + key);
 		}
 		
-		if (result == null)
-			throw new IllegalArgumentException("Unsupported key!");
 		device.setValue(key, result);
 		return result;
 	}
@@ -176,10 +171,15 @@ public abstract class DeviceManager {
 	public abstract Set<IPv4Address> discoverNeighbors();
 	
 	public final NetworkDevice complete() throws IOException {
-		progress = 0;
-		
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(NetworkDevice.TYPE_MAP.keySet());
+		keys.removeAll(device.getValueMap().keySet());
+		
+		for (String key : keys) {
+			getValue(key);
+		}
+		
+		keys.clear();
 		
 		synchronized (extensionManagers) {
 			for (DeviceExtensionManager extensionManager : extensionManagers) {
@@ -187,6 +187,7 @@ public abstract class DeviceManager {
 				
 				NetworkDeviceExtension extension = extensionManager
 						.getExtension();
+				device.addExtension(extension);
 				Set<String> extensionKexSet = extension.getExtensionTypeMap()
 						.keySet();
 				keys.addAll(extensionKexSet);
@@ -195,15 +196,8 @@ public abstract class DeviceManager {
 		
 		keys.removeAll(device.getValueMap().keySet());
 		
-		int keyCount = keys.size();
-		int fetchCount = 0;
-		
 		for (String key : keys) {
-			Object value = getValue(key);
-			device.setValue(key, value);
-			
-			fetchCount++;
-			progress = (double) fetchCount / keyCount;
+			getValue(key);
 		}
 		
 		return device;

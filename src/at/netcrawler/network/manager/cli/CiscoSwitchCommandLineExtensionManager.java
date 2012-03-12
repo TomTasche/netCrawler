@@ -42,9 +42,4 @@ public class CiscoSwitchCommandLineExtensionManager extends
 		this.deviceManager = (CiscoCommandLineDeviceManager) deviceManager;
 	}
 	
-	@Override
-	public boolean hasExtension() throws IOException {
-		return true;
-	}
-	
 }

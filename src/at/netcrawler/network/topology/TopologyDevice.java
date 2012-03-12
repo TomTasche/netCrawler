@@ -60,7 +60,7 @@ public class TopologyDevice {
 	
 	public boolean addInterface(TopologyInterface interfaze) {
 		synchronized (interfaces) {
-			if (!interfaces.contains(interfaze)) return false;
+			if (interfaces.contains(interfaze)) return false;
 			
 			if (interfaze.getDevice() != null)
 				interfaze.getDevice().removeInterface(interfaze);
@@ -81,7 +81,7 @@ public class TopologyDevice {
 	
 	public boolean removeInterface(TopologyInterface interfaze) {
 		synchronized (interfaces) {
-			if (interfaces.contains(interfaze)) return false;
+			if (!interfaces.contains(interfaze)) return false;
 			
 			interfaze.setDevice(null);
 			interfaces.remove(interfaze);

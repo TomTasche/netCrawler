@@ -28,7 +28,7 @@ public class CiscoRouterExtension extends NetworkDeviceExtension {
 		EXTENSION = new CiscoRouterExtension();
 	}
 	
-	private CiscoRouterExtension() {
+	public CiscoRouterExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

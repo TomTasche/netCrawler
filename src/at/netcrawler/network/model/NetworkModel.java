@@ -74,11 +74,15 @@ public abstract class NetworkModel implements Serializable {
 	
 	public final void setValue(String key, Object value) {
 		if (!typeMap.containsKey(key))
-			throw new IllegalArgumentException("Unknown key!");
+			throw new IllegalArgumentException("Unknown key " + key);
 		
-		Class<?> rawType = typeMap.get(key).getRawType();
-		if (!rawType.isAssignableFrom(value.getClass()))
-			throw new IllegalArgumentException("Illegal argument type!");
+		if (value != null) {
+			Class<?> rawType = typeMap.get(key).getRawType();
+			if (!rawType.isAssignableFrom(value.getClass()))
+				throw new IllegalArgumentException("Illegal argument type "
+						+ rawType);
+		}
+		
 		Object oldValue = valueMap.put(key, value);
 		
 		if (value == oldValue) return;

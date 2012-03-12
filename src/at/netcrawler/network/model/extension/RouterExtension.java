@@ -29,7 +29,7 @@ public class RouterExtension extends NetworkDeviceExtension {
 		EXTENSION = new RouterExtension();
 	}
 	
-	private RouterExtension() {
+	public RouterExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

@@ -22,14 +22,14 @@ public abstract class CiscoDeviceExtensionManager extends
 			return getCDPNeighbors();
 		}
 		
-		throw new IllegalArgumentException("Unsupported key!");
+		throw new IllegalArgumentException("Unsupported key " + key);
 	}
 	
 	protected abstract List<CDPNeighbor> getCDPNeighbors() throws IOException;
 	
 	@Override
 	public final boolean setValue(String key, Object value) throws IOException {
-		throw new IllegalArgumentException("Unsupported key!");
+		throw new IllegalArgumentException("Unsupported key " + key);
 	}
 	
 	// TODO: implement

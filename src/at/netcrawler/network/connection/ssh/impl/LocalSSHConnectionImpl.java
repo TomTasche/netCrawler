@@ -13,21 +13,14 @@ public abstract class LocalSSHConnectionImpl extends SSHConnection {
 	
 	public static LocalSSHConnectionImpl getInstance(IPDeviceAccessor accessor,
 			SSHSettings settings) throws IOException {
-		LocalSSHConnectionImpl result;
-		
 		switch (settings.getVersion()) {
 		case VERSION1:
-			result = new LocalSSH1ConnectionImpl(accessor, settings);
-			break;
+			return new LocalSSH1ConnectionImpl(accessor, settings);
 		case VERSION2:
-			result = new LocalSSH2ConnectionImpl(accessor, settings);
-			break;
-		
+			return new LocalSSH2ConnectionImpl(accessor, settings);
 		default:
 			throw new IllegalStateException("Unreachable section");
 		}
-		
-		return result;
 	}
 	
 	public LocalSSHConnectionImpl(IPDeviceAccessor accessor,

@@ -5,7 +5,7 @@ import java.io.IOException;
 import at.andiwand.library.cli.CommandLineInterface;
 
 
-public class LinuxCommandLineAgent extends PromtCommandLineAgent {
+public class LinuxCommandLineAgent extends PromptCommandLineAgent {
 	
 	public LinuxCommandLineAgent(CommandLineInterface cli,
 			LinuxCLIAgentSettings settings) throws IOException {

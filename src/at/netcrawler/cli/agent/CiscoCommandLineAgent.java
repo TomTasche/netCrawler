@@ -7,14 +7,13 @@ import java.io.Writer;
 import java.util.regex.Pattern;
 
 import at.andiwand.library.cli.CommandLineInterface;
-import at.andiwand.library.io.TeeInputStream;
 import at.andiwand.library.io.UnlimitedPushbackInputStream;
 import at.netcrawler.io.CharPrefixLineFilterInputStream;
 import at.netcrawler.io.FilterLastLineInputStream;
 import at.netcrawler.io.FilterLineMatchActionInputStream;
 
 
-public class CiscoCommandLineAgent extends PromtCommandLineAgent {
+public class CiscoCommandLineAgent extends PromptCommandLineAgent {
 	
 	private static void flushBackspace(PushbackInputStream in)
 			throws IOException {
@@ -108,35 +107,34 @@ public class CiscoCommandLineAgent extends PromtCommandLineAgent {
 		morePattern = settings.getMorePattern();
 		moreString = settings.getMoreString();
 		
-		handleLogin(settings);
+		// handleLogin(settings);
 		synchronizeStreams();
 	}
 	
 	@Override
 	protected InputStream getFilterInputStream(InputStream in,
 			CommandLineAgentSettings settings) {
-		in = new TeeInputStream(in, System.out);
 		return new CharPrefixLineFilterInputStream(in,
 				((CiscoCommandLineAgentSettings) settings).getStatusPrefixes());
 	}
 	
 	// TODO: improve
-	private void handleLogin(CiscoCommandLineAgentSettings settings)
-			throws IOException {
-		if (settings == null) return;
-		
-		// if (settings.getLogonUsername() != null) {
-		// writer.write(settings.getLogonUsername());
-		// writer.write(newLine);
-		// writer.flush();
-		// }
-		//
-		// if (settings.getLogonPassword() != null) {
-		// writer.write(settings.getLogonPassword());
-		// writer.write(newLine);
-		// writer.flush();
-		// }
-	}
+	// private void handleLogin(CiscoCommandLineAgentSettings settings)
+	// throws IOException {
+	// if (settings == null) return;
+	//
+	// if (settings.getLogonUsername() != null) {
+	// writer.write(settings.getLogonUsername());
+	// writer.write(newLine);
+	// writer.flush();
+	// }
+	//
+	// if (settings.getLogonPassword() != null) {
+	// writer.write(settings.getLogonPassword());
+	// writer.write(newLine);
+	// writer.flush();
+	// }
+	// }
 	
 	@Override
 	protected ProcessTerminator getProcessFilter(String command,

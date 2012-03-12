@@ -19,20 +19,17 @@ import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 public class CiscoCommandLineDeviceManagerTest {
 	
 	public static void main(String[] args) throws IOException {
-		String addressString = "192.168.13.3";
+		String addressString = "192.168.1.2";
 		IPv4Address address = new IPv4Address(addressString);
-		int port = 22;
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
 		
 		// TelnetSettings settings = new TelnetSettings();
-		// settings.setPort(port);
 		//
 		// LocalTelnetConnection connection = new LocalTelnetConnection();
 		
 		SSHSettings settings = new SSHSettings();
 		settings.setVersion(SSHVersion.VERSION2);
-		settings.setPort(port);
 		settings.setUsername("cisco");
 		settings.setPassword("cisco");
 		
@@ -51,6 +48,11 @@ public class CiscoCommandLineDeviceManagerTest {
 		CiscoCommandLineDeviceManager deviceManager = new CiscoCommandLineDeviceManager(
 				device, agent);
 		deviceManager.complete();
+		
+		System.out.println(device.getValue(NetworkDevice.HOSTNAME));
+		System.out.println(device.getValue(NetworkDevice.MAJOR_CAPABILITY));
+		System.out.println(device.getValue(NetworkDevice.SYSTEM_STRING));
+		System.out.println(device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));
 		
 		@SuppressWarnings("unchecked")
 		List<CDPNeighbor> neighbors = (List<CDPNeighbor>) device

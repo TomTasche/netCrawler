@@ -28,7 +28,7 @@ public class EthernetCableExtension extends NetworkCableExtension {
 		EXTENSION = new EthernetCableExtension();
 	}
 	
-	private EthernetCableExtension() {
+	public EthernetCableExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

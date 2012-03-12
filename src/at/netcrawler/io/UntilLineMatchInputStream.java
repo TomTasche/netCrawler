@@ -19,7 +19,9 @@ public class UntilLineMatchInputStream extends BytewiseFilterInputStream {
 		this.pattern = pattern;
 	}
 	
-	protected void match() {}
+	protected boolean match() throws IOException {
+		return true;
+	}
 	
 	@Override
 	public int read() throws IOException {
@@ -32,8 +34,7 @@ public class UntilLineMatchInputStream extends BytewiseFilterInputStream {
 		else line.append((char) read);
 		
 		if (pattern.matcher(line).matches()) {
-			match = true;
-			match();
+			match = match();
 		}
 		
 		return read;

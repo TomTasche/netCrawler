@@ -3,17 +3,17 @@ package at.netcrawler.network.manager.cli;
 import java.io.IOException;
 
 import at.andiwand.library.util.QuickPattern;
-import at.netcrawler.cli.agent.PromtCommandLineAgent;
+import at.netcrawler.cli.agent.PromptCommandLineAgent;
 import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 
 
 public abstract class CommandLineDeviceManager extends DeviceManager {
 	
-	protected final PromtCommandLineAgent agent;
+	protected final PromptCommandLineAgent agent;
 	
 	public CommandLineDeviceManager(NetworkDevice device,
-			PromtCommandLineAgent agent) {
+			PromptCommandLineAgent agent) {
 		super(device);
 		
 		this.agent = agent;

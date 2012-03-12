@@ -31,10 +31,4 @@ public class CiscoRouterCommandLineExtensionManager extends
 		this.deviceManager = (CiscoCommandLineDeviceManager) deviceManager;
 	}
 	
-	// TODO: implement
-	@Override
-	public boolean hasExtension() throws IOException {
-		return false;
-	}
-	
 }

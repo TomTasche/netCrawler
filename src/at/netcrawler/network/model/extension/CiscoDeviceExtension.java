@@ -29,7 +29,7 @@ public class CiscoDeviceExtension extends NetworkDeviceExtension {
 		EXTENSION = new CiscoDeviceExtension();
 	}
 	
-	private CiscoDeviceExtension() {
+	public CiscoDeviceExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

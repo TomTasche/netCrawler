@@ -33,7 +33,7 @@ public class CiscoSwitchExtension extends NetworkDeviceExtension {
 		EXTENSION = new CiscoSwitchExtension();
 	}
 	
-	private CiscoSwitchExtension() {
+	public CiscoSwitchExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

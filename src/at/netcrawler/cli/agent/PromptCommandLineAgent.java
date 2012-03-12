@@ -11,14 +11,13 @@ import at.andiwand.library.io.StreamUtil;
 import at.andiwand.library.io.UnlimitedPushbackInputStream;
 import at.andiwand.library.util.PatternUtil;
 import at.andiwand.library.util.StringUtil;
-import at.netcrawler.io.FilterLastLineInputStream;
 import at.netcrawler.io.UntilLineMatchInputStream;
 
 
-public abstract class PromtCommandLineAgent extends CommandLineAgent {
+public abstract class PromptCommandLineAgent extends CommandLineAgent {
 	
 	private static final String SYNCHRONIZE_COMMENT = "netCrawler-synchronize";
-	private static final String RANDOM_SEPARATOR = " - ";
+	private static final String RANDOM_SEPARATOR = "-";
 	
 	private static class ProcessTerminatorInputStream extends
 			UntilLineMatchInputStream {
@@ -31,9 +30,12 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 			this.processFilter = processFilter;
 		}
 		
+		// TODO: improve (workaround)
 		@Override
-		protected void match() {
+		protected boolean match() throws IOException {
+			if (available() > 0) return false;
 			processFilter.terminate();
+			return true;
 		}
 	}
 	
@@ -45,9 +47,7 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		
 		@Override
 		protected InputStream getFilterInputStream(InputStream in) {
-			in = new ProcessTerminatorInputStream(this, in, promtPattern);
-			in = new FilterLastLineInputStream(in);
-			return in;
+			return new ProcessTerminatorInputStream(this, in, promtPattern);
 		}
 	}
 	
@@ -61,8 +61,8 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	
 	private ProcessTerminator lastProcessFilter;
 	
-	public PromtCommandLineAgent(CommandLineInterface cli,
-			PromtCommandLineAgentSettings settings) throws IOException {
+	public PromptCommandLineAgent(CommandLineInterface cli,
+			PromptCommandLineAgentSettings settings) throws IOException {
 		super(cli, settings);
 		
 		this.in = new UnlimitedPushbackInputStream(super.in);
@@ -146,9 +146,9 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		flushLine();
 		
 		CommandLineInterface process = new CommandLineProcess(in, out);
+		process = lastProcessFilter = getProcessTerminator(command, process);
 		process = getProcessFilter(command, process);
-		lastProcessFilter = getProcessTerminator(command, process);
-		return lastProcessFilter;
+		return process;
 	}
 	
 }

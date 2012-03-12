@@ -23,7 +23,7 @@ public class SwitchExtension extends NetworkDeviceExtension {
 		EXTENSION = new SwitchExtension();
 	}
 	
-	private SwitchExtension() {
+	public SwitchExtension() {
 		super(EXTENSION_TYPE_MAP);
 	}
 	

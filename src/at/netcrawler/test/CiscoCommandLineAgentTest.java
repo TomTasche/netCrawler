@@ -4,33 +4,32 @@ import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.cli.agent.CiscoCommandLineAgent;
 import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
-import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
-import at.netcrawler.network.connection.telnet.TelnetSettings;
+import at.netcrawler.network.connection.ssh.LocalSSHConnection;
+import at.netcrawler.network.connection.ssh.SSHSettings;
+import at.netcrawler.network.connection.ssh.SSHVersion;
 
 
 public class CiscoCommandLineAgentTest {
 	
 	public static void main(String[] args) throws Throwable {
-		String addressString = "192.168.15.101";
+		String addressString = "192.168.1.2";
 		IPv4Address address = new IPv4Address(addressString);
-		int port = 23;
 		
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
 		
-		TelnetSettings settings = new TelnetSettings();
-		settings.setPort(port);
-		
-		LocalTelnetConnection connection = new LocalTelnetConnection(accessor,
-				settings);
-		
-		// SSHSettings settings = new SSHSettings();
-		// settings.setVersion(SSHVersion.VERSION2);
-		// settings.setPort(port);
-		// settings.setUsername("cisco");
-		// settings.setPassword("cisco");
+		// TelnetSettings settings = new TelnetSettings();
 		//
-		// LocalSSHConnection connection = new LocalSSHConnection(accessor,
+		// LocalTelnetConnection connection = new
+		// LocalTelnetConnection(accessor,
 		// settings);
+		
+		SSHSettings settings = new SSHSettings();
+		settings.setVersion(SSHVersion.VERSION2);
+		settings.setUsername("cisco");
+		settings.setPassword("cisco");
+		
+		LocalSSHConnection connection = new LocalSSHConnection(accessor,
+				settings);
 		
 		CiscoCommandLineAgentSettings agentSettings = new CiscoCommandLineAgentSettings();
 		agentSettings.setLogonUsername("cisco");
