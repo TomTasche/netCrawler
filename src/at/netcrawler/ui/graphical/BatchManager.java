@@ -36,6 +36,7 @@ import at.netcrawler.assistant.Encryption;
 import at.netcrawler.assistant.EncryptionBag;
 import at.netcrawler.assistant.EncryptionCallback;
 import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.util.NetworkDeviceHelper;
 
 
 public class BatchManager extends JFrame {
@@ -61,16 +62,9 @@ public class BatchManager extends JFrame {
 	public BatchManager(TopologyDevice device) {
 		this();
 		
-		// NetworkDevice networkDevice = device.getNetworkDevice();
-		//
-		// Configuration configuration = new Configuration();
-		// configuration.setAddress();
-		// configuration.setConnection();
-		// configuration.setPort();
-		// configuration.setUsername();
-		// configuration.setPassword();
-		//
-		// setConfiguration(configuration);
+		Configuration configuration = NetworkDeviceHelper
+				.getConfiguration(device.getNetworkDevice());
+		setConfiguration(configuration);
 	}
 	
 	public BatchManager() {
@@ -118,43 +112,43 @@ public class BatchManager extends JFrame {
 								.addComponent(usernameLabel)
 								.addComponent(passwordLabel)
 								.addComponent(batchLabel))
-						.addGroup(layout.createParallelGroup()
-								.addComponent(addressField)
-								.addComponent(connections)
-								.addComponent(portField)
-								.addComponent(usernameField)
-								.addComponent(passwordField)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(batchNewNameField)
-										.addComponent(batchAdd))))
-				.addComponent(batchTabbedPane)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-						.addComponent(execute)
-						.addComponent(choose)));
+								.addGroup(layout.createParallelGroup()
+										.addComponent(addressField)
+										.addComponent(connections)
+										.addComponent(portField)
+										.addComponent(usernameField)
+										.addComponent(passwordField)
+										.addGroup(layout.createSequentialGroup()
+												.addComponent(batchNewNameField)
+												.addComponent(batchAdd))))
+												.addComponent(batchTabbedPane)
+												.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+														.addComponent(execute)
+														.addComponent(choose)));
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ipLabel)
 						.addComponent(addressField))
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(connectionLabel)
-						.addComponent(connections))
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(portLabel)
-						.addComponent(portField))
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(usernameLabel)
-						.addComponent(usernameField))
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(passwordLabel)
-						.addComponent(passwordField))
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(batchLabel)
-						.addComponent(batchNewNameField)
-						.addComponent(batchAdd))
-				.addComponent(batchTabbedPane)
-				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(execute)
-						.addComponent(choose)));
+						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(connectionLabel)
+								.addComponent(connections))
+								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(portLabel)
+										.addComponent(portField))
+										.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(usernameLabel)
+												.addComponent(usernameField))
+												.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+														.addComponent(passwordLabel)
+														.addComponent(passwordField))
+														.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+																.addComponent(batchLabel)
+																.addComponent(batchNewNameField)
+																.addComponent(batchAdd))
+																.addComponent(batchTabbedPane)
+																.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+																		.addComponent(execute)
+																		.addComponent(choose)));
 		//@formatter:on
 		
 		connections.addActionListener(new ActionListener() {

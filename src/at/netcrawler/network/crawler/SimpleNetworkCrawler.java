@@ -55,9 +55,9 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 		
 		DeviceIdentifier identifier = identifierBuilder
 				.getIdentification(networkDevice);
+		// TODO: hotfix
 		TopologyDevice topologyDevice = new TopologyDevice(identifier,
-				networkDevice);
-		System.out.println(topologyDevice.getHostname());
+				networkDevice, deviceManager);
 		
 		boolean success = topology.addVertex(topologyDevice);
 		if (lastDevice != null) {
@@ -81,8 +81,6 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 				crawlImpl(topology, neighbor, topologyDevice);
 			}
 		}
-		
-		connection.close();
 	}
 	
 }

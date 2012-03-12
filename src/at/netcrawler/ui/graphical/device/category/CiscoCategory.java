@@ -2,9 +2,11 @@ package at.netcrawler.ui.graphical.device.category;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import at.netcrawler.network.model.NetworkModel;
+import at.netcrawler.network.CDPNeighbor;
+import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 
@@ -16,14 +18,21 @@ public class CiscoCategory extends Category {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Component render(NetworkModel device) {
+	public Component render(DeviceManager manager, NetworkDevice device) {
 		CategoryBuilder builder = new CategoryBuilder();
 		if (device.getValue(CiscoDeviceExtension.CDP_NEIGHBORS) != null) {
-			Collection<Object> table = new ArrayList<Object>(
-					(Collection<Object>) device
+			List<CDPNeighbor> table = new ArrayList<CDPNeighbor>(
+					(List<CDPNeighbor>) device
 							.getValue(CiscoDeviceExtension.CDP_NEIGHBORS));
 			
-			builder.addListRow("CDP Neighbours", table);
+			List<String> neighbors = new ArrayList<String>();
+			for (CDPNeighbor neighbor : table) {
+				neighbors.add(neighbor.getName());
+				
+				System.out.println(neighbor);
+			}
+			
+			builder.addListRow("CDP Neighbours", neighbors);
 		}
 		
 		return builder.build();

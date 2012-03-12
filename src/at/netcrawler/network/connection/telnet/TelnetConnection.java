@@ -7,7 +7,8 @@ import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
 public abstract class TelnetConnection extends
-		TCPIPDeviceConnection<TelnetSettings> implements TelnetClient,
+		TCPIPDeviceConnection<TelnetSettings> implements
+		TelnetClient,
 		CommandLineConnection {
 	
 	public TelnetConnection(IPDeviceAccessor accessor, TelnetSettings settings) {

@@ -1,7 +1,5 @@
 package at.netcrawler.network.topology;
 
-
-
 public class UnknownTopologyInterface extends TopologyInterface {
 	
 	private static final String NAME = "?";

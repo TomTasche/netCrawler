@@ -2,7 +2,8 @@ package at.netcrawler.ui.graphical.device.category;
 
 import java.awt.Component;
 
-import at.netcrawler.network.model.NetworkModel;
+import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoRouterExtension;
 
 
@@ -13,10 +14,10 @@ public class CiscoRouterCategory extends Category {
 	}
 	
 	@Override
-	public Component render(NetworkModel device) {
+	public Component render(DeviceManager manager, NetworkDevice device) {
 		CategoryBuilder builder = new CategoryBuilder();
-		builder.addTextRow("Processor Board ID", device
-				.getValue(CiscoRouterExtension.PROCESSOR_BOARD_ID));
+		builder.addTextRow("Processor Board ID", manager, device,
+				CiscoRouterExtension.PROCESSOR_BOARD_ID);
 		
 		return builder.build();
 	}

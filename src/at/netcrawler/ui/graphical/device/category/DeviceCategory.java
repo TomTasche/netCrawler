@@ -3,8 +3,8 @@ package at.netcrawler.ui.graphical.device.category;
 import java.awt.Component;
 import java.util.Collection;
 
+import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.NetworkModel;
 
 
 public class DeviceCategory extends Category {
@@ -15,18 +15,17 @@ public class DeviceCategory extends Category {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Component render(NetworkModel device) {
+	public Component render(DeviceManager manager, NetworkDevice device) {
 		CategoryBuilder builder = new CategoryBuilder();
-		builder.addTextRow("Hostname", (String) device
-				.getValue(NetworkDevice.HOSTNAME));
-		builder.addTextRow("System", (String) device
-				.getValue(NetworkDevice.SYSTEM_STRING));
+		builder.addTextRow("Hostname", manager, device, NetworkDevice.HOSTNAME);
+		builder.addTextRow("System", manager, device,
+				NetworkDevice.SYSTEM_STRING);
 		builder.addListRow("Management Address", (Collection<Object>) device
 				.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));
-		builder.addTextRow("Major Capability", device
-				.getValue(NetworkDevice.MAJOR_CAPABILITY));
-		builder.addListRow("Capabilites", (Collection<Object>) device
-				.getValue(NetworkDevice.CAPABILITIES));
+		builder.addTextRow("Major Capability", manager, device,
+				NetworkDevice.MAJOR_CAPABILITY);
+//		builder.addListRow("Capabilites", (Collection<Object>) device
+//				.getValue(NetworkDevice.CAPABILITIES));
 		// TODO: interfaces shouldn't be displayed in this category, although
 		// they're declared in NetworkDevice
 		

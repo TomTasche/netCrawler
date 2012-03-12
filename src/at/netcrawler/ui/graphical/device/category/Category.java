@@ -2,7 +2,8 @@ package at.netcrawler.ui.graphical.device.category;
 
 import java.awt.Component;
 
-import at.netcrawler.network.model.NetworkModel;
+import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.NetworkDevice;
 
 
 public abstract class Category {
@@ -15,7 +16,7 @@ public abstract class Category {
 		this.sub = sub;
 	}
 	
-	public abstract Component render(NetworkModel device);
+	public abstract Component render(DeviceManager manager, NetworkDevice device);
 	
 	public String getCategory() {
 		return category;

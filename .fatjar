@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon Mar 12 22:39:45 CET 2012
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=netcrawler.jar
+manifest.mergeall=true
+manifest.mainclass=at.netcrawler.ui.Launcher
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=

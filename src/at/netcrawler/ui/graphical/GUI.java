@@ -13,8 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -24,24 +23,23 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.JFrameUtil;
+import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.component.CrapGraphLayout;
 import at.netcrawler.component.TopologyViewer;
 import at.netcrawler.io.json.JsonHelper;
-import at.netcrawler.network.Capability;
-import at.netcrawler.network.model.NetworkCable;
-import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.connection.ConnectionGateway;
+import at.netcrawler.network.connection.ssh.LocalSSHGateway;
+import at.netcrawler.network.connection.ssh.SSHSettings;
+import at.netcrawler.network.connection.ssh.SSHVersion;
+import at.netcrawler.network.crawler.SimpleNetworkCrawler;
+import at.netcrawler.network.manager.DeviceManagerFactory;
+import at.netcrawler.network.manager.cli.CommandLineDeviceManagerFactory;
 import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
-import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.network.topology.TopologyInterface;
-import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
 import at.netcrawler.ui.graphical.device.DeviceView;
 import at.netcrawler.util.Settings;
 
@@ -166,7 +164,6 @@ public class GUI extends JFrame {
 		table.setTopology(topology);
 		
 		viewer = new TopologyViewer();
-		viewer.setPreferredSize(new Dimension(200, 200));
 		// TODO: use another GraphLayout
 		viewer.setGraphLayout(new CrapGraphLayout(viewer));
 		viewer.setModel(topology);
@@ -183,6 +180,7 @@ public class GUI extends JFrame {
 		});
 		
 		scrollPane = new JScrollPane();
+		scrollPane.setPreferredSize(new Dimension(400, 400));
 		if (Settings.getLastView() == 1) {
 			scrollPane.setViewportView(table);
 			
@@ -245,14 +243,36 @@ public class GUI extends JFrame {
 		statusLabel.setText("Crawling your net...");
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
-		// TODO: do
-		
-		saveItem.setEnabled(true);
-		
-		setCursor(Cursor.getDefaultCursor());
-		statusLabel.setText("Crawl completed.");
-		
-		dontClose = false;
+		// TODO: hotfix
+		new Thread() {
+			public void run() {
+				ConnectionGateway gateway = new LocalSSHGateway();
+				SSHSettings settings = new SSHSettings();
+				settings.setVersion(SSHVersion.VERSION2);
+				settings.setUsername("cisco");
+				settings.setPassword("cisco");
+				DeviceManagerFactory managerFactory = new CommandLineDeviceManagerFactory();
+				IPv4Address start = new IPv4Address("192.168.0.254");
+				SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(gateway,
+						settings, managerFactory, start);
+				
+				try {
+					topology = new HashTopology();
+					viewer.setModel(topology);
+					table.setTopology(topology);
+					crawler.crawl(topology);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				saveItem.setEnabled(true);
+				
+				setCursor(Cursor.getDefaultCursor());
+				statusLabel.setText("Crawl completed.");
+				
+				dontClose = false;
+			}
+		}.start();
 	}
 	
 	private void toggleView() {
@@ -270,46 +290,46 @@ public class GUI extends JFrame {
 		tableVisible = !tableVisible;
 	}
 	
-	public static void main(String[] args) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException,
-			UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		
-		Topology topology = new HashTopology();
-		
-		NetworkDevice deviceA = new NetworkDevice();
-		NetworkInterface interfaceA = new NetworkInterface();
-		interfaceA.setValue(NetworkInterface.NAME, "eth0");
-		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
-		deviceA.setValue(NetworkDevice.INTERFACES,
-				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
-		
-		NetworkDevice deviceB = new NetworkDevice();
-		NetworkInterface interfaceB = new NetworkInterface();
-		interfaceB.setValue(NetworkInterface.NAME, "eth0");
-		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
-		deviceB.setValue(NetworkDevice.INTERFACES,
-				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
-		
-		NetworkCable cable = new NetworkCable();
-		
-		TopologyDevice topologyDeviceA = new TopologyDevice(
-				new UniqueDeviceIdentifier(), deviceA);
-		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
-		TopologyDevice topologyDeviceB = new TopologyDevice(
-				new UniqueDeviceIdentifier(), deviceB);
-		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
-		TopologyCable topologyCable = new TopologyCable(cable,
-				new HashSet<TopologyInterface>(Arrays.asList(
-						topologyInterfaceA, topologyInterfaceB)));
-		
-		topology.addVertex(topologyDeviceA);
-		topology.addVertex(topologyDeviceB);
-		topology.addEdge(topologyCable);
-		
-		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
-		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
-		
-		new GUI(topology);
-	}
+//	public static void main(String[] args) throws ClassNotFoundException,
+//			InstantiationException, IllegalAccessException,
+//			UnsupportedLookAndFeelException {
+//		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		
+//		Topology topology = new HashTopology();
+//		
+//		NetworkDevice deviceA = new NetworkDevice();
+//		NetworkInterface interfaceA = new NetworkInterface();
+//		interfaceA.setValue(NetworkInterface.NAME, "eth0");
+//		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
+//		deviceA.setValue(NetworkDevice.INTERFACES,
+//				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
+//		
+//		NetworkDevice deviceB = new NetworkDevice();
+//		NetworkInterface interfaceB = new NetworkInterface();
+//		interfaceB.setValue(NetworkInterface.NAME, "eth0");
+//		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
+//		deviceB.setValue(NetworkDevice.INTERFACES,
+//				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
+//		
+//		NetworkCable cable = new NetworkCable();
+//		
+//		TopologyDevice topologyDeviceA = new TopologyDevice(
+//				new UniqueDeviceIdentifier(), deviceA);
+//		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
+//		TopologyDevice topologyDeviceB = new TopologyDevice(
+//				new UniqueDeviceIdentifier(), deviceB);
+//		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
+//		TopologyCable topologyCable = new TopologyCable(cable,
+//				new HashSet<TopologyInterface>(Arrays.asList(
+//						topologyInterfaceA, topologyInterfaceB)));
+//		
+//		topology.addVertex(topologyDeviceA);
+//		topology.addVertex(topologyDeviceB);
+//		topology.addEdge(topologyCable);
+//		
+//		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
+//		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
+//		
+//		new GUI(topology);
+//	}
 }

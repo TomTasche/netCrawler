@@ -35,16 +35,16 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 					| Pattern.CASE_INSENSITIVE, 0);
 	
 	// TODO: implement
-	private static final String UPTIME_COMMAND = "show version";
-	private static final QuickPattern UPTIME_PATTERN = new QuickPattern(
-			".*uptime is (.*)", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, 1);
+	// private static final String UPTIME_COMMAND = "show version";
+	// private static final QuickPattern UPTIME_PATTERN = new QuickPattern(
+	// ".*uptime is (.*)", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, 1);
 	
 	private static final String SOFTWARE_COMMAND = "show version";
 	private static final QuickPattern SOFTWARE_PATTERN = new QuickPattern(
 			".*? (C?\\d+) software \\((.+?)\\).*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 1);
 	
-	private static final String INTERFACES_COMMAND = "show ip interfaces";
+	// private static final String INTERFACES_COMMAND = "show ip interfaces";
 	
 	private static final String MANAGEMENT_ADDRESSES_COMMAND = "show ip interface brief";
 	private static final Pattern MANAGEMENT_ADDRESSES_SEPARATOR = Pattern

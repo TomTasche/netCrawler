@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.identifier.DeviceIdentifier;
 
@@ -13,14 +14,23 @@ public class TopologyDevice {
 	
 	private final DeviceIdentifier identifier;
 	private final NetworkDevice networkDevice;
+	// TODO: hotfix
+	private final DeviceManager deviceManager;
 	private Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
 	
 	private List<TopologyDeviceListener> listeners = new ArrayList<TopologyDeviceListener>();
 	
 	public TopologyDevice(DeviceIdentifier identifier,
 			NetworkDevice networkDevice) {
+		this(identifier, networkDevice, null);
+	}
+	
+	// TODO: hotfix
+	public TopologyDevice(DeviceIdentifier identifier,
+			NetworkDevice networkDevice, DeviceManager deviceManager) {
 		this.identifier = identifier;
 		this.networkDevice = networkDevice;
+		this.deviceManager = deviceManager;
 	}
 	
 	@Override
@@ -46,6 +56,11 @@ public class TopologyDevice {
 	
 	public NetworkDevice getNetworkDevice() {
 		return networkDevice;
+	}
+	
+	// TODO: hotfix
+	public DeviceManager getDeviceManager() {
+		return deviceManager;
 	}
 	
 	public String getHostname() {

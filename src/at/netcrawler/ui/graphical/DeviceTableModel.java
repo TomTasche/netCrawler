@@ -17,6 +17,7 @@ import at.andiwand.library.util.comparator.ObjectStringComparator;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.util.NetworkDeviceHelper;
 
 
 @SuppressWarnings("serial")
@@ -61,7 +62,7 @@ public class DeviceTableModel extends AbstractTableModel implements
 			
 			@Override
 			public String get(NetworkDevice device) {
-				return "implementier das, andi!";
+				return NetworkDeviceHelper.getConnectedVia(device);
 			}
 		});
 		ACCESSOR_FOR_NAME.put("Management Addresses",
@@ -70,7 +71,7 @@ public class DeviceTableModel extends AbstractTableModel implements
 					@Override
 					public String get(NetworkDevice device) {
 						return NetworkDeviceHelper
-								.getManagementAddresses(device);
+								.getSomeAddress(device).toString();
 					}
 				});
 		ACCESSOR_FOR_NAME.put("Uptime", new NetworkDeviceDataAccessor() {
@@ -89,6 +90,7 @@ public class DeviceTableModel extends AbstractTableModel implements
 	// private final JTable table;
 	private final TableColumnModel columnModel;
 	private List<TopologyDevice> devices;
+	private Topology topology;
 	
 	public DeviceTableModel(JTable table) {
 		// this.table = table;
@@ -97,14 +99,22 @@ public class DeviceTableModel extends AbstractTableModel implements
 	}
 	
 	public synchronized void setTopology(Topology topology) {
+		this.topology = topology;
+		
+		updateTopology();
+		
+		fireTableDataChanged();
+		
+		topology.addListener(this);
+	}
+	
+	private void updateTopology() {
 		List<TopologyDevice> temp = new ArrayList<TopologyDevice>(topology
 				.getVertices());
 		Collections.sort(temp, new ObjectStringComparator());
 		devices = Collections.unmodifiableList(temp);
 		
 		fireTableDataChanged();
-		
-		topology.addListener(this);
 	}
 	
 	@Override
@@ -121,22 +131,22 @@ public class DeviceTableModel extends AbstractTableModel implements
 	
 	@Override
 	public void edgeAdded(Edge edge) {
-		fireTableDataChanged();
+		updateTopology();
 	}
 	
 	@Override
 	public void edgeRemoved(Edge edge) {
-		fireTableDataChanged();
+		updateTopology();
 	}
 	
 	@Override
 	public void vertexAdded(Object vertex) {
-		fireTableDataChanged();
+		updateTopology();
 	}
 	
 	@Override
 	public void vertexRemoved(Object vertex) {
-		fireTableDataChanged();
+		updateTopology();
 	}
 	
 	@Override

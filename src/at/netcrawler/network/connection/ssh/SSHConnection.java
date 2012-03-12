@@ -8,8 +8,9 @@ import at.netcrawler.network.connection.ConnectionType;
 import at.netcrawler.network.connection.TCPIPDeviceConnection;
 
 
-public abstract class SSHConnection extends TCPIPDeviceConnection<SSHSettings>
-		implements SSHClient, CommandLineConnection {
+public abstract class SSHConnection extends TCPIPDeviceConnection<SSHSettings> implements
+		SSHClient,
+		CommandLineConnection {
 	
 	private SSHVersion version;
 	

@@ -5,7 +5,6 @@ import java.io.IOException;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
-import at.netcrawler.network.model.extension.CiscoRouterExtension;
 import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 
 

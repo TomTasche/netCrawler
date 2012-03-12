@@ -6,8 +6,8 @@ import at.netcrawler.network.connection.Connection;
 import at.netcrawler.network.model.NetworkDevice;
 
 
-public abstract class GenericDeviceManagerFactory<M extends DeviceManager, C extends Connection>
-		implements DeviceManagerFactory {
+public abstract class GenericDeviceManagerFactory<M extends DeviceManager, C extends Connection> implements
+		DeviceManagerFactory {
 	
 	@Override
 	@SuppressWarnings("unchecked")

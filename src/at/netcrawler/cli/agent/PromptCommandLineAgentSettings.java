@@ -16,7 +16,8 @@ public abstract class PromptCommandLineAgentSettings extends
 		setNewLine(DEFAULT_NEW_LINE);
 	}
 	
-	public PromptCommandLineAgentSettings(PromptCommandLineAgentSettings settings) {
+	public PromptCommandLineAgentSettings(
+			PromptCommandLineAgentSettings settings) {
 		super(settings);
 		
 		promtPattern = settings.promtPattern;
