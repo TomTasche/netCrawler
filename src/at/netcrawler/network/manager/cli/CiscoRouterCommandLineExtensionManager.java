@@ -8,26 +8,27 @@ import at.netcrawler.network.manager.CiscoRouterExtensionManager;
 import at.netcrawler.network.manager.DeviceManager;
 
 
-public class CiscoCLIRouterExtensionManager extends CiscoRouterExtensionManager {
+public class CiscoRouterCommandLineExtensionManager extends
+		CiscoRouterExtensionManager {
 	
 	private static final String PROCESSOR_BOARD_ID_COMMAND = "show version";
 	private static final QuickPattern PROCESSOR_BOARD_ID_PATTERN = new QuickPattern(
 			"^(.*?) with (.+?) bytes of memory.*", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 0);
 	
-	private CiscoCLIDeviceManager deviceManager;
+	private CiscoCommandLineDeviceManager deviceManager;
 	
 	@Override
 	protected String getProcessorBoardId() throws IOException {
-		return deviceManager.executeAndFind(
-				PROCESSOR_BOARD_ID_COMMAND, PROCESSOR_BOARD_ID_PATTERN);
+		return deviceManager.executeAndFind(PROCESSOR_BOARD_ID_COMMAND,
+				PROCESSOR_BOARD_ID_PATTERN);
 	}
 	
 	@Override
 	protected void setDeviceManager(DeviceManager deviceManager) {
 		super.setDeviceManager(deviceManager);
 		
-		this.deviceManager = (CiscoCLIDeviceManager) deviceManager;
+		this.deviceManager = (CiscoCommandLineDeviceManager) deviceManager;
 	}
 	
 	// TODO: implement

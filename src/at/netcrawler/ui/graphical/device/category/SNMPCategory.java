@@ -15,8 +15,8 @@ public class SNMPCategory extends Category {
 	@Override
 	public Component render(NetworkModel device) {
 		CategoryBuilder builder = new CategoryBuilder();
-		builder.addTextRow(
-				"Engine ID", device.getValue(SNMPDeviceExtension.ENGINE_ID));
+		builder.addTextRow("Engine ID", device
+				.getValue(SNMPDeviceExtension.ENGINE_ID));
 		
 		return builder.build();
 	}

@@ -16,8 +16,7 @@ public class LocalSSHConnection extends SSHConnection {
 			throws IOException {
 		super(accessor, settings);
 		
-		client = LocalSSHConnectionImpl.getInstance(
-				accessor, settings);
+		client = LocalSSHConnectionImpl.getInstance(accessor, settings);
 	}
 	
 	@Override

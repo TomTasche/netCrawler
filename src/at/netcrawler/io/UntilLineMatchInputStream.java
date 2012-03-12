@@ -31,8 +31,7 @@ public class UntilLineMatchInputStream extends BytewiseFilterInputStream {
 		if ((read == '\n') || (read == '\r')) line = new StringBuilder();
 		else line.append((char) read);
 		
-		if (pattern.matcher(
-				line).matches()) {
+		if (pattern.matcher(line).matches()) {
 			match = true;
 			match();
 		}

@@ -83,6 +83,16 @@ public class HashTopology extends Topology {
 	}
 	
 	@Override
+	public synchronized boolean containsVertex(TopologyDevice vertex) {
+		return vertices.contains(vertex);
+	}
+	
+	@Override
+	public synchronized boolean containsEdge(TopologyCable edge) {
+		return edges.contains(edge);
+	}
+	
+	@Override
 	protected synchronized boolean addVertexImpl(TopologyDevice vertex) {
 		if (vertices.contains(vertex)) return false;
 		
@@ -100,8 +110,7 @@ public class HashTopology extends Topology {
 		for (TopologyInterface interfaze : cable.getConnectedInterfaces()) {
 			if (!interfaces.contains(interfaze)) return false;
 			if (connectionMap.containsKey(interfaze)) return false;
-			connectionMap.put(
-					interfaze, cable);
+			connectionMap.put(interfaze, cable);
 		}
 		
 		edges.add(cable);

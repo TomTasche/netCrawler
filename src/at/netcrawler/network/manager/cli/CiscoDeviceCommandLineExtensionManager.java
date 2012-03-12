@@ -17,7 +17,8 @@ import at.netcrawler.network.manager.CiscoDeviceExtensionManager;
 import at.netcrawler.network.manager.DeviceManager;
 
 
-public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager {
+public class CiscoDeviceCommandLineExtensionManager extends
+		CiscoDeviceExtensionManager {
 	
 	private static final String CDP_NEIGHBORS_COMMAND = "show cdp neighbors detail";
 	private static final Pattern CDP_NEIGHBORS_SEPARATOR = Pattern.compile(
@@ -55,7 +56,7 @@ public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager 
 			".*ip address\\s*: (.*?)$", Pattern.MULTILINE
 					| Pattern.CASE_INSENSITIVE, 1);
 	
-	private CiscoCLIDeviceManager deviceManager;
+	private CiscoCommandLineDeviceManager deviceManager;
 	
 	@Override
 	protected List<CDPNeighbor> getCDPNeighbors() throws IOException {
@@ -122,7 +123,7 @@ public class CiscoCLIDeviceExtensionManager extends CiscoDeviceExtensionManager 
 	@Override
 	protected void setDeviceManager(DeviceManager deviceManager) {
 		super.setDeviceManager(deviceManager);
-		this.deviceManager = (CiscoCLIDeviceManager) deviceManager;
+		this.deviceManager = (CiscoCommandLineDeviceManager) deviceManager;
 	}
 	
 	@Override

@@ -40,7 +40,7 @@ public class CiscoCommandLineAgentSettings extends
 		setPromtPattern(DEFAULT_PROMT_PATTERN);
 		setMorePattern(DEFAULT_MORE_PATTERN);
 		setMoreString(DEFAULT_MORE_STRING);
-		setStatusPrefixes(statusPrefixes);
+		setStatusPrefixes(DEFAULT_STATUS_PREFIXES);
 	}
 	
 	public CiscoCommandLineAgentSettings(CiscoCommandLineAgentSettings settings) {

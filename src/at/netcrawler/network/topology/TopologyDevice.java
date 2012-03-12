@@ -62,9 +62,8 @@ public class TopologyDevice {
 		synchronized (interfaces) {
 			if (!interfaces.contains(interfaze)) return false;
 			
-			if (interfaze.getDevice() != null) interfaze.getDevice()
-					.removeInterface(
-							interfaze);
+			if (interfaze.getDevice() != null)
+				interfaze.getDevice().removeInterface(interfaze);
 			
 			interfaze.setDevice(this);
 			interfaces.add(interfaze);

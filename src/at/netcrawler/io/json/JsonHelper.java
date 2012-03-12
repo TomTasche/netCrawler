@@ -15,14 +15,14 @@ public class JsonHelper {
 	
 	static {
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(
-				IPv4Address.class, new JsonIPv4AddressAdapter());
-		builder.registerTypeAdapter(
-				MACAddress.class, new JsonMACAddressAdapter());
-		builder.registerTypeAdapter(
-				NetworkModel.class, new JsonNetworkModelAdapter());
-		builder.registerTypeAdapter(
-				SubnetMask.class, new JsonSubnetMaskAdapter());
+		builder.registerTypeAdapter(IPv4Address.class,
+				new JsonIPv4AddressAdapter());
+		builder.registerTypeAdapter(MACAddress.class,
+				new JsonMACAddressAdapter());
+		builder.registerTypeAdapter(NetworkModel.class,
+				new JsonNetworkModelAdapter());
+		builder.registerTypeAdapter(SubnetMask.class,
+				new JsonSubnetMaskAdapter());
 		
 		GSON = builder.create();
 	}

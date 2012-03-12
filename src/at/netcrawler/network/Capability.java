@@ -2,7 +2,10 @@ package at.netcrawler.network;
 
 public enum Capability {
 	
-	HUB("Hub"), SWITCH("Switch"), ROUTER("Router"), FIREWALL("Firewall");
+	HUB("Hub"),
+	SWITCH("Switch"),
+	ROUTER("Router"),
+	FIREWALL("Firewall");
 	
 	private final String name;
 	

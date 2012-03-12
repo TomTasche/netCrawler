@@ -15,9 +15,8 @@ public class CiscoRouterCategory extends Category {
 	@Override
 	public Component render(NetworkModel device) {
 		CategoryBuilder builder = new CategoryBuilder();
-		builder.addTextRow(
-				"Processor Board ID",
-				device.getValue(CiscoRouterExtension.PROCESSOR_BOARD_ID));
+		builder.addTextRow("Processor Board ID", device
+				.getValue(CiscoRouterExtension.PROCESSOR_BOARD_ID));
 		
 		return builder.build();
 	}

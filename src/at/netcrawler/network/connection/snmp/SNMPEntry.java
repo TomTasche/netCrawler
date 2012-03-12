@@ -12,8 +12,8 @@ public class SNMPEntry {
 	public SNMPEntry(ObjectIdentifier oid, Object value) {
 		this.oid = oid;
 		this.type = SNMPObjectType.getTypeByClass(value.getClass());
-		if (type == null) throw new IllegalArgumentException(
-				"Unsupported value!");
+		if (type == null)
+			throw new IllegalArgumentException("Unsupported value!");
 		this.value = value;
 	}
 	

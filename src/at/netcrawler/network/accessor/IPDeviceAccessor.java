@@ -27,6 +27,22 @@ public class IPDeviceAccessor extends DeviceAccessor {
 		}
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		
+		if (!(obj instanceof IPDeviceAccessor)) return false;
+		IPDeviceAccessor accessor = (IPDeviceAccessor) obj;
+		
+		return ipAddress.equals(accessor.ipAddress);
+	}
+	
+	@Override
+	public int hashCode() {
+		return ipAddress.hashCode();
+	}
+	
 	public IPAddress getIpAddress() {
 		return ipAddress;
 	}

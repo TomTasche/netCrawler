@@ -66,27 +66,24 @@ public abstract class NetworkModel implements Serializable {
 	}
 	
 	public final boolean isExtensionSupported(NetworkModelExtension extension) {
-		if (!getClass().equals(
-				extension.getExtendedModelClass())) return false;
+		if (!getClass().equals(extension.getExtendedModelClass()))
+			return false;
 		
 		return true;
 	}
 	
 	public final void setValue(String key, Object value) {
-		if (!typeMap.containsKey(key)) throw new IllegalArgumentException(
-				"Unknown key!");
+		if (!typeMap.containsKey(key))
+			throw new IllegalArgumentException("Unknown key!");
 		
-		Class<?> rawType = typeMap.get(
-				key).getRawType();
-		if (!rawType.isAssignableFrom(value.getClass())) throw new IllegalArgumentException(
-				"Illegal argument type!");
-		Object oldValue = valueMap.put(
-				key, value);
+		Class<?> rawType = typeMap.get(key).getRawType();
+		if (!rawType.isAssignableFrom(value.getClass()))
+			throw new IllegalArgumentException("Illegal argument type!");
+		Object oldValue = valueMap.put(key, value);
 		
 		if (value == oldValue) return;
 		if ((value == null) || (value.equals(oldValue))) return;
-		fireValueChanged(
-				key, value, oldValue);
+		fireValueChanged(key, value, oldValue);
 	}
 	
 	public final boolean containsExtension(NetworkModelExtension extension) {
@@ -110,9 +107,8 @@ public abstract class NetworkModel implements Serializable {
 	}
 	
 	public final boolean addExtension(NetworkModelExtension extension) {
-		if (!getClass().equals(
-				extension.getExtendedModelClass())) throw new IllegalArgumentException(
-				"Illegal model class extension!");
+		if (!getClass().equals(extension.getExtendedModelClass()))
+			throw new IllegalArgumentException("Illegal model class extension!");
 		if (extensions.contains(extension)) return false;
 		if (!isExtensionSupported(extension)) return false;
 		
@@ -144,8 +140,7 @@ public abstract class NetworkModel implements Serializable {
 	private final void fireValueChanged(String key, Object value,
 			Object oldValue) {
 		for (NetworkModelListener listener : listeners) {
-			listener.valueChanged(
-					key, value, oldValue);
+			listener.valueChanged(key, value, oldValue);
 		}
 	}
 	

@@ -2,8 +2,9 @@ package at.netcrawler;
 
 public enum DeviceSystem {
 	
-	LINUX("Linux"), MICROSOFT("Microsoft Corporation"), CISCO(
-			"Cisco Systems, Inc.");
+	LINUX("Linux"),
+	MICROSOFT("Microsoft Corporation"),
+	CISCO("Cisco Systems, Inc.");
 	
 	private final String company;
 	

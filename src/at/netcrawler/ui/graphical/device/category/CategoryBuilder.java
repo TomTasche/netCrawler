@@ -28,8 +28,7 @@ public class CategoryBuilder {
 	}
 	
 	public void addTextRow(String name, Object data) {
-		addTextRow(
-				name, data, false, null);
+		addTextRow(name, data, false, null);
 	}
 	
 	public void addTextRow(String name, Object data, boolean editable,
@@ -45,8 +44,7 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				label, gridBagConstraints);
+		panel.add(label, gridBagConstraints);
 		
 		textField.setText(data.toString());
 		textField.setEnabled(false);
@@ -56,8 +54,7 @@ public class CategoryBuilder {
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				textField, gridBagConstraints);
+		panel.add(textField, gridBagConstraints);
 		
 		if (editable) {
 			editButton.setText("E");
@@ -65,8 +62,7 @@ public class CategoryBuilder {
 			gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 			gridBagConstraints.gridy = rows;
 			gridBagConstraints.insets = DEFAULT_INSETS;
-			panel.add(
-					editButton, gridBagConstraints);
+			panel.add(editButton, gridBagConstraints);
 			editButton.addActionListener(new ActionListener() {
 				
 				@Override
@@ -96,8 +92,7 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				jLabel, gridBagConstraints);
+		panel.add(jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -105,8 +100,7 @@ public class CategoryBuilder {
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				jList, gridBagConstraints);
+		panel.add(jList, gridBagConstraints);
 		
 		rows++;
 	}
@@ -121,8 +115,7 @@ public class CategoryBuilder {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				jLabel, gridBagConstraints);
+		panel.add(jLabel, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -130,8 +123,7 @@ public class CategoryBuilder {
 		gridBagConstraints.weightx = 0.1;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.insets = DEFAULT_INSETS;
-		panel.add(
-				data, gridBagConstraints);
+		panel.add(data, gridBagConstraints);
 		
 		rows++;
 	}
@@ -143,8 +135,7 @@ public class CategoryBuilder {
 		gridBagConstraints.weighty = 0.1;
 		gridBagConstraints.gridy = rows;
 		gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(
-				new JPanel(), gridBagConstraints);
+		panel.add(new JPanel(), gridBagConstraints);
 		
 		return panel;
 	}
@@ -153,8 +144,7 @@ public class CategoryBuilder {
 	private static <T> T[] collectionToArray(Collection<T> collection) {
 		Class<T> clazz = (Class<T>) collection.iterator().next().getClass();
 		
-		T[] array = (T[]) Array.newInstance(
-				clazz, collection.size());
+		T[] array = (T[]) Array.newInstance(clazz, collection.size());
 		
 		int i = 0;
 		for (T item : collection) {

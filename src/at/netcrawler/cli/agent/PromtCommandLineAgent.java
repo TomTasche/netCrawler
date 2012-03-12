@@ -69,18 +69,14 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		this.promtPattern = settings.getPromtPattern();
 		this.commentPrefix = settings.getCommentPrefix();
 		this.newLine = settings.getNewLine();
-		
-		synchronizeStreams();
 	}
 	
 	protected final Matcher readUntilMatch(Pattern pattern) throws IOException {
-		return StreamUtil.readUntilMatch(
-				in, pattern);
+		return StreamUtil.readUntilMatch(in, pattern);
 	}
 	
 	protected final Matcher readUntilFind(Pattern pattern) throws IOException {
-		return StreamUtil.readUntilFind(
-				in, pattern);
+		return StreamUtil.readUntilFind(in, pattern);
 	}
 	
 	protected final String readLine() throws IOException {
@@ -93,8 +89,8 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 	
 	protected final String prepareComment() {
 		String randomString = "0x";
-		randomString += StringUtil.fillFront(
-				Integer.toHexString(random.nextInt()), '0', 8);
+		randomString += StringUtil.fillFront(Integer.toHexString(random
+				.nextInt()), '0', 8);
 		return commentPrefix + SYNCHRONIZE_COMMENT + RANDOM_SEPARATOR
 				+ randomString;
 	}
@@ -150,10 +146,8 @@ public abstract class PromtCommandLineAgent extends CommandLineAgent {
 		flushLine();
 		
 		CommandLineInterface process = new CommandLineProcess(in, out);
-		process = getProcessFilter(
-				command, process);
-		lastProcessFilter = getProcessTerminator(
-				command, process);
+		process = getProcessFilter(command, process);
+		lastProcessFilter = getProcessTerminator(command, process);
 		return lastProcessFilter;
 	}
 	

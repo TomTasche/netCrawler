@@ -8,11 +8,12 @@ import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 
 
-public abstract class CLIDeviceManager extends DeviceManager {
+public abstract class CommandLineDeviceManager extends DeviceManager {
 	
 	protected final PromtCommandLineAgent agent;
 	
-	public CLIDeviceManager(NetworkDevice device, PromtCommandLineAgent agent) {
+	public CommandLineDeviceManager(NetworkDevice device,
+			PromtCommandLineAgent agent) {
 		super(device);
 		
 		this.agent = agent;

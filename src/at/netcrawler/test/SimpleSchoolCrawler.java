@@ -28,7 +28,7 @@ import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.LocalTelnetConnection;
 import at.netcrawler.network.connection.telnet.TelnetSettings;
-import at.netcrawler.network.manager.cli.CiscoCLIDeviceManager;
+import at.netcrawler.network.manager.cli.CiscoCommandLineDeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 import at.netcrawler.network.model.extension.CiscoRouterExtension;
@@ -134,8 +134,7 @@ public class SimpleSchoolCrawler {
 		Logon logon = getLogon();
 		Set<String> usedIDs = new HashSet<String>();
 		
-		crawlDevice(
-				rootAddress, logon, usedIDs);
+		crawlDevice(rootAddress, logon, usedIDs);
 	}
 	
 	public static void crawlDevice(IPv4Address address, Logon logon,
@@ -145,12 +144,10 @@ public class SimpleSchoolCrawler {
 		CommandLineInterface cli = null;
 		
 		for (int i = 0; i < 3; i++) {
-			settings = generateSettings(
-					i, logon);
+			settings = generateSettings(i, logon);
 			
 			try {
-				cli = openConnection(
-						accessor, settings);
+				cli = openConnection(accessor, settings);
 				break;
 			} catch (IOException e) {}
 		}
@@ -165,8 +162,8 @@ public class SimpleSchoolCrawler {
 				agentSettings);
 		
 		NetworkDevice device = new NetworkDevice();
-		CiscoCLIDeviceManager deviceManager = new CiscoCLIDeviceManager(device,
-				agent);
+		CiscoCommandLineDeviceManager deviceManager = new CiscoCommandLineDeviceManager(
+				device, agent);
 		
 		String hostname = (String) deviceManager
 				.getValue(NetworkDevice.HOSTNAME);
@@ -201,8 +198,7 @@ public class SimpleSchoolCrawler {
 			
 			IPv4Address neighborAddress = neighborAddressIterator.next();
 			
-			crawlDevice(
-					neighborAddress, logon, usedHostnames);
+			crawlDevice(neighborAddress, logon, usedHostnames);
 		}
 	}
 	
@@ -230,13 +226,11 @@ public class SimpleSchoolCrawler {
 	
 	public static CommandLineInterface openConnection(DeviceAccessor accessor,
 			ConnectionSettings settings) throws IOException {
-		if (settings.getClass().equals(
-				SSHSettings.class)) {
+		if (settings.getClass().equals(SSHSettings.class)) {
 			LocalSSHConnection connection = new LocalSSHConnection(
 					(IPDeviceAccessor) accessor, (SSHSettings) settings);
 			return connection;
-		} else if (settings.getClass().equals(
-				TelnetSettings.class)) {
+		} else if (settings.getClass().equals(TelnetSettings.class)) {
 			LocalTelnetConnection connection = new LocalTelnetConnection(
 					(IPDeviceAccessor) accessor, (TelnetSettings) settings);
 			return connection;

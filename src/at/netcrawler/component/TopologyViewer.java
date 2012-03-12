@@ -23,8 +23,9 @@ public class TopologyViewer extends GraphViewer {
 	
 	@Override
 	public void setModel(Graph<? extends Object, ? extends Edge> graph) {
-		if (!(graph instanceof Topology)) throw new IllegalArgumentException(
-				"An Topology object must be given!");
+		if (!(graph instanceof Topology))
+			throw new IllegalArgumentException(
+					"An Topology object must be given!");
 		super.setModel(graph);
 	}
 	

@@ -13,8 +13,7 @@ public class UnknownCablePainter extends AbstractCablePainter {
 		GraphicsUtil graphicsUtil = new GraphicsUtil(g);
 		
 		if (points.length == 2) {
-			graphicsUtil.drawLine(
-					points[0], points[1]);
+			graphicsUtil.drawLine(points[0], points[1]);
 		} else {
 			Point middle = new Point();
 			
@@ -27,8 +26,7 @@ public class UnknownCablePainter extends AbstractCablePainter {
 			middle.y /= points.length;
 			
 			for (int j = 0; j < points.length; j++) {
-				graphicsUtil.drawLine(
-						points[j], middle);
+				graphicsUtil.drawLine(points[j], middle);
 			}
 		}
 	}

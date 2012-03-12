@@ -27,15 +27,15 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 		super(accessor, settings);
 		
 		try {
-			Socket socket = new Socket(accessor.getInetAddress(),
-					settings.getPort());
+			Socket socket = new Socket(accessor.getInetAddress(), settings
+					.getPort());
 			SSH2Transport transport = new SSH2Transport(socket,
 					new SecureRandomAndPad());
 			client = new SSH2SimpleClient(transport, settings.getUsername(),
 					settings.getPassword());
 			console = new SSH2ConsoleRemote(client.getConnection());
-			if (!console.shell(true)) throw new IOException(
-					"couldn't start a shell session!");
+			if (!console.shell(true))
+				throw new IOException("couldn't start a shell session!");
 		} catch (SSH2Exception e) {
 			throw new IOException(e);
 		}
@@ -54,8 +54,7 @@ public class LocalSSH2ConnectionImpl extends LocalSSHConnectionImpl {
 	@Override
 	public void closeImpl() throws IOException {
 		console.close(true);
-		client.getTransport().normalDisconnect(
-				DISCONNECT_MESSAGE);
+		client.getTransport().normalDisconnect(DISCONNECT_MESSAGE);
 	}
 	
 }

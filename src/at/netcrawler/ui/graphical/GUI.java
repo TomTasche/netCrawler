@@ -93,8 +93,7 @@ public class GUI extends JFrame {
 			
 			@Override
 			public boolean accept(File f) {
-				return f.getName().endsWith(
-						".crawl");
+				return f.getName().endsWith(".crawl");
 			}
 		});
 		
@@ -171,18 +170,15 @@ public class GUI extends JFrame {
 		// TODO: use another GraphLayout
 		viewer.setGraphLayout(new CrapGraphLayout(viewer));
 		viewer.setModel(topology);
-		viewer.addRenderingHint(
-				RenderingHints.KEY_ANTIALIASING,
+		viewer.addRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		viewer.addRenderingHint(
-				RenderingHints.KEY_RENDERING,
+		viewer.addRenderingHint(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
 		viewer.addVertexMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleMouse(
-						e, (TopologyDevice) e.getSource());
+				handleMouse(e, (TopologyDevice) e.getSource());
 			}
 		});
 		
@@ -231,9 +227,9 @@ public class GUI extends JFrame {
 	
 	private void close() {
 		if (dontClose
-				&& JOptionPane.showOptionDialog(
-						GUI.this, "Do you really want to close netCrawler?",
-						"", JOptionPane.OK_CANCEL_OPTION,
+				&& JOptionPane.showOptionDialog(GUI.this,
+						"Do you really want to close netCrawler?", "",
+						JOptionPane.OK_CANCEL_OPTION,
 						JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
 			dispose();
 		} else if (!dontClose) {
@@ -283,22 +279,16 @@ public class GUI extends JFrame {
 		
 		NetworkDevice deviceA = new NetworkDevice();
 		NetworkInterface interfaceA = new NetworkInterface();
-		interfaceA.setValue(
-				NetworkInterface.NAME, "eth0");
-		deviceA.setValue(
-				NetworkDevice.HOSTNAME, "RouterA");
-		deviceA.setValue(
-				NetworkDevice.INTERFACES,
+		interfaceA.setValue(NetworkInterface.NAME, "eth0");
+		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
+		deviceA.setValue(NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
 		
 		NetworkDevice deviceB = new NetworkDevice();
 		NetworkInterface interfaceB = new NetworkInterface();
-		interfaceB.setValue(
-				NetworkInterface.NAME, "eth0");
-		deviceB.setValue(
-				NetworkDevice.HOSTNAME, "RouterB");
-		deviceB.setValue(
-				NetworkDevice.INTERFACES,
+		interfaceB.setValue(NetworkInterface.NAME, "eth0");
+		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
+		deviceB.setValue(NetworkDevice.INTERFACES,
 				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
 		
 		NetworkCable cable = new NetworkCable();
@@ -317,10 +307,8 @@ public class GUI extends JFrame {
 		topology.addVertex(topologyDeviceB);
 		topology.addEdge(topologyCable);
 		
-		deviceA.setValue(
-				NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
-		deviceB.setValue(
-				NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
+		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
+		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
 		
 		new GUI(topology);
 	}

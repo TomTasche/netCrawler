@@ -13,12 +13,10 @@ public abstract class CommandLineAgentFactory {
 	
 	public final CommandLineAgent createAgent(CommandLineInterface cli,
 			CommandLineAgentSettings settings) throws IOException {
-		if (!settings.getClass().equals(
-				getSettingsClass())) throw new IllegalArgumentException(
-				"Illegal settings class");
+		if (!settings.getClass().equals(getSettingsClass()))
+			throw new IllegalArgumentException("Illegal settings class");
 		
-		return createAgentImpl(
-				cli, settings);
+		return createAgentImpl(cli, settings);
 	}
 	
 	protected abstract CommandLineAgent createAgentImpl(

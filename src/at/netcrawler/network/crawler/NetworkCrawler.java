@@ -5,8 +5,8 @@ import java.io.IOException;
 import at.netcrawler.network.topology.Topology;
 
 
-public abstract class NetworkCrawler {
+public interface NetworkCrawler {
 	
-	public abstract void crawl(Topology topology) throws IOException;
+	public void crawl(Topology topology) throws IOException;
 	
 }

@@ -15,12 +15,10 @@ public class CiscoSwitchCategory extends Category {
 	@Override
 	public Component render(NetworkModel device) {
 		CategoryBuilder builder = new CategoryBuilder();
-		builder.addTextRow(
-				"Model Number",
-				device.getValue(CiscoSwitchExtension.MODEL_NUMBER));
-		builder.addTextRow(
-				"System Serial Number",
-				device.getValue(CiscoSwitchExtension.SYSTEM_SERIAL_NUMBER));
+		builder.addTextRow("Model Number", device
+				.getValue(CiscoSwitchExtension.MODEL_NUMBER));
+		builder.addTextRow("System Serial Number", device
+				.getValue(CiscoSwitchExtension.SYSTEM_SERIAL_NUMBER));
 		
 		return builder.build();
 	}
