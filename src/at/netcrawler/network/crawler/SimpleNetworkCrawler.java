@@ -45,7 +45,7 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 	}
 	
 	private void crawlImpl(Topology topology, IPv4Address address,
-			TopologyInterface interfaze) throws IOException {
+			TopologyDevice lastDevice) throws IOException {
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
 		Connection connection = gateway.openConnection(accessor, settings);
 		NetworkDevice networkDevice = new NetworkDevice();
@@ -58,13 +58,15 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 		TopologyDevice topologyDevice = new TopologyDevice(identifier,
 				networkDevice);
 		boolean contains = topology.addVertex(topologyDevice);
-		if (interfaze != null) {
-			TopologyInterface neighborInterfaze = new UnknownTopologyInterface();
-			topologyDevice.addInterface(neighborInterfaze);
+		if (lastDevice != null) {
+			TopologyInterface interfaceA = new UnknownTopologyInterface();
+			TopologyInterface interfaceB = new UnknownTopologyInterface();
+			topologyDevice.addInterface(interfaceA);
+			topologyDevice.addInterface(interfaceB);
 			NetworkCable networkCable = new NetworkCable();
 			Set<TopologyInterface> connectedInterfaces = new HashSet<TopologyInterface>();
-			connectedInterfaces.add(interfaze);
-			connectedInterfaces.add(neighborInterfaze);
+			connectedInterfaces.add(interfaceA);
+			connectedInterfaces.add(interfaceB);
 			TopologyCable topologyCable = new TopologyCable(networkCable,
 					connectedInterfaces);
 			topology.addEdge(topologyCable);
@@ -74,9 +76,7 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 		Set<IPv4Address> neighbors = deviceManager.discoverNeighbors();
 		
 		for (IPv4Address neighbor : neighbors) {
-			TopologyInterface neighborInterfaze = new UnknownTopologyInterface();
-			topologyDevice.addInterface(neighborInterfaze);
-			crawlImpl(topology, neighbor, neighborInterfaze);
+			crawlImpl(topology, neighbor, topologyDevice);
 		}
 	}
 	

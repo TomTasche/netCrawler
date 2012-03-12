@@ -15,6 +15,8 @@ import at.netcrawler.network.model.NetworkDeviceExtension;
 import at.netcrawler.network.model.NetworkInterface;
 
 
+// TODO: move the NetworkDevice to the access methods
+// TODO: progress?
 public abstract class DeviceManager {
 	
 	private final NetworkDevice device;
