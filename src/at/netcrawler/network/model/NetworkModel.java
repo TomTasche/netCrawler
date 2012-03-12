@@ -11,7 +11,6 @@ import java.util.Set;
 import at.andiwand.library.util.TypeToken;
 
 
-// TODO: fix type issue
 // TODO: implement value path?
 public abstract class NetworkModel implements Serializable {
 	
