@@ -1,4 +1,4 @@
-package at.netcrawler.ui;
+package at.netcrawler.ui.crawler;
 
 import java.util.Set;
 
@@ -6,7 +6,6 @@ import javax.swing.UIManager;
 
 import at.andiwand.library.util.collections.CollectionUtil;
 import at.netcrawler.network.topology.HashTopology;
-import at.netcrawler.ui.graphical.GUI;
 
 
 public class Launcher {

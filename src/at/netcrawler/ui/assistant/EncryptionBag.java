@@ -1,4 +1,5 @@
-package at.netcrawler.assistant;
+package at.netcrawler.ui.assistant;
+
 
 public class EncryptionBag {
 	

@@ -1,4 +1,4 @@
-package at.netcrawler.ui.graphical;
+package at.netcrawler.ui.crawler;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package at.netcrawler.ui.graphical.device.category;
+package at.netcrawler.ui.device.category;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;

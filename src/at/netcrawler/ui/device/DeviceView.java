@@ -1,4 +1,4 @@
-package at.netcrawler.ui.graphical.device;
+package at.netcrawler.ui.device;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,13 +21,13 @@ import at.netcrawler.network.model.extension.CiscoSwitchExtension;
 import at.netcrawler.network.model.extension.RouterExtension;
 import at.netcrawler.network.model.extension.SNMPDeviceExtension;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.ui.graphical.device.category.Category;
-import at.netcrawler.ui.graphical.device.category.CiscoCategory;
-import at.netcrawler.ui.graphical.device.category.CiscoRouterCategory;
-import at.netcrawler.ui.graphical.device.category.CiscoSwitchCategory;
-import at.netcrawler.ui.graphical.device.category.DeviceCategory;
-import at.netcrawler.ui.graphical.device.category.RouterCategory;
-import at.netcrawler.ui.graphical.device.category.SNMPCategory;
+import at.netcrawler.ui.device.category.Category;
+import at.netcrawler.ui.device.category.CiscoCategory;
+import at.netcrawler.ui.device.category.CiscoRouterCategory;
+import at.netcrawler.ui.device.category.CiscoSwitchCategory;
+import at.netcrawler.ui.device.category.DeviceCategory;
+import at.netcrawler.ui.device.category.RouterCategory;
+import at.netcrawler.ui.device.category.SNMPCategory;
 import at.netcrawler.util.NetworkDeviceHelper;
 
 

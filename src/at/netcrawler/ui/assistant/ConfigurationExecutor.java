@@ -1,4 +1,4 @@
-package at.netcrawler.ui.graphical;
+package at.netcrawler.ui.assistant;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -29,11 +29,6 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.io.StreamUtil;
-import at.netcrawler.assistant.Configuration;
-import at.netcrawler.assistant.ConfigurationDialog;
-import at.netcrawler.assistant.ConnectionContainer;
-import at.netcrawler.assistant.Encryption;
-import at.netcrawler.assistant.EncryptionCallback;
 import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -43,7 +38,7 @@ import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
 
 
-public class BatchExecutor extends JFrame {
+public class ConfigurationExecutor extends JFrame {
 	
 	private static final long serialVersionUID = 7767764252271031663L;
 	
@@ -68,7 +63,7 @@ public class BatchExecutor extends JFrame {
 	private ConnectionBuilder connectionFactory = new ConnectionBuilder(
 			new LocalTelnetGateway(), new LocalSSHGateway());
 	
-	public BatchExecutor(Configuration configuration) {
+	public ConfigurationExecutor(Configuration configuration) {
 		this();
 		
 		setEnabledAll(true);
@@ -76,7 +71,7 @@ public class BatchExecutor extends JFrame {
 		setConfiguration(configuration);
 	}
 	
-	public BatchExecutor() {
+	public ConfigurationExecutor() {
 		setTitle(TITLE);
 		
 		JPanel panel = new JPanel();
@@ -204,7 +199,7 @@ public class BatchExecutor extends JFrame {
 		
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BatchExecutor.this.dispose();
+				ConfigurationExecutor.this.dispose();
 			}
 		});
 		
@@ -243,7 +238,7 @@ public class BatchExecutor extends JFrame {
 					execute();
 				} catch (IOException e) {
 					e.printStackTrace();
-					ConfigurationDialog.showErrorDialog(BatchExecutor.this, e);
+					ConfigurationDialog.showErrorDialog(ConfigurationExecutor.this, e);
 				}
 				
 				status.setText("Finished execution");
@@ -256,7 +251,7 @@ public class BatchExecutor extends JFrame {
 		configuration.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
 				return ConfigurationDialog
-						.showDecryptionDialog(BatchExecutor.this);
+						.showDecryptionDialog(ConfigurationExecutor.this);
 			}
 		});
 		

@@ -1,4 +1,4 @@
-package at.netcrawler.assistant;
+package at.netcrawler.ui.assistant;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

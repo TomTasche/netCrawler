@@ -1,4 +1,4 @@
-package at.netcrawler.ui.graphical;
+package at.netcrawler.ui.crawler;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -40,7 +40,8 @@ import at.netcrawler.network.manager.cli.CommandLineDeviceManagerFactory;
 import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.ui.graphical.device.DeviceView;
+import at.netcrawler.ui.assistant.ConfigurationManager;
+import at.netcrawler.ui.device.DeviceView;
 import at.netcrawler.util.Settings;
 
 
@@ -214,7 +215,7 @@ public class GUI extends JFrame {
 		if (event.getButton() == MouseEvent.BUTTON1) {
 			frame = new DeviceView(device);
 		} else if (event.getButton() == MouseEvent.BUTTON3) {
-			frame = new BatchManager(device);
+			frame = new ConfigurationManager(device);
 		}
 		
 		if (frame != null) {

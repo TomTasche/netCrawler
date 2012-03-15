@@ -1,13 +1,12 @@
-package at.netcrawler.assistant;
+package at.netcrawler.ui.assistant;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import at.andiwand.library.component.JFrameUtil;
-import at.netcrawler.ui.graphical.BatchManager;
 
 
-public class ConfigurationManager {
+public class ConfigurationManagerLauncher {
 	
 	public static void main(String[] args) {
 		try {
@@ -16,7 +15,7 @@ public class ConfigurationManager {
 			System.err.println("Couldn't apply system look and feel.");
 		}
 		
-		BatchManager manager = new BatchManager();
+		ConfigurationManager manager = new ConfigurationManager();
 		manager.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		JFrameUtil.centerFrame(manager);
 		manager.setVisible(true);
