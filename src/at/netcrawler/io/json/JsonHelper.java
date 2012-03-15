@@ -14,7 +14,7 @@ public class JsonHelper {
 	private static final Gson GSON;
 	
 	static {
-		GsonBuilder builder = new GsonBuilder();
+		GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
 		builder.registerTypeAdapter(IPv4Address.class,
 				new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(MACAddress.class,

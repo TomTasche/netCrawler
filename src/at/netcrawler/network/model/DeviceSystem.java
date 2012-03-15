@@ -1,4 +1,4 @@
-package at.netcrawler;
+package at.netcrawler.network.model;
 
 public enum DeviceSystem {
 	

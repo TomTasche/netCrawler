@@ -7,7 +7,6 @@ import java.util.Set;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.TypeToken;
-import at.netcrawler.DeviceSystem;
 import at.netcrawler.network.Capability;
 
 

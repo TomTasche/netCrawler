@@ -1,4 +1,4 @@
-package at.netcrawler.component;
+package at.netcrawler.ui.component;
 
 import at.andiwand.library.component.GraphViewer;
 import at.andiwand.library.math.graph.Edge;

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPv4Address;
+import at.andiwand.library.util.collections.CollectionUtil;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ConnectionType;
@@ -125,7 +126,7 @@ public class NetworkDeviceHelper {
 		
 		Configuration configuration = new Configuration();
 		configuration.setConnection(container);
-		configuration.setAddress(getSomeAddress(device));
+		configuration.setAddresses(CollectionUtil.arrayToHashSet(getSomeAddress(device)));
 		configuration.setPort(port);
 		configuration.setUsername(username);
 		configuration.setPassword(password);

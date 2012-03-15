@@ -8,8 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import at.andiwand.library.component.JFrameUtil;
-import at.netcrawler.component.CrapGraphLayout;
-import at.netcrawler.component.TopologyViewer;
 import at.netcrawler.network.Capability;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
@@ -20,6 +18,8 @@ import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
 import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
+import at.netcrawler.ui.component.CrapGraphLayout;
+import at.netcrawler.ui.component.TopologyViewer;
 
 
 public class CrapGraphLayoutTest {

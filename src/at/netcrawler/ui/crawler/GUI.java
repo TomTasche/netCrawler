@@ -27,8 +27,6 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.component.CrapGraphLayout;
-import at.netcrawler.component.TopologyViewer;
 import at.netcrawler.io.json.JsonHelper;
 import at.netcrawler.network.connection.ConnectionGateway;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
@@ -41,6 +39,8 @@ import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.ui.assistant.ConfigurationManager;
+import at.netcrawler.ui.component.CrapGraphLayout;
+import at.netcrawler.ui.component.TopologyViewer;
 import at.netcrawler.ui.device.DeviceView;
 import at.netcrawler.util.Settings;
 

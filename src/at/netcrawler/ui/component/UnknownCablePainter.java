@@ -1,4 +1,4 @@
-package at.netcrawler.component;
+package at.netcrawler.ui.component;
 
 import java.awt.Graphics;
 import java.awt.Point;

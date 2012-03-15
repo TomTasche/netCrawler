@@ -1,4 +1,4 @@
-package at.netcrawler.component;
+package at.netcrawler.ui.component;
 
 import at.andiwand.library.component.GenericGraphViewerVertexFactory;
 import at.netcrawler.network.topology.TopologyDevice;

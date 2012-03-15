@@ -9,7 +9,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -240,9 +242,9 @@ public class ConfigurationManager extends JFrame {
 
 	private void validateIP() {
 		try {
-			new IPv4Address(addressField.getText());
+			getAddresses();
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Illegal IP address!");
+			throw new IllegalArgumentException("Illegal IP address(es)!");
 		}
 	}
 
@@ -338,8 +340,7 @@ public class ConfigurationManager extends JFrame {
 			final EncryptionBag encryptionBag = new EncryptionBag();
 			encryptionBag.setEncryption(Encryption.PLAIN);
 
-			Configuration configuration = new Configuration();
-			configuration.readFromJsonFile(file, new EncryptionCallback() {
+			Configuration configuration = Configuration.readFromJsonFile(file, new EncryptionCallback() {
 				public String getPassword(Encryption encryption) {
 					String password = ConfigurationDialog
 							.showDecryptionDialog(ConfigurationManager.this);
@@ -386,21 +387,11 @@ public class ConfigurationManager extends JFrame {
 				if (encryptionBag == null) return;
 			}
 
-			Configuration[] configurations = getConfigurations();
-			if (configurations.length == 0) {
-				configurations[0].writeToJsonFile(activeFile, encryptionBag
+			getConfiguration().writeToJsonFile(activeFile, encryptionBag
 						.getEncryption(), encryptionBag.getPassword());
-			} else {
-				for (int i = 0; i < configurations.length; i++) {
-					File file = new File(activeFile.getParent()
-							+ File.separatorChar + i + "_"
-							+ activeFile.getName());
-					configurations[0].writeToJsonFile(file, encryptionBag
-							.getEncryption(), encryptionBag.getPassword());
-				}
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			
 			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
@@ -417,42 +408,52 @@ public class ConfigurationManager extends JFrame {
 	}
 
 	private void doExecute() {
-		for (Configuration configuration : getConfigurations()) {
-			ConfigurationExecutor executor = new ConfigurationExecutor(configuration);
-			JFrameUtil.centerFrame(executor);
-			executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-			executor.setVisible(true);
+		try {
+			validateAll();
+		} catch (Exception e) {
+			ConfigurationDialog.showErrorDialog(this, e);
+			return;
 		}
+		
+		ConfigurationExecutor executor = new ConfigurationExecutor(getConfiguration());
+		JFrameUtil.centerFrame(executor);
+		executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		executor.setVisible(true);
+	}
+	
+	private Set<IPv4Address> getAddresses() {
+		Set<IPv4Address> result = new HashSet<IPv4Address>();
+		String[] addresses = addressField.getText().split(";");
+		for (String address : addresses) {
+			String s = address.trim();
+			if (!s.isEmpty()) result.add(new IPv4Address(s));
+		}
+		
+		return result;
 	}
 
-	private Configuration[] getConfigurations() {
-		String[] addresses = addressField.getText().split(";");
-		Configuration[] configurations = new Configuration[addresses.length];
-		for (int i = 0; i < addresses.length; i++) {
-			Configuration configuration = new Configuration();
+	private Configuration getConfiguration() {
+		Configuration configuration = new Configuration();
 
-			configuration.setAddress(new IPv4Address(addresses[i]));
-			configuration.setConnection((ConnectionContainer) connections
-					.getSelectedItem());
-			configuration.setPort(Integer.parseInt(portField.getText()));
-			configuration.setUsername(usernameField.getText());
-			configuration.setPassword(new String(passwordField.getPassword()));
+		configuration.setAddresses(getAddresses());
+		configuration.setConnection((ConnectionContainer) connections
+				.getSelectedItem());
+		configuration.setPort(Integer.parseInt(portField.getText()));
+		configuration.setUsername(usernameField.getText());
+		configuration.setPassword(new String(passwordField.getPassword()));
 
-			for (int j = 0; j < batchTabbedPane.getTabCount(); j++) {
-				configuration.putBatch(batchTabbedPane.getTitleAt(j),
-						((JTextArea) ((JScrollPane) batchTabbedPane
-								.getComponentAt(j)).getViewport().getView())
-								.getText());
-			}
-
-			configurations[i] = configuration;
+		for (int j = 0; j < batchTabbedPane.getTabCount(); j++) {
+			configuration.putBatch(batchTabbedPane.getTitleAt(j),
+					((JTextArea) ((JScrollPane) batchTabbedPane
+							.getComponentAt(j)).getViewport().getView())
+							.getText());
 		}
 
-		return configurations;
+		return configuration;
 	}
 
 	private void setConfiguration(Configuration configuration) {
-		addressField.setText(configuration.getAddress().toString());
+		addressField.setText(configuration.getAddresses().toString());
 		connections.setSelectedItem(configuration.getConnectionContainer());
 		portField.setText("" + configuration.getPort());
 		usernameField.setText(configuration.getUsername());

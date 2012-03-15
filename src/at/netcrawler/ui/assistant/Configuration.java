@@ -11,11 +11,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Set;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import at.andiwand.library.network.ip.IPv4Address;
+import at.netcrawler.io.json.JsonHelper;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -27,23 +28,21 @@ public class Configuration {
 	
 	public static final String FILE_SUFFIX = ".conf";
 	
-	private static final String JSON_INDENT = "   ";
-	
 	private static void validateJsonName(JsonReader reader, String name)
 			throws IOException {
 		if (!reader.nextName().equals(name))
 			throw new IOException("Illegal JSON format!");
 	}
 	
-	private IPv4Address address;
+	private Set<IPv4Address> addresses;
 	private ConnectionContainer connection;
 	private int port;
 	private String username;
 	private String password;
 	private LinkedHashMap<String, String> batches = new LinkedHashMap<String, String>();
 	
-	public IPv4Address getAddress() {
-		return address;
+	public Set<IPv4Address> getAddresses() {
+		return addresses;
 	}
 	
 	public ConnectionContainer getConnectionContainer() {
@@ -70,8 +69,8 @@ public class Configuration {
 		return batches.get(name);
 	}
 	
-	public void setAddress(IPv4Address address) {
-		this.address = address;
+	public void setAddresses(Set<IPv4Address> addresses) {
+		this.addresses = addresses;
 	}
 	
 	public void setConnection(ConnectionContainer connection) {
@@ -102,15 +101,16 @@ public class Configuration {
 		batches.remove(name);
 	}
 	
-	public void readFromJsonFile(File file) throws IOException {
-		readFromJsonFile(file, null);
+	public static Configuration readFromJsonFile(File file) throws IOException {
+		return readFromJsonFile(file, null);
 	}
 	
-	public void readFromJsonFile(File file,
+	public static Configuration readFromJsonFile(File file,
 			EncryptionCallback encryptionCallback) throws IOException {
 		FileReader fileReader = new FileReader(file);
 		JsonReader reader = new JsonReader(fileReader);
 		
+		Configuration configuration;
 		Encryption encryption;
 		
 		reader.beginObject();
@@ -119,7 +119,7 @@ public class Configuration {
 		validateJsonName(reader, "data");
 		
 		if (encryption == Encryption.PLAIN) {
-			readData(reader);
+			configuration = readData(reader);
 		} else {
 			try {
 				String password = encryptionCallback.getPassword(encryption);
@@ -134,7 +134,7 @@ public class Configuration {
 						dataCipherInputStream);
 				JsonReader dataReader = new JsonReader(dataInputStreamReader);
 				
-				readData(dataReader);
+				configuration = readData(dataReader);
 				
 				dataReader.close();
 				dataInputStreamReader.close();
@@ -151,35 +151,12 @@ public class Configuration {
 		
 		reader.close();
 		fileReader.close();
+		
+		return configuration;
 	}
 	
-	private void readData(JsonReader reader) throws IOException {
-		reader.beginObject();
-		validateJsonName(reader, "ip");
-		address = new IPv4Address(reader.nextString());
-		validateJsonName(reader, "connection");
-		connection = ConnectionContainer
-				.getContainerByName(reader.nextString());
-		validateJsonName(reader, "port");
-		port = reader.nextInt();
-		validateJsonName(reader, "username");
-		username = reader.nextString();
-		validateJsonName(reader, "password");
-		password = reader.nextString();
-		validateJsonName(reader, "batches");
-		reader.beginArray();
-		batches.clear();
-		while (reader.hasNext()) {
-			reader.beginObject();
-			validateJsonName(reader, "name");
-			String name = reader.nextString();
-			validateJsonName(reader, "batch");
-			String batch = reader.nextString();
-			reader.endObject();
-			batches.put(name, batch);
-		}
-		reader.endArray();
-		reader.endObject();
+	private static Configuration readData(JsonReader reader) throws IOException {
+		return JsonHelper.getGson().fromJson(reader, Configuration.class);
 	}
 	
 	public void writeToJsonFile(File file) throws IOException {
@@ -190,7 +167,6 @@ public class Configuration {
 			String password) throws IOException {
 		FileWriter fileWriter = new FileWriter(file);
 		JsonWriter writer = new JsonWriter(fileWriter);
-		writer.setIndent(JSON_INDENT);
 		
 		writer.beginObject();
 		writer.name("encryption").value(encryption.getName());
@@ -227,24 +203,8 @@ public class Configuration {
 		writer.close();
 		fileWriter.close();
 	}
-	
-	private void writeData(JsonWriter writer) throws IOException {
-		writer.beginObject();
-		writer.name("ip").value(address.toString());
-		writer.name("connection").value(connection.getName());
-		writer.name("port").value(port);
-		writer.name("username").value(username);
-		writer.name("password").value(password);
-		writer.name("batches");
-		writer.beginArray();
-		for (Map.Entry<String, String> batch : batches.entrySet()) {
-			writer.beginObject();
-			writer.name("name").value(batch.getKey());
-			writer.name("batch").value(batch.getValue());
-			writer.endObject();
-		}
-		writer.endArray();
-		writer.endObject();
+
+	private void writeData(JsonWriter writer) {
+		JsonHelper.getGson().toJson(this, Configuration.class, writer);
 	}
-	
 }

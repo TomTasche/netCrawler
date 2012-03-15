@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -22,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
@@ -29,6 +32,7 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.io.StreamUtil;
+import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -52,8 +56,7 @@ public class ConfigurationExecutor extends JFrame {
 	private JComboBox batches = new JComboBox();
 	private JButton execute = new JButton("Execute");
 	private JToggleButton resultButton = new JToggleButton("Show result");
-	private JTextArea result = new JTextArea();
-	private JScrollPane resultScroll = new JScrollPane(result);
+	private JTabbedPane resultPane = new JTabbedPane();
 	private JLabel status = new JLabel();
 	
 	private JFileChooser fileChooser = new JFileChooser();
@@ -69,6 +72,9 @@ public class ConfigurationExecutor extends JFrame {
 		setEnabledAll(true);
 		
 		setConfiguration(configuration);
+		
+		pack();
+		setMinimumSize(getSize());
 	}
 	
 	public ConfigurationExecutor() {
@@ -81,8 +87,7 @@ public class ConfigurationExecutor extends JFrame {
 		JLabel batchLabel = new JLabel("Batch:");
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		
-		result.setEditable(false);
-		resultScroll.setVisible(false);
+		resultPane.setVisible(false);
 		
 		batches.setPreferredSize(new Dimension(150,
 				batches.getPreferredSize().height));
@@ -130,7 +135,7 @@ public class ConfigurationExecutor extends JFrame {
 							.addComponent(execute)
 							)
 						)
-				.addComponent(resultScroll, Alignment.TRAILING)
+				.addComponent(resultPane, Alignment.TRAILING)
 		);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -160,7 +165,7 @@ public class ConfigurationExecutor extends JFrame {
 						.addComponent(resultButton)
 						.addComponent(execute)
 						)
-				.addComponent(resultScroll)
+				.addComponent(resultPane)
 		);
 		//@formatter:on
 		
@@ -184,7 +189,7 @@ public class ConfigurationExecutor extends JFrame {
 		
 		resultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				resultScroll.setVisible(resultButton.isSelected());
+				resultPane.setVisible(resultButton.isSelected());
 				
 				validate();
 				pack();
@@ -235,7 +240,20 @@ public class ConfigurationExecutor extends JFrame {
 				status.setText("Executing...");
 				
 				try {
-					execute();
+					resultPane.removeAll();
+					
+					Set<IPv4Address> addresses = configuration.getAddresses();
+					for (IPv4Address address : addresses) {
+						JTextArea result = new JTextArea();
+						JScrollPane resultScroll = new JScrollPane(result);
+
+						result.setEditable(false);
+						resultScroll.setVisible(false);
+						
+						resultPane.addTab(address.toString(), resultScroll);
+						
+						execute(result, address);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					ConfigurationDialog.showErrorDialog(ConfigurationExecutor.this, e);
@@ -247,8 +265,7 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	public void open(File file) throws IOException {
-		Configuration configuration = new Configuration();
-		configuration.readFromJsonFile(file, new EncryptionCallback() {
+		Configuration configuration = Configuration.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
 				return ConfigurationDialog
 						.showDecryptionDialog(ConfigurationExecutor.this);
@@ -258,9 +275,8 @@ public class ConfigurationExecutor extends JFrame {
 		setConfiguration(configuration);
 	}
 	
-	private void execute() throws IOException {
-		DeviceAccessor accessor = new IPDeviceAccessor(configuration
-				.getAddress());
+	private void execute(JTextArea area, IPv4Address address) throws IOException {
+		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
 		
@@ -300,7 +316,7 @@ public class ConfigurationExecutor extends JFrame {
 		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
 		
 		String output = StreamUtil.readAsString(inputStream);
-		result.setText(output);
+		area.setText(output);
 		
 		cli.close();
 	}
@@ -308,7 +324,13 @@ public class ConfigurationExecutor extends JFrame {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 		
-		address.setText(configuration.getAddress().toString());
+		Iterator<IPv4Address> addressIterator = configuration.getAddresses().iterator();
+		String addresses = addressIterator.next().toString();
+		while (addressIterator.hasNext()) {
+			addresses += ";" + addressIterator.next().toString();
+		}
+		address.setText(addresses);
+		
 		connection.setText(configuration.getConnectionContainer().getName());
 		port.setText("" + configuration.getPort());
 		

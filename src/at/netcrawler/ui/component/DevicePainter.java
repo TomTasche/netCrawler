@@ -1,4 +1,4 @@
-package at.netcrawler.component;
+package at.netcrawler.ui.component;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
