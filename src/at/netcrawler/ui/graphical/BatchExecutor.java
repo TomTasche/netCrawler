@@ -59,6 +59,7 @@ public class BatchExecutor extends JFrame {
 	private JToggleButton resultButton = new JToggleButton("Show result");
 	private JTextArea result = new JTextArea();
 	private JScrollPane resultScroll = new JScrollPane(result);
+	private JLabel status = new JLabel();
 	
 	private JFileChooser fileChooser = new JFileChooser();
 	
@@ -117,49 +118,53 @@ public class BatchExecutor extends JFrame {
 								.addComponent(connectionLabel)
 								.addComponent(portLabel)
 								.addComponent(batchLabel)
-						)
+								)
 						.addGap(20)
 						.addGroup(layout.createParallelGroup()
 								.addComponent(address)
 								.addComponent(connection)
 								.addComponent(port)
 								.addComponent(batches)
-						)
+								)
 				)
 				.addComponent(separator)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-						.addComponent(resultButton)
-						.addComponent(execute)
-				)
+				.addComponent(status, Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, layout.createParallelGroup()
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(resultButton)
+							.addComponent(execute)
+							)
+						)
 				.addComponent(resultScroll, Alignment.TRAILING)
 		);
-		
+
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup()
 						.addComponent(addressLabel)
 						.addComponent(address)
-				)
+						)
 				.addGroup(layout.createParallelGroup()
 						.addComponent(connectionLabel)
 						.addComponent(connection)
-				)
+						)
 				.addGroup(layout.createParallelGroup()
 						.addComponent(portLabel)
 						.addComponent(port)
-				)
+						)
 				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
 						.addComponent(batchLabel)
 						.addComponent(batches)
-				)
+						)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
 						20, Short.MAX_VALUE)
 				.addComponent(separator, GroupLayout.PREFERRED_SIZE,
 						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addGap(10)
 				.addGroup(layout.createParallelGroup()
+						.addComponent(status)
 						.addComponent(resultButton)
 						.addComponent(execute)
-				)
+						)
 				.addComponent(resultScroll)
 		);
 		//@formatter:on
@@ -228,14 +233,22 @@ public class BatchExecutor extends JFrame {
 		}
 	}
 	
-	// TODO: thread
 	public void doExecute() {
-		try {
-			execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
-		}
+		new Thread() {
+			@Override
+			public void run() {
+				status.setText("Executing...");
+				
+				try {
+					execute();
+				} catch (IOException e) {
+					e.printStackTrace();
+					ConfigurationDialog.showErrorDialog(BatchExecutor.this, e);
+				}
+				
+				status.setText("Finished execution");
+			}
+		}.start();
 	}
 	
 	public void open(File file) throws IOException {
