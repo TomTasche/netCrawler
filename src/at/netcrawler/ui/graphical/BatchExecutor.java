@@ -43,13 +43,13 @@ import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
 
 
 public class BatchExecutor extends JFrame {
-	
+
 	private static final long serialVersionUID = 7767764252271031663L;
-	
+
 	private static final String TITLE = "Batch Executor";
-	
+
 	private static final String BATCH_SUFFIX = "!executorEnd";
-	
+
 	private JLabel address = new JLabel();
 	private JLabel connection = new JLabel();
 	private JLabel port = new JLabel();
@@ -57,56 +57,57 @@ public class BatchExecutor extends JFrame {
 	private JButton execute = new JButton("Execute");
 	private JToggleButton resultButton = new JToggleButton("Show result");
 	private JTextField result = new JTextField();
-	
+	private JLabel status = new JLabel();
+
 	private JFileChooser fileChooser = new JFileChooser();
-	
+
 	private Configuration configuration;
-	
+
 	private ConnectionBuilder connectionFactory = new ConnectionBuilder(
 			new LocalTelnetGateway(), new LocalSSHGateway());
-	
+
 	public BatchExecutor(Configuration configuration) {
 		this();
-		
+
 		setEnabledAll(true);
-		
+
 		setConfiguration(configuration);
 	}
-	
+
 	public BatchExecutor() {
 		setTitle(TITLE);
-		
+
 		JPanel panel = new JPanel();
 		JLabel addressLabel = new JLabel("Address:");
 		JLabel connectionLabel = new JLabel("Connection:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel batchLabel = new JLabel("Batch:");
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
-		
+
 		result.setEnabled(false);
 		result.setVisible(false);
-		
+
 		batches.setPreferredSize(new Dimension(150,
 				batches.getPreferredSize().height));
 		setEnabledAll(false);
-		
+
 		fileChooser.setFileFilter(new FileFilter() {
 			public String getDescription() {
 				return "Configuration file (*" + Configuration.FILE_SUFFIX
 						+ ")";
 			}
-			
+
 			public boolean accept(File f) {
 				return f.isDirectory()
 						|| f.getName().endsWith(Configuration.FILE_SUFFIX);
 			}
 		});
-		
+
 		GroupLayout layout = new GroupLayout(panel);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		panel.setLayout(layout);
-		
+
 		//@formatter:off
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
@@ -115,126 +116,139 @@ public class BatchExecutor extends JFrame {
 								.addComponent(connectionLabel)
 								.addComponent(portLabel)
 								.addComponent(batchLabel)
+								)
+								.addGap(20)
+								.addGroup(layout.createParallelGroup()
+										.addComponent(address)
+										.addComponent(connection)
+										.addComponent(port)
+										.addComponent(batches)
+										)
 						)
-						.addGap(20)
-						.addGroup(layout.createParallelGroup()
-								.addComponent(address)
-								.addComponent(connection)
-								.addComponent(port)
-								.addComponent(batches)
-						)
-				)
-				.addComponent(separator)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-						.addComponent(resultButton)
-						.addComponent(execute)
-				)
-				.addComponent(result, Alignment.TRAILING)
-		);
-		
+						.addComponent(separator)
+						.addComponent(status, Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, layout.createParallelGroup()
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(resultButton)
+									.addComponent(execute)
+									)
+							)
+						.addComponent(result, Alignment.TRAILING)
+				);
+
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup()
 						.addComponent(addressLabel)
 						.addComponent(address)
-				)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(connectionLabel)
-						.addComponent(connection)
-				)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(portLabel)
-						.addComponent(port)
-				)
-				.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(batchLabel)
-						.addComponent(batches)
-				)
-				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-						20, Short.MAX_VALUE)
-				.addComponent(separator, GroupLayout.PREFERRED_SIZE,
-						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addGap(10)
-				.addGroup(layout.createParallelGroup()
-						.addComponent(resultButton)
-						.addComponent(execute)
-				)
-				.addComponent(result)
-		);
+						)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(connectionLabel)
+								.addComponent(connection)
+								)
+								.addGroup(layout.createParallelGroup()
+										.addComponent(portLabel)
+										.addComponent(port)
+										)
+										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(batchLabel)
+												.addComponent(batches)
+												)
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+														20, Short.MAX_VALUE)
+														.addComponent(separator, GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+																.addGap(10)
+																.addGroup(layout.createParallelGroup()
+																		.addComponent(status)
+																		.addComponent(resultButton)
+																		.addComponent(execute)
+																		)
+																		.addComponent(result)
+				);
 		//@formatter:on
-		
+
 		execute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doExecute();
 			}
 		});
-		
+
 		add(panel);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		JMenuItem open = new JMenuItem("Open...");
 		JMenuItem exit = new JMenuItem("Exit");
-		
+
 		menuBar.add(file);
 		file.add(open);
 		file.addSeparator();
 		file.add(exit);
-		
+
 		resultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				result.setVisible(resultButton.isSelected());
-				
+
 				validate();
 				pack();
 			}
 		});
-		
+
 		open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				doOpen();
 			}
 		});
-		
+
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BatchExecutor.this.dispose();
 			}
 		});
-		
+
 		setJMenuBar(menuBar);
-		
+
 		pack();
 		setMinimumSize(getSize());
 	}
-	
+
 	private void setEnabledAll(boolean enabled) {
 		batches.setEnabled(enabled);
 		execute.setEnabled(enabled);
 	}
-	
+
 	private void doOpen() {
 		if (fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
 			return;
-		
+
 		try {
 			open(fileChooser.getSelectedFile());
-			
+
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			ConfigurationDialog.showErrorDialog(this, e);
 		}
 	}
-	
+
 	public void doExecute() {
-		try {
-			execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
-		}
+		new Thread() {
+			@Override
+			public void run() {
+				status.setText("Executing...");
+				
+				try {
+					execute();
+				} catch (IOException e) {
+					e.printStackTrace();
+					ConfigurationDialog.showErrorDialog(BatchExecutor.this, e);
+				}
+				
+				status.setText("Finished execution");
+			}
+		}.start();
 	}
-	
+
 	public void open(File file) throws IOException {
 		Configuration configuration = new Configuration();
 		configuration.readFromJsonFile(file, new EncryptionCallback() {
@@ -243,29 +257,29 @@ public class BatchExecutor extends JFrame {
 						.showDecryptionDialog(BatchExecutor.this);
 			}
 		});
-		
+
 		setConfiguration(configuration);
 	}
-	
+
 	private void execute() throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(configuration
 				.getAddress());
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
-		
+
 		ConnectionContainer connectionContainer = configuration
 				.getConnectionContainer();
 		CommandLineInterface cli = (CommandLineInterface) connectionFactory
 				.openConnection(connectionContainer.getConnectionType(),
 						accessor, settings);
-		
+
 		InputStream inputStream = cli.getInputStream();
 		OutputStream outputStream = cli.getOutputStream();
-		
+
 		if (connectionContainer == ConnectionContainer.TELNET) {
 			String username = configuration.getUsername();
 			String password = configuration.getPassword();
-			
+
 			if (!username.isEmpty()) {
 				outputStream.write(username.getBytes());
 				outputStream.write("\n".getBytes());
@@ -278,29 +292,29 @@ public class BatchExecutor extends JFrame {
 				outputStream.flush();
 			}
 		}
-		
+
 		Pattern endPattern = Pattern.compile(".+" + BATCH_SUFFIX);
 		String batch = configuration.getBatch((String) batches
 				.getSelectedItem());
-		
+
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
-		
+
 		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
-		
+
 		String output = StreamUtil.readAsString(inputStream);
 		result.setText(output);
-		
+
 		cli.close();
 	}
-	
+
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-		
+
 		address.setText(configuration.getAddress().toString());
 		connection.setText(configuration.getConnectionContainer().getName());
 		port.setText("" + configuration.getPort());
-		
+
 		batches.removeAllItems();
 		for (String batchName : configuration.getBatches().keySet()) {
 			batches.addItem(batchName);
