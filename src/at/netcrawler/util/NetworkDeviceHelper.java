@@ -45,8 +45,11 @@ public class NetworkDeviceHelper {
 	public static IPv4Address getSomeAddress(NetworkDevice device) {
 		Collection<IPv4Address> addresses = (Collection<IPv4Address>) device
 				.getValue(NetworkDevice.MANAGEMENT_ADDRESSES);
-		// TODO: nullcheck
-		return addresses.iterator().next();
+		if (addresses != null) {
+			return addresses.iterator().next();
+		} else {
+			return null;
+		}
 	}
 	
 	public static String getHostname(NetworkDevice device) {

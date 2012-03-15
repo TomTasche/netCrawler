@@ -248,12 +248,16 @@ public class GUI extends JFrame {
 		new Thread() {
 			public void run() {
 				ConnectionGateway gateway = new LocalSSHGateway();
+				
 				SSHSettings settings = new SSHSettings();
 				settings.setVersion(SSHVersion.VERSION2);
 				settings.setUsername("cisco");
 				settings.setPassword("cisco");
+				
 				DeviceManagerFactory managerFactory = new CommandLineDeviceManagerFactory();
+				
 				IPv4Address start = new IPv4Address("192.168.0.254");
+				
 				SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(gateway,
 						settings, managerFactory, start);
 				
@@ -290,47 +294,4 @@ public class GUI extends JFrame {
 		
 		tableVisible = !tableVisible;
 	}
-	
-//	public static void main(String[] args) throws ClassNotFoundException,
-//			InstantiationException, IllegalAccessException,
-//			UnsupportedLookAndFeelException {
-//		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		
-//		Topology topology = new HashTopology();
-//		
-//		NetworkDevice deviceA = new NetworkDevice();
-//		NetworkInterface interfaceA = new NetworkInterface();
-//		interfaceA.setValue(NetworkInterface.NAME, "eth0");
-//		deviceA.setValue(NetworkDevice.HOSTNAME, "RouterA");
-//		deviceA.setValue(NetworkDevice.INTERFACES,
-//				new HashSet<NetworkInterface>(Arrays.asList(interfaceA)));
-//		
-//		NetworkDevice deviceB = new NetworkDevice();
-//		NetworkInterface interfaceB = new NetworkInterface();
-//		interfaceB.setValue(NetworkInterface.NAME, "eth0");
-//		deviceB.setValue(NetworkDevice.HOSTNAME, "RouterB");
-//		deviceB.setValue(NetworkDevice.INTERFACES,
-//				new HashSet<NetworkInterface>(Arrays.asList(interfaceB)));
-//		
-//		NetworkCable cable = new NetworkCable();
-//		
-//		TopologyDevice topologyDeviceA = new TopologyDevice(
-//				new UniqueDeviceIdentifier(), deviceA);
-//		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
-//		TopologyDevice topologyDeviceB = new TopologyDevice(
-//				new UniqueDeviceIdentifier(), deviceB);
-//		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
-//		TopologyCable topologyCable = new TopologyCable(cable,
-//				new HashSet<TopologyInterface>(Arrays.asList(
-//						topologyInterfaceA, topologyInterfaceB)));
-//		
-//		topology.addVertex(topologyDeviceA);
-//		topology.addVertex(topologyDeviceB);
-//		topology.addEdge(topologyCable);
-//		
-//		deviceA.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.ROUTER);
-//		deviceB.setValue(NetworkDevice.MAJOR_CAPABILITY, Capability.SWITCH);
-//		
-//		new GUI(topology);
-//	}
 }
