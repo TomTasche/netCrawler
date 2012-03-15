@@ -20,8 +20,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
 import javax.swing.filechooser.FileFilter;
@@ -56,7 +57,8 @@ public class BatchExecutor extends JFrame {
 	private JComboBox batches = new JComboBox();
 	private JButton execute = new JButton("Execute");
 	private JToggleButton resultButton = new JToggleButton("Show result");
-	private JTextField result = new JTextField();
+	private JTextArea result = new JTextArea();
+	private JScrollPane resultScroll = new JScrollPane(result);
 	
 	private JFileChooser fileChooser = new JFileChooser();
 	
@@ -83,8 +85,8 @@ public class BatchExecutor extends JFrame {
 		JLabel batchLabel = new JLabel("Batch:");
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		
-		result.setEnabled(false);
-		result.setVisible(false);
+		result.setEditable(false);
+		resultScroll.setVisible(false);
 		
 		batches.setPreferredSize(new Dimension(150,
 				batches.getPreferredSize().height));
@@ -129,7 +131,7 @@ public class BatchExecutor extends JFrame {
 						.addComponent(resultButton)
 						.addComponent(execute)
 				)
-				.addComponent(result, Alignment.TRAILING)
+				.addComponent(resultScroll, Alignment.TRAILING)
 		);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -158,7 +160,7 @@ public class BatchExecutor extends JFrame {
 						.addComponent(resultButton)
 						.addComponent(execute)
 				)
-				.addComponent(result)
+				.addComponent(resultScroll)
 		);
 		//@formatter:on
 		
@@ -182,7 +184,7 @@ public class BatchExecutor extends JFrame {
 		
 		resultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				result.setVisible(resultButton.isSelected());
+				resultScroll.setVisible(resultButton.isSelected());
 				
 				validate();
 				pack();
@@ -226,6 +228,7 @@ public class BatchExecutor extends JFrame {
 		}
 	}
 	
+	// TODO: thread
 	public void doExecute() {
 		try {
 			execute();
