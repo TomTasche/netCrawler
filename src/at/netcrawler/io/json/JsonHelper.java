@@ -1,5 +1,7 @@
 package at.netcrawler.io.json;
 
+import java.net.InetAddress;
+
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
@@ -16,6 +18,8 @@ public class JsonHelper {
 	static {
 		GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
 		builder.registerTypeAdapter(IPv4Address.class,
+				new JsonIPv4AddressAdapter());
+		builder.registerTypeAdapter(InetAddress.class,
 				new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(MACAddress.class,
 				new JsonMACAddressAdapter());

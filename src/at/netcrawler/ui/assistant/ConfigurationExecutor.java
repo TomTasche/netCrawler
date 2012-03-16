@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,7 +33,6 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.io.StreamUtil;
-import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -40,6 +40,7 @@ import at.netcrawler.network.connection.ConnectionBuilder;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
+import at.netcrawler.ui.DialogUtil;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -229,7 +230,7 @@ public class ConfigurationExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			DialogUtil.showErrorDialog(this, e);
 		}
 	}
 	
@@ -242,8 +243,8 @@ public class ConfigurationExecutor extends JFrame {
 				try {
 					resultPane.removeAll();
 					
-					Set<IPv4Address> addresses = configuration.getAddresses();
-					for (IPv4Address address : addresses) {
+					Set<InetAddress> addresses = configuration.getAddresses();
+					for (InetAddress address : addresses) {
 						JTextArea result = new JTextArea();
 						JScrollPane resultScroll = new JScrollPane(result);
 
@@ -256,7 +257,7 @@ public class ConfigurationExecutor extends JFrame {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-					ConfigurationDialog.showErrorDialog(ConfigurationExecutor.this, e);
+					DialogUtil.showErrorDialog(ConfigurationExecutor.this, e);
 				}
 				
 				status.setText("Finished execution");
@@ -265,7 +266,7 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	public void open(File file) throws IOException {
-		Configuration configuration = Configuration.readFromJsonFile(file, new EncryptionCallback() {
+		Configuration configuration = ConfigurationHelper.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
 				return ConfigurationDialog
 						.showDecryptionDialog(ConfigurationExecutor.this);
@@ -275,7 +276,7 @@ public class ConfigurationExecutor extends JFrame {
 		setConfiguration(configuration);
 	}
 	
-	private void execute(JTextArea area, IPv4Address address) throws IOException {
+	private void execute(JTextArea area, InetAddress address) throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
@@ -324,7 +325,7 @@ public class ConfigurationExecutor extends JFrame {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 		
-		Iterator<IPv4Address> addressIterator = configuration.getAddresses().iterator();
+		Iterator<InetAddress> addressIterator = configuration.getAddresses().iterator();
 		String addresses = addressIterator.next().toString();
 		while (addressIterator.hasNext()) {
 			addresses += ";" + addressIterator.next().toString();
