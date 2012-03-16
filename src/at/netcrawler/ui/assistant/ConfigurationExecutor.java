@@ -40,6 +40,7 @@ import at.netcrawler.network.connection.ConnectionBuilder;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
+import at.netcrawler.ui.DialogUtil;
 
 
 public class ConfigurationExecutor extends JFrame {
@@ -229,7 +230,7 @@ public class ConfigurationExecutor extends JFrame {
 			setEnabledAll(true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			DialogUtil.showErrorDialog(this, e);
 		}
 	}
 	
@@ -256,7 +257,7 @@ public class ConfigurationExecutor extends JFrame {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-					ConfigurationDialog.showErrorDialog(ConfigurationExecutor.this, e);
+					DialogUtil.showErrorDialog(ConfigurationExecutor.this, e);
 				}
 				
 				status.setText("Finished execution");

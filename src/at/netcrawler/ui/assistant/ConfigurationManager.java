@@ -34,6 +34,7 @@ import at.andiwand.library.component.CloseableTabbedPane;
 import at.andiwand.library.component.JFrameUtil;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.ui.DialogUtil;
 import at.netcrawler.util.NetworkDeviceHelper;
 
 
@@ -280,7 +281,7 @@ public class ConfigurationManager extends JFrame {
 		batchName = batchName.trim();
 
 		if (batchName.isEmpty()) {
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+			DialogUtil.showErrorDialog(ConfigurationManager.this,
 					"Batch name is empty!");
 
 			return;
@@ -288,7 +289,7 @@ public class ConfigurationManager extends JFrame {
 
 		for (int i = 0; i < batchTabbedPane.getTabCount(); i++) {
 			if (batchName.equals(batchTabbedPane.getTitleAt(i))) {
-				ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+				DialogUtil.showErrorDialog(ConfigurationManager.this,
 						"Batch name already exists!");
 
 				return;
@@ -302,7 +303,7 @@ public class ConfigurationManager extends JFrame {
 
 	private void doChoose() {
 		if (batchTabbedPane.getTabCount() <= 0) {
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this,
+			DialogUtil.showErrorDialog(ConfigurationManager.this,
 					"Add batch name first!");
 			return;
 		}
@@ -327,7 +328,7 @@ public class ConfigurationManager extends JFrame {
 					.getViewport().getView()).setText(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(ConfigurationManager.this, e);
+			DialogUtil.showErrorDialog(ConfigurationManager.this, e);
 		}
 	}
 
@@ -356,7 +357,8 @@ public class ConfigurationManager extends JFrame {
 			activeFile = file;
 		} catch (IOException e) {
 			e.printStackTrace();
-			ConfigurationDialog.showErrorDialog(this, e);
+			
+			DialogUtil.showErrorDialog(this, e);
 		}
 	}
 
@@ -364,7 +366,8 @@ public class ConfigurationManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(this, e);
+			DialogUtil.showErrorDialog(this, e);
+			
 			return;
 		}
 
@@ -392,7 +395,7 @@ public class ConfigurationManager extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 			
-			ConfigurationDialog.showErrorDialog(this, e);
+			DialogUtil.showErrorDialog(this, e);
 		}
 	}
 
@@ -411,7 +414,8 @@ public class ConfigurationManager extends JFrame {
 		try {
 			validateAll();
 		} catch (Exception e) {
-			ConfigurationDialog.showErrorDialog(this, e);
+			DialogUtil.showErrorDialog(this, e);
+			
 			return;
 		}
 		

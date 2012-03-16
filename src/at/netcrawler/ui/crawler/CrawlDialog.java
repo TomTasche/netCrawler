@@ -1,6 +1,7 @@
 package at.netcrawler.ui.crawler;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -19,8 +21,8 @@ import at.netcrawler.ui.DialogUtil;
 
 public class CrawlDialog {
 
-	private static final Insets DEFAULT_INSETS = new Insets(15, 5, 5, 5);
-	
+	private static final Insets DEFAULT_INSETS = new Insets(0, 5, 5, 5);
+
 	public static CrawlSettings showCrawlDialog(Component parent) {
 		JPanel panel = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
@@ -32,6 +34,10 @@ public class CrawlDialog {
 		final JTextField addressField = new JTextField();
 		JTextField usernameField = new JTextField();
 		JPasswordField passwordField = new JPasswordField();
+		JToggleButton advancedButton = new JToggleButton("Show advanced settings");
+
+		passwordField.setPreferredSize(new Dimension(150, passwordField
+				.getPreferredSize().height));
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.LINE_START;
@@ -40,7 +46,7 @@ public class CrawlDialog {
 		constraints.gridy = 0;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(addressLabel, constraints);
-		
+
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.LINE_END;
@@ -49,7 +55,7 @@ public class CrawlDialog {
 		constraints.gridy = 0;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(addressField, constraints);
-		
+
 		constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.weightx = 0.1;
@@ -57,7 +63,7 @@ public class CrawlDialog {
 		constraints.gridy = 1;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(usernameLabel, constraints);
-		
+
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.LINE_END;
@@ -66,7 +72,7 @@ public class CrawlDialog {
 		constraints.gridy = 1;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(usernameField, constraints);
-		
+
 		constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.LINE_START;
 		constraints.weightx = 0.1;
@@ -74,7 +80,7 @@ public class CrawlDialog {
 		constraints.gridy = 2;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(passwordLabel, constraints);
-		
+
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.LINE_END;
@@ -83,7 +89,17 @@ public class CrawlDialog {
 		constraints.gridy = 2;
 		constraints.insets = DEFAULT_INSETS;
 		panel.add(passwordField, constraints);
-		
+
+		constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.NONE;
+		constraints.anchor = GridBagConstraints.LINE_START;
+		constraints.weightx = 0.1;
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		constraints.gridwidth = 2;
+		constraints.insets = DEFAULT_INSETS;
+		panel.add(advancedButton, constraints);
+
 		JOptionPane optionPane = new JOptionPane(panel,
 				JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION) {
 			private static final long serialVersionUID = -3897964554672819739L;
@@ -96,6 +112,7 @@ public class CrawlDialog {
 		while (true) {
 			JDialog dialog = optionPane.createDialog(parent,
 					"Crawl settings");
+			dialog.pack();
 			dialog.setVisible(true);
 			dialog.dispose();
 
@@ -130,10 +147,10 @@ public class CrawlDialog {
 			settings.setDefaultPassword(password);
 		}
 	}
-	
+
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		
+
 		CrawlDialog.showCrawlDialog(null);
 	}
 }

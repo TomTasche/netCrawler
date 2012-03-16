@@ -22,7 +22,7 @@ import at.netcrawler.network.model.NetworkDevice;
 
 public class CategoryBuilder {
 	
-	private static final Insets DEFAULT_INSETS = new Insets(15, 5, 5, 5);
+	private static final Insets DEFAULT_INSETS = new Insets(0, 5, 5, 5);
 	
 	JPanel panel;
 	int rows;
