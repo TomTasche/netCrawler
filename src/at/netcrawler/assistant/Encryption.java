@@ -19,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public enum Encryption {
 	
-	PLAIN("Plain", null, null) {
+	PLAIN("Plain", null, null, -1) {
 		public InputStream getCipherInputStream(InputStream inputStream,
 				String password) {
 			return inputStream;
@@ -30,8 +30,8 @@ public enum Encryption {
 			return outputStream;
 		}
 	},
-	DES("DES"),
-	AES("AES");
+	DES("DES", 8),
+	AES("AES", 16);
 	
 	private static final String KEY_CHARSET = "utf-8";
 	
@@ -56,19 +56,22 @@ public enum Encryption {
 	private final String name;
 	private final String algorithm;
 	private final String transformation;
+	private final int keyLength;
 	
-	private Encryption(String algorithm) {
-		this(algorithm, algorithm, algorithm);
+	private Encryption(String algorithm, int keyLength) {
+		this(algorithm, algorithm, algorithm, keyLength);
 	}
 	
-	private Encryption(String name, String algorithm) {
-		this(name, algorithm, algorithm);
+	private Encryption(String name, String algorithm, int keyLength) {
+		this(name, algorithm, algorithm, keyLength);
 	}
 	
-	private Encryption(String name, String algorithm, String transformation) {
+	private Encryption(String name, String algorithm, String transformation,
+			int keyLength) {
 		this.name = name;
 		this.algorithm = algorithm;
 		this.transformation = transformation;
+		this.keyLength = keyLength;
 	}
 	
 	@Override
@@ -114,17 +117,16 @@ public enum Encryption {
 			byte[] key;
 			
 			int hashLength = passwordHash.length;
-			int maxKeyLength = Cipher.getMaxAllowedKeyLength(transformation) >> 3;
 			
-			if (hashLength != maxKeyLength) {
-				key = new byte[maxKeyLength];
-				int max = Math.max(hashLength, maxKeyLength);
+			if (hashLength == keyLength) {
+				key = passwordHash;
+			} else {
+				key = new byte[keyLength];
+				int max = Math.max(hashLength, keyLength);
 				
 				for (int i = 0; i < max; i++) {
-					key[i % maxKeyLength] ^= passwordHash[i % hashLength];
+					key[i % keyLength] ^= passwordHash[i % hashLength];
 				}
-			} else {
-				key = passwordHash;
 			}
 			
 			return new SecretKeySpec(key, algorithm);
