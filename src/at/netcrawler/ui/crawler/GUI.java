@@ -256,6 +256,7 @@ public class GUI extends JFrame {
 				
 				DeviceManagerFactory managerFactory = new CommandLineDeviceManagerFactory();
 				
+				// TODO: PROMPT!
 				IPv4Address start = new IPv4Address("192.168.0.254");
 				
 				SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(gateway,

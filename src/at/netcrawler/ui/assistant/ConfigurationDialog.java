@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+import at.netcrawler.ui.DialogUtil;
+
 
 public class ConfigurationDialog {
 	
@@ -104,7 +106,7 @@ public class ConfigurationDialog {
 			if (Arrays.equals(passwordField.getPassword(), passwordRepeatField
 					.getPassword())) break;
 			
-			showErrorDialog(parent, "The passwords don't match!");
+			DialogUtil.showErrorDialog(parent, "The passwords don't match!");
 			passwordField.setText("");
 			passwordRepeatField.setText("");
 		}
@@ -161,19 +163,4 @@ public class ConfigurationDialog {
 		
 		return new String(passwordField.getPassword());
 	}
-	
-	public static void showErrorDialog(Component parent, Throwable t) {
-		showErrorDialog(parent, t.getMessage());
-	}
-	
-	public static void showErrorDialog(Component parent, String message) {
-		showErrorDialog(parent, "Error", message);
-	}
-	
-	public static void showErrorDialog(Component parent, String title,
-			String message) {
-		JOptionPane.showMessageDialog(parent, message, title,
-				JOptionPane.ERROR_MESSAGE);
-	}
-	
 }
