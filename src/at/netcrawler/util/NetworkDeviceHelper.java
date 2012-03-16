@@ -1,5 +1,7 @@
 package at.netcrawler.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -126,10 +128,17 @@ public class NetworkDeviceHelper {
 			port = telnet.getPort();
 			container = ConnectionContainer.TELNET;
 		}
+
+		InetAddress address = null;
+		try {
+			address = InetAddress.getByName(getSomeAddress(device).toString());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		
 		Configuration configuration = new Configuration();
 		configuration.setConnection(container);
-		configuration.setAddresses(CollectionUtil.arrayToHashSet(getSomeAddress(device)));
+		configuration.setAddresses(CollectionUtil.arrayToHashSet(address));
 		configuration.setPort(port);
 		configuration.setUsername(username);
 		configuration.setPassword(password);

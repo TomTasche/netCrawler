@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +34,6 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.CloseableTabbedPane;
 import at.andiwand.library.component.JFrameUtil;
-import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.ui.DialogUtil;
 import at.netcrawler.util.NetworkDeviceHelper;
@@ -341,7 +342,7 @@ public class ConfigurationManager extends JFrame {
 			final EncryptionBag encryptionBag = new EncryptionBag();
 			encryptionBag.setEncryption(Encryption.PLAIN);
 
-			Configuration configuration = Configuration.readFromJsonFile(file, new EncryptionCallback() {
+			Configuration configuration = ConfigurationHelper.readFromJsonFile(file, new EncryptionCallback() {
 				public String getPassword(Encryption encryption) {
 					String password = ConfigurationDialog
 							.showDecryptionDialog(ConfigurationManager.this);
@@ -357,7 +358,7 @@ public class ConfigurationManager extends JFrame {
 			activeFile = file;
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			DialogUtil.showErrorDialog(this, e);
 		}
 	}
@@ -367,7 +368,7 @@ public class ConfigurationManager extends JFrame {
 			validateAll();
 		} catch (Exception e) {
 			DialogUtil.showErrorDialog(this, e);
-			
+
 			return;
 		}
 
@@ -390,11 +391,11 @@ public class ConfigurationManager extends JFrame {
 				if (encryptionBag == null) return;
 			}
 
-			getConfiguration().writeToJsonFile(activeFile, encryptionBag
-						.getEncryption(), encryptionBag.getPassword());
+			ConfigurationHelper.writeToJsonFile(activeFile, encryptionBag
+					.getEncryption(), encryptionBag.getPassword(), getConfiguration());
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			DialogUtil.showErrorDialog(this, e);
 		}
 	}
@@ -415,24 +416,29 @@ public class ConfigurationManager extends JFrame {
 			validateAll();
 		} catch (Exception e) {
 			DialogUtil.showErrorDialog(this, e);
-			
+
 			return;
 		}
-		
+
 		ConfigurationExecutor executor = new ConfigurationExecutor(getConfiguration());
 		JFrameUtil.centerFrame(executor);
 		executor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		executor.setVisible(true);
 	}
-	
-	private Set<IPv4Address> getAddresses() {
-		Set<IPv4Address> result = new HashSet<IPv4Address>();
+
+	private Set<InetAddress> getAddresses() {
+		Set<InetAddress> result = new HashSet<InetAddress>();
 		String[] addresses = addressField.getText().split(";");
 		for (String address : addresses) {
 			String s = address.trim();
-			if (!s.isEmpty()) result.add(new IPv4Address(s));
+			
+			try {
+				if (!s.isEmpty()) result.add(InetAddress.getByName(s));
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 		}
-		
+
 		return result;
 	}
 

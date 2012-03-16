@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,7 +33,6 @@ import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.io.StreamUtil;
-import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.io.UntilLineMatchInputStream;
 import at.netcrawler.network.accessor.DeviceAccessor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
@@ -243,8 +243,8 @@ public class ConfigurationExecutor extends JFrame {
 				try {
 					resultPane.removeAll();
 					
-					Set<IPv4Address> addresses = configuration.getAddresses();
-					for (IPv4Address address : addresses) {
+					Set<InetAddress> addresses = configuration.getAddresses();
+					for (InetAddress address : addresses) {
 						JTextArea result = new JTextArea();
 						JScrollPane resultScroll = new JScrollPane(result);
 
@@ -266,7 +266,7 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	public void open(File file) throws IOException {
-		Configuration configuration = Configuration.readFromJsonFile(file, new EncryptionCallback() {
+		Configuration configuration = ConfigurationHelper.readFromJsonFile(file, new EncryptionCallback() {
 			public String getPassword(Encryption encryption) {
 				return ConfigurationDialog
 						.showDecryptionDialog(ConfigurationExecutor.this);
@@ -276,7 +276,7 @@ public class ConfigurationExecutor extends JFrame {
 		setConfiguration(configuration);
 	}
 	
-	private void execute(JTextArea area, IPv4Address address) throws IOException {
+	private void execute(JTextArea area, InetAddress address) throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
@@ -325,7 +325,7 @@ public class ConfigurationExecutor extends JFrame {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 		
-		Iterator<IPv4Address> addressIterator = configuration.getAddresses().iterator();
+		Iterator<InetAddress> addressIterator = configuration.getAddresses().iterator();
 		String addresses = addressIterator.next().toString();
 		while (addressIterator.hasNext()) {
 			addresses += ";" + addressIterator.next().toString();
