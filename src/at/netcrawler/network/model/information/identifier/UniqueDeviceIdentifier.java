@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
 public class UniqueDeviceIdentifier extends DeviceIdentifier {
 	

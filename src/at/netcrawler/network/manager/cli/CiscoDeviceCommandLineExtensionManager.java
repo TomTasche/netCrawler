@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.QuickPattern;
-import at.netcrawler.network.CDPNeighbor;
-import at.netcrawler.network.Capability;
 import at.netcrawler.network.manager.CiscoDeviceExtensionManager;
 import at.netcrawler.network.manager.DeviceManager;
+import at.netcrawler.network.model.CDPNeighbor;
+import at.netcrawler.network.model.Capability;
 
 
 public class CiscoDeviceCommandLineExtensionManager extends

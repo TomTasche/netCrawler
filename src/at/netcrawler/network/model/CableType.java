@@ -1,4 +1,4 @@
-package at.netcrawler.network;
+package at.netcrawler.network.model;
 
 public enum CableType {
 	

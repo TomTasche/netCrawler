@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import at.andiwand.library.util.TypeToken;
-import at.netcrawler.network.CDPNeighbor;
+import at.netcrawler.network.model.CDPNeighbor;
 import at.netcrawler.network.model.NetworkDeviceExtension;
 
 

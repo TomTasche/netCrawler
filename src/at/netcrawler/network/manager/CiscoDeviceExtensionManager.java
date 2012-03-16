@@ -3,7 +3,7 @@ package at.netcrawler.network.manager;
 import java.io.IOException;
 import java.util.List;
 
-import at.netcrawler.network.CDPNeighbor;
+import at.netcrawler.network.model.CDPNeighbor;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 
 

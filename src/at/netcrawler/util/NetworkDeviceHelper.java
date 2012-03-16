@@ -5,12 +5,12 @@ import java.util.Set;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.util.collections.CollectionUtil;
-import at.netcrawler.network.Capability;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ConnectionType;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.connection.telnet.TelnetSettings;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.ui.assistant.Configuration;
 import at.netcrawler.ui.assistant.ConnectionContainer;

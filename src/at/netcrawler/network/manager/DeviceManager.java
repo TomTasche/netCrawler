@@ -8,7 +8,7 @@ import java.util.Set;
 
 import at.andiwand.library.network.ip.IPAddress;
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.DeviceSystem;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkDeviceExtension;

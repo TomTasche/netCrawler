@@ -6,16 +6,16 @@ import java.util.HashSet;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
+import at.netcrawler.network.model.information.identifier.UniqueDeviceIdentifier;
 import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
-import at.netcrawler.network.topology.identifier.UniqueDeviceIdentifier;
 import at.netcrawler.ui.crawler.GUI;
 
 public class GUITest {

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import at.andiwand.library.util.TypeToken;
-import at.netcrawler.network.CableType;
 
 
 public class NetworkCable extends NetworkModel {

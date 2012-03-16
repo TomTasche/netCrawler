@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import at.andiwand.library.component.GraphViewerVertex;
 import at.andiwand.library.graphics.GraphicsUtil;
-import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkModelAdapter;
 import at.netcrawler.network.topology.TopologyDevice;

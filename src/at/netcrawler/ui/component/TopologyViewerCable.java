@@ -8,7 +8,7 @@ import java.util.Set;
 
 import at.andiwand.library.component.GraphViewerEdge;
 import at.andiwand.library.component.GraphViewerVertex;
-import at.netcrawler.network.CableType;
+import at.netcrawler.network.model.CableType;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkModelAdapter;
 import at.netcrawler.network.topology.TopologyCable;

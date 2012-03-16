@@ -1,4 +1,4 @@
-package at.netcrawler.network;
+package at.netcrawler.network.model;
 
 import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.network.ip.SubnetMask;

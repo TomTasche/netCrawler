@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +29,7 @@ public final class DeviceIdentifierBuilder {
 	public DeviceIdentifier getIdentification(NetworkDevice device) {
 		for (DeviceIdentifierFactory identificationFactory : identifierFactories) {
 			DeviceIdentifier identification = identificationFactory
-					.buildIdentifier(device);
+					.build(device);
 			if (identification != null) return identification;
 		}
 		
