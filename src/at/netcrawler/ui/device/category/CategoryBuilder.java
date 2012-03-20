@@ -34,7 +34,9 @@ public class CategoryBuilder {
 	
 	public void addTextRow(String name, final DeviceManager manager,
 			NetworkDevice device, final String identifier) {
-		String data = device.getValue(identifier).toString();
+		Object temp = device.getValue(identifier);
+		if (temp == null) return;
+		String data = temp.toString();
 		
 		addTextRow(name, data, new CategoryCallback() {
 			
@@ -73,7 +75,7 @@ public class CategoryBuilder {
 		panel.add(label, gridBagConstraints);
 		
 		textField.setText(data.toString());
-		textField.setEnabled(false);
+		textField.setEditable(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
@@ -93,10 +95,10 @@ public class CategoryBuilder {
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					boolean enabled = textField.isEnabled();
+					boolean enabled = textField.isEditable();
 					
-					editButton.setText(enabled ? "S" : "E");
-					textField.setEnabled(!enabled);
+					editButton.setText(!enabled ? "S" : "E");
+					textField.setEditable(!enabled);
 					
 					if (enabled) callback.save(textField.getText());
 				}
@@ -111,7 +113,6 @@ public class CategoryBuilder {
 		
 		JLabel jLabel = new javax.swing.JLabel();
 		JList jList = new JList(collectionToArray(data));
-		jList.setEnabled(false);
 		
 		jLabel.setText(name + ":");
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
