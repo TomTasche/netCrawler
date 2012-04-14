@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
 import java.util.Collections;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class CiscoSwitchIdentifierFactory extends DeviceIdentifierFactory {
 	}
 	
 	@Override
-	protected CiscoSwitchIdentifier buildIdentifierImpl(NetworkDevice device) {
+	protected CiscoSwitchIdentifier buildImpl(NetworkDevice device) {
 		String systemSerialNumber = (String) device
 				.getValue(CiscoSwitchExtension.SYSTEM_SERIAL_NUMBER);
 		return new CiscoSwitchIdentifier(systemSerialNumber);

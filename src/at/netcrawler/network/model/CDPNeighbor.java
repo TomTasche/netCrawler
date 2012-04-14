@@ -1,4 +1,4 @@
-package at.netcrawler.network;
+package at.netcrawler.network.model;
 
 import java.util.Collections;
 import java.util.HashSet;

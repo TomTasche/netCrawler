@@ -2,7 +2,7 @@ package at.netcrawler.network.manager;
 
 import java.io.IOException;
 
-import at.netcrawler.network.Capability;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 import at.netcrawler.network.model.extension.CiscoSwitchExtension;

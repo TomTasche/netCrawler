@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import at.andiwand.library.util.TypeToken;
-import at.netcrawler.network.Route;
 import at.netcrawler.network.model.NetworkDeviceExtension;
+import at.netcrawler.network.model.Route;
 
 
 public class RouterExtension extends NetworkDeviceExtension {

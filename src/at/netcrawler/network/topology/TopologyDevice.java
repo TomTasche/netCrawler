@@ -7,7 +7,7 @@ import java.util.Set;
 
 import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.topology.identifier.DeviceIdentifier;
+import at.netcrawler.network.model.information.identifier.DeviceIdentifier;
 
 
 public class TopologyDevice {

@@ -1,10 +1,10 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
-public class SNMPDeviceIdentifier extends DeviceIdentifier {
+public class CiscoRouterIdentifier extends DeviceIdentifier {
 	
 	private final String processorBoardId;
 	
-	public SNMPDeviceIdentifier(String processorBoardId) {
+	public CiscoRouterIdentifier(String processorBoardId) {
 		this.processorBoardId = processorBoardId;
 	}
 	
@@ -13,8 +13,8 @@ public class SNMPDeviceIdentifier extends DeviceIdentifier {
 		if (obj == null) return false;
 		if (obj == this) return true;
 		
-		if (!(obj instanceof SNMPDeviceIdentifier)) return false;
-		SNMPDeviceIdentifier identifier = (SNMPDeviceIdentifier) obj;
+		if (!(obj instanceof CiscoRouterIdentifier)) return false;
+		CiscoRouterIdentifier identifier = (CiscoRouterIdentifier) obj;
 		
 		return processorBoardId.equals(identifier.processorBoardId);
 	}

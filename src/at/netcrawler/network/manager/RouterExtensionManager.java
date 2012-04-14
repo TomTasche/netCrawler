@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import at.andiwand.library.util.GenericsUtil;
-import at.netcrawler.network.Capability;
-import at.netcrawler.network.Route;
+import at.netcrawler.network.model.Capability;
 import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.model.Route;
 import at.netcrawler.network.model.extension.RouterExtension;
 
 

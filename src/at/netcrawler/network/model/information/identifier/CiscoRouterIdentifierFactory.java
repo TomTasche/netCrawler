@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
 import java.util.Collections;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class CiscoRouterIdentifierFactory extends DeviceIdentifierFactory {
 	}
 	
 	@Override
-	protected CiscoRouterIdentifier buildIdentifierImpl(NetworkDevice device) {
+	protected CiscoRouterIdentifier buildImpl(NetworkDevice device) {
 		String processorBoardId = (String) device
 				.getValue(CiscoRouterExtension.PROCESSOR_BOARD_ID);
 		return new CiscoRouterIdentifier(processorBoardId);

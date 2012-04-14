@@ -1,4 +1,4 @@
-package at.netcrawler.network.topology.identifier;
+package at.netcrawler.network.model.information.identifier;
 
 import java.util.Collections;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class SNMPDeviceIdentifierFactory extends DeviceIdentifierFactory {
 	}
 	
 	@Override
-	protected SNMPDeviceIdentifier buildIdentifierImpl(NetworkDevice device) {
+	protected SNMPDeviceIdentifier buildImpl(NetworkDevice device) {
 		String engineId = (String) device
 				.getValue(SNMPDeviceExtension.ENGINE_ID);
 		return new SNMPDeviceIdentifier(engineId);

@@ -6,12 +6,12 @@ import java.util.List;
 import at.andiwand.library.network.ip.IPv4Address;
 import at.netcrawler.cli.agent.CiscoCommandLineAgent;
 import at.netcrawler.cli.agent.CiscoCommandLineAgentSettings;
-import at.netcrawler.network.CDPNeighbor;
 import at.netcrawler.network.accessor.IPDeviceAccessor;
 import at.netcrawler.network.connection.ssh.LocalSSHConnection;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
 import at.netcrawler.network.manager.cli.CiscoCommandLineDeviceManager;
+import at.netcrawler.network.model.CDPNeighbor;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.extension.CiscoDeviceExtension;
 

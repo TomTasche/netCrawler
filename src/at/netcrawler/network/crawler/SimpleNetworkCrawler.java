@@ -13,13 +13,13 @@ import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.manager.DeviceManagerFactory;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
+import at.netcrawler.network.model.information.identifier.DeviceIdentifier;
+import at.netcrawler.network.model.information.identifier.DeviceIdentifierBuilder;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
 import at.netcrawler.network.topology.UnknownTopologyInterface;
-import at.netcrawler.network.topology.identifier.DeviceIdentifier;
-import at.netcrawler.network.topology.identifier.DeviceIdentifierBuilder;
 
 
 public class SimpleNetworkCrawler implements NetworkCrawler {
