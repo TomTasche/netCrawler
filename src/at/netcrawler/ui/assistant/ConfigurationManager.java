@@ -43,7 +43,7 @@ public class ConfigurationManager extends JFrame {
 
 	private static final long serialVersionUID = 4174046294656269705L;
 
-	private static final String TITLE = "Batch Manager";
+	private static final String TITLE = "Configuration Manager";
 
 	private JButton batchAdd = new JButton("Add");
 	private JTextField addressField = new JTextField();

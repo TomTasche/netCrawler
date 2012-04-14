@@ -108,6 +108,13 @@ public class GUI extends JFrame {
 
 		saveItem.setEnabled(false);
 
+		helpMenu.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(GUI.this, "Help is available online at http://netcrawler.tomtasche.at/", "Help", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 		loadItem.addActionListener(new ActionListener() {
 
 			@Override

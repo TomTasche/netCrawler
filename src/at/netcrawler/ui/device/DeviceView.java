@@ -1,5 +1,7 @@
 package at.netcrawler.ui.device;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -62,6 +66,33 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Device View - "
 				+ NetworkDeviceHelper.getHostname(this.device));
+		
+		JMenuBar bar = new JMenuBar();
+		// TODO: only display protocols we're actually able to use for this device (NetworkDevice.CONNECTED_VIA)
+		JMenu snmpMenu = new JMenu("SNMP");
+		JMenu consoleMenu = new JMenu("Console");
+
+		snmpMenu.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		consoleMenu.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		bar.add(snmpMenu);
+		bar.add(consoleMenu);
+		
+		setJMenuBar(bar);
 		
 		pane = new JScrollPane();
 		add(pane);

@@ -47,7 +47,7 @@ public class ConfigurationExecutor extends JFrame {
 	
 	private static final long serialVersionUID = 7767764252271031663L;
 	
-	private static final String TITLE = "Batch Executor";
+	private static final String TITLE = "Configuration Executor";
 	
 	private static final String BATCH_SUFFIX = "!executorEnd";
 	
