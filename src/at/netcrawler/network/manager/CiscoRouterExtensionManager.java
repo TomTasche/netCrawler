@@ -18,7 +18,7 @@ public abstract class CiscoRouterExtensionManager extends
 	}
 	
 	@Override
-	public final Object getValue(String key) throws IOException {
+	public final Object fetchValue(String key) throws IOException {
 		if (key.equals(CiscoRouterExtension.PROCESSOR_BOARD_ID)) {
 			return getProcessorBoardId();
 		}

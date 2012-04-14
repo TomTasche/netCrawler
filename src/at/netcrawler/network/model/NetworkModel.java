@@ -49,8 +49,9 @@ public abstract class NetworkModel implements Serializable {
 		return valueMap.hashCode();
 	}
 	
-	public final Object getValue(String key) {
-		return valueMap.get(key);
+	@SuppressWarnings("unchecked")
+	public final <T> T getValue(String key) {
+		return (T) valueMap.get(key);
 	}
 	
 	public final Map<String, TypeToken<?>> getTypeMap() {

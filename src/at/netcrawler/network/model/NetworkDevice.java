@@ -23,7 +23,7 @@ public class NetworkDevice extends NetworkModel {
 	public static final TypeToken<?> SYSTEM_TYPE = TypeToken
 			.get(DeviceSystem.class);
 	
-	public static final String SYSTEM_STRING = "device.systemString";
+	public static final String SYSTEM_DESCRIPTION = "device.systemDescription";
 	public static final TypeToken<?> SYSTEM_STRING_TYPE = TypeToken
 			.get(String.class);
 	
@@ -61,7 +61,7 @@ public class NetworkDevice extends NetworkModel {
 		Map<String, TypeToken<?>> map = new HashMap<String, TypeToken<?>>();
 		map.put(HOSTNAME, HOSTNAME_TYPE);
 		map.put(SYSTEM, SYSTEM_TYPE);
-		map.put(SYSTEM_STRING, SYSTEM_STRING_TYPE);
+		map.put(SYSTEM_DESCRIPTION, SYSTEM_STRING_TYPE);
 		map.put(UPTIME, UPTIME_TYPE);
 		map.put(CAPABILITIES, CAPABILITIES_TYPE);
 		map.put(MAJOR_CAPABILITY, MAJOR_CAPABILITY_TYPE);

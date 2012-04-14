@@ -13,7 +13,7 @@ import javax.swing.table.TableColumnModel;
 
 import at.andiwand.library.math.graph.Edge;
 import at.andiwand.library.math.graph.GraphListener;
-import at.andiwand.library.util.comparator.ObjectStringComparator;
+import at.andiwand.library.util.comparator.ObjectToStringLengthComparator;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
@@ -70,8 +70,8 @@ public class DeviceTableModel extends AbstractTableModel implements
 					
 					@Override
 					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper
-								.getSomeAddress(device).toString();
+						return NetworkDeviceHelper.getSomeAddress(device)
+								.toString();
 					}
 				});
 		ACCESSOR_FOR_NAME.put("Uptime", new NetworkDeviceDataAccessor() {
@@ -111,7 +111,7 @@ public class DeviceTableModel extends AbstractTableModel implements
 	private void updateTopology() {
 		List<TopologyDevice> temp = new ArrayList<TopologyDevice>(topology
 				.getVertices());
-		Collections.sort(temp, new ObjectStringComparator());
+		Collections.sort(temp, new ObjectToStringLengthComparator());
 		devices = Collections.unmodifiableList(temp);
 		
 		fireTableDataChanged();

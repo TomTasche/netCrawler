@@ -51,7 +51,7 @@ public class CiscoCommandLineDeviceManagerTest {
 		
 		System.out.println(device.getValue(NetworkDevice.HOSTNAME));
 		System.out.println(device.getValue(NetworkDevice.MAJOR_CAPABILITY));
-		System.out.println(device.getValue(NetworkDevice.SYSTEM_STRING));
+		System.out.println(device.getValue(NetworkDevice.SYSTEM_DESCRIPTION));
 		System.out.println(device.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));
 		
 		@SuppressWarnings("unchecked")
