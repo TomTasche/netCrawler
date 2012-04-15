@@ -17,7 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import at.andiwand.library.network.ip.IPv4Address;
-import at.netcrawler.ui.DialogUtil;
+import at.netcrawler.util.DialogUtil;
 
 public class CrawlDialog {
 

@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import at.netcrawler.ui.DialogUtil;
+import at.netcrawler.util.DialogUtil;
 
 
 public class ConfigurationDialog {

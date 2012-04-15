@@ -1,4 +1,4 @@
-package at.netcrawler.ui;
+package at.netcrawler.util;
 
 import java.awt.Component;
 

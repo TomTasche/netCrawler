@@ -35,7 +35,7 @@ import javax.swing.filechooser.FileFilter;
 import at.andiwand.library.component.CloseableTabbedPane;
 import at.andiwand.library.component.JFrameUtil;
 import at.netcrawler.network.topology.TopologyDevice;
-import at.netcrawler.ui.DialogUtil;
+import at.netcrawler.util.DialogUtil;
 import at.netcrawler.util.NetworkDeviceHelper;
 
 

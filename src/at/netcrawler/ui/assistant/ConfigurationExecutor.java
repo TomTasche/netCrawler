@@ -40,7 +40,7 @@ import at.netcrawler.network.connection.ConnectionBuilder;
 import at.netcrawler.network.connection.ConnectionSettings;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.telnet.LocalTelnetGateway;
-import at.netcrawler.ui.DialogUtil;
+import at.netcrawler.util.DialogUtil;
 
 
 public class ConfigurationExecutor extends JFrame {
