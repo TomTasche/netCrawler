@@ -15,6 +15,7 @@ public class TopologyDevice {
 	private final DeviceIdentifier identifier;
 	private final NetworkDevice networkDevice;
 	// TODO: hotfix
+	@Deprecated
 	private final DeviceManager deviceManager;
 	private Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
 	
@@ -26,6 +27,7 @@ public class TopologyDevice {
 	}
 	
 	// TODO: hotfix
+	@Deprecated
 	public TopologyDevice(DeviceIdentifier identifier,
 			NetworkDevice networkDevice, DeviceManager deviceManager) {
 		this.identifier = identifier;
@@ -59,6 +61,7 @@ public class TopologyDevice {
 	}
 	
 	// TODO: hotfix
+	@Deprecated
 	public DeviceManager getDeviceManager() {
 		return deviceManager;
 	}
