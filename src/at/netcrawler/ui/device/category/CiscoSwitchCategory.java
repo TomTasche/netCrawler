@@ -23,4 +23,5 @@ public class CiscoSwitchCategory extends Category {
 		
 		return builder.build();
 	}
+	
 }

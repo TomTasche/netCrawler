@@ -128,4 +128,5 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 		
 		return categories;
 	}
+	
 }

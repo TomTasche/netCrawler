@@ -2,8 +2,9 @@ package at.netcrawler.ui.crawler;
 
 import at.andiwand.library.network.ip.IPv4Address;
 
-public class CrawlSettings {
 
+public class CrawlSettings {
+	
 	private IPv4Address address;
 	private String defaultUsername;
 	private String defaultPassword;
@@ -27,8 +28,9 @@ public class CrawlSettings {
 	public String getDefaultPassword() {
 		return defaultPassword;
 	}
-
+	
 	public void setDefaultPassword(String defaultPassword) {
 		this.defaultPassword = defaultPassword;
 	}
+	
 }

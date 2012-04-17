@@ -77,4 +77,5 @@ public class DeviceTable extends JTable {
 	public void setTopology(Topology topology) {
 		model.setTopology(topology);
 	}
+	
 }

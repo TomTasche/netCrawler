@@ -21,4 +21,5 @@ public class CiscoRouterCategory extends Category {
 		
 		return builder.build();
 	}
+	
 }

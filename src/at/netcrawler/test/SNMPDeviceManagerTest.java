@@ -30,7 +30,7 @@ public class SNMPDeviceManagerTest {
 		IPDeviceAccessor accessor = new IPDeviceAccessor(ipAddress);
 		
 		SNMPSettings settings = new SNMPSettings();
-		settings.setVersion(SNMPVersion.VERSION2C);
+		settings.setVersion(SNMPVersion.VERSION_2C);
 		settings.setPort(port);
 		settings.setCommunity("netCrawler");
 		// settings.setSecurityLevel(SNMPSecurityLevel.AUTH_PRIV);

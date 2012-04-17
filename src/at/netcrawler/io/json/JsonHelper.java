@@ -13,10 +13,11 @@ import com.google.gson.GsonBuilder;
 
 public class JsonHelper {
 	
-	private static final Gson GSON;
-	
-	static {
-		GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+	public static GsonBuilder getGsonBuilder() {
+		GsonBuilder builder = new GsonBuilder();
+		
+		builder.setPrettyPrinting();
+		
 		builder.registerTypeAdapter(IPv4Address.class,
 				new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(InetAddress.class,
@@ -28,10 +29,11 @@ public class JsonHelper {
 		builder.registerTypeAdapter(SubnetMask.class,
 				new JsonSubnetMaskAdapter());
 		
-		GSON = builder.create();
+		return builder;
 	}
 	
 	public static Gson getGson() {
-		return GSON;
+		return getGsonBuilder().create();
 	}
+	
 }

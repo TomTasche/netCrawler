@@ -47,7 +47,7 @@ import at.netcrawler.util.Settings;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
-
+	
 	private JScrollPane scrollPane;
 	private TopologyViewer viewer;
 	private DeviceTable table;
@@ -57,45 +57,45 @@ public class GUI extends JFrame {
 	private Topology topology;
 	private boolean dontClose;
 	private boolean tableVisible;
-
+	
 	public GUI(Topology topology) {
 		this.topology = topology;
-
+		
 		setTitle("netCrawler");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLayout(new BorderLayout());
 		addWindowListener(new WindowAdapter() {
-
+			
 			public void windowClosing(WindowEvent e) {
 				close();
 			}
 		});
-
+		
 		addComponentListener(new ComponentAdapter() {
-
+			
 			@Override
 			public void componentResized(ComponentEvent e) {
 				super.componentResized(e);
-
+				
 				Settings.setLastWindowSize(getSize());
 			}
 		});
-
+		
 		fileChooser = new JFileChooser(Settings.getLastCrawl());
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileFilter(new FileFilter() {
-
+			
 			@Override
 			public String getDescription() {
 				return "*.crawl - Saved netCrawler Crawls";
 			}
-
+			
 			@Override
 			public boolean accept(File f) {
 				return f.getName().endsWith(".crawl");
 			}
 		});
-
+		
 		JMenuBar menu = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		JMenu viewMenu = new JMenu("View");
@@ -105,11 +105,11 @@ public class GUI extends JFrame {
 		saveItem = new JMenuItem("Save");
 		JMenuItem closeItem = new JMenuItem("Exit");
 		JMenuItem toggleViewItem = new JMenuItem("Toggle view");
-
+		
 		saveItem.setEnabled(false);
-
+		
 		loadItem.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -119,7 +119,7 @@ public class GUI extends JFrame {
 			}
 		});
 		saveItem.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -128,42 +128,42 @@ public class GUI extends JFrame {
 			}
 		});
 		closeItem.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				close();
 			}
 		});
 		crawlItem.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				crawl();
 			}
 		});
 		toggleViewItem.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				toggleView();
 			}
 		});
-
+		
 		fileMenu.add(crawlItem);
 		fileMenu.add(loadItem);
 		fileMenu.add(saveItem);
 		fileMenu.add(closeItem);
 		viewMenu.add(toggleViewItem);
-
+		
 		menu.add(fileMenu);
 		menu.add(viewMenu);
 		menu.add(helpMenu);
-
+		
 		setJMenuBar(menu);
-
+		
 		table = new DeviceTable(this);
 		table.setTopology(topology);
-
+		
 		viewer = new TopologyViewer();
 		// TODO: use another GraphLayout
 		viewer.setGraphLayout(new CrapGraphLayout(viewer));
@@ -173,30 +173,30 @@ public class GUI extends JFrame {
 		viewer.addRenderingHint(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
 		viewer.addVertexMouseListener(new MouseAdapter() {
-
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				handleMouse(e, (TopologyDevice) e.getSource());
 			}
 		});
-
+		
 		scrollPane = new JScrollPane();
 		scrollPane.setPreferredSize(new Dimension(400, 400));
 		if (Settings.getLastView() == 1) {
 			scrollPane.setViewportView(table);
-
+			
 			tableVisible = true;
 		} else {
 			scrollPane.setViewportView(viewer);
 		}
-
+		
 		statusLabel = new JLabel();
 		statusLabel
-		.setText("Start a new crawl or load an old one using the menu above...");
-
+				.setText("Start a new crawl or load an old one using the menu above...");
+		
 		add(scrollPane, BorderLayout.CENTER);
 		add(statusLabel, BorderLayout.SOUTH);
-
+		
 		Dimension lastSize = Settings.getLastWindowSize();
 		if (lastSize == null) {
 			pack();
@@ -204,12 +204,12 @@ public class GUI extends JFrame {
 		} else {
 			setSize(lastSize);
 		}
-
+		
 		JFrameUtil.centerFrame(this);
-
+		
 		setVisible(true);
 	}
-
+	
 	protected void handleMouse(MouseEvent event, TopologyDevice device) {
 		JFrame frame = null;
 		if (event.getButton() == MouseEvent.BUTTON1) {
@@ -217,13 +217,13 @@ public class GUI extends JFrame {
 		} else if (event.getButton() == MouseEvent.BUTTON3) {
 			frame = new ConfigurationManager(device);
 		}
-
+		
 		if (frame != null) {
 			JFrameUtil.centerFrame(frame);
 			frame.setVisible(true);
 		}
 	}
-
+	
 	private void close() {
 		if (dontClose
 				&& JOptionPane.showOptionDialog(GUI.this,
@@ -234,16 +234,16 @@ public class GUI extends JFrame {
 		} else if (!dontClose) {
 			dispose();
 		}
-
+		
 		Settings.write();
 	}
-
+	
 	private void crawl() {
 		dontClose = true;
-
+		
 		statusLabel.setText("Crawling your net...");
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
+		
 		final CrawlSettings crawlSettings = CrawlDialog.showCrawlDialog(this);
 		if (crawlSettings != null) {
 			// TODO: hotfix
@@ -251,19 +251,19 @@ public class GUI extends JFrame {
 				public void run() {
 					// TODO: prompt!
 					ConnectionGateway gateway = new LocalSSHGateway();
-
+					
 					SSHSettings settings = new SSHSettings();
 					settings.setVersion(SSHVersion.VERSION2);
 					settings.setUsername(crawlSettings.getDefaultUsername());
 					settings.setPassword(crawlSettings.getDefaultPassword());
-
+					
 					DeviceManagerFactory managerFactory = new CommandLineDeviceManagerFactory();
-
+					
 					IPv4Address start = crawlSettings.getAddress();
-
-					SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(gateway,
-							settings, managerFactory, start);
-
+					
+					SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(
+							gateway, settings, managerFactory, start);
+					
 					try {
 						topology = new HashTopology();
 						viewer.setModel(topology);
@@ -272,7 +272,7 @@ public class GUI extends JFrame {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
+					
 					finishCrawl();
 				}
 			}.start();
@@ -280,28 +280,29 @@ public class GUI extends JFrame {
 			finishCrawl();
 		}
 	}
-
+	
 	private void finishCrawl() {
 		saveItem.setEnabled(true);
-
+		
 		setCursor(Cursor.getDefaultCursor());
 		statusLabel.setText("Crawl completed.");
-
+		
 		dontClose = false;
 	}
-
+	
 	private void toggleView() {
 		int newView = 0;
 		if (tableVisible) {
 			scrollPane.setViewportView(viewer);
 		} else {
 			scrollPane.setViewportView(table);
-
+			
 			newView = 1;
 		}
-
+		
 		Settings.setLastView(newView);
-
+		
 		tableVisible = !tableVisible;
 	}
+
 }

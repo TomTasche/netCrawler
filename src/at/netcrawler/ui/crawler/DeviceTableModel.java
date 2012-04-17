@@ -70,8 +70,8 @@ public class DeviceTableModel extends AbstractTableModel implements
 					
 					@Override
 					public String get(NetworkDevice device) {
-						return NetworkDeviceHelper
-								.getSomeAddress(device).toString();
+						return NetworkDeviceHelper.getSomeAddress(device)
+								.toString();
 					}
 				});
 		ACCESSOR_FOR_NAME.put("Uptime", new NetworkDeviceDataAccessor() {
@@ -177,4 +177,5 @@ public class DeviceTableModel extends AbstractTableModel implements
 		
 		public String get(NetworkDevice device);
 	}
+	
 }

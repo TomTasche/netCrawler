@@ -32,6 +32,7 @@ public class SNMPSettings extends TCPIPConnectionSettings {
 		setUsername(settings.username);
 		setPassword(settings.password);
 		setCryptoKey(settings.cryptoKey);
+		setRetries(settings.retries);
 	}
 	
 	@Override

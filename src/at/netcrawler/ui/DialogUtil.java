@@ -4,8 +4,9 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-public class DialogUtil {
 
+public class DialogUtil {
+	
 	public static void showErrorDialog(Component parent, Throwable t) {
 		showErrorDialog(parent, t.getMessage());
 	}
@@ -19,4 +20,5 @@ public class DialogUtil {
 		JOptionPane.showMessageDialog(parent, message, title,
 				JOptionPane.ERROR_MESSAGE);
 	}
+	
 }

@@ -24,8 +24,8 @@ public class DeviceCategory extends Category {
 				.getValue(NetworkDevice.MANAGEMENT_ADDRESSES));
 		builder.addTextRow("Major Capability", manager, device,
 				NetworkDevice.MAJOR_CAPABILITY);
-//		builder.addListRow("Capabilites", (Collection<Object>) device
-//				.getValue(NetworkDevice.CAPABILITIES));
+		// builder.addListRow("Capabilites", (Collection<Object>) device
+		// .getValue(NetworkDevice.CAPABILITIES));
 		// TODO: interfaces shouldn't be displayed in this category, although
 		// they're declared in NetworkDevice
 		
@@ -36,4 +36,5 @@ public class DeviceCategory extends Category {
 		
 		return builder.build();
 	}
+	
 }

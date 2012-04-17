@@ -1,6 +1,5 @@
 package at.netcrawler.ui.assistant;
 
-
 public class EncryptionBag {
 	
 	private Encryption encryption;
