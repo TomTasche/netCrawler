@@ -18,7 +18,7 @@ public abstract class CiscoSwitchExtensionManager extends
 	}
 	
 	@Override
-	public final Object getValue(String key) throws IOException {
+	public final Object fetchValue(String key) throws IOException {
 		if (key.equals(CiscoSwitchExtension.MODEL_NUMBER)) {
 			return getModelNumber();
 		} else if (key.equals(CiscoSwitchExtension.SYSTEM_SERIAL_NUMBER)) {

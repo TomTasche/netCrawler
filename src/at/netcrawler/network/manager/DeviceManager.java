@@ -31,14 +31,14 @@ public abstract class DeviceManager {
 		return device;
 	}
 	
-	public final Object getValue(String key) throws IOException {
+	public final Object fetchValue(String key) throws IOException {
 		Object result = null;
 		
 		if (key.equals(NetworkDevice.HOSTNAME)) {
 			result = getHostname();
 		} else if (key.equals(NetworkDevice.SYSTEM)) {
 			result = getSystem();
-		} else if (key.equals(NetworkDevice.SYSTEM_STRING)) {
+		} else if (key.equals(NetworkDevice.SYSTEM_DESCRIPTION)) {
 			result = getSystemString();
 		} else if (key.equals(NetworkDevice.UPTIME)) {
 			result = getUptime();
@@ -55,7 +55,7 @@ public abstract class DeviceManager {
 			synchronized (extensionManagers) {
 				for (DeviceExtensionManager extensionManager : extensionManagers) {
 					try {
-						result = extensionManager.getValue(key);
+						result = extensionManager.fetchValue(key);
 					} catch (RuntimeException e) {}
 				}
 			}
@@ -170,13 +170,17 @@ public abstract class DeviceManager {
 	
 	public abstract Set<IPv4Address> discoverNeighbors();
 	
+	public final void fetchExtensions() {
+		
+	}
+	
 	public final NetworkDevice complete() throws IOException {
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(NetworkDevice.TYPE_MAP.keySet());
 		keys.removeAll(device.getValueMap().keySet());
 		
 		for (String key : keys) {
-			getValue(key);
+			fetchValue(key);
 		}
 		
 		keys.clear();
@@ -197,7 +201,7 @@ public abstract class DeviceManager {
 		keys.removeAll(device.getValueMap().keySet());
 		
 		for (String key : keys) {
-			getValue(key);
+			fetchValue(key);
 		}
 		
 		return device;

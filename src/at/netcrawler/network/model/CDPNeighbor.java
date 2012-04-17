@@ -9,61 +9,74 @@ import at.andiwand.library.network.ip.IPv4Address;
 
 public class CDPNeighbor {
 	
-	private String name;
-	private String localInterface;
-	private int holdTime;
+	private String hostname;
+	private String systemDescription;
 	private Set<Capability> capabilities;
-	private String platform;
-	private String remoteInterface;
 	private Set<IPv4Address> managementAddresses;
+	private String localInterface;
+	private String remoteInterface;
+	private int holdTime;
+	
+	public CDPNeighbor() {}
+	
+	public CDPNeighbor(CDPNeighbor neighbor) {
+		this.hostname = neighbor.hostname;
+		this.systemDescription = neighbor.systemDescription;
+		this.capabilities = neighbor.capabilities;
+		this.managementAddresses = neighbor.managementAddresses;
+		this.localInterface = neighbor.localInterface;
+		this.remoteInterface = neighbor.remoteInterface;
+		this.holdTime = neighbor.holdTime;
+	}
 	
 	@Override
 	public String toString() {
-		return "name: " + name + "; local interface: " + localInterface
+		return "hostname: " + hostname + "; local interface: " + localInterface
 				+ "; holdtime: " + holdTime + "; capabilities: " + capabilities
-				+ "; platform: " + platform + "; remote interface: "
+				+ "; platform: " + systemDescription + "; remote interface: "
 				+ remoteInterface + "; management addresses: "
 				+ managementAddresses;
 	}
 	
-	public String getName() {
-		return name;
+	@Override
+	public CDPNeighbor clone() {
+		return new CDPNeighbor(this);
 	}
 	
-	public String getLocalInterface() {
-		return localInterface;
+	public String getHostname() {
+		return hostname;
 	}
 	
-	public int getHoldTime() {
-		return holdTime;
+	public String getSystemDescription() {
+		return systemDescription;
 	}
 	
 	public Set<Capability> getCapabilities() {
 		return capabilities;
 	}
 	
-	public String getPlatform() {
-		return platform;
+	public Set<IPv4Address> getManagementAddresses() {
+		return managementAddresses;
+	}
+	
+	public String getLocalInterface() {
+		return localInterface;
 	}
 	
 	public String getRemoteInterface() {
 		return remoteInterface;
 	}
 	
-	public Set<IPv4Address> getManagementAddresses() {
-		return managementAddresses;
+	public int getHoldTime() {
+		return holdTime;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
 	
-	public void setLocalInterface(String localInterface) {
-		this.localInterface = localInterface;
-	}
-	
-	public void setHoldTime(int holdTime) {
-		this.holdTime = holdTime;
+	public void setSystemDescription(String systemDescription) {
+		this.systemDescription = systemDescription;
 	}
 	
 	public void setCapabilities(Set<Capability> capabilities) {
@@ -71,17 +84,21 @@ public class CDPNeighbor {
 				.unmodifiableSet(new HashSet<Capability>(capabilities));
 	}
 	
-	public void setPlatform(String platform) {
-		this.platform = platform;
+	public void setManagementAddresses(Set<IPv4Address> managementAddresses) {
+		this.managementAddresses = Collections
+				.unmodifiableSet(new HashSet<IPv4Address>(managementAddresses));
+	}
+	
+	public void setLocalInterface(String localInterface) {
+		this.localInterface = localInterface;
 	}
 	
 	public void setRemoteInterface(String remoteInterface) {
 		this.remoteInterface = remoteInterface;
 	}
 	
-	public void setManagementAddresses(Set<IPv4Address> managementAddresses) {
-		this.managementAddresses = Collections
-				.unmodifiableSet(new HashSet<IPv4Address>(managementAddresses));
+	public void setHoldTime(int holdTime) {
+		this.holdTime = holdTime;
 	}
 	
 }

@@ -38,7 +38,7 @@ public abstract class DeviceExtensionManager {
 		return extensionClass;
 	}
 	
-	public abstract Object getValue(String key) throws IOException;
+	public abstract Object fetchValue(String key) throws IOException;
 	
 	public final NetworkDeviceExtension getExtension() {
 		try {

@@ -107,11 +107,11 @@ public class CiscoDeviceCommandLineExtensionManager extends
 			}
 			
 			CDPNeighbor neighbor = new CDPNeighbor();
-			neighbor.setName(name);
+			neighbor.setHostname(name);
 			neighbor.setLocalInterface(localInterface);
 			neighbor.setHoldTime(holdTime);
 			neighbor.setCapabilities(capabilities);
-			neighbor.setPlatform(platform);
+			neighbor.setSystemDescription(platform);
 			neighbor.setRemoteInterface(remoteInterface);
 			neighbor.setManagementAddresses(managementAddresses);
 			result.add(neighbor);

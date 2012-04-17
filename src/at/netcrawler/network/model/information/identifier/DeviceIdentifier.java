@@ -1,9 +1,6 @@
 package at.netcrawler.network.model.information.identifier;
 
-import at.netcrawler.network.model.information.ModelInformation;
-
-
-public abstract class DeviceIdentifier extends ModelInformation {
+public abstract class DeviceIdentifier {
 	
 	@Override
 	public abstract boolean equals(Object obj);
