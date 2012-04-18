@@ -10,13 +10,17 @@ import at.netcrawler.network.model.NetworkDevice;
 // TODO: device manager level
 public final class DeviceIdentifierBuilder {
 	
-	private final List<DeviceIdentifierFactory> factories = new LinkedList<DeviceIdentifierFactory>();
-	
-	public DeviceIdentifierBuilder() {
-		addFactory(new CiscoSwitchIdentifierFactory());
-		addFactory(new CiscoRouterIdentifierFactory());
-		addFactory(new SNMPDeviceIdentifierFactory());
+	public static DeviceIdentifierBuilder getDefaultBuilder() {
+		DeviceIdentifierBuilder result = new DeviceIdentifierBuilder();
+		
+		result.addFactory(new CiscoSwitchIdentifierFactory());
+		result.addFactory(new CiscoRouterIdentifierFactory());
+		result.addFactory(new SNMPDeviceIdentifierFactory());
+		
+		return result;
 	}
+	
+	private final List<DeviceIdentifierFactory> factories = new LinkedList<DeviceIdentifierFactory>();
 	
 	public void addFactory(DeviceIdentifierFactory factory) {
 		factories.add(factory);

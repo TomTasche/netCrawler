@@ -8,9 +8,13 @@ import java.util.Set;
 import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.information.identifier.DeviceIdentifier;
+import at.netcrawler.network.model.information.identifier.DeviceIdentifierBuilder;
 
 
 public class TopologyDevice {
+	
+	private static final DeviceIdentifierBuilder IDENTIFIER_BUILDER = DeviceIdentifierBuilder
+			.getDefaultBuilder();
 	
 	private final DeviceIdentifier identifier;
 	private final NetworkDevice networkDevice;
@@ -20,6 +24,10 @@ public class TopologyDevice {
 	private Set<TopologyInterface> interfaces = new HashSet<TopologyInterface>();
 	
 	private List<TopologyDeviceListener> listeners = new ArrayList<TopologyDeviceListener>();
+	
+	public TopologyDevice(NetworkDevice networkDevice) {
+		this(IDENTIFIER_BUILDER.getIdentification(networkDevice), networkDevice);
+	}
 	
 	public TopologyDevice(DeviceIdentifier identifier,
 			NetworkDevice networkDevice) {
@@ -74,6 +82,14 @@ public class TopologyDevice {
 		synchronized (interfaces) {
 			return new HashSet<TopologyInterface>(interfaces);
 		}
+	}
+	
+	public TopologyInterface getInterfaceByName(String name) {
+		for (TopologyInterface interfaze : interfaces) {
+			if (interfaze.getName().equals(name)) return interfaze;
+		}
+		
+		return null;
 	}
 	
 	public boolean addInterface(TopologyInterface interfaze) {
