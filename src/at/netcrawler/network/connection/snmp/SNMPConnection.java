@@ -61,7 +61,7 @@ public abstract class SNMPConnection extends
 	@Override
 	public final List<SNMPEntry> getBulk(int nonRepeaters, int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
+		if (version == SNMPVersion.VERSION_1)
 			throw new UnsupportedOperationException(
 					"Version 1 doesn't support the GETBULK request!");
 		
@@ -127,7 +127,7 @@ public abstract class SNMPConnection extends
 	@Override
 	public final List<SNMPEntry> walkBulk(int maxRepetitions,
 			ObjectIdentifier oid) throws IOException {
-		if (version == SNMPVersion.VERSION1)
+		if (version == SNMPVersion.VERSION_1)
 			throw new UnsupportedOperationException(
 					"Version 1 doesn't support the GETBULK request!");
 		
@@ -166,10 +166,10 @@ public abstract class SNMPConnection extends
 	@Override
 	public List<SNMPEntry> walk(ObjectIdentifier oid) throws IOException {
 		switch (version) {
-		case VERSION1:
+		case VERSION_1:
 			return walkNext(oid);
-		case VERSION2C:
-		case VERSION3:
+		case VERSION_2C:
+		case VERSION_3:
 			return walkBulk(oid);
 		}
 		
@@ -213,7 +213,7 @@ public abstract class SNMPConnection extends
 	@Override
 	public final List<SNMPEntry[]> walkBulkTable(int maxRepetitions,
 			ObjectIdentifier... oids) throws IOException {
-		if (version == SNMPVersion.VERSION1)
+		if (version == SNMPVersion.VERSION_1)
 			throw new UnsupportedOperationException(
 					"Version 1 doesn't support the GETBULK request");
 		
@@ -260,10 +260,10 @@ public abstract class SNMPConnection extends
 	public List<SNMPEntry[]> walkTable(ObjectIdentifier... oids)
 			throws IOException {
 		switch (version) {
-		case VERSION1:
+		case VERSION_1:
 			return walkNextTable(oids);
-		case VERSION2C:
-		case VERSION3:
+		case VERSION_2C:
+		case VERSION_3:
 			return walkBulkTable(oids);
 		}
 		

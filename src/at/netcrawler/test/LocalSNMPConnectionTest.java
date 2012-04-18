@@ -16,7 +16,7 @@ import at.netcrawler.network.connection.snmp.SNMPVersion;
 public class LocalSNMPConnectionTest {
 	
 	public static void main(String[] args) throws Throwable {
-		SNMPVersion version = SNMPVersion.VERSION2C;
+		SNMPVersion version = SNMPVersion.VERSION_2C;
 		String address = "192.168.15.1";
 		int port = 161;
 		String community = "netCrawler";

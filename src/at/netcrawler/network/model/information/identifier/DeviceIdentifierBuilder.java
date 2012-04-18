@@ -6,30 +6,33 @@ import java.util.List;
 import at.netcrawler.network.model.NetworkDevice;
 
 
+// TODO: super class
+// TODO: device manager level
 public final class DeviceIdentifierBuilder {
 	
-	private final List<DeviceIdentifierFactory> identifierFactories = new LinkedList<DeviceIdentifierFactory>();
-	
-	public DeviceIdentifierBuilder() {
-		addIdentifierFactory(new CiscoSwitchIdentifierFactory());
-		addIdentifierFactory(new CiscoRouterIdentifierFactory());
-		addIdentifierFactory(new SNMPDeviceIdentifierFactory());
+	public static DeviceIdentifierBuilder getDefaultBuilder() {
+		DeviceIdentifierBuilder result = new DeviceIdentifierBuilder();
+		
+		result.addFactory(new CiscoSwitchIdentifierFactory());
+		result.addFactory(new CiscoRouterIdentifierFactory());
+		result.addFactory(new SNMPDeviceIdentifierFactory());
+		
+		return result;
 	}
 	
-	public void addIdentifierFactory(
-			DeviceIdentifierFactory identificationFactory) {
-		identifierFactories.add(identificationFactory);
+	private final List<DeviceIdentifierFactory> factories = new LinkedList<DeviceIdentifierFactory>();
+	
+	public void addFactory(DeviceIdentifierFactory factory) {
+		factories.add(factory);
 	}
 	
-	public void removeIdentifierFactory(
-			DeviceIdentifierFactory identificationFactory) {
-		identifierFactories.remove(identificationFactory);
+	public void removeFactory(DeviceIdentifierFactory factory) {
+		factories.remove(factory);
 	}
 	
 	public DeviceIdentifier getIdentification(NetworkDevice device) {
-		for (DeviceIdentifierFactory identificationFactory : identifierFactories) {
-			DeviceIdentifier identification = identificationFactory
-					.build(device);
+		for (DeviceIdentifierFactory factory : factories) {
+			DeviceIdentifier identification = factory.build(device);
 			if (identification != null) return identification;
 		}
 		

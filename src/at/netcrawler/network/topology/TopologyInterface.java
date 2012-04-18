@@ -6,6 +6,7 @@ import at.netcrawler.network.model.NetworkInterface;
 public class TopologyInterface {
 	
 	private final NetworkInterface networkInterface;
+	
 	private TopologyDevice device;
 	
 	public TopologyInterface(NetworkInterface networkInterface) {

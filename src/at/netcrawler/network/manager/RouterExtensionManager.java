@@ -20,7 +20,7 @@ public abstract class RouterExtensionManager extends DeviceExtensionManager {
 	}
 	
 	@Override
-	public final Object getValue(String key) throws IOException {
+	public final Object fetchValue(String key) throws IOException {
 		if (key.equals(RouterExtension.ROUTING_TABLE)) {
 			return getRoutingTable();
 		}

@@ -166,7 +166,7 @@ public class SimpleSchoolCrawler {
 				device, agent);
 		
 		String hostname = (String) deviceManager
-				.getValue(NetworkDevice.HOSTNAME);
+				.fetchValue(NetworkDevice.HOSTNAME);
 		if (usedHostnames.contains(hostname)) {
 			cli.close();
 			return;

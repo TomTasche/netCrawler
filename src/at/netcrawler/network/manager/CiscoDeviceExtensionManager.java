@@ -17,7 +17,7 @@ public abstract class CiscoDeviceExtensionManager extends
 	}
 	
 	@Override
-	public final Object getValue(String key) throws IOException {
+	public final Object fetchValue(String key) throws IOException {
 		if (key.equals(CiscoDeviceExtension.CDP_NEIGHBORS)) {
 			return getCDPNeighbors();
 		}

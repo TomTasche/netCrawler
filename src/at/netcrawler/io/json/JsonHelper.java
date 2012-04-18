@@ -6,6 +6,8 @@ import at.andiwand.library.network.ip.IPv4Address;
 import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
 import at.netcrawler.network.model.NetworkModel;
+import at.netcrawler.network.topology.Topology;
+import at.netcrawler.network.topology.TopologyDevice;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,25 +15,31 @@ import com.google.gson.GsonBuilder;
 
 public class JsonHelper {
 	
-	private static final Gson GSON;
-	
-	static {
-		GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+	public static GsonBuilder getGsonBuilder() {
+		GsonBuilder builder = new GsonBuilder();
+		
+		builder.setPrettyPrinting();
+		
 		builder.registerTypeAdapter(IPv4Address.class,
 				new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(InetAddress.class,
 				new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(MACAddress.class,
 				new JsonMACAddressAdapter());
-		builder.registerTypeAdapter(NetworkModel.class,
+		builder.registerTypeHierarchyAdapter(NetworkModel.class,
 				new JsonNetworkModelAdapter());
 		builder.registerTypeAdapter(SubnetMask.class,
 				new JsonSubnetMaskAdapter());
+		builder.registerTypeAdapter(TopologyDevice.class,
+				new JsonTopologyDeviceAdapter());
+		builder.registerTypeHierarchyAdapter(Topology.class,
+				new JsonTopologyAdapter());
 		
-		GSON = builder.create();
+		return builder;
 	}
 	
 	public static Gson getGson() {
-		return GSON;
+		return getGsonBuilder().create();
 	}
+	
 }

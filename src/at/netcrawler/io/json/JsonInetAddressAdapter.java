@@ -17,19 +17,22 @@ public class JsonInetAddressAdapter extends JsonAdapter<InetAddress> {
 	public JsonElement serialize(InetAddress src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		String address = src.toString();
-
-		return new JsonPrimitive(address.substring(address.lastIndexOf("/") + 1));
+		
+		return new JsonPrimitive(address
+				.substring(address.lastIndexOf("/") + 1));
 	}
 	
 	@Override
 	public InetAddress deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
 		try {
-			return InetAddress.getByName(json.getAsJsonPrimitive().getAsString());
+			return InetAddress.getByName(json.getAsJsonPrimitive()
+					.getAsString());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 		
 		return null;
 	}
+	
 }

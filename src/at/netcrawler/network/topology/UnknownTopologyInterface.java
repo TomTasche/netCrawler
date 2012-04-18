@@ -2,7 +2,7 @@ package at.netcrawler.network.topology;
 
 public class UnknownTopologyInterface extends TopologyInterface {
 	
-	private static final String NAME = "?";
+	private static final String NAME = "unknown";
 	
 	private final Object identifier = new Object();
 	

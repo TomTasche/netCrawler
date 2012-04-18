@@ -13,8 +13,6 @@ import at.netcrawler.network.manager.DeviceManager;
 import at.netcrawler.network.manager.DeviceManagerFactory;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
-import at.netcrawler.network.model.information.identifier.DeviceIdentifier;
-import at.netcrawler.network.model.information.identifier.DeviceIdentifierBuilder;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
@@ -27,7 +25,6 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 	private ConnectionGateway gateway;
 	private ConnectionSettings settings;
 	private DeviceManagerFactory managerFactory;
-	private DeviceIdentifierBuilder identifierBuilder = new DeviceIdentifierBuilder();
 	private IPv4Address start;
 	
 	public SimpleNetworkCrawler(ConnectionGateway gateway,
@@ -53,11 +50,7 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 				networkDevice, connection);
 		deviceManager.fetch();
 		
-		DeviceIdentifier identifier = identifierBuilder
-				.getIdentification(networkDevice);
-		// TODO: hotfix
-		TopologyDevice topologyDevice = new TopologyDevice(identifier,
-				networkDevice, deviceManager);
+		TopologyDevice topologyDevice = new TopologyDevice(networkDevice);
 		
 		boolean success = topology.addVertex(topologyDevice);
 		if (lastDevice != null) {

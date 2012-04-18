@@ -128,7 +128,7 @@ public class NetworkDeviceHelper {
 			port = telnet.getPort();
 			container = ConnectionContainer.TELNET;
 		}
-
+		
 		InetAddress address = null;
 		try {
 			address = InetAddress.getByName(getSomeAddress(device).toString());

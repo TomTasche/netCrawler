@@ -27,7 +27,7 @@ public class CiscoCategory extends Category {
 			
 			List<String> neighbors = new ArrayList<String>();
 			for (CDPNeighbor neighbor : table) {
-				neighbors.add(neighbor.getName());
+				neighbors.add(neighbor.getHostname());
 				
 				System.out.println(neighbor);
 			}
@@ -37,4 +37,5 @@ public class CiscoCategory extends Category {
 		
 		return builder.build();
 	}
+	
 }

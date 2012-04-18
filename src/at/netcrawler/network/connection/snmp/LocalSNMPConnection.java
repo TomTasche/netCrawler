@@ -182,9 +182,9 @@ public class LocalSNMPConnection extends SNMPConnection {
 		private static final long serialVersionUID = 1051440945943102967L;
 		
 		{
-			put(SNMPVersion.VERSION1, SnmpConstants.version1);
-			put(SNMPVersion.VERSION2C, SnmpConstants.version2c);
-			put(SNMPVersion.VERSION3, SnmpConstants.version3);
+			put(SNMPVersion.VERSION_1, SnmpConstants.version1);
+			put(SNMPVersion.VERSION_2C, SnmpConstants.version2c);
+			put(SNMPVersion.VERSION_3, SnmpConstants.version3);
 		}
 	};
 	private static final Map<SNMPSecurityLevel, Integer> SECURITY_LEVEL_TRANSLATION_MAP = new HashMap<SNMPSecurityLevel, Integer>() {
@@ -209,14 +209,14 @@ public class LocalSNMPConnection extends SNMPConnection {
 		transportMapping.listen();
 		
 		switch (version) {
-		case VERSION1:
-		case VERSION2C:
+		case VERSION_1:
+		case VERSION_2C:
 			CommunityTarget communityTarget = new CommunityTarget();
 			communityTarget.setCommunity(new OctetString(settings
 					.getCommunity()));
 			target = communityTarget;
 			break;
-		case VERSION3:
+		case VERSION_3:
 			USM usm = new USM(SecurityProtocols.getInstance(), new OctetString(
 					MPv3.createLocalEngineID()), 0);
 			SecurityModels.getInstance().addSecurityModel(usm);
@@ -276,7 +276,7 @@ public class LocalSNMPConnection extends SNMPConnection {
 	}
 	
 	private PDU build(int type) {
-		PDU pdu = (version == SNMPVersion.VERSION3) ? new ScopedPDU()
+		PDU pdu = (version == SNMPVersion.VERSION_3) ? new ScopedPDU()
 				: new PDU();
 		pdu.setType(type);
 		

@@ -247,7 +247,7 @@ public class ConfigurationExecutor extends JFrame {
 					for (InetAddress address : addresses) {
 						JTextArea result = new JTextArea();
 						JScrollPane resultScroll = new JScrollPane(result);
-
+						
 						result.setEditable(false);
 						resultScroll.setVisible(false);
 						
@@ -266,17 +266,19 @@ public class ConfigurationExecutor extends JFrame {
 	}
 	
 	public void open(File file) throws IOException {
-		Configuration configuration = ConfigurationHelper.readFromJsonFile(file, new EncryptionCallback() {
-			public String getPassword(Encryption encryption) {
-				return ConfigurationDialog
-						.showDecryptionDialog(ConfigurationExecutor.this);
-			}
-		});
+		Configuration configuration = ConfigurationHelper.readFromJsonFile(
+				file, new EncryptionCallback() {
+					public String getPassword(Encryption encryption) {
+						return ConfigurationDialog
+								.showDecryptionDialog(ConfigurationExecutor.this);
+					}
+				});
 		
 		setConfiguration(configuration);
 	}
 	
-	private void execute(JTextArea area, InetAddress address) throws IOException {
+	private void execute(JTextArea area, InetAddress address)
+			throws IOException {
 		DeviceAccessor accessor = new IPDeviceAccessor(address);
 		ConnectionSettings settings = ConnectionContainer
 				.getSettings(configuration);
@@ -325,7 +327,8 @@ public class ConfigurationExecutor extends JFrame {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 		
-		Iterator<InetAddress> addressIterator = configuration.getAddresses().iterator();
+		Iterator<InetAddress> addressIterator = configuration.getAddresses()
+				.iterator();
 		String addresses = addressIterator.next().toString();
 		while (addressIterator.hasNext()) {
 			addresses += ";" + addressIterator.next().toString();

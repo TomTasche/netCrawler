@@ -3,6 +3,7 @@ package at.netcrawler.test;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import at.netcrawler.io.json.JsonHelper;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.model.NetworkDevice;
 import at.netcrawler.network.model.NetworkInterface;
@@ -38,9 +39,11 @@ public class HashTopologyTest {
 		TopologyDevice topologyDeviceA = new TopologyDevice(
 				new UniqueDeviceIdentifier(), deviceA);
 		TopologyInterface topologyInterfaceA = new TopologyInterface(interfaceA);
+		topologyDeviceA.addInterface(topologyInterfaceA);
 		TopologyDevice topologyDeviceB = new TopologyDevice(
 				new UniqueDeviceIdentifier(), deviceB);
 		TopologyInterface topologyInterfaceB = new TopologyInterface(interfaceB);
+		topologyDeviceB.addInterface(topologyInterfaceB);
 		TopologyCable topologyCable = new TopologyCable(cable,
 				new HashSet<TopologyInterface>(Arrays.asList(
 						topologyInterfaceA, topologyInterfaceB)));
@@ -48,6 +51,8 @@ public class HashTopologyTest {
 		topology.addVertex(topologyDeviceA);
 		topology.addVertex(topologyDeviceB);
 		topology.addEdge(topologyCable);
+		
+		System.out.println(JsonHelper.getGson().toJson(topology));
 	}
 	
 }

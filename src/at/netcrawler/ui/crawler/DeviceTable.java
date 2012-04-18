@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import at.andiwand.library.util.comparator.ObjectStringComparator;
+import at.andiwand.library.util.comparator.ObjectToStringLengthComparator;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyDevice;
 
@@ -23,7 +23,7 @@ public class DeviceTable extends JTable {
 	static {
 		List<String> columns = new ArrayList<String>(DeviceTableModel
 				.getColumnNames());
-		Collections.sort(columns, new ObjectStringComparator());
+		Collections.sort(columns, new ObjectToStringLengthComparator());
 		COLUMNS = Collections.unmodifiableList(columns);
 	}
 	
@@ -77,4 +77,5 @@ public class DeviceTable extends JTable {
 	public void setTopology(Topology topology) {
 		model.setTopology(topology);
 	}
+	
 }
