@@ -18,6 +18,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 
 
+// TODO: remove?
 public class JsonTopologyDeviceAdapter extends JsonAdapter<TopologyDevice> {
 	
 	private static final String NETWORK_DEVICE_PROPERTY = "networkDevice";
