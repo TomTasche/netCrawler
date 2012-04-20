@@ -1,6 +1,7 @@
 package at.netcrawler.io.json;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,40 +22,93 @@ import com.google.gson.JsonSerializationContext;
 
 public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 	
+	private static final ThreadLocal<Map<TopologyDevice, String>> SERIALIZED_DEVICE_NAMES = new ThreadLocal<Map<TopologyDevice, String>>();
+	private static final ThreadLocal<Map<String, TopologyDevice>> DESERIALIZED_TOPOLOGY_DEVICES = new ThreadLocal<Map<String, TopologyDevice>>();
+	
 	private static final String DEVICES_PROPERTY = "devices";
 	private static final Type DEVICES_ELEMENT_TYPE = new TypeToken<TopologyDevice>() {}
 			.getType();
 	
 	private static final String CABLES_PROPERTY = "cables";
+	private static final Type CABLES_ELEMENT_TYPE = new TypeToken<TopologyCable>() {}
+			.getType();
+	
+	public static boolean isSerialized() {
+		return SERIALIZED_DEVICE_NAMES.get() != null;
+	}
+	
+	public static boolean isDeserialized() {
+		return DESERIALIZED_TOPOLOGY_DEVICES.get() != null;
+	}
+	
+	public static Map<TopologyDevice, String> getSerializedDeviceNames() {
+		Map<TopologyDevice, String> result = SERIALIZED_DEVICE_NAMES.get();
+		if (result == null)
+			throw new IllegalStateException("No translation context");
+		return result;
+	}
+	
+	public static String getSerializedDeviceName(TopologyDevice topologyDevice) {
+		return getSerializedDeviceNames().get(topologyDevice);
+	}
+	
+	public static Map<String, TopologyDevice> getDeserializedTopologyDevices() {
+		Map<String, TopologyDevice> result = DESERIALIZED_TOPOLOGY_DEVICES
+				.get();
+		if (result == null)
+			throw new IllegalStateException("No translation context");
+		return result;
+	}
+	
+	public static TopologyDevice getDeserializedTopologyDevice(String hostname) {
+		return getDeserializedTopologyDevices().get(hostname);
+	}
+	
+	private static void setSerializedDeviceNames(
+			Map<TopologyDevice, String> serializedDeviceNames) {
+		SERIALIZED_DEVICE_NAMES.set(Collections
+				.unmodifiableMap(serializedDeviceNames));
+	}
+	
+	private static void setDeserializedTopologyDevices(
+			Map<String, TopologyDevice> deserializedTopologyDevices) {
+		DESERIALIZED_TOPOLOGY_DEVICES.set(Collections
+				.unmodifiableMap(deserializedTopologyDevices));
+	}
+	
+	public static void freeTranslation() {
+		SERIALIZED_DEVICE_NAMES.remove();
+		DESERIALIZED_TOPOLOGY_DEVICES.remove();
+	}
 	
 	public JsonElement serialize(Topology src, Type typeOfSrc,
 			JsonSerializationContext context) {
+		freeTranslation();
+		
 		JsonObject result = new JsonObject();
 		
 		JsonObject devices = new JsonObject();
 		result.add(DEVICES_PROPERTY, devices);
 		
 		Multiset<String> deviceNames = new HashMultiset<String>();
-		Map<TopologyDevice, String> deviceNameMap = new HashMap<TopologyDevice, String>();
+		Map<TopologyDevice, String> serializedDeviceNames = new HashMap<TopologyDevice, String>();
 		
 		for (TopologyDevice device : src.getVertices()) {
 			String hostname = device.getHostname();
 			String uniqueHostname = hostname + "-"
 					+ deviceNames.getElementCount(hostname);
-			deviceNameMap.put(device, uniqueHostname);
+			serializedDeviceNames.put(device, uniqueHostname);
 			devices.add(uniqueHostname, context.serialize(device));
 			deviceNames.add(hostname);
 		}
 		
+		setSerializedDeviceNames(serializedDeviceNames);
+		
 		JsonArray cables = new JsonArray();
 		result.add(CABLES_PROPERTY, cables);
 		
-		JsonTopologyCableAdapter cableAdapter = new JsonTopologyCableAdapter();
-		cableAdapter.setNameMap(deviceNameMap);
-		
 		for (TopologyCable cable : src.getEdges()) {
-			cables.add(cableAdapter.serialize(cable, TopologyCable.class,
-					context));
+			cables.add(context.serialize(cable));
 		}
 		
 		return result;
@@ -64,6 +118,8 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 	@SuppressWarnings("unchecked")
 	public Topology deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
+		freeTranslation();
+		
 		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
 		JsonObject object = json.getAsJsonObject();
 		
@@ -71,24 +127,23 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 			Topology result = topologyClass.newInstance();
 			
 			JsonObject devices = object.get(DEVICES_PROPERTY).getAsJsonObject();
-			
-			Map<String, TopologyDevice> deviceMap = new HashMap<String, TopologyDevice>();
+			Map<String, TopologyDevice> deserializedTopologyDevices = new HashMap<String, TopologyDevice>();
 			
 			for (Map.Entry<String, JsonElement> entry : devices.entrySet()) {
 				TopologyDevice topologyDevice = context.deserialize(entry
 						.getValue(), DEVICES_ELEMENT_TYPE);
-				deviceMap.put(entry.getKey(), topologyDevice);
+				deserializedTopologyDevices.put(entry.getKey(), topologyDevice);
 				result.addVertex(topologyDevice);
 			}
 			
+			setDeserializedTopologyDevices(deserializedTopologyDevices);
+			
 			JsonArray cables = object.get(CABLES_PROPERTY).getAsJsonArray();
 			
-			JsonTopologyCableAdapter cableAdapter = new JsonTopologyCableAdapter();
-			cableAdapter.setDeviceMap(deviceMap);
-			
 			for (JsonElement element : cables) {
-				result.addEdge(cableAdapter.deserialize(element,
-						TopologyCable.class, context));
+				TopologyCable cable = context.deserialize(element,
+						CABLES_ELEMENT_TYPE);
+				result.addEdge(cable);
 			}
 			
 			return result;

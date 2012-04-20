@@ -2,7 +2,6 @@ package at.netcrawler.io.json;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import at.andiwand.library.util.TypeToken;
@@ -21,7 +20,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
 
-// TODO: improve
 public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 	
 	private static final String NETWORK_CABLE_PROPERTY = "networkCable";
@@ -31,17 +29,6 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 	private static final String CONNECTED_INTERFACES_PROPERTY = "connectedInterfaces";
 	private static final String CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY = "deviceName";
 	private static final String CONNECTED_INTERFACES_INTERFACE_NAME_PROPERTY = "interfaceName";
-	
-	private Map<TopologyDevice, String> nameMap;
-	private Map<String, TopologyDevice> deviceMap;
-	
-	public void setNameMap(Map<TopologyDevice, String> nameMap) {
-		this.nameMap = nameMap;
-	}
-	
-	public void setDeviceMap(Map<String, TopologyDevice> deviceMap) {
-		this.deviceMap = deviceMap;
-	}
 	
 	@Override
 	public JsonElement serialize(TopologyCable src, Type typeOfSrc,
@@ -58,7 +45,8 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 			JsonObject connectedInterface = new JsonObject();
 			connectedInterfaceArray.add(connectedInterface);
 			
-			String deviceName = nameMap.get(interfaze.getDevice());
+			String deviceName = JsonTopologyAdapter
+					.getSerializedDeviceName(interfaze.getDevice());
 			connectedInterface.add(CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY,
 					new JsonPrimitive(deviceName));
 			
@@ -96,7 +84,8 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 				String deviceName = connectedInterface.get(
 						CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY)
 						.getAsString();
-				TopologyDevice device = deviceMap.get(deviceName);
+				TopologyDevice device = JsonTopologyAdapter
+						.getDeserializedTopologyDevice(deviceName);
 				interfaze = device.getInterfaceByName(interfaceName);
 			}
 			
