@@ -7,7 +7,9 @@ import at.andiwand.library.network.ip.SubnetMask;
 import at.andiwand.library.network.mac.MACAddress;
 import at.netcrawler.network.model.NetworkModel;
 import at.netcrawler.network.topology.Topology;
+import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
+import at.netcrawler.network.topology.TopologyInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +34,10 @@ public class JsonHelper {
 				new JsonSubnetMaskAdapter());
 		builder.registerTypeAdapter(TopologyDevice.class,
 				new JsonTopologyDeviceAdapter());
+		builder.registerTypeAdapter(TopologyCable.class,
+				new JsonTopologyCableAdapter());
+		builder.registerTypeHierarchyAdapter(TopologyInterface.class,
+				new JsonTopologyInterfaceAdapter());
 		builder.registerTypeHierarchyAdapter(Topology.class,
 				new JsonTopologyAdapter());
 		

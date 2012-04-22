@@ -60,8 +60,8 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 		return result;
 	}
 	
-	public static TopologyDevice getDeserializedTopologyDevice(String hostname) {
-		return getDeserializedTopologyDevices().get(hostname);
+	public static TopologyDevice getDeserializedTopologyDevice(String deviceName) {
+		return getDeserializedTopologyDevices().get(deviceName);
 	}
 	
 	private static void setSerializedDeviceNames(
