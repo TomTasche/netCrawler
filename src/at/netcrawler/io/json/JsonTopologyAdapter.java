@@ -81,6 +81,7 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 		DESERIALIZED_TOPOLOGY_DEVICES.remove();
 	}
 	
+	@Override
 	public JsonElement serialize(Topology src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		freeTranslation();
