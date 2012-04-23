@@ -2,26 +2,21 @@ package at.netcrawler.io.json;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import at.andiwand.library.util.TypeToken;
 import at.netcrawler.network.model.NetworkCable;
 import at.netcrawler.network.topology.TopologyCable;
-import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
-import at.netcrawler.network.topology.UnknownTopologyInterface;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
 
-// TODO: improve
 public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 	
 	private static final String NETWORK_CABLE_PROPERTY = "networkCable";
@@ -29,19 +24,8 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 			.getType();
 	
 	private static final String CONNECTED_INTERFACES_PROPERTY = "connectedInterfaces";
-	private static final String CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY = "deviceName";
-	private static final String CONNECTED_INTERFACES_INTERFACE_NAME_PROPERTY = "interfaceName";
-	
-	private Map<TopologyDevice, String> nameMap;
-	private Map<String, TopologyDevice> deviceMap;
-	
-	public void setNameMap(Map<TopologyDevice, String> nameMap) {
-		this.nameMap = nameMap;
-	}
-	
-	public void setDeviceMap(Map<String, TopologyDevice> deviceMap) {
-		this.deviceMap = deviceMap;
-	}
+	private static final Type CONNECTED_INTERFACES_ELEMENT_TYPE = new TypeToken<TopologyInterface>() {}
+			.getType();
 	
 	@Override
 	public JsonElement serialize(TopologyCable src, Type typeOfSrc,
@@ -51,21 +35,11 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 		result.add(NETWORK_CABLE_PROPERTY, context.serialize(src
 				.getNetworkCable()));
 		
-		JsonArray connectedInterfaceArray = new JsonArray();
-		result.add(CONNECTED_INTERFACES_PROPERTY, connectedInterfaceArray);
+		JsonArray connectedInterfaces = new JsonArray();
+		result.add(CONNECTED_INTERFACES_PROPERTY, connectedInterfaces);
 		
-		for (TopologyInterface interfaze : src.getConnectedInterfaces()) {
-			JsonObject connectedInterface = new JsonObject();
-			connectedInterfaceArray.add(connectedInterface);
-			
-			String deviceName = nameMap.get(interfaze.getDevice());
-			connectedInterface.add(CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY,
-					new JsonPrimitive(deviceName));
-			
-			if (interfaze instanceof UnknownTopologyInterface) continue;
-			connectedInterface.add(
-					CONNECTED_INTERFACES_INTERFACE_NAME_PROPERTY,
-					new JsonPrimitive(interfaze.getName()));
+		for (TopologyInterface topologyInterface : src.getConnectedInterfaces()) {
+			connectedInterfaces.add(context.serialize(topologyInterface));
 		}
 		
 		return result;
@@ -79,30 +53,16 @@ public class JsonTopologyCableAdapter extends JsonAdapter<TopologyCable> {
 		NetworkCable networkCable = context.deserialize(object
 				.get(NETWORK_CABLE_PROPERTY), NETWORK_CABLE_TYPE);
 		
-		Set<TopologyInterface> connectedInterfaces = new HashSet<TopologyInterface>();
+		Set<TopologyInterface> connectedTopologyInterfaces = new HashSet<TopologyInterface>();
 		
-		JsonArray connectedInterfaceArray = object.get(
+		JsonArray connectedInterfaces = object.get(
 				CONNECTED_INTERFACES_PROPERTY).getAsJsonArray();
-		for (JsonElement element : connectedInterfaceArray) {
-			JsonObject connectedInterface = element.getAsJsonObject();
-			
-			TopologyInterface interfaze;
-			String interfaceName = connectedInterface.get(
-					CONNECTED_INTERFACES_INTERFACE_NAME_PROPERTY).getAsString();
-			
-			if (interfaceName == null) {
-				interfaze = new UnknownTopologyInterface();
-			} else {
-				String deviceName = connectedInterface.get(
-						CONNECTED_INTERFACES_DEVICE_NAME_PROPERTY)
-						.getAsString();
-				TopologyDevice device = deviceMap.get(deviceName);
-				interfaze = device.getInterfaceByName(interfaceName);
-			}
-			
-			connectedInterfaces.add(interfaze);
+		for (JsonElement connectedInterface : connectedInterfaces) {
+			TopologyInterface topologyInterface = context.deserialize(
+					connectedInterface, CONNECTED_INTERFACES_ELEMENT_TYPE);
+			connectedTopologyInterfaces.add(topologyInterface);
 		}
 		
-		return new TopologyCable(networkCable, connectedInterfaces);
+		return new TopologyCable(networkCable, connectedTopologyInterfaces);
 	}
 }
