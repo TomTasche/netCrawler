@@ -9,11 +9,6 @@ import javax.swing.JScrollPane;
 
 import at.andiwand.library.cli.CommandLineInterface;
 import at.andiwand.library.component.JFrameUtil;
-import at.netcrawler.network.connection.ConnectionBuilder;
-import at.netcrawler.network.connection.ConnectionSettings;
-import at.netcrawler.network.connection.ConnectionType;
-import at.netcrawler.network.connection.ssh.SSHSettings;
-import at.netcrawler.network.connection.ssh.SSHVersion;
 
 
 /**
@@ -23,6 +18,7 @@ import at.netcrawler.network.connection.ssh.SSHVersion;
  * @author Andreas Stefl
  * 
  */
+// TODO: gui from SnmpConfigurator?
 public class JSimpleTerminal extends JFrame {
 	
 	private static final long serialVersionUID = -78836768236278425L;
@@ -81,18 +77,5 @@ public class JSimpleTerminal extends JFrame {
 		if (b) JFrameUtil.centerFrame(this);
 		
 		super.setVisible(b);
-	}
-	
-	public static void main(String[] args) {
-		// TODO: gui from SnmpConfigurator?
-		
-		SSHSettings settings = new SSHSettings(SSHVersion.VERSION2);
-		settings.set
-		
-		ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SSH, null, )
-		
-		JSimpleTerminal terminal = new JSimpleTerminal(commandLine);
-		
-		terminal.setVisible(true);
 	}
 }
