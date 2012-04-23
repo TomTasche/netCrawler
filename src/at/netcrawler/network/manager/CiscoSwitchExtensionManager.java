@@ -41,8 +41,8 @@ public abstract class CiscoSwitchExtensionManager extends
 	@Override
 	public boolean hasExtension() throws IOException {
 		return device.containsExtension(CiscoDeviceExtension.EXTENSION)
-				&& device.getValue(NetworkDevice.MAJOR_CAPABILITY).equals(
-						Capability.SWITCH);
+				&& Capability.SWITCH.equals(device
+						.getValue(NetworkDevice.MAJOR_CAPABILITY));
 	}
 	
 }

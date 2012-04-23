@@ -38,6 +38,9 @@ public class TopologyDevice {
 	@Deprecated
 	public TopologyDevice(DeviceIdentifier identifier,
 			NetworkDevice networkDevice, DeviceManager deviceManager) {
+		if (identifier == null)
+			throw new NullPointerException("identifier must not be null");
+		
 		this.identifier = identifier;
 		this.networkDevice = networkDevice;
 		this.deviceManager = deviceManager;

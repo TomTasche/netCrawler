@@ -37,8 +37,8 @@ public abstract class CiscoRouterExtensionManager extends
 	@Override
 	public boolean hasExtension() throws IOException {
 		return device.containsExtension(CiscoDeviceExtension.EXTENSION)
-				&& device.getValue(NetworkDevice.MAJOR_CAPABILITY).equals(
-						Capability.ROUTER);
+				&& Capability.ROUTER.equals(device
+						.getValue(NetworkDevice.MAJOR_CAPABILITY));
 	}
 	
 }

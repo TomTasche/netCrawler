@@ -87,12 +87,15 @@ public class CiscoCommandLineDeviceManager extends CommandLineDeviceManager {
 		return new HashSet<Capability>();
 	}
 	
+	// TODO: improve
 	@Override
 	protected Capability getMajorCapability() throws IOException {
 		String software = executeAndFind(SOFTWARE_COMMAND, SOFTWARE_PATTERN);
 		software = software.toUpperCase();
 		
 		if (software.startsWith("28")) {
+			return Capability.ROUTER;
+		} else if (software.startsWith("C29")) {
 			return Capability.ROUTER;
 		} else if (software.startsWith("C35")) {
 			return Capability.SWITCH;

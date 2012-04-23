@@ -125,7 +125,7 @@ public class CrawlDialog {
 				address = new IPv4Address(addressField.getText());
 			} catch (Exception e) {
 				DialogUtil
-						.showErrorDialog(parent, "The passwords don't match!");
+						.showErrorDialog(parent, "Couldn't parse IP address!");
 				
 				continue;
 			}
@@ -138,7 +138,7 @@ public class CrawlDialog {
 				continue;
 			}
 			if (password.trim().isEmpty()) {
-				DialogUtil.showErrorDialog(parent, "Username is empty");
+				DialogUtil.showErrorDialog(parent, "Username is empty!");
 				
 				continue;
 			}
@@ -147,6 +147,8 @@ public class CrawlDialog {
 			settings.setAddress(address);
 			settings.setDefaultUsername(username);
 			settings.setDefaultPassword(password);
+			
+			return settings;
 		}
 	}
 	

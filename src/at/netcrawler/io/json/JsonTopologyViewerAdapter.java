@@ -49,7 +49,7 @@ public class JsonTopologyViewerAdapter extends JsonAdapter<TopologyViewer> {
 					.getPosition()));
 		}
 		
-		return null;
+		return result;
 	}
 	
 	@Override

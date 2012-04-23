@@ -12,8 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -23,6 +25,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
 
 import at.andiwand.library.component.JFrameUtil;
@@ -99,7 +103,7 @@ public class GUI extends JFrame {
 		JMenuBar menu = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		JMenu viewMenu = new JMenu("View");
-		JMenu helpMenu = new JMenu("Help");
+		final JMenu helpMenu = new JMenu("Help");
 		JMenuItem crawlItem = new JMenuItem("Crawl...");
 		JMenuItem loadItem = new JMenuItem("Load");
 		saveItem = new JMenuItem("Save");
@@ -107,12 +111,26 @@ public class GUI extends JFrame {
 		JMenuItem toggleViewItem = new JMenuItem("Toggle view");
 		
 		saveItem.setEnabled(false);
-
-		helpMenu.addActionListener(new ActionListener() {
+		
+		helpMenu.addMenuListener(new MenuListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(GUI.this, "Help is available online at http://netcrawler.tomtasche.at/", "Help", JOptionPane.INFORMATION_MESSAGE);
+			public void menuSelected(MenuEvent arg0) {
+				JOptionPane
+				.showMessageDialog(
+						GUI.this,
+						"Help is available online at http://netcrawler.tomtasche.at/",
+						"Help", JOptionPane.INFORMATION_MESSAGE);
+				
+				helpMenu.setSelected(false);
+			}
+			
+			@Override
+			public void menuDeselected(MenuEvent arg0) {
+			}
+			
+			@Override
+			public void menuCanceled(MenuEvent arg0) {
 			}
 		});
 		loadItem.addActionListener(new ActionListener() {
@@ -120,18 +138,31 @@ public class GUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (fileChooser.showOpenDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
-					fileChooser.getSelectedFile();
+//				if (fileChooser.showOpenDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
+//					fileChooser.getSelectedFile();
+//				}
+				
+				InputStreamReader reader = new InputStreamReader(System.in);
+				BufferedReader bufferedReader = new BufferedReader(reader);
+				String json = null;
+				try {
+					json = bufferedReader.readLine();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+				System.out.println(json);
+				viewer = JsonHelper.getGson().fromJson(json, TopologyViewer.class);
+				
+				scrollPane.setViewportView(viewer);
 			}
 		});
 		saveItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println(JsonHelper.getGson().toJson(
-						GUI.this.topology));
+				System.out
+						.println(JsonHelper.getGson().toJson(GUI.this.viewer));
 			}
 		});
 		closeItem.addActionListener(new ActionListener() {
@@ -220,7 +251,12 @@ public class GUI extends JFrame {
 	protected void handleMouse(MouseEvent event, TopologyDevice device) {
 		JFrame frame = null;
 		if (event.getButton() == MouseEvent.BUTTON1) {
-			frame = new DeviceView(device);
+			try {
+				frame = new DeviceView(device);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else if (event.getButton() == MouseEvent.BUTTON3) {
 			frame = new ConfigurationManager(device);
 		}
@@ -256,7 +292,6 @@ public class GUI extends JFrame {
 			// TODO: hotfix
 			new Thread() {
 				public void run() {
-					// TODO: prompt!
 					ConnectionGateway gateway = new LocalSSHGateway();
 					
 					SSHSettings settings = new SSHSettings();
@@ -311,5 +346,5 @@ public class GUI extends JFrame {
 		
 		tableVisible = !tableVisible;
 	}
-
+	
 }

@@ -13,6 +13,7 @@ import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
 import at.netcrawler.network.topology.TopologyInterface;
+import at.netcrawler.ui.component.TopologyViewer;
 
 
 public class HashTopologyTest {
@@ -53,6 +54,8 @@ public class HashTopologyTest {
 		topology.addEdge(topologyCable);
 		
 		System.out.println(JsonHelper.getGson().toJson(topology));
+		System.out.println(JsonHelper.getGson().toJson(
+				new TopologyViewer(topology)));
 	}
 	
 }
