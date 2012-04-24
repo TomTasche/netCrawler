@@ -3,6 +3,7 @@ package at.netcrawler.ui.device;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -28,7 +29,9 @@ public class JSimpleTerminal extends JFrame {
 	 * The default title of the terminal.
 	 */
 	public static final String DEFAULT_TITLE = "Terminal";
-	
+
+
+    private final CommandLineInterface commandLine;
 	
 	
 	/**
@@ -52,6 +55,9 @@ public class JSimpleTerminal extends JFrame {
 	 */
 	public JSimpleTerminal(String title, final CommandLineInterface commandLine) {
 		super(title);
+        
+		this.commandLine = commandLine;
+        
 		setLayout(new BorderLayout());
 		
 		JSimpleTerminalPanel terminalPanel = new JSimpleTerminalPanel(commandLine);
@@ -64,7 +70,14 @@ public class JSimpleTerminal extends JFrame {
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				dispose();
+				try {
+                    JSimpleTerminal.this.commandLine.close();
+                } catch (IOException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+			    
+			    dispose();
 			}
 		});
 		
