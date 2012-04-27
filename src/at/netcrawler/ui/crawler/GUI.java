@@ -37,7 +37,8 @@ import at.netcrawler.network.connection.ConnectionGateway;
 import at.netcrawler.network.connection.ssh.LocalSSHGateway;
 import at.netcrawler.network.connection.ssh.SSHSettings;
 import at.netcrawler.network.connection.ssh.SSHVersion;
-import at.netcrawler.network.crawler.SimpleNetworkCrawler;
+import at.netcrawler.network.crawler.NetworkCrawler;
+import at.netcrawler.network.crawler.SimpleThreadedNetworkCrawler;
 import at.netcrawler.network.manager.DeviceManagerFactory;
 import at.netcrawler.network.manager.cli.CommandLineDeviceManagerFactory;
 import at.netcrawler.network.topology.HashTopology;
@@ -75,6 +76,7 @@ public class GUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			
 			public void windowClosing(WindowEvent e) {
+				// TODO: bleda bua.
 				close();
 			}
 		});
@@ -152,7 +154,6 @@ public class GUI extends JFrame {
 								.readLine()) {
 							json += s + LINE_SEPARATOR;
 						}
-						System.out.println(json);
 						
 						viewer = JsonHelper.getGson().fromJson(json,
 								TopologyViewer.class);
@@ -161,6 +162,14 @@ public class GUI extends JFrame {
 						GUI.this.topology = (Topology) viewer.getModel();
 						
 						table.setTopology(GUI.this.topology);
+						
+						viewer.addVertexMouseListener(new MouseAdapter() {
+							
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								handleMouse(e, (TopologyDevice) e.getSource());
+							}
+						});
 						
 						scrollPane.setViewportView(viewer);
 					} catch (IOException ex) {
@@ -183,9 +192,9 @@ public class GUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (fileChooser.showSaveDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
-					
-					if (!file.getName().endsWith(".crawl"))
+					if (file.getName().endsWith(".crawl")) {
 						file = new File(file.getAbsoluteFile() + ".crawl");
+					}
 					
 					FileWriter writer = null;
 					try {
@@ -193,7 +202,6 @@ public class GUI extends JFrame {
 						
 						String json = JsonHelper.getGson().toJson(
 								GUI.this.viewer);
-						System.out.println(json);
 						
 						writer.write(json);
 						writer.flush();
@@ -353,8 +361,10 @@ public class GUI extends JFrame {
 					
 					IPv4Address start = crawlSettings.getAddress();
 					
-					SimpleNetworkCrawler crawler = new SimpleNetworkCrawler(
+					NetworkCrawler crawler = new SimpleThreadedNetworkCrawler(
 							gateway, settings, managerFactory, start);
+//					NetworkCrawler crawler = new SimpleNetworkCrawler(
+//							gateway, settings, managerFactory, start);
 					
 					try {
 						topology = new HashTopology();

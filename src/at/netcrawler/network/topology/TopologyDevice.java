@@ -67,6 +67,10 @@ public class TopologyDevice {
 		return identifier.hashCode();
 	}
 	
+	public DeviceIdentifier getIdentifier() {
+		return identifier;
+	}
+	
 	public NetworkDevice getNetworkDevice() {
 		return networkDevice;
 	}

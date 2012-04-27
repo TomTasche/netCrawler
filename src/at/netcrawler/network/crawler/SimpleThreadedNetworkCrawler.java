@@ -1,7 +1,9 @@
 package at.netcrawler.network.crawler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import at.andiwand.library.network.ip.IPv4Address;
@@ -20,14 +22,14 @@ import at.netcrawler.network.topology.TopologyInterface;
 import at.netcrawler.network.topology.UnknownTopologyInterface;
 
 
-public class SimpleNetworkCrawler implements NetworkCrawler {
+public class SimpleThreadedNetworkCrawler implements NetworkCrawler {
 	
 	private ConnectionGateway gateway;
 	private ConnectionSettings settings;
 	private DeviceManagerFactory managerFactory;
 	private IPv4Address start;
 	
-	public SimpleNetworkCrawler(ConnectionGateway gateway,
+	public SimpleThreadedNetworkCrawler(ConnectionGateway gateway,
 			ConnectionSettings settings, DeviceManagerFactory managerFactory,
 			IPv4Address start) {
 		this.gateway = gateway;
@@ -41,7 +43,7 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 		crawlImpl(topology, start, null);
 	}
 	
-	private void crawlImpl(Topology topology, IPv4Address address,
+	private void crawlImpl(final Topology topology, IPv4Address address,
 			TopologyDevice lastDevice) throws IOException {
 		IPDeviceAccessor accessor = new IPDeviceAccessor(address);
 		Connection connection = gateway.openConnection(accessor, settings);
@@ -73,12 +75,39 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 			topology.addEdge(topologyCable);
 		}
 		
+		List<Thread> threads = new ArrayList<Thread>();
+		final List<IOException> exceptions = new ArrayList<IOException>();
+		
 		if (success) {
 			Set<IPv4Address> neighbors = deviceManager.discoverNeighbors();
 			
-			for (IPv4Address neighbor : neighbors) {
-				crawlImpl(topology, neighbor, topologyDevice);
+			for (final IPv4Address neighbor : neighbors) {
+				final TopologyDevice td = topologyDevice;
+				Thread thread = new Thread() {
+					public void run() {
+						try {
+							crawlImpl(topology, neighbor, td);
+						} catch (IOException e) {
+							synchronized (exceptions) {
+								exceptions.add(e);
+							}
+						}
+					}
+				};
+				
+				thread.start();
+				threads.add(thread);
 			}
+		}
+		
+		for (Thread thread : threads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {}
+		}
+		
+		for (IOException exception : exceptions) {
+			throw exception;
 		}
 	}
 	

@@ -49,7 +49,10 @@ public class ConfigurationExecutor extends JFrame {
 	
 	private static final String TITLE = "Configuration Executor";
 	
+	// TODO: other os?
 	private static final String BATCH_SUFFIX = "!executorEnd";
+	private static final Pattern BATCH_END_PATTERN = Pattern.compile(".+"
+			+ BATCH_SUFFIX);
 	
 	private JLabel address = new JLabel();
 	private JLabel connection = new JLabel();
@@ -309,14 +312,14 @@ public class ConfigurationExecutor extends JFrame {
 			}
 		}
 		
-		Pattern endPattern = Pattern.compile(".+" + BATCH_SUFFIX);
 		String batch = configuration.getBatch((String) batches
 				.getSelectedItem());
 		
 		outputStream.write((batch + "\n" + BATCH_SUFFIX + "\n").getBytes());
 		outputStream.flush();
 		
-		inputStream = new UntilLineMatchInputStream(inputStream, endPattern);
+		inputStream = new UntilLineMatchInputStream(inputStream,
+				BATCH_END_PATTERN);
 		
 		String output = StreamUtil.readAsString(inputStream);
 		area.setText(output);
@@ -329,9 +332,9 @@ public class ConfigurationExecutor extends JFrame {
 		
 		Iterator<InetAddress> addressIterator = configuration.getAddresses()
 				.iterator();
-		String addresses = addressIterator.next().toString();
+		String addresses = addressIterator.next().getHostAddress();
 		while (addressIterator.hasNext()) {
-			addresses += ";" + addressIterator.next().toString();
+			addresses += ";" + addressIterator.next().getHostAddress();
 		}
 		address.setText(addresses);
 		

@@ -7,23 +7,24 @@ import java.awt.Insets;
 
 import javax.swing.JPanel;
 
-public class GridBagLayoutUtil {
 
+public class GridBagLayoutUtil {
+	
 	private static final Insets DEFAULT_INSETS = new Insets(0, 5, 5, 5);
 	private static final double DEFAULT_WEIGHT = 0.1;
-
+	
 	private GridBagLayout layout;
 	private JPanel panel;
 	private Insets insets;
 	private int columns;
 	private double weight;
-
+	
 	private int column;
 	private int row;
-
+	
 	public GridBagLayoutUtil(int columns) {
 		this.columns = columns;
-
+		
 		layout = new GridBagLayout();
 		panel = new JPanel(layout);
 		insets = DEFAULT_INSETS;
@@ -32,10 +33,10 @@ public class GridBagLayoutUtil {
 		column = 0;
 		row = 0;
 	}
-
+	
 	public GridBagLayoutUtil setInsets(Insets insets) {
 		this.insets = insets;
-
+		
 		return this;
 	}
 	
@@ -50,7 +51,7 @@ public class GridBagLayoutUtil {
 	public int getColumns() {
 		return columns;
 	}
-
+	
 	public double getWeight() {
 		return weight;
 	}
@@ -66,7 +67,7 @@ public class GridBagLayoutUtil {
 	public void add(Component component) {
 		add(component, insets);
 	}
-
+	
 	public void add(Component component, Insets insets) {
 		if (component == null) {
 			increment(1);
@@ -96,7 +97,7 @@ public class GridBagLayoutUtil {
 		
 		increment(constraints.gridwidth);
 	}
-
+	
 	private void increment(int i) {
 		column += i;
 		

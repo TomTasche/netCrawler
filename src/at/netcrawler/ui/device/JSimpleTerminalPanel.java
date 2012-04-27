@@ -26,7 +26,6 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 	
 	private static final long serialVersionUID = -3529309954826071748L;
 	
-	
 	/**
 	 * 
 	 * A simple close listener for the terminal frame.
@@ -41,18 +40,15 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 		public void closed();
 	}
 	
-	
-	
 	private CommandLineInterface commandLine;
 	
 	private List<CloseListener> listeners;
-	
 	
 	/**
 	 * Creates a new terminal panel with the given command line.
 	 * 
 	 * @param commandLine the command line which should connected to this
-	 * terminal.
+	 *        terminal.
 	 */
 	public JSimpleTerminalPanel(CommandLineInterface commandLine) {
 		this.commandLine = commandLine;
@@ -78,8 +74,6 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 		});
 	}
 	
-	
-	
 	/**
 	 * Adds a <code>CloseListener</code> to the terminal panel.
 	 * 
@@ -98,7 +92,6 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 		listeners.remove(listener);
 	}
 	
-	
 	private class SimpleConnection implements Connection {
 		public InputStream getInputStream() {
 			try {
@@ -107,6 +100,7 @@ public class JSimpleTerminalPanel extends JCTermSwing {
 			
 			return null;
 		}
+		
 		public OutputStream getOutputStream() {
 			try {
 				return commandLine.getOutputStream();
