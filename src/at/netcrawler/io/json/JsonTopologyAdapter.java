@@ -8,6 +8,7 @@ import java.util.Map;
 import at.andiwand.library.util.TypeToken;
 import at.andiwand.library.util.collections.HashMultiset;
 import at.andiwand.library.util.collections.Multiset;
+import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
@@ -121,11 +122,12 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 			JsonDeserializationContext context) throws JsonParseException {
 		freeTranslation();
 		
-		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
+//		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
 		JsonObject object = json.getAsJsonObject();
 		
 		try {
-			Topology result = topologyClass.newInstance();
+//			Topology result = topologyClass.newInstance();
+		    Topology result = new HashTopology();
 			
 			JsonObject devices = object.get(DEVICES_PROPERTY).getAsJsonObject();
 			Map<String, TopologyDevice> deserializedTopologyDevices = new HashMap<String, TopologyDevice>();
