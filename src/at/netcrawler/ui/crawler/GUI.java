@@ -153,7 +153,6 @@ public class GUI extends JFrame {
                                 .readLine()) {
                             json += s + LINE_SEPARATOR;
                         }
-                        System.out.println(json);
 
                         viewer = JsonHelper.getGson().fromJson(json,
                                 TopologyViewer.class);
@@ -196,7 +195,6 @@ public class GUI extends JFrame {
 
                         String json = JsonHelper.getGson().toJson(
                                 GUI.this.viewer);
-                        System.out.println(json);
 
                         writer.write(json);
                         writer.flush();

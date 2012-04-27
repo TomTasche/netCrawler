@@ -467,7 +467,7 @@ public class ConfigurationManager extends JFrame {
     private void setConfiguration(Configuration configuration) {
         String s = "";
         for (InetAddress address : configuration.getAddresses()) {
-            s += address.toString() + ";";
+            s += address.getHostAddress() + ";";
         }
 
         addressField.setText(s);

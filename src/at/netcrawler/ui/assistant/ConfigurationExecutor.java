@@ -329,9 +329,9 @@ public class ConfigurationExecutor extends JFrame {
 		
 		Iterator<InetAddress> addressIterator = configuration.getAddresses()
 				.iterator();
-		String addresses = addressIterator.next().toString();
+		String addresses = addressIterator.next().getHostAddress();
 		while (addressIterator.hasNext()) {
-			addresses += ";" + addressIterator.next().toString();
+			addresses += ";" + addressIterator.next().getHostAddress();
 		}
 		address.setText(addresses);
 		

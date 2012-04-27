@@ -200,7 +200,7 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 
         pane.setViewportView(leftTabs);
 
-        pack();
+        setSize(400, 300);
         setMinimumSize(getSize());
     }
 
