@@ -184,9 +184,9 @@ public class SnmpConfigurator extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
-				if (oid.isEmpty() || !oid.contains(".")) {
+				if (oid.isEmpty()) {
 					DialogUtil.showErrorDialog(SnmpConfigurator.this,
-							"Couldn't parse OID.");
+							"Empty OID.");
 				} else {
 					try {
 						setValue(oid);
@@ -259,7 +259,7 @@ public class SnmpConfigurator extends JFrame {
 
 			// TODO: allow multiple OIDs seperated by ;
 			ObjectIdentifier identifier = new ObjectIdentifier(oid);
-			SnmpMethod method = (SnmpMethod) versionBox.getSelectedItem();
+			SnmpMethod method = (SnmpMethod) methodBox.getSelectedItem();
 			if (SnmpMethod.GET == method) {
 				return connection.get(identifier).getValue();
 			} else if (SnmpMethod.GET_NEXT == method) {
