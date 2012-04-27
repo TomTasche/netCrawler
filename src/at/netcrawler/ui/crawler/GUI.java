@@ -162,6 +162,14 @@ public class GUI extends JFrame {
 
                         table.setTopology(GUI.this.topology);
 
+                        viewer.addVertexMouseListener(new MouseAdapter() {
+
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                handleMouse(e, (TopologyDevice) e.getSource());
+                            }
+                        });
+                        
                         scrollPane.setViewportView(viewer);
                     } catch (IOException ex) {
                         // TODO Auto-generated catch block
