@@ -8,6 +8,7 @@ import java.util.Map;
 import at.andiwand.library.util.TypeToken;
 import at.andiwand.library.util.collections.HashMultiset;
 import at.andiwand.library.util.collections.Multiset;
+import at.netcrawler.network.topology.HashTopology;
 import at.netcrawler.network.topology.Topology;
 import at.netcrawler.network.topology.TopologyCable;
 import at.netcrawler.network.topology.TopologyDevice;
@@ -121,38 +122,37 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 			JsonDeserializationContext context) throws JsonParseException {
 		freeTranslation();
 		
-		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
 		JsonObject object = json.getAsJsonObject();
 		
+		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
+		Topology result;
+		
 		try {
-			Topology result = topologyClass.newInstance();
-			
-			JsonObject devices = object.get(DEVICES_PROPERTY).getAsJsonObject();
-			Map<String, TopologyDevice> deserializedTopologyDevices = new HashMap<String, TopologyDevice>();
-			
-			for (Map.Entry<String, JsonElement> entry : devices.entrySet()) {
-				TopologyDevice topologyDevice = context.deserialize(entry
-						.getValue(), DEVICES_ELEMENT_TYPE);
-				deserializedTopologyDevices.put(entry.getKey(), topologyDevice);
-				result.addVertex(topologyDevice);
-			}
-			
-			setDeserializedTopologyDevices(deserializedTopologyDevices);
-			
-			JsonArray cables = object.get(CABLES_PROPERTY).getAsJsonArray();
-			
-			for (JsonElement element : cables) {
-				TopologyCable cable = context.deserialize(element,
-						CABLES_ELEMENT_TYPE);
-				result.addEdge(cable);
-			}
-			
-			return result;
-		} catch (JsonParseException e) {
-			throw e;
+			result = topologyClass.newInstance();
 		} catch (Exception e) {
-			throw new JsonParseException(e);
+			result = new HashTopology();
 		}
+		
+		JsonObject devices = object.get(DEVICES_PROPERTY).getAsJsonObject();
+		Map<String, TopologyDevice> deserializedTopologyDevices = new HashMap<String, TopologyDevice>();
+		
+		for (Map.Entry<String, JsonElement> entry : devices.entrySet()) {
+			TopologyDevice topologyDevice = context.deserialize(entry
+					.getValue(), DEVICES_ELEMENT_TYPE);
+			deserializedTopologyDevices.put(entry.getKey(), topologyDevice);
+			result.addVertex(topologyDevice);
+		}
+		
+		setDeserializedTopologyDevices(deserializedTopologyDevices);
+		
+		JsonArray cables = object.get(CABLES_PROPERTY).getAsJsonArray();
+		
+		for (JsonElement element : cables) {
+			TopologyCable cable = context.deserialize(element,
+					CABLES_ELEMENT_TYPE);
+			result.addEdge(cable);
+		}
+		
+		return result;
 	}
-	
 }

@@ -25,6 +25,7 @@ public class JsonHelper {
 		builder.setPrettyPrinting();
 		
 		// @formatter:off
+		builder.registerTypeAdapter(Class.class, new JsonClassAdapter());
 		builder.registerTypeAdapter(Point.class, new JsonPointAdapter());
 		builder.registerTypeAdapter(IPv4Address.class, new JsonIPv4AddressAdapter());
 		builder.registerTypeAdapter(InetAddress.class,new JsonIPv4AddressAdapter());

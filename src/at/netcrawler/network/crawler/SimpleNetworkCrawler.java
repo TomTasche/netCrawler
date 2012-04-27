@@ -74,6 +74,8 @@ public class SimpleNetworkCrawler implements NetworkCrawler {
 				crawlImpl(topology, neighbor, topologyDevice);
 			}
 		}
+		
+		connection.close();
 	}
 	
 }

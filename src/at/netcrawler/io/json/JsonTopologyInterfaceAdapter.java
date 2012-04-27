@@ -42,12 +42,16 @@ public class JsonTopologyInterfaceAdapter extends
 		JsonObject object = json.getAsJsonObject();
 		
 		JsonElement interfaceNameElement = object.get(INTERFACE_NAME_PROPERTY);
-		if (interfaceNameElement == null)
-			return new UnknownTopologyInterface();
 		
 		String deviceName = object.get(DEVICE_NAME_PROPERTY).getAsString();
 		TopologyDevice topologyDevice = JsonTopologyAdapter
 				.getDeserializedTopologyDevice(deviceName);
+		
+		if (interfaceNameElement == null) {
+			TopologyInterface interfaze = new UnknownTopologyInterface();
+			topologyDevice.addInterface(interfaze);
+			return interfaze;
+		}
 		
 		String interfaceName = interfaceNameElement.getAsString();
 		return topologyDevice.getInterfaceByName(interfaceName);

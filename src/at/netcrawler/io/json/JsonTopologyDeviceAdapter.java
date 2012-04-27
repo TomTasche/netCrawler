@@ -22,7 +22,7 @@ import com.google.gson.JsonSerializationContext;
 public class JsonTopologyDeviceAdapter extends JsonAdapter<TopologyDevice> {
 	
 	private static final String NETWORK_DEVICE_PROPERTY = "networkDevice";
-	private static final Type NETWORK_DEVICE_TYPE = new TypeToken<Set<String>>() {}
+	private static final Type NETWORK_DEVICE_TYPE = new TypeToken<NetworkDevice>() {}
 			.getType();
 	private static final String INTERFACE_NAMES_PROPERTY = "interfaceNames";
 	private static final Type INTERFACE_NAMES_TYPE = new TypeToken<Set<String>>() {}

@@ -27,7 +27,7 @@ public class ConnectionBuilder {
 		return result;
 	}
 	
-	private Map<ConnectionType, ConnectionGateway> gatewayMap = new HashMap<ConnectionType, ConnectionGateway>();
+	private final Map<ConnectionType, ConnectionGateway> gatewayMap = new HashMap<ConnectionType, ConnectionGateway>();
 	
 	public ConnectionBuilder() {}
 	

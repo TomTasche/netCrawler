@@ -15,12 +15,12 @@ import com.google.gson.JsonSerializationContext;
 public class JsonPointAdapter extends JsonAdapter<Point> {
 	
 	private static final Pattern POINT_PATTERN = Pattern
-			.compile("\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+			.compile("\\s*\\(\\s*(.+?)\\s*,\\s*(.+?)\\s*\\)\\s*");
 	
 	@Override
 	public JsonElement serialize(Point src, Type typeOfSrc,
 			JsonSerializationContext context) {
-		return new JsonPrimitive("(" + src.getX() + ", " + src.getY() + ")");
+		return new JsonPrimitive("(" + src.x + ", " + src.y + ")");
 	}
 	
 	@Override

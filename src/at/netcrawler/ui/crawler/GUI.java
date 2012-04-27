@@ -14,8 +14,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -51,6 +52,9 @@ import at.netcrawler.util.Settings;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
+	
+	private static final String LINE_SEPARATOR = System
+			.getProperty("line.separator");
 	
 	private JScrollPane scrollPane;
 	private TopologyViewer viewer;
@@ -135,34 +139,72 @@ public class GUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				// if (fileChooser.showOpenDialog(GUI.this) ==
-				// JFileChooser.APPROVE_OPTION) {
-				// fileChooser.getSelectedFile();
-				// }
-				
-				InputStreamReader reader = new InputStreamReader(System.in);
-				BufferedReader bufferedReader = new BufferedReader(reader);
-				String json = null;
-				try {
-					json = bufferedReader.readLine();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (fileChooser.showOpenDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					FileReader reader = null;
+					BufferedReader bufferedReader = null;
+					try {
+						reader = new FileReader(file);
+						bufferedReader = new BufferedReader(reader);
+						
+						String json = "";
+						for (String s = bufferedReader.readLine(); s != null; s = bufferedReader
+								.readLine()) {
+							json += s + LINE_SEPARATOR;
+						}
+						System.out.println(json);
+						
+						viewer = JsonHelper.getGson().fromJson(json,
+								TopologyViewer.class);
+						
+						// TODO: ?
+						GUI.this.topology = (Topology) viewer.getModel();
+						
+						table.setTopology(GUI.this.topology);
+						
+						scrollPane.setViewportView(viewer);
+					} catch (IOException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					} finally {
+						try {
+							if (bufferedReader != null) bufferedReader.close();
+						} catch (IOException exc) {}
+						try {
+							if (reader != null) reader.close();
+						} catch (IOException exc) {}
+					}
 				}
-				System.out.println(json);
-				viewer = JsonHelper.getGson().fromJson(json,
-						TopologyViewer.class);
-				
-				scrollPane.setViewportView(viewer);
 			}
 		});
 		saveItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out
-						.println(JsonHelper.getGson().toJson(GUI.this.viewer));
+				if (fileChooser.showSaveDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					
+					if (!file.getName().endsWith(".crawl"))
+						file = new File(file.getAbsoluteFile() + ".crawl");
+					
+					FileWriter writer = null;
+					try {
+						writer = new FileWriter(file);
+						
+						String json = JsonHelper.getGson().toJson(
+								GUI.this.viewer);
+						System.out.println(json);
+						
+						writer.write(json);
+						writer.flush();
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					} finally {
+						try {
+							if (writer != null) writer.close();
+						} catch (IOException exc) {}
+					}
+				}
 			}
 		});
 		closeItem.addActionListener(new ActionListener() {
@@ -188,8 +230,8 @@ public class GUI extends JFrame {
 		});
 		
 		fileMenu.add(crawlItem);
-		fileMenu.add(loadItem);
 		fileMenu.add(saveItem);
+		fileMenu.add(loadItem);
 		fileMenu.add(closeItem);
 		viewMenu.add(toggleViewItem);
 		
@@ -248,23 +290,31 @@ public class GUI extends JFrame {
 		setVisible(true);
 	}
 	
-	protected void handleMouse(MouseEvent event, TopologyDevice device) {
-		JFrame frame = null;
-		if (event.getButton() == MouseEvent.BUTTON1) {
-			try {
-				frame = new DeviceView(device);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	protected void handleMouse(final MouseEvent event,
+			final TopologyDevice device) {
+		// TODO: OH. MY. GOD! :|
+		new Thread() {
+			
+			@Override
+			public void run() {
+				JFrame frame = null;
+				if (event.getButton() == MouseEvent.BUTTON1) {
+					try {
+						frame = new DeviceView(device);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (event.getButton() == MouseEvent.BUTTON3) {
+					frame = new ConfigurationManager(device);
+				}
+				
+				if (frame != null) {
+					JFrameUtil.centerFrame(frame);
+					frame.setVisible(true);
+				}
 			}
-		} else if (event.getButton() == MouseEvent.BUTTON3) {
-			frame = new ConfigurationManager(device);
-		}
-		
-		if (frame != null) {
-			JFrameUtil.centerFrame(frame);
-			frame.setVisible(true);
-		}
+		}.start();
 	}
 	
 	private void close() {
