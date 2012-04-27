@@ -155,9 +155,9 @@ public class SnmpConfigurator extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
-				if (oid.isEmpty() || !oid.contains(".")) {
+				if (oid.isEmpty()) {
 					DialogUtil.showErrorDialog(SnmpConfigurator.this,
-							"Couldn't parse OID.");
+							"Empty OID.");
 				} else {
 					try {
 						String value = getValue(oid);
