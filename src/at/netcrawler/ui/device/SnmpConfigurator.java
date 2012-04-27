@@ -261,15 +261,15 @@ public class SnmpConfigurator extends JFrame {
 			ObjectIdentifier identifier = new ObjectIdentifier(oid);
 			SnmpMethod method = (SnmpMethod) methodBox.getSelectedItem();
 			if (SnmpMethod.GET == method) {
-				return connection.get(identifier).getValue();
+				return connection.get(identifier).getValue().toString();
 			} else if (SnmpMethod.GET_NEXT == method) {
-				return connection.getNext(identifier).getValue();
+				return connection.getNext(identifier).getValue().toString();
 			} else if (SnmpMethod.WALK == method) {
 				List<SNMPEntry> entries = connection.walk(identifier);
 
 				String s = "";
 				for (SNMPEntry entry : entries) {
-					s += entry.getValue() + LINE_SEPARATOR;
+					s += entry.getValue().toString() + LINE_SEPARATOR;
 				}
 
 				return s;
