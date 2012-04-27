@@ -117,30 +117,29 @@ public class GUI extends JFrame {
 			@Override
 			public void menuSelected(MenuEvent arg0) {
 				JOptionPane
-				.showMessageDialog(
-						GUI.this,
-						"Help is available online at http://netcrawler.tomtasche.at/",
-						"Help", JOptionPane.INFORMATION_MESSAGE);
+						.showMessageDialog(
+								GUI.this,
+								"Help is available online at http://netcrawler.tomtasche.at/",
+								"Help", JOptionPane.INFORMATION_MESSAGE);
 				
 				helpMenu.setSelected(false);
 			}
 			
 			@Override
-			public void menuDeselected(MenuEvent arg0) {
-			}
+			public void menuDeselected(MenuEvent arg0) {}
 			
 			@Override
-			public void menuCanceled(MenuEvent arg0) {
-			}
+			public void menuCanceled(MenuEvent arg0) {}
 		});
 		loadItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-//				if (fileChooser.showOpenDialog(GUI.this) == JFileChooser.APPROVE_OPTION) {
-//					fileChooser.getSelectedFile();
-//				}
+				// if (fileChooser.showOpenDialog(GUI.this) ==
+				// JFileChooser.APPROVE_OPTION) {
+				// fileChooser.getSelectedFile();
+				// }
 				
 				InputStreamReader reader = new InputStreamReader(System.in);
 				BufferedReader bufferedReader = new BufferedReader(reader);
@@ -152,7 +151,8 @@ public class GUI extends JFrame {
 					e1.printStackTrace();
 				}
 				System.out.println(json);
-				viewer = JsonHelper.getGson().fromJson(json, TopologyViewer.class);
+				viewer = JsonHelper.getGson().fromJson(json,
+						TopologyViewer.class);
 				
 				scrollPane.setViewportView(viewer);
 			}
