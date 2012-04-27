@@ -24,66 +24,64 @@ public class JSimpleTerminal extends JFrame {
 	
 	private static final long serialVersionUID = -78836768236278425L;
 	
-	
 	/**
 	 * The default title of the terminal.
 	 */
 	public static final String DEFAULT_TITLE = "Terminal";
-
-
-    private final CommandLineInterface commandLine;
 	
+	private final CommandLineInterface commandLine;
 	
 	/**
-	 * Creates a new terminal frame with the given command line. <br>
-	 * Note: the frame is invisible by default.
+	 * Creates a new terminal frame with the given command line. <br> Note: the
+	 * frame is invisible by default.
 	 * 
 	 * @param commandLine the command line which should connected to this
-	 * terminal.
+	 *        terminal.
 	 */
 	public JSimpleTerminal(CommandLineInterface commandLine) {
 		this(DEFAULT_TITLE, commandLine);
 	}
 	
 	/**
-	 * Creates a new terminal frame with the given command line. <br>
-	 * Note: the frame is invisible by default.
+	 * Creates a new terminal frame with the given command line. <br> Note: the
+	 * frame is invisible by default.
 	 * 
 	 * @param title the title of the terminal frame.
 	 * @param commandLine the command line which should connected to this
-	 * terminal.
+	 *        terminal.
 	 */
 	public JSimpleTerminal(String title, final CommandLineInterface commandLine) {
 		super(title);
-        
+		
 		this.commandLine = commandLine;
-        
+		
 		setLayout(new BorderLayout());
 		
-		JSimpleTerminalPanel terminalPanel = new JSimpleTerminalPanel(commandLine);
-		terminalPanel.addCloseListener(new JSimpleTerminalPanel.CloseListener() {
-			public void closed() {
-				JSimpleTerminal.this.dispose();
-			}
-		});
+		JSimpleTerminalPanel terminalPanel = new JSimpleTerminalPanel(
+				commandLine);
+		terminalPanel
+				.addCloseListener(new JSimpleTerminalPanel.CloseListener() {
+					public void closed() {
+						JSimpleTerminal.this.dispose();
+					}
+				});
 		add(new JScrollPane(terminalPanel));
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				try {
-                    JSimpleTerminal.this.commandLine.close();
-                } catch (IOException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
-                }
-			    
-			    dispose();
+					JSimpleTerminal.this.commandLine.close();
+				} catch (IOException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				
+				dispose();
 			}
 		});
 		
 		pack();
 	}
-	
 	
 	@Override
 	public void setVisible(boolean b) {

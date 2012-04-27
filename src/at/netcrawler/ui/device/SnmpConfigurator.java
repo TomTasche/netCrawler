@@ -35,11 +35,13 @@ import at.netcrawler.util.DialogUtil;
 import at.netcrawler.util.GridBagLayoutUtil;
 import at.netcrawler.util.NetworkDeviceHelper;
 
+
 @SuppressWarnings("serial")
 public class SnmpConfigurator extends JFrame {
-
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
+	
+	private static final String LINE_SEPARATOR = System
+			.getProperty("line.separator");
+	
 	private NetworkDevice device;
 	private JTextField oidField;
 	private JTextArea resultArea;
@@ -54,12 +56,12 @@ public class SnmpConfigurator extends JFrame {
 	private JTextField portField;
 	private JTextField addressField;
 	private JComboBox methodBox;
-
+	
 	public SnmpConfigurator() {
 		super("SNMP");
-
+		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+		
 		JLabel addressLabel = new JLabel("Address:");
 		JLabel portLabel = new JLabel("Port:");
 		JLabel versionLabel = new JLabel("Version:");
@@ -72,7 +74,7 @@ public class SnmpConfigurator extends JFrame {
 		JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
 		executeStatusLabel = new JLabel();
 		saveStatusLabel = new JLabel();
-
+		
 		addressField = new JTextField();
 		portField = new JTextField();
 		versionBox = new JComboBox(SNMPVersion.values());
@@ -87,7 +89,7 @@ public class SnmpConfigurator extends JFrame {
 		JButton executeButton = new JButton("Execute");
 		saveButton = new JButton("Save");
 		saveButton.setEnabled(false);
-
+		
 		GridBagLayoutUtil util = new GridBagLayoutUtil(2);
 		util.add(addressLabel);
 		util.add(addressField);
@@ -109,7 +111,7 @@ public class SnmpConfigurator extends JFrame {
 		util.add(methodBox);
 		util.add(executeStatusLabel);
 		util.add(executeButton);
-
+		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.CENTER;
@@ -119,7 +121,7 @@ public class SnmpConfigurator extends JFrame {
 		constraints.gridwidth = util.getColumns();
 		constraints.insets = util.getInsets();
 		util.add(separator, constraints);
-
+		
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.anchor = GridBagConstraints.CENTER;
@@ -129,14 +131,14 @@ public class SnmpConfigurator extends JFrame {
 		constraints.gridwidth = util.getColumns();
 		constraints.insets = util.getInsets();
 		util.add(new JScrollPane(resultArea), constraints);
-
+		
 		util.add(saveStatusLabel);
 		util.add(saveButton);
-
+		
 		JPanel panel = util.getPanel();
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		add(panel);
-
+		
 		versionBox.addItemListener(new ItemListener() {
 			
 			@Override
@@ -151,7 +153,7 @@ public class SnmpConfigurator extends JFrame {
 			}
 		});
 		executeButton.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
@@ -161,26 +163,26 @@ public class SnmpConfigurator extends JFrame {
 				} else {
 					try {
 						String value = getValue(oid);
-
+						
 						executeStatusLabel.setText("Success.");
-
+						
 						resultArea.setText("Value for OID: " + oid + ":"
 								+ System.getProperty("line.separator") + value);
-
+						
 						resultArea.setEditable(true);
 						resultArea.setEnabled(true);
 						saveButton.setEnabled(true);
-
+						
 					} catch (IOException ex) {
 						ex.printStackTrace();
-
+						
 						executeStatusLabel.setText("Failed.");
 					}
 				}
 			}
 		});
 		saveButton.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
@@ -190,47 +192,47 @@ public class SnmpConfigurator extends JFrame {
 				} else {
 					try {
 						setValue(oid);
-
+						
 						saveStatusLabel.setText("Success.");
 					} catch (IOException ex) {
 						ex.printStackTrace();
-
+						
 						saveStatusLabel.setText("Failed.");
 					}
 				}
 			}
 		});
-
-		resultArea.setPreferredSize(new Dimension((int) resultArea.getPreferredScrollableViewportSize().getHeight(), 100));
+		
 		passwordField.setPreferredSize(new Dimension(150, passwordField
 				.getPreferredSize().height));
-
+		
 		pack();
-
+		
 		JFrameUtil.centerFrame(this);
 		setVisible(true);
 	}
-
+	
 	public SnmpConfigurator(NetworkDevice device) {
 		this();
-
+		
 		this.device = device;
 		
 		setTitle("SNMP - " + NetworkDeviceHelper.getHostname(device));
-
+		
 		portField.setText("161");
-		addressField.setText(NetworkDeviceHelper.getSomeAddress(device).toString());
+		addressField.setText(NetworkDeviceHelper.getSomeAddress(device)
+				.toString());
 	}
-
+	
 	private SNMPConnection getConnection() throws IOException {
 		SNMPSettings settings = new SNMPSettings();
 		settings.setPort(Integer.parseInt(portField.getText()));
 		settings.setCommunity(communityField.getText());
-
+		
 		String username = userField.getText();
 		String password = new String(passwordField.getPassword());
 		String crypto = new String(cryptoField.getPassword());
-
+		
 		SNMPVersion version = (SNMPVersion) versionBox.getSelectedItem();
 		SNMPSecurityLevel level;
 		if (SNMPVersion.VERSION_1 == version) {
@@ -242,21 +244,22 @@ public class SnmpConfigurator extends JFrame {
 		} else {
 			level = SNMPSecurityLevel.NOAUTH_NOPRIV;
 		}
-
+		
 		settings.setVersion(version);
 		settings.setSecurityLevel(level);
 		settings.setUsername(username);
 		settings.setCryptoKey(crypto);
 		settings.setPassword(password);
-
-		return ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SNMP, device, settings);
+		
+		return ConnectionBuilder.getLocalConnectionBuilder().openConnection(
+				ConnectionType.SNMP, device, settings);
 	}
-
+	
 	private String getValue(String oid) throws IOException {
 		SNMPConnection connection = null;
 		try {
 			connection = getConnection();
-
+			
 			// TODO: allow multiple OIDs seperated by ;
 			ObjectIdentifier identifier = new ObjectIdentifier(oid);
 			SnmpMethod method = (SnmpMethod) methodBox.getSelectedItem();
@@ -266,12 +269,12 @@ public class SnmpConfigurator extends JFrame {
 				return connection.getNext(identifier).getValue().toString();
 			} else if (SnmpMethod.WALK == method) {
 				List<SNMPEntry> entries = connection.walk(identifier);
-
+				
 				String s = "";
 				for (SNMPEntry entry : entries) {
 					s += entry.getValue().toString() + LINE_SEPARATOR;
 				}
-
+				
 				return s;
 			}
 		} finally {
@@ -279,15 +282,15 @@ public class SnmpConfigurator extends JFrame {
 				if (connection != null) connection.close();
 			} catch (IOException e) {}
 		}
-
+		
 		return null;
 	}
-
+	
 	private void setValue(String oid) throws IOException {
 		SNMPConnection connection = null;
 		try {
 			connection = getConnection();
-
+			
 			connection.set(new ObjectIdentifier(oid), resultArea.getText());
 		} finally {
 			try {
@@ -295,8 +298,10 @@ public class SnmpConfigurator extends JFrame {
 			} catch (IOException e) {}
 		}
 	}
-
+	
 	private enum SnmpMethod {
-		GET, GET_NEXT, WALK;
+		GET,
+		GET_NEXT,
+		WALK;
 	}
 }

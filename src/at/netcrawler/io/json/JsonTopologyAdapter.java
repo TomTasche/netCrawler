@@ -122,12 +122,13 @@ public class JsonTopologyAdapter extends JsonAdapter<Topology> {
 			JsonDeserializationContext context) throws JsonParseException {
 		freeTranslation();
 		
-//		Class<? extends Topology> topologyClass = (Class<? extends Topology>) typeOfT;
+		// Class<? extends Topology> topologyClass = (Class<? extends Topology>)
+		// typeOfT;
 		JsonObject object = json.getAsJsonObject();
 		
 		try {
-//			Topology result = topologyClass.newInstance();
-		    Topology result = new HashTopology();
+			// Topology result = topologyClass.newInstance();
+			Topology result = new HashTopology();
 			
 			JsonObject devices = object.get(DEVICES_PROPERTY).getAsJsonObject();
 			Map<String, TopologyDevice> deserializedTopologyDevices = new HashMap<String, TopologyDevice>();

@@ -47,179 +47,176 @@ import at.netcrawler.ui.device.category.SNMPCategory;
 import at.netcrawler.util.DialogUtil;
 import at.netcrawler.util.NetworkDeviceHelper;
 
+
 @SuppressWarnings("serial")
 public class DeviceView extends JFrame implements NetworkModelListener {
-
-    private final static Map<Class<? extends NetworkModelExtension>, Category> EXTENSION_CATEGORY_MAPPING = new HashMap<Class<? extends NetworkModelExtension>, Category>();
-
-    static {
-        EXTENSION_CATEGORY_MAPPING.put(RouterExtension.class,
-                new RouterCategory());
-        EXTENSION_CATEGORY_MAPPING.put(CiscoDeviceExtension.class,
-                new CiscoCategory());
-        EXTENSION_CATEGORY_MAPPING.put(SNMPDeviceExtension.class,
-                new SNMPCategory());
-        EXTENSION_CATEGORY_MAPPING.put(NetworkDeviceExtension.class,
-                new DeviceCategory());
-        EXTENSION_CATEGORY_MAPPING.put(CiscoRouterExtension.class,
-                new CiscoRouterCategory());
-        EXTENSION_CATEGORY_MAPPING.put(CiscoSwitchExtension.class,
-                new CiscoSwitchCategory());
-    }
-
-    private final NetworkDevice device;
-    private final DeviceManager manager;
-    private final JScrollPane pane;
-    private final SSHSettings settings;
-    private final Connection connection;
-
-    public DeviceView(TopologyDevice device) throws IOException {
-        addWindowListener(new WindowAdapter() {
-
-            public void windowClosing(WindowEvent e) {
-                try {
-                    connection.close();
-                } catch (IOException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        settings = new SSHSettings(SSHVersion.VERSION2);
-        // TODO: OLOLO
-        settings.setPassword("cisco");
-        settings.setUsername("cisco");
-
-        connection = ConnectionBuilder.getLocalConnectionBuilder()
-                .openConnection(ConnectionType.SSH, device.getNetworkDevice(),
-                        settings);
-
-        this.manager = new DeviceManagerBuilder().buildDeviceManager(
-                device.getNetworkDevice(), connection);
-        this.device = device.getNetworkDevice();
-
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setTitle("Device View - "
-                + NetworkDeviceHelper.getHostname(this.device));
-
-        JMenuBar bar = new JMenuBar();
-        // TODO: only display protocols we're actually able to use for this
-        // device (NetworkDevice.CONNECTED_VIA)
-        JMenu advancedMenu = new JMenu("Advanced");
-        final JMenuItem snmpItem = new JMenuItem("SNMP");
-        final JMenuItem terminalItem = new JMenuItem("Terminal");
-        snmpItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new SnmpConfigurator(DeviceView.this.device);
-            }
-        });
-        terminalItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: allow configuring settings first, like SnmpConfigurator
-                String title = "Terminal - "
-                        + NetworkDeviceHelper
-                                .getHostname(DeviceView.this.device);
-
-                try {
-                    CommandLineConnection connection = ConnectionBuilder
-                            .getLocalConnectionBuilder().openConnection(
-                                    ConnectionType.SSH, DeviceView.this.device,
-                                    settings);
-                    // if (connection == null) connection =
-                    // ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SSH,
-                    // DeviceView.this.device, new
-                    // SSHSettings(SSHVersion.VERSION1));
-                    // if (connection == null) connection =
-                    // ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SSH,
-                    // DeviceView.this.device, new TelnetSettings());
-
-                    JFrame frame = new JSimpleTerminal(title, connection);
-                    JFrameUtil.centerFrame(frame);
-                    frame.setVisible(true);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-
-                    DialogUtil.showErrorDialog(DeviceView.this, ex);
-                }
-            }
-        });
-
-        advancedMenu.add(snmpItem);
-        advancedMenu.add(terminalItem);
-
-        bar.add(advancedMenu);
-
-        setJMenuBar(bar);
-
-        pane = new JScrollPane();
-        add(pane);
-
-        build();
-
-        this.device.addListener(this);
-    }
-
-    @Override
-    public void valueChanged(String key, Object value, Object oldValue) {
-        build();
-    }
-
-    @Override
-    public void extensionAdded(NetworkModelExtension extension) {
-        build();
-    }
-
-    @Override
-    public void extensionRemoved(NetworkModelExtension extension) {
-        build();
-    }
-
-    private void build() {
-        Map<String, JTabbedPane> tabs = new HashMap<String, JTabbedPane>();
-        List<Category> categories = buildCategories();
-        for (Category category : categories) {
-            JTabbedPane tab = tabs.get(category.getCategory());
-            if (tab == null) {
-                tab = new JTabbedPane(JTabbedPane.TOP);
-
-                tabs.put(category.getCategory(), tab);
-            }
-
-            tab.addTab(category.getSub(), category.render(manager, device));
-        }
-
-        JTabbedPane leftTabs = new JTabbedPane(JTabbedPane.LEFT);
-        for (Entry<String, JTabbedPane> entry : tabs.entrySet()) {
-            leftTabs.addTab(entry.getKey(), entry.getValue());
-        }
-
-        pane.setViewportView(leftTabs);
-
-        setSize(400, 300);
-        setMinimumSize(getSize());
-    }
-
-    private List<Category> buildCategories() {
-        List<Category> categories = new LinkedList<Category>();
-
-        // TODO: remove, because NetworkDeviceExtension is automatically added?
-        if (device instanceof NetworkDevice) {
-            categories.add(new DeviceCategory());
-        }
-
-        for (NetworkModelExtension extension : device.getExtensions()) {
-            Category category = EXTENSION_CATEGORY_MAPPING.get(extension
-                    .getClass());
-
-            categories.add(category);
-        }
-
-        return categories;
-    }
-
+	
+	private final static Map<Class<? extends NetworkModelExtension>, Category> EXTENSION_CATEGORY_MAPPING = new HashMap<Class<? extends NetworkModelExtension>, Category>();
+	
+	static {
+		EXTENSION_CATEGORY_MAPPING.put(RouterExtension.class,
+				new RouterCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoDeviceExtension.class,
+				new CiscoCategory());
+		EXTENSION_CATEGORY_MAPPING.put(SNMPDeviceExtension.class,
+				new SNMPCategory());
+		EXTENSION_CATEGORY_MAPPING.put(NetworkDeviceExtension.class,
+				new DeviceCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoRouterExtension.class,
+				new CiscoRouterCategory());
+		EXTENSION_CATEGORY_MAPPING.put(CiscoSwitchExtension.class,
+				new CiscoSwitchCategory());
+	}
+	
+	private final NetworkDevice device;
+	private final DeviceManager manager;
+	private final SSHSettings settings;
+	private final Connection connection;
+	
+	public DeviceView(TopologyDevice device) throws IOException {
+		addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent e) {
+				try {
+					connection.close();
+				} catch (IOException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		settings = new SSHSettings(SSHVersion.VERSION2);
+		// TODO: OLOLO
+		settings.setPassword("cisco");
+		settings.setUsername("cisco");
+		
+		connection = ConnectionBuilder.getLocalConnectionBuilder()
+				.openConnection(ConnectionType.SSH, device.getNetworkDevice(),
+						settings);
+		
+		this.manager = new DeviceManagerBuilder().buildDeviceManager(device
+				.getNetworkDevice(), connection);
+		this.device = device.getNetworkDevice();
+		
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setTitle("Device View - "
+				+ NetworkDeviceHelper.getHostname(this.device));
+		
+		JMenuBar bar = new JMenuBar();
+		// TODO: only display protocols we're actually able to use for this
+		// device (NetworkDevice.CONNECTED_VIA)
+		JMenu advancedMenu = new JMenu("Advanced");
+		final JMenuItem snmpItem = new JMenuItem("SNMP");
+		final JMenuItem terminalItem = new JMenuItem("Terminal");
+		snmpItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new SnmpConfigurator(DeviceView.this.device);
+			}
+		});
+		terminalItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO: allow configuring settings first, like SnmpConfigurator
+				String title = "Terminal - "
+						+ NetworkDeviceHelper
+								.getHostname(DeviceView.this.device);
+				
+				try {
+					CommandLineConnection connection = ConnectionBuilder
+							.getLocalConnectionBuilder().openConnection(
+									ConnectionType.SSH, DeviceView.this.device,
+									settings);
+					// if (connection == null) connection =
+					// ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SSH,
+					// DeviceView.this.device, new
+					// SSHSettings(SSHVersion.VERSION1));
+					// if (connection == null) connection =
+					// ConnectionBuilder.getLocalConnectionBuilder().openConnection(ConnectionType.SSH,
+					// DeviceView.this.device, new TelnetSettings());
+					
+					JFrame frame = new JSimpleTerminal(title, connection);
+					JFrameUtil.centerFrame(frame);
+					frame.setVisible(true);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+					
+					DialogUtil.showErrorDialog(DeviceView.this, ex);
+				}
+			}
+		});
+		
+		advancedMenu.add(snmpItem);
+		advancedMenu.add(terminalItem);
+		
+		bar.add(advancedMenu);
+		
+		setJMenuBar(bar);
+		
+		build();
+		
+		this.device.addListener(this);
+	}
+	
+	@Override
+	public void valueChanged(String key, Object value, Object oldValue) {
+		build();
+	}
+	
+	@Override
+	public void extensionAdded(NetworkModelExtension extension) {
+		build();
+	}
+	
+	@Override
+	public void extensionRemoved(NetworkModelExtension extension) {
+		build();
+	}
+	
+	private void build() {
+		Map<String, JTabbedPane> tabs = new HashMap<String, JTabbedPane>();
+		List<Category> categories = buildCategories();
+		for (Category category : categories) {
+			JTabbedPane tab = tabs.get(category.getCategory());
+			if (tab == null) {
+				tab = new JTabbedPane(JTabbedPane.TOP);
+				
+				tabs.put(category.getCategory(), tab);
+			}
+			
+			tab.addTab(category.getSub(), category.render(manager, device));
+		}
+		
+		JTabbedPane leftTabs = new JTabbedPane(JTabbedPane.LEFT);
+		for (Entry<String, JTabbedPane> entry : tabs.entrySet()) {
+			leftTabs.addTab(entry.getKey(), entry.getValue());
+		}
+		
+		add(leftTabs);
+		
+		setSize(400, 300);
+		setMinimumSize(getSize());
+	}
+	
+	private List<Category> buildCategories() {
+		List<Category> categories = new LinkedList<Category>();
+		
+		// TODO: remove, because NetworkDeviceExtension is automatically added?
+		if (device instanceof NetworkDevice) {
+			categories.add(new DeviceCategory());
+		}
+		
+		for (NetworkModelExtension extension : device.getExtensions()) {
+			Category category = EXTENSION_CATEGORY_MAPPING.get(extension
+					.getClass());
+			
+			categories.add(category);
+		}
+		
+		return categories;
+	}
+	
 }
