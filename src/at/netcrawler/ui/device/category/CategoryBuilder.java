@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import at.netcrawler.network.manager.DeviceManager;
@@ -155,7 +156,7 @@ public class CategoryBuilder {
 		rows++;
 	}
 	
-	public JPanel build() {
+	public Component build() {
 		GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 0.1;
@@ -164,7 +165,7 @@ public class CategoryBuilder {
 		gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(new JPanel(), gridBagConstraints);
 		
-		return panel;
+		return new JScrollPane(panel);
 	}
 	
 	@SuppressWarnings("unchecked")

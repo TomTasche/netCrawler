@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import at.andiwand.library.component.JFrameUtil;
@@ -71,7 +70,6 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 	
 	private final NetworkDevice device;
 	private final DeviceManager manager;
-	private final JScrollPane pane;
 	private final SSHSettings settings;
 	private final Connection connection;
 	
@@ -158,9 +156,6 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 		
 		setJMenuBar(bar);
 		
-		pane = new JScrollPane();
-		add(pane);
-		
 		build();
 		
 		this.device.addListener(this);
@@ -199,8 +194,8 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 		for (Entry<String, JTabbedPane> entry : tabs.entrySet()) {
 			leftTabs.addTab(entry.getKey(), entry.getValue());
 		}
-		
-		pane.setViewportView(leftTabs);
+
+		add(leftTabs);
 		
 		setSize(400, 300);
 		setMinimumSize(getSize());

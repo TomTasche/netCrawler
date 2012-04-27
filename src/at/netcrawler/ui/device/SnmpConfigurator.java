@@ -40,9 +40,6 @@ import at.netcrawler.util.NetworkDeviceHelper;
 @SuppressWarnings("serial")
 public class SnmpConfigurator extends JFrame {
 	
-	private static final String LINE_SEPARATOR = System
-			.getProperty("line.separator");
-	
 	private NetworkDevice device;
 	private JTextField oidField;
 	private JTextArea resultArea;
@@ -153,6 +150,7 @@ public class SnmpConfigurator extends JFrame {
 			}
 		});
 		executeButton.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
@@ -189,6 +187,7 @@ public class SnmpConfigurator extends JFrame {
 			}
 		});
 		saveButton.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String oid = oidField.getText();
@@ -212,8 +211,6 @@ public class SnmpConfigurator extends JFrame {
 			}
 		});
 		
-		resultArea.setPreferredSize(new Dimension((int) resultArea
-				.getPreferredScrollableViewportSize().getHeight(), 100));
 		passwordField.setPreferredSize(new Dimension(150, passwordField
 				.getPreferredSize().height));
 		

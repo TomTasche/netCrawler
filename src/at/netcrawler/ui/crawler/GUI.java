@@ -363,8 +363,8 @@ public class GUI extends JFrame {
 					
 					NetworkCrawler crawler = new SimpleThreadedNetworkCrawler(
 							gateway, settings, managerFactory, start);
-//					NetworkCrawler crawler = new SimpleNetworkCrawler(
-//							gateway, settings, managerFactory, start);
+					// NetworkCrawler crawler = new SimpleNetworkCrawler(
+					// gateway, settings, managerFactory, start);
 					
 					try {
 						topology = new HashTopology();

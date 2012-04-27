@@ -28,8 +28,6 @@ public class CiscoCategory extends Category {
 			List<String> neighbors = new ArrayList<String>();
 			for (CDPNeighbor neighbor : table) {
 				neighbors.add(neighbor.getHostname());
-				
-				System.out.println(neighbor);
 			}
 			
 			builder.addListRow("CDP Neighbours", neighbors);
