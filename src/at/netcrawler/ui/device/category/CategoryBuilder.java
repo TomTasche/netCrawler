@@ -25,8 +25,8 @@ public class CategoryBuilder {
 	
 	private static final Insets DEFAULT_INSETS = new Insets(0, 5, 5, 5);
 	
-	JPanel panel;
-	int rows;
+	private JPanel panel;
+	private int rows;
 	
 	public CategoryBuilder() {
 		panel = new JPanel();
@@ -77,6 +77,7 @@ public class CategoryBuilder {
 		
 		textField.setText(data.toString());
 		textField.setEditable(false);
+		textField.setColumns(30);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
@@ -86,7 +87,7 @@ public class CategoryBuilder {
 		panel.add(textField, gridBagConstraints);
 		
 		if (callback != null) {
-			editButton.setText("E");
+			editButton.setText("Edit");
 			gridBagConstraints = new java.awt.GridBagConstraints();
 			gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
 			gridBagConstraints.gridy = rows;
@@ -98,7 +99,7 @@ public class CategoryBuilder {
 				public void actionPerformed(ActionEvent arg0) {
 					boolean enabled = textField.isEditable();
 					
-					editButton.setText(!enabled ? "S" : "E");
+					editButton.setText(!enabled ? "Save" : "Edit");
 					textField.setEditable(!enabled);
 					
 					if (enabled) callback.save(textField.getText());

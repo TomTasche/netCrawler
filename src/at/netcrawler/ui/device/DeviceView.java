@@ -194,10 +194,10 @@ public class DeviceView extends JFrame implements NetworkModelListener {
 		for (Entry<String, JTabbedPane> entry : tabs.entrySet()) {
 			leftTabs.addTab(entry.getKey(), entry.getValue());
 		}
-
+		
 		add(leftTabs);
 		
-		setSize(400, 300);
+		setSize(600, 300);
 		setMinimumSize(getSize());
 	}
 	
