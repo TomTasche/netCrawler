@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>at.netcrawler</groupId>
+	<artifactId>netcrawler</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.linoleum</groupId>
+			<artifactId>jcterm</artifactId>
+			<version>0.0.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.47</version>
+		</dependency>
+		<dependency>
+			<groupId>org.snmp4j</groupId>
+			<artifactId>snmp4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-server</artifactId> 
+			<version>8.0.4.v20111024</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId> 
+			<artifactId>jetty-servlet</artifactId> <version>8.0.4.v20111024</version> 
+			</dependency> <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-http</artifactId> 
+			<version>8.0.4.v20111024</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId> 
+			<artifactId>jetty-io</artifactId> <version>8.0.4.v20111024</version> </dependency> 
+			<dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-continuation</artifactId> 
+			<version>8.0.4.v20111024</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId> 
+			<artifactId>jetty-util</artifactId> <version>8.0.4.v20111024</version> </dependency> 
+			<dependency> <groupId>javax.servlet</groupId> <artifactId>servlet-api</artifactId> 
+			<version>3.0.1</version> </dependency> -->
+	</dependencies>
+</project>
